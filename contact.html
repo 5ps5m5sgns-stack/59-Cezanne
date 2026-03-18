@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Contact — 59 Cézanne | Ponthieu Développement Holding</title>
+  <meta name="description" content="Contactez Ponthieu Développement Holding pour toute demande sur la résidence 59 Cézanne. Formulaire, téléphone, email. Bureau au 418 Ancienne Route des Alpes, Aix-en-Provence." />
+
+  <meta property="og:title" content="Contact — 59 Cézanne" />
+  <meta property="og:description" content="Contactez-nous pour découvrir la résidence 59 Cézanne. Tél: 06 20 53 43 92 — Email: stephane@ponthieu.fr" />
+
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="contact.css" />
+  <style>
+    /* ── Contact-specific ── */
+    .contact-grid {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 5rem;
+      align-items: start;
+    }
+
+    .contact-form-wrap {
+      background: var(--white);
+      border-radius: var(--radius-md);
+      padding: 3rem;
+      box-shadow: var(--shadow);
+    }
+
+    .contact-info-block {
+      position: sticky;
+      top: calc(var(--nav-height) + 2rem);
+    }
+
+    .contact-info-items {
+      display: flex;
+      flex-direction: column;
+      gap: 1.2rem;
+      margin-bottom: 2rem;
+    }
+
+    .contact-info-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+      padding: 1.5rem;
+      background: var(--white);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+      transition: border-color var(--transition-fast), box-shadow var(--transition);
+    }
+
+    .contact-info-item:hover {
+      border-color: rgba(201,169,110,0.4);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .contact-info-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: rgba(201,169,110,0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--or);
+      flex-shrink: 0;
+    }
+
+    .contact-info-text strong {
+      display: block;
+      font-family: var(--font-serif);
+      font-size: 0.95rem;
+      font-weight: 400;
+      color: var(--text);
+      margin-bottom: 2px;
+    }
+
+    .contact-info-text a,
+    .contact-info-text span {
+      font-size: 0.85rem;
+      color: var(--text-mid);
+      line-height: 1.6;
+    }
+
+    .contact-info-text a:hover { color: var(--or); }
+
+    .callback-btn {
+      width: 100%;
+      padding: 1.1rem;
+      background: var(--or);
+      color: var(--dark);
+      font-family: var(--font-sans);
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      border: none;
+      border-radius: var(--radius);
+      cursor: pointer;
+      transition: all var(--transition);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.7rem;
+      box-shadow: 0 4px 20px rgba(201,169,110,0.35);
+    }
+
+    .callback-btn:hover {
+      background: var(--or-dark);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 30px rgba(201,169,110,0.5);
+    }
+
+    .callback-btn svg {
+      width: 18px;
+      height: 18px;
+      animation: pulse 2s ease infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.15); }
+    }
+
+    .form-title {
+      font-family: var(--font-serif);
+      font-size: 1.6rem;
+      font-weight: 400;
+      color: var(--text);
+      margin-bottom: 0.4rem;
+    }
+
+    .form-subtitle {
+      font-size: 0.85rem;
+      color: var(--text-mid);
+      margin-bottom: 2rem;
+      line-height: 1.6;
+    }
+
+    .checkbox-group {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.8rem;
+      margin-top: 0.5rem;
+    }
+
+    .checkbox-group input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      margin-top: 1px;
+      accent-color: var(--or);
+      flex-shrink: 0;
+      cursor: pointer;
+    }
+
+    .checkbox-group label {
+      font-size: 0.8rem;
+      color: var(--text-mid);
+      line-height: 1.6;
+      cursor: pointer;
+    }
+
+    .btn-submit {
+      width: 100%;
+      padding: 1.1rem;
+      background: var(--dark);
+      color: var(--white);
+      font-family: var(--font-sans);
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      border: none;
+      border-radius: var(--radius);
+      cursor: pointer;
+      transition: all var(--transition);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.7rem;
+      margin-top: 1.5rem;
+    }
+
+    .btn-submit:hover {
+      background: var(--or);
+      color: var(--dark);
+    }
+
+    .btn-submit svg {
+      width: 18px;
+      height: 18px;
+    }
+
+    .faq-section {
+      background: var(--beige);
+    }
+
+    @media (max-width: 1024px) {
+      .contact-grid { grid-template-columns: 1fr; gap: 3rem; }
+      .contact-info-block { position: static; }
+    }
+  </style>
+</head>
+<body>
+<div id="scroll-progress"></div>
+<div id="loader">
+  <div class="loader-logo">59 Cézanne<span>Aix-en-Provence</span></div>
+  <div class="loader-bar"></div>
+</div>
+
+<nav id="navbar" class="transparent">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">
+      <span class="logo-main">59 Cézanne</span>
+      <span class="logo-sub">Aix-en-Provence</span>
+    </a>
+    <div class="nav-links">
+      <a href="index.html">Accueil</a>
+      <a href="presentation.html">Présentation</a>
+      <a href="logements.html">Logements</a>
+      <a href="exterieurs.html">Espaces Communs</a>
+      <a href="localisation.html">Localisation</a>
+      <a href="promoteur.html">Le Promoteur</a>
+      <a href="contact.html" class="active">Contact</a>
+    </div>
+    <div class="d-flex align-center gap-2">
+      <div class="lang-toggle">
+        <button class="lang-btn active" onclick="setLang('fr')">FR</button>
+        <button class="lang-btn" onclick="setLang('en')">EN</button>
+      </div>
+      <div class="nav-burger" id="burger" onclick="toggleMobile()">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<div class="nav-mobile" id="mobileMenu">
+  <a href="index.html" onclick="toggleMobile()">Accueil</a>
+  <a href="presentation.html" onclick="toggleMobile()">Présentation</a>
+  <a href="logements.html" onclick="toggleMobile()">Logements</a>
+  <a href="exterieurs.html" onclick="toggleMobile()">Espaces Communs</a>
+  <a href="localisation.html" onclick="toggleMobile()">Localisation</a>
+  <a href="promoteur.html" onclick="toggleMobile()">Le Promoteur</a>
+  <a href="contact.html" onclick="toggleMobile()">Contact</a>
+  <div class="nav-mobile-lang">
+    <button class="lang-btn active" onclick="setLang('fr')">FR</button>
+    <button class="lang-btn" onclick="setLang('en')">EN</button>
+  </div>
+</div>
+
+<!-- Hero -->
+<section class="page-hero" style="height:50vh;">
+  <div class="hero-bg">
+    <!-- IMAGE: Vue de la résidence 59 Cézanne depuis l'entrée -->
+    <img
+      src="Photo 59 Cézanne/3D Groove Architecture/Edited/050-APC-230309-INSERTION-enhanced.webp"
+      alt="59 Cézanne - Contact"
+      loading="eager"
+    />
+  </div>
+  <div class="hero-overlay"></div>
+  <div class="hero-content">
+    <p class="hero-eyebrow">Parlons de votre projet</p>
+    <h1 class="hero-title" style="font-size:clamp(2rem,4vw,3.5rem);">Nous <em>contacter</em></h1>
+    <p class="hero-subtitle">Notre équipe vous répond dans les 24 heures ouvrées.</p>
+  </div>
+</section>
+
+<!-- ─── Contact Principal ─────────────────────────────────────── -->
+<section class="section">
+  <div class="container">
+    <div class="contact-grid">
+      <!-- Formulaire -->
+      <div class="contact-form-wrap reveal-left">
+        <h2 class="form-title">Votre demande</h2>
+        <p class="form-subtitle">Remplissez ce formulaire pour recevoir la plaquette, les plans et la grille de prix, ou pour organiser une visite.</p>
+
+        <form id="contactForm" novalidate>
+          <div class="form-grid">
+            <div class="form-group" id="fg-nom">
+              <label class="form-label" for="nom">Nom *</label>
+              <input type="text" class="form-input" id="nom" name="nom" placeholder="Votre nom" autocomplete="family-name" />
+              <span class="form-error">Veuillez indiquer votre nom.</span>
+            </div>
+            <div class="form-group" id="fg-prenom">
+              <label class="form-label" for="prenom">Prénom *</label>
+              <input type="text" class="form-input" id="prenom" name="prenom" placeholder="Votre prénom" autocomplete="given-name" />
+              <span class="form-error">Veuillez indiquer votre prénom.</span>
+            </div>
+            <div class="form-group" id="fg-email">
+              <label class="form-label" for="email">Email *</label>
+              <input type="email" class="form-input" id="email" name="email" placeholder="votre@email.fr" autocomplete="email" />
+              <span class="form-error">Veuillez indiquer un email valide.</span>
+            </div>
+            <div class="form-group" id="fg-tel">
+              <label class="form-label" for="tel">Téléphone *</label>
+              <input type="tel" class="form-input" id="tel" name="tel" placeholder="06 00 00 00 00" autocomplete="tel" />
+              <span class="form-error">Veuillez indiquer votre téléphone.</span>
+            </div>
+            <div class="form-group full" id="fg-typology">
+              <label class="form-label" for="typology">Typologie souhaitée</label>
+              <select class="form-select" id="typology" name="typology">
+                <option value="" disabled selected>Choisissez une typologie</option>
+                <option value="t4">T4 — Appartement familial (~110 m²)</option>
+                <option value="t3duplex">T3 Duplex — Maison sur 2 niveaux (~90 m²)</option>
+                <option value="t2">T2 — Appartement intimiste (~65 m²)</option>
+                <option value="non-decide">Je ne sais pas encore</option>
+                <option value="info">Informations générales seulement</option>
+              </select>
+            </div>
+            <div class="form-group full" id="fg-message">
+              <label class="form-label" for="message">Message</label>
+              <textarea class="form-textarea" id="message" name="message" placeholder="Décrivez votre projet, vos questions, vos disponibilités pour une visite..."></textarea>
+            </div>
+            <div class="form-group full">
+              <div class="checkbox-group">
+                <input type="checkbox" id="rgpd" name="rgpd" />
+                <label for="rgpd">
+                  J'accepte que mes données personnelles soient utilisées par Ponthieu Développement Holding pour traiter ma demande. Conformément au RGPD, vous disposez d'un droit d'accès, de rectification et de suppression de vos données. <a href="#" style="color:var(--or);">En savoir plus</a>.
+                </label>
+              </div>
+              <span class="form-error" id="rgpd-error" style="display:none;">Vous devez accepter la politique de confidentialité.</span>
+            </div>
+          </div>
+
+          <button type="submit" class="btn-submit">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+            Envoyer ma demande
+          </button>
+        </form>
+
+        <div class="form-success" id="formSuccess">
+          <div style="width:64px;height:64px;border-radius:50%;background:rgba(107,124,69,0.12);display:flex;align-items:center;justify-content:center;margin:0 auto 1.2rem;color:var(--olive);">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="32" height="32"><path d="M20 6L9 17l-5-5"/></svg>
+          </div>
+          <strong style="font-family:var(--font-serif);font-size:1.35rem;font-weight:300;display:block;margin-bottom:0.75rem;color:var(--text);">Message envoyé avec succès</strong>
+          <p style="font-size:0.88rem;color:var(--text-mid);line-height:1.8;max-width:400px;margin:0 auto;">Merci pour votre intérêt pour la résidence 59 Cézanne. Notre équipe vous contactera dans les 24 heures ouvrées.</p>
+        </div>
+      </div>
+
+      <!-- Infos Contact -->
+      <div class="contact-info-block reveal-right">
+        <p class="eyebrow">Coordonnées</p>
+        <h2 class="section-title" style="font-size:1.8rem;">Ponthieu<br><em>Développement</em></h2>
+        <div class="divider"></div>
+
+        <div class="contact-info-items">
+          <div class="contact-info-item">
+            <div class="contact-info-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="22" height="22"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg></div>
+            <div class="contact-info-text">
+              <strong>Bureau Commercial PDH</strong>
+              <span>418 Ancienne Route des Alpes<br>13100 Aix-en-Provence</span>
+            </div>
+          </div>
+          <div class="contact-info-item">
+            <div class="contact-info-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="22" height="22"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81 19.79 19.79 0 01.01 1.18 2 2 0 012 0h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg></div>
+            <div class="contact-info-text">
+              <strong>Téléphone direct</strong>
+              <a href="tel:0620534392">06 20 53 43 92</a>
+            </div>
+          </div>
+          <div class="contact-info-item">
+            <div class="contact-info-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="22" height="22"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></div>
+            <div class="contact-info-text">
+              <strong>Email</strong>
+              <a href="mailto:stephane@ponthieu.fr">stephane@ponthieu.fr</a>
+            </div>
+          </div>
+          <div class="contact-info-item">
+            <div class="contact-info-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="22" height="22"><circle cx="12" cy="12" r="10"/><polyline points="12,6 12,12 16,14"/></svg></div>
+            <div class="contact-info-text">
+              <strong>Horaires</strong>
+              <span>Lun–Ven : 9h – 18h<br>Sam sur rendez-vous</span>
+            </div>
+          </div>
+        </div>
+
+        <button class="callback-btn" onclick="window.location.href='tel:0620534392'">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81 19.79 19.79 0 01.01 1.18 2 2 0 012 0h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/>
+          </svg>
+          Être rappelé — 06 20 53 43 92
+        </button>
+
+        <!-- Carte bureau PDH -->
+        <div class="map-container mt-6">
+          <iframe
+            src="https://maps.google.com/maps?q=418+Ancienne+Route+des+Alpes+13100+Aix-en-Provence&t=&z=15&ie=UTF8&iwloc=&output=embed"
+            allowfullscreen=""
+            loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade"
+            title="Bureau Ponthieu Développement Holding"
+            style="height:280px;"
+          ></iframe>
+        </div>
+        <p style="text-align:center;font-size:0.75rem;color:var(--text-light);margin-top:0.6rem;">
+          418 Ancienne Route des Alpes, 13100 Aix-en-Provence
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── FAQ ──────────────────────────────────────────────────── -->
+<section class="section faq-section" id="faq">
+  <div class="container">
+    <div class="section-header reveal">
+      <p class="eyebrow">Questions fréquentes</p>
+      <h2 class="section-title">FAQ — Vos <em>questions</em></h2>
+      <p class="section-lead mt-2">Retrouvez les réponses aux questions les plus fréquemment posées par nos futurs acquéreurs.</p>
+    </div>
+
+    <div style="max-width:800px;margin:0 auto;">
+      <div class="faq-item reveal">
+        <div class="faq-question" onclick="toggleFaq(this)">
+          Quand est prévue la livraison de la résidence 59 Cézanne ?
+          <div class="faq-toggle">+</div>
+        </div>
+        <div class="faq-answer">
+          <div class="faq-answer-inner">
+            La résidence 59 Cézanne est actuellement en cours de commercialisation. La date de livraison prévisionnelle est fixée courant 2025. Nous vous communiquerons le calendrier précis lors de notre premier entretien. N'hésitez pas à nous contacter pour obtenir les informations les plus récentes sur l'avancement du chantier.
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item reveal">
+        <div class="faq-question" onclick="toggleFaq(this)">
+          Peut-on financer l'achat avec un prêt bancaire ?
+          <div class="faq-toggle">+</div>
+        </div>
+        <div class="faq-answer">
+          <div class="faq-answer-inner">
+            Absolument. La résidence 59 Cézanne est éligible au financement bancaire classique. Étant une Vente en l'État Futur d'Achèvement (VEFA), vous bénéficiez de l'échelonnement des appels de fonds selon l'avancement des travaux. Notre équipe peut vous mettre en relation avec des courtiers en financement immobilier partenaires pour optimiser votre plan de financement. Le Prêt à Taux Zéro (PTZ) est également applicable pour la résidence principale.
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item reveal">
+        <div class="faq-question" onclick="toggleFaq(this)">
+          Comment fonctionne la personnalisation des finitions ?
+          <div class="faq-toggle">+</div>
+        </div>
+        <div class="faq-answer">
+          <div class="faq-answer-inner">
+            La personnalisation est proposée dans un délai défini après la signature du contrat de réservation, généralement dans les 2 mois. Vous rencontrez notre architecte d'intérieur partenaire pour choisir parmi notre sélection de matériaux : revêtements de sol, carrelages, robinetterie, façades de cuisine, couleurs de peinture. Les modifications structurelles (déplacement de cloisons, ajout d'une prise, etc.) sont également possibles dans certaines limites et selon le planning de chantier.
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item reveal">
+        <div class="faq-question" onclick="toggleFaq(this)">
+          Quelles garanties s'appliquent à mon appartement ?
+          <div class="faq-toggle">+</div>
+        </div>
+        <div class="faq-answer">
+          <div class="faq-answer-inner">
+            En tant qu'acheteur en VEFA, vous bénéficiez de l'ensemble des garanties légales françaises : (1) Garantie de parfait achèvement pendant 1 an, (2) Garantie biennale sur les équipements pendant 2 ans, (3) Garantie décennale sur le gros œuvre pendant 10 ans, et (4) la Garantie Financière d'Achèvement (GFA) qui protège vos versements en cas de défaillance du promoteur. PDH souscrit systématiquement ces garanties auprès de compagnies d'assurance de premier rang.
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item reveal">
+        <div class="faq-question" onclick="toggleFaq(this)">
+          Quels sont les frais d'acquisition ?
+          <div class="faq-toggle">+</div>
+        </div>
+        <div class="faq-answer">
+          <div class="faq-answer-inner">
+            Pour un achat en VEFA (neuf), les frais de notaire sont réduits, environ 2 à 3% du prix d'acquisition (contre 7 à 8% dans l'ancien). La TVA à 20% est incluse dans le prix de vente annoncé. Des dispositifs de défiscalisation comme la Loi Pinel (investissement locatif) peuvent s'appliquer selon votre situation. Notre équipe peut vous détailler ces aspects lors d'un entretien.
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item reveal">
+        <div class="faq-question" onclick="toggleFaq(this)">
+          Est-il possible de visiter le chantier ou une unité témoin ?
+          <div class="faq-toggle">+</div>
+        </div>
+        <div class="faq-answer">
+          <div class="faq-answer-inner">
+            Nous organisons régulièrement des visites du chantier avec les acquéreurs, accompagnées d'une présentation 3D immersive de votre futur appartement. Une maquette numérique complète est disponible à notre bureau. Pour les investisseurs ou acquéreurs à distance, nous proposons également des visites virtuelles par visioconférence. Contactez-nous pour organiser votre visite personnalisée.
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item reveal">
+        <div class="faq-question" onclick="toggleFaq(this)">
+          La résidence est-elle bien desservie par les transports en commun ?
+          <div class="faq-toggle">+</div>
+        </div>
+        <div class="faq-answer">
+          <div class="faq-answer-inner">
+            Oui, la résidence 59 Cézanne est desservie par les lignes 5 et 12 du réseau de bus Aix-en-Bus, avec des arrêts à moins de 5 minutes à pied. Ces lignes relient directement le quartier au centre-ville d'Aix-en-Provence, à la gare routière et aux principaux équipements de la ville. Des horaires étendus le week-end permettent une mobilité sans voiture au quotidien.
+          </div>
+        </div>
+      </div>
+
+      <div class="faq-item reveal">
+        <div class="faq-question" onclick="toggleFaq(this)">
+          Peut-on réserver un appartement sans venir sur place ?
+          <div class="faq-toggle">+</div>
+        </div>
+        <div class="faq-answer">
+          <div class="faq-answer-inner">
+            Oui, totalement. Pour nos acquéreurs internationaux ou en déplacement, nous proposons l'ensemble de la documentation complète par email, une visite virtuelle 3D immersive, et la possibilité de signer le contrat de réservation à distance avec signature électronique certifiée. Stéphane Ponthieu est disponible pour des entretiens en visioconférence. Nous accueillons régulièrement des acquéreurs de Paris, Monaco, Suisse et d'autres pays.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="footer-logo">59 Cézanne</div>
+        <div class="footer-logo-sub">Aix-en-Provence</div>
+        <p>Résidence exclusive de 8 appartements d'exception avec vue imprenable sur la Sainte-Victoire. Une réalisation Ponthieu Développement Holding.</p>
+        <div class="eco-badges">
+          <span class="eco-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="14" height="14" style="vertical-align:-2px;margin-right:5px;"><path d="M12 22V12M12 12C9 12 6 9 5 5c3 1 6 3 7 7M12 12c3 0 6-3 7-7-3 1-6 3-7 7"/></svg>Éco-responsable</span>
+          <span class="eco-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="14" height="14" style="vertical-align:-2px;margin-right:5px;"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M17.66 6.34l-1.41 1.41M6.34 17.66l-1.41 1.41"/></svg>Photovoltaïque</span>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h4>Navigation</h4>
+        <ul>
+          <li><a href="index.html">Accueil</a></li>
+          <li><a href="presentation.html">Présentation</a></li>
+          <li><a href="logements.html">Logements</a></li>
+          <li><a href="exterieurs.html">Espaces Communs</a></li>
+          <li><a href="localisation.html">Localisation</a></li>
+          <li><a href="promoteur.html">Le Promoteur</a></li>
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Contact rapide</h4>
+        <ul>
+          <li><a href="tel:0620534392">06 20 53 43 92</a></li>
+          <li><a href="mailto:stephane@ponthieu.fr">stephane@ponthieu.fr</a></li>
+          <li><a href="https://wa.me/33620534392" target="_blank">WhatsApp</a></li>
+          <li><a href="#faq">FAQ</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Adresses</h4>
+        <div class="footer-contact-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          <span><strong style="color:rgba(255,255,255,0.75);">La résidence</strong><br>59 Avenue Paul Cézanne<br>13100 Aix-en-Provence</span>
+        </div>
+        <div class="footer-contact-item mt-2">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          <span><strong style="color:rgba(255,255,255,0.75);">Bureau PDH</strong><br>418 Ancienne Route des Alpes<br>13100 Aix-en-Provence</span>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2025 Ponthieu Développement Holding — Tous droits réservés</p>
+      <div class="footer-legal">
+        <a href="#">Mentions légales</a>
+        <a href="#">Politique de confidentialité</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<div class="floating-cta">
+  <a href="https://wa.me/33620534392" target="_blank" class="float-btn float-btn-whatsapp">
+    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.890-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+  </a>
+  <a href="tel:0620534392" class="float-btn float-btn-phone">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81 19.79 19.79 0 01.01 1.18 2 2 0 012 0h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+  </a>
+</div>
+
+<div id="lightbox">
+  <button class="lightbox-close" onclick="closeLightbox()">✕</button>
+  <button class="lightbox-nav lightbox-prev" onclick="lightboxNav(-1)">‹</button>
+  <div class="lightbox-img-wrap">
+    <img id="lightbox-img" src="" alt="" />
+    <div class="lightbox-caption" id="lightbox-caption"></div>
+    <div class="lightbox-counter" id="lightbox-counter"></div>
+  </div>
+  <button class="lightbox-nav lightbox-next" onclick="lightboxNav(1)">›</button>
+</div>
+
+<script src="animations.js"></script>
+<script src="contact.js"></script>
+<script>
+function setLang(lang) {
+  document.querySelectorAll('[data-lang-' + lang + ']').forEach(el => {
+    el.innerHTML = el.getAttribute('data-lang-' + lang);
+  });
+  document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.lang-btn[onclick*="' + lang + '"]').forEach(b => b.classList.add('active'));
+}
+
+function toggleFaq(el) {
+  const item = el.parentElement;
+  const isOpen = item.classList.contains('open');
+  document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+  if (!isOpen) item.classList.add('open');
+}
+</script>
+</body>
+</html>

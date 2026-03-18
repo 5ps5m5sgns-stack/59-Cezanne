@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Présentation — 59 Cézanne | Résidence de Prestige Aix-en-Provence</title>
+  <meta name="description" content="Découvrez la résidence 59 Cézanne, 8 appartements d'exception au 59 Avenue Paul Cézanne à Aix-en-Provence. Histoire, emplacement et art de vivre provençal." />
+
+  <meta property="og:title" content="Présentation — 59 Cézanne" />
+  <meta property="og:description" content="Une résidence exclusive de 8 appartements avec vue imprenable sur la Sainte-Victoire, à Aix-en-Provence." />
+  <meta property="og:image" content="Dossier de commercialisation 59 Cézanne/3D Exterieur/PV_EXT_Panorama_St-Victoire.jpg" />
+
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    /* ── Page-specific ── */
+    .cezanne-heritage {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 5rem;
+      align-items: start;
+    }
+
+    .heritage-img-stack {
+      position: relative;
+    }
+
+    .heritage-img-main {
+      width: 100%;
+      aspect-ratio: 3/4;
+      object-fit: cover;
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .heritage-img-main-placeholder {
+      width: 100%;
+      aspect-ratio: 3/4;
+      background: linear-gradient(160deg, var(--stone) 0%, var(--beige) 100%);
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-serif);
+      font-style: italic;
+      color: var(--text-light);
+      font-size: 1rem;
+    }
+
+    .heritage-img-secondary {
+      position: absolute;
+      bottom: -2rem;
+      right: -2rem;
+      width: 55%;
+      aspect-ratio: 4/3;
+      object-fit: cover;
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-lg);
+      border: 4px solid var(--white);
+    }
+
+    .heritage-img-secondary-placeholder {
+      position: absolute;
+      bottom: -2rem;
+      right: -2rem;
+      width: 55%;
+      aspect-ratio: 4/3;
+      background: linear-gradient(135deg, var(--stone-light) 0%, var(--stone) 100%);
+      border-radius: var(--radius-md);
+      border: 4px solid var(--white);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-serif);
+      font-style: italic;
+      color: var(--text-light);
+      font-size: 0.85rem;
+      text-align: center;
+      padding: 1rem;
+    }
+
+    .heritage-text {
+      padding-top: 2rem;
+    }
+
+    .provence-cards {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+    }
+
+    .provence-card {
+      padding: 2rem 1.5rem;
+      background: var(--white);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+      text-align: center;
+      transition: transform var(--transition), box-shadow var(--transition), border-color var(--transition);
+    }
+
+    .provence-card:hover {
+      transform: translateY(-5px);
+      box-shadow: var(--shadow);
+      border-color: rgba(201,169,110,0.4);
+    }
+
+    .provence-card-icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 52px;
+      height: 52px;
+      margin: 0 auto 1.2rem;
+      background: rgba(201,169,110,0.12);
+      border-radius: 50%;
+      color: var(--or);
+    }
+
+    .provence-card h3 {
+      font-family: var(--font-serif);
+      font-size: 1.1rem;
+      font-weight: 400;
+      color: var(--text);
+      margin-bottom: 0.5rem;
+    }
+
+    .provence-card p {
+      font-size: 0.82rem;
+      color: var(--text-mid);
+      line-height: 1.7;
+    }
+
+    .aix-highlight-strip {
+      background: var(--dark);
+      padding: 4rem 0;
+    }
+
+    .aix-highlight-inner {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 2rem;
+      text-align: center;
+    }
+
+    .aix-hl-item .num {
+      font-family: var(--font-serif);
+      font-size: 2.8rem;
+      font-weight: 300;
+      color: var(--or);
+      display: block;
+      line-height: 1;
+      margin-bottom: 0.5rem;
+    }
+
+    .aix-hl-item .label {
+      font-size: 0.72rem;
+      font-weight: 400;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.5);
+    }
+
+    .address-block {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 1.5rem 2rem;
+      background: var(--white);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow-sm);
+      margin-bottom: 1.5rem;
+    }
+
+    .address-icon {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      background: rgba(201,169,110,0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--or);
+      flex-shrink: 0;
+    }
+
+    .address-text strong {
+      display: block;
+      font-family: var(--font-serif);
+      font-size: 1.1rem;
+      font-weight: 400;
+      color: var(--text);
+    }
+
+    .address-text span {
+      font-size: 0.84rem;
+      color: var(--text-mid);
+    }
+
+    .photo-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.5rem;
+      margin-top: 3rem;
+    }
+
+    .photo-row-item {
+      aspect-ratio: 4/3;
+      overflow: hidden;
+      border-radius: var(--radius);
+      cursor: pointer;
+      position: relative;
+    }
+
+    .photo-row-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.7s ease;
+    }
+
+    .photo-row-item:hover img { transform: scale(1.05); }
+
+    .photo-row-item .gal-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(0,0,0,0.35);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transition: opacity var(--transition);
+      color: white;
+      font-size: 2rem;
+    }
+
+    .photo-row-item:hover .gal-overlay { opacity: 1; }
+
+    @media (max-width: 1024px) {
+      .cezanne-heritage { grid-template-columns: 1fr; gap: 3rem; }
+      .provence-cards { grid-template-columns: repeat(2, 1fr); }
+      .aix-highlight-inner { grid-template-columns: repeat(2, 1fr); gap: 1.5rem; }
+    }
+
+    @media (max-width: 768px) {
+      .provence-cards { grid-template-columns: 1fr; }
+      .photo-row { grid-template-columns: 1fr 1fr; }
+      .heritage-img-secondary, .heritage-img-secondary-placeholder { position: static; width: 100%; margin-top: 1rem; }
+    }
+  </style>
+</head>
+<body>
+<div id="scroll-progress"></div>
+
+<div id="loader">
+  <div class="loader-logo">59 Cézanne<span>Aix-en-Provence</span></div>
+  <div class="loader-bar"></div>
+</div>
+
+<!-- Nav -->
+<nav id="navbar" class="transparent">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">
+      <span class="logo-main">59 Cézanne</span>
+      <span class="logo-sub">Aix-en-Provence</span>
+    </a>
+    <div class="nav-links">
+      <a href="index.html">Accueil</a>
+      <a href="presentation.html" class="active">Présentation</a>
+      <a href="logements.html">Logements</a>
+      <a href="exterieurs.html">Espaces Communs</a>
+      <a href="localisation.html">Localisation</a>
+      <a href="promoteur.html">Le Promoteur</a>
+      <a href="contact.html">Contact</a>
+    </div>
+    <div class="d-flex align-center gap-2">
+      <div class="lang-toggle">
+        <button class="lang-btn active" onclick="setLang('fr')">FR</button>
+        <button class="lang-btn" onclick="setLang('en')">EN</button>
+      </div>
+      <div class="nav-burger" id="burger" onclick="toggleMobile()">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<div class="nav-mobile" id="mobileMenu">
+  <a href="index.html" onclick="toggleMobile()">Accueil</a>
+  <a href="presentation.html" onclick="toggleMobile()">Présentation</a>
+  <a href="logements.html" onclick="toggleMobile()">Logements</a>
+  <a href="exterieurs.html" onclick="toggleMobile()">Espaces Communs</a>
+  <a href="localisation.html" onclick="toggleMobile()">Localisation</a>
+  <a href="promoteur.html" onclick="toggleMobile()">Le Promoteur</a>
+  <a href="contact.html" onclick="toggleMobile()">Contact</a>
+  <div class="nav-mobile-lang">
+    <button class="lang-btn active" onclick="setLang('fr')">FR</button>
+    <button class="lang-btn" onclick="setLang('en')">EN</button>
+  </div>
+</div>
+
+<!-- ─── Page Hero ────────────────────────────────────────────── -->
+<section class="page-hero">
+  <div class="hero-bg">
+    <!-- IMAGE: Vue 3D panoramique de la résidence 59 Cézanne avec Sainte-Victoire -->
+    <img
+      src="Photo 59 Cézanne/3D Exterieur/PV_EXT_Panorama_St-Victoire.webp"
+      alt="Résidence 59 Cézanne - Vue panoramique Sainte-Victoire"
+      loading="eager"
+    />
+  </div>
+  <div class="hero-overlay"></div>
+  <div class="hero-content">
+    <p class="hero-eyebrow">La Résidence</p>
+    <h1 class="hero-title" style="font-size:clamp(2rem,4vw,3.5rem);">59 Cézanne — <em>Une adresse d'exception</em></h1>
+    <p class="hero-subtitle">Résidence exclusive de 8 appartements avec vue imprenable sur la Sainte-Victoire</p>
+  </div>
+</section>
+
+<!-- ─── Intro ────────────────────────────────────────────────── -->
+<section class="section">
+  <div class="container">
+    <div class="section-header reveal">
+      <p class="eyebrow">Le projet</p>
+      <h2 class="section-title">Une résidence <em>confidentielle</em><br>au cœur de Provence</h2>
+      <div class="divider center"></div>
+      <p class="section-lead">
+        Au 59 Avenue Paul Cézanne, dans un quartier résidentiel privilégié d'Aix-en-Provence, naît une résidence d'exception : 8 appartements soigneusement conçus pour offrir le meilleur de l'art de vivre provençal.
+      </p>
+    </div>
+
+    <div class="address-block reveal">
+      <div class="address-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="28" height="28"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg></div>
+      <div class="address-text">
+        <strong>59 Avenue Paul Cézanne</strong>
+        <span>13100 Aix-en-Provence — Quartier des Lauves</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── Héritage Cézanne ─────────────────────────────────────── -->
+<section class="section section-alt">
+  <div class="container">
+    <div class="cezanne-heritage">
+      <div class="heritage-img-stack reveal-left">
+        <!-- IMAGE: Vue depuis la résidence sur la Sainte-Victoire, la montagne de Cézanne -->
+        <img
+          src="Photo 59 Cézanne/Photo Sainte-Victoire pour Boris/S22/20250217_174021.webp"
+          alt="Vue sur la Sainte-Victoire depuis la résidence 59 Cézanne"
+          class="heritage-img-main"
+          loading="lazy"
+        />
+      </div>
+
+      <div class="heritage-text reveal-right">
+        <p class="eyebrow">Histoire & Héritage</p>
+        <h2 class="section-title">Dans les pas<br>de <em>Paul Cézanne</em></h2>
+        <div class="divider"></div>
+
+        <p style="font-size:0.92rem;color:var(--text-mid);line-height:1.9;margin-bottom:1.5rem;">
+          L'Avenue Paul Cézanne rend hommage au génie aixois qui a immortalisé la Sainte-Victoire dans plus de soixante tableaux. C'est depuis ce même quartier que le peintre contemplait et peignait la montagne qui allait devenir l'une des œuvres picturales les plus emblématiques de l'histoire de l'art.
+        </p>
+
+        <p style="font-size:0.92rem;color:var(--text-mid);line-height:1.9;margin-bottom:1.5rem;">
+          À quelques pas du <strong style="color:var(--text)">Terrain des Peintres</strong>, espace naturel préservé d'où Cézanne immortalisait sa montagne sacrée, la résidence 59 Cézanne s'inscrit dans cette tradition d'excellence et de contemplation.
+        </p>
+
+        <div class="quote-block">
+          <p>« La Sainte-Victoire est belle. C'est une montagne qui s'impose, une présence absolue dans le paysage provençal. »</p>
+          <cite>— Paul Cézanne (1839-1906)</cite>
+        </div>
+
+        <p style="font-size:0.92rem;color:var(--text-mid);line-height:1.9;margin-top:1.5rem;">
+          Depuis chaque appartement de la résidence, cette même montagne emblématique s'offre à votre regard, prolongeant la tradition artistique qui a fait la renommée mondiale d'Aix-en-Provence.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── Photos Galerie ────────────────────────────────────────── -->
+<section class="section pt-0" style="padding-top:0;">
+  <div class="container">
+    <div class="section-header reveal">
+      <p class="eyebrow">La résidence en images</p>
+      <h2 class="section-title">Vues <em>extérieures</em></h2>
+    </div>
+
+    <div class="photo-row" id="gallery-present">
+      <div class="photo-row-item" onclick="openLightbox(this, 0)" data-src="Photo 59 Cézanne/3D Groove Architecture/Edited/050-APC-230309-INSERTION-enhanced.webp" data-caption="Insertion architecturale - Vue Sud">
+        <img src="Photo 59 Cézanne/3D Groove Architecture/Edited/050-APC-230309-INSERTION-enhanced.webp" alt="Insertion architecturale - Vue Sud" loading="lazy" />
+        <div class="gal-overlay">⊕</div>
+      </div>
+      <div class="photo-row-item" onclick="openLightbox(this, 3)" data-src="Photo 59 Cézanne/3D Groove Architecture/Edited/Enscape_2023-03-10-15-39-22-enhanced.webp" data-caption="Visualisation 3D - Enscape">
+        <!-- IMAGE: Rendu 3D Enscape de la résidence avec les jardins paysagers -->
+        <img src="Photo 59 Cézanne/3D Groove Architecture/Edited/Enscape_2023-03-10-15-39-22-enhanced.webp" alt="Rendu 3D Résidence 59 Cézanne" loading="lazy" />
+        <div class="gal-overlay">⊕</div>
+      </div>
+      <div class="photo-row-item" onclick="openLightbox(this, 4)" data-src="Photo 59 Cézanne/Photo drone/Vue Nord/dji_fly_20230307_122546_324_1678275419539_photo.webp" data-caption="Vue drone - Quartier des Lauves">
+        <!-- IMAGE: Vue drone du quartier des Lauves avec la Sainte-Victoire au fond -->
+        <img src="Photo 59 Cézanne/Photo drone/Vue Nord/dji_fly_20230307_122546_324_1678275419539_photo.webp" alt="Vue drone quartier des Lauves" loading="lazy" />
+        <div class="gal-overlay">⊕</div>
+      </div>
+      <div class="photo-row-item" onclick="openLightbox(this, 5)" data-src="Photo 59 Cézanne/Photo drone/Vue du dessus/dji_fly_20230307_122230_316_1678275418764_photo.webp" data-caption="Vue drone - Vue Nord">
+        <!-- IMAGE: Vue drone côté Nord de la parcelle avec vue sur Aix-en-Provence -->
+        <img src="Photo 59 Cézanne/Photo drone/Vue du dessus/dji_fly_20230307_122230_316_1678275418764_photo.webp" alt="Vue drone - Vue Nord" loading="lazy" />
+        <div class="gal-overlay">⊕</div>
+      </div>
+      <div class="photo-row-item" onclick="openLightbox(this, 6)" data-src="Photo 59 Cézanne/Photo Sainte-Victoire pour Boris/Drone/DJI_0872.webp" data-caption="La Sainte-Victoire — Prise de vue drone, lumière du matin">
+        <!-- IMAGE: La Sainte-Victoire photographiée au drone — lumière dorée du matin -->
+        <img src="Photo 59 Cézanne/Photo Sainte-Victoire pour Boris/Drone/DJI_0872.webp" alt="Sainte-Victoire drone" loading="lazy" />
+        <div class="gal-overlay">⊕</div>
+      </div>
+      <div class="photo-row-item" onclick="openLightbox(this, 7)" data-src="Photo 59 Cézanne/Photo Sainte-Victoire pour Boris/Drone/DJI_0873.webp" data-caption="La Sainte-Victoire — Panorama depuis les Lauves">
+        <!-- IMAGE: Panorama de la Sainte-Victoire depuis le quartier des Lauves -->
+        <img src="Photo 59 Cézanne/Photo Sainte-Victoire pour Boris/Drone/DJI_0873.webp" alt="Sainte-Victoire panorama" loading="lazy" />
+        <div class="gal-overlay">⊕</div>
+      </div>
+      <div class="photo-row-item" onclick="openLightbox(this, 8)" data-src="Photo 59 Cézanne/Photo Sainte-Victoire pour Boris/Drone/DJI_0874.webp" data-caption="La Sainte-Victoire — Plein cadre depuis l'Avenue Paul Cézanne">
+        <!-- IMAGE: La Sainte-Victoire plein cadre depuis l'avenue -->
+        <img src="Photo 59 Cézanne/Photo Sainte-Victoire pour Boris/Drone/DJI_0874.webp" alt="Sainte-Victoire plein cadre" loading="lazy" />
+        <div class="gal-overlay">⊕</div>
+      </div>
+      <div class="photo-row-item" onclick="openLightbox(this, 9)" data-src="Photo 59 Cézanne/Photo Sainte-Victoire pour Boris/Drone/DJI_0875.webp" data-caption="La Sainte-Victoire — Ciel provençal">
+        <!-- IMAGE: La Sainte-Victoire sous un ciel bleu provençal -->
+        <img src="Photo 59 Cézanne/Photo Sainte-Victoire pour Boris/Drone/DJI_0875.webp" alt="Sainte-Victoire ciel" loading="lazy" />
+        <div class="gal-overlay">⊕</div>
+      </div>
+      <div class="photo-row-item" onclick="openLightbox(this, 10)" data-src="Photo 59 Cézanne/Photo Sainte-Victoire pour Boris/Drone/DJI_0876.webp" data-caption="La Sainte-Victoire — Hommage à Cézanne">
+        <!-- IMAGE: La Sainte-Victoire, sujet de prédilection de Cézanne -->
+        <img src="Photo 59 Cézanne/Photo Sainte-Victoire pour Boris/Drone/DJI_0876.webp" alt="Sainte-Victoire hommage Cézanne" loading="lazy" />
+        <div class="gal-overlay">⊕</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── Aix-en-Provence strip ────────────────────────────────── -->
+<div class="aix-highlight-strip reveal">
+  <div class="container">
+    <div class="aix-highlight-inner">
+      <div class="aix-hl-item">
+        <span class="num">+300</span>
+        <span class="label">Jours de soleil / an</span>
+      </div>
+      <div class="aix-hl-item">
+        <span class="num">30<small style="font-size:1.2rem">min</small></span>
+        <span class="label">Des Calanques</span>
+      </div>
+      <div class="aix-hl-item">
+        <span class="num">4<sup style="font-size:1rem">e</sup></span>
+        <span class="label">Ville éco-responsable de France</span>
+      </div>
+      <div class="aix-hl-item">
+        <span class="num">3h</span>
+        <span class="label">De Paris en TGV</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ─── Aix-en-Provence Prestige ────────────────────────────── -->
+<section class="section">
+  <div class="container">
+    <div class="two-col">
+      <div class="reveal-left">
+        <p class="eyebrow">La ville</p>
+        <h2 class="section-title"><em>Aix-en-Provence</em>,<br>une ville de prestige</h2>
+        <div class="divider"></div>
+        <p style="font-size:0.92rem;color:var(--text-mid);line-height:1.9;margin-bottom:1.5rem;">
+          Aix-en-Provence est bien plus qu'une ville : c'est une art de vivre. Capitale du pays d'Aix, elle conjugue patrimoine architectural exceptionnel, vie culturelle foisonnante et douceur du climat méditerranéen.
+        </p>
+        <p style="font-size:0.92rem;color:var(--text-mid);line-height:1.9;margin-bottom:2rem;">
+          Ses fontaines, ses hôtels particuliers du XVIIe siècle, son célèbre <strong style="color:var(--text)">Cours Mirabeau</strong> bordé de platanes centenaires et ses marchés provençaux font d'Aix une destination internationale de première importance.
+        </p>
+
+        <div class="feature-list" style="display:grid;grid-template-columns:1fr 1fr;gap:0.8rem;">
+          <div class="feature-item" style="padding:1rem;">
+            <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="22" height="22"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg></div>
+            <div class="feature-text">
+              <h4>Festival d'Art Lyrique</h4>
+              <p style="font-size:0.78rem;">Festival de renommée mondiale chaque été</p>
+            </div>
+          </div>
+          <div class="feature-item" style="padding:1rem;">
+            <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="22" height="22"><path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6z"/></svg></div>
+            <div class="feature-text">
+              <h4>Festival de Pâques</h4>
+              <p style="font-size:0.78rem;">Concerts classiques de premier plan</p>
+            </div>
+          </div>
+          <div class="feature-item" style="padding:1rem;">
+            <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="22" height="22"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 002-2V2M7 2v20M21 15V2h0a5 5 0 00-5 5v6c0 1.1.9 2 2 2h3zm0 0v7"/></svg></div>
+            <div class="feature-text">
+              <h4>Gastronomie</h4>
+              <p style="font-size:0.78rem;">Calissons, rosés des Coteaux, saveurs provençales</p>
+            </div>
+          </div>
+          <div class="feature-item" style="padding:1rem;">
+            <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="22" height="22"><path d="M2 22h20M6 22V8M18 22V8M3 8h18M12 2L2 8h20L12 2z"/><path d="M10 22v-5h4v5"/></svg></div>
+            <div class="feature-text">
+              <h4>Patrimoine</h4>
+              <p style="font-size:0.78rem;">Cours Mirabeau, hôtels particuliers, musées</p>
+            </div>
+          </div>
+          <div class="feature-item" style="padding:1rem;">
+            <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="22" height="22"><path d="M22 10v6M2 10l10-5 10 5-10 5-10-5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg></div>
+            <div class="feature-text">
+              <h4>Université de renom</h4>
+              <p style="font-size:0.78rem;">AMU, Sciences Po, École des Arts</p>
+            </div>
+          </div>
+          <div class="feature-item" style="padding:1rem;">
+            <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="22" height="22"><path d="M12 22V12M12 12C9 12 6 9 5 5c3 1 6 3 7 7M12 12c3 0 6-3 7-7-3 1-6 3-7 7"/></svg></div>
+            <div class="feature-text">
+              <h4>Éco-responsable</h4>
+              <p style="font-size:0.78rem;">4e ville la plus verte de France</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="reveal-right">
+        <!-- IMAGE: Le Cours Mirabeau d'Aix-en-Provence avec ses fontaines et platanes -->
+        <div class="two-col-img">
+          <img
+            src="Photo 59 Cézanne/Photo drone/Vue Sud/dji_fly_20230307_122704_327_1678275421570_photo.webp"
+            alt="Vue drone d'Aix-en-Provence et de la Sainte-Victoire"
+            loading="lazy"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── Qualités Provence ────────────────────────────────────── -->
+<section class="section section-stone">
+  <div class="container">
+    <div class="section-header reveal">
+      <p class="eyebrow">Art de vivre</p>
+      <h2 class="section-title">Le charme <em>provençal</em><br>à chaque instant</h2>
+    </div>
+
+    <div class="provence-cards">
+      <div class="provence-card reveal reveal-delay-1">
+        <span class="provence-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="30" height="30"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M17.66 6.34l-1.41 1.41M6.34 17.66l-1.41 1.41"/></svg></span>
+        <h3>Douceur de vivre</h3>
+        <p>Plus de 300 jours de soleil par an, un climat méditerranéen idéal pour profiter des terrasses et jardins tout au long de l'année.</p>
+      </div>
+      <div class="provence-card reveal reveal-delay-2">
+        <span class="provence-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="30" height="30"><path d="M3 21h18M5 21V10l7-6 7 6v11"/><path d="M9 21v-5h6v5"/><path d="M10 6h4"/></svg></span>
+        <h3>Patrimoine unique</h3>
+        <p>Cours Mirabeau, cathédrale Saint-Sauveur, hôtels particuliers du XVIIe siècle. Un patrimoine architectural d'exception.</p>
+      </div>
+      <div class="provence-card reveal reveal-delay-3">
+        <span class="provence-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="30" height="30"><path d="M9 19c-5 0-8-4-8-9a8 8 0 0116 0c0 5-3 9-8 9z"/><path d="M9 19v2M9 21h4M13 21v-2M6 10a3 3 0 006 0"/></svg></span>
+        <h3>Culture vivante</h3>
+        <p>Festival International d'Art Lyrique, Festival de Pâques, opéra, galeries d'art. Une programmation culturelle de rang mondial.</p>
+      </div>
+      <div class="provence-card reveal reveal-delay-1">
+        <span class="provence-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="30" height="30"><path d="M18 8h1a4 4 0 010 8h-1M2 8h16v9a4 4 0 01-4 4H6a4 4 0 01-4-4V8z"/><path d="M6 1v3M10 1v3M14 1v3"/></svg></span>
+        <h3>Gastronomie</h3>
+        <p>Calissons d'Aix, bouillabaisse, aïoli, vins des Coteaux d'Aix. Une tradition culinaire riche portée par des chefs talentueux.</p>
+      </div>
+      <div class="provence-card reveal reveal-delay-2">
+        <span class="provence-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="30" height="30"><path d="M2 16c1.5-2 3-2 4.5 0s3 2 4.5 0 3-2 4.5 0 3 2 4.5 0M2 20c1.5-2 3-2 4.5 0s3 2 4.5 0 3-2 4.5 0 3 2 4.5 0M12 4L8 12h8l-4-8z"/></svg></span>
+        <h3>Mer & Calanques</h3>
+        <p>À seulement 45 minutes, les Calanques de Cassis et de Marseille, classées Parc National, offrent des paysages époustouflants.</p>
+      </div>
+      <div class="provence-card reveal reveal-delay-3">
+        <span class="provence-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="30" height="30"><path d="M12 22V12M12 12C9 12 6 9 5 5c3 1 6 3 7 7M12 12c3 0 6-3 7-7-3 1-6 3-7 7"/></svg></span>
+        <h3>Nature préservée</h3>
+        <p>Parc du Tholonet, Terrain des Peintres, forêts de pins et d'oliviers. Un cadre naturel exceptionnel à deux pas du centre-ville.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── Sainte-Victoire ──────────────────────────────────────── -->
+<section class="section section-dark">
+  <div class="container">
+    <div class="two-col">
+      <div class="reveal-right">
+        <!-- IMAGE: La Sainte-Victoire au coucher du soleil, depuis le quartier des Lauves -->
+        <div class="two-col-img">
+          <img
+            src="Photo 59 Cézanne/Photo Sainte-Victoire pour Boris/S22/20250217_174027.webp"
+            alt="La Sainte-Victoire depuis la résidence 59 Cézanne"
+            loading="lazy"
+          />
+        </div>
+      </div>
+      <div class="reveal-left">
+        <p class="eyebrow">La Sainte-Victoire</p>
+        <h2 class="section-title" style="color:var(--white);">Votre horizon,<br>une <em>œuvre d'art</em></h2>
+        <div class="divider"></div>
+        <p style="font-size:0.92rem;color:rgba(255,255,255,0.65);line-height:1.9;margin-bottom:1.5rem;">
+          La Montagne Sainte-Victoire, immortalisée par Cézanne dans plus de soixante huiles sur toile et aquarelles, domine le paysage aixois de ses 1 011 mètres. Elle est bien plus qu'un horizon : c'est un symbole de la Provence éternelle.
+        </p>
+        <p style="font-size:0.92rem;color:rgba(255,255,255,0.65);line-height:1.9;margin-bottom:2rem;">
+          Depuis les appartements de la résidence 59 Cézanne, cette vue imprenable accompagne votre quotidien, changeant de teinte au fil des heures et des saisons — rose à l'aube, ocre au crépuscule, blanche sous la neige hivernale.
+        </p>
+
+        <div class="eco-badges">
+          <span class="eco-badge" style="background:rgba(107,124,69,0.15);border-color:rgba(107,124,69,0.4);"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="13" height="13" style="vertical-align:-2px;margin-right:5px;"><path d="M1 20L8 8l4 5 3-4 8 11H1z"/></svg>Vue dégagée certifiée</span>
+          <span class="eco-badge" style="background:rgba(107,124,69,0.15);border-color:rgba(107,124,69,0.4);"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="13" height="13" style="vertical-align:-2px;margin-right:5px;"><circle cx="12" cy="8" r="6"/><path d="M12 14v8M8 22h8"/></svg>Terrain des Peintres</span>
+          <span class="eco-badge" style="background:rgba(107,124,69,0.15);border-color:rgba(107,124,69,0.4);"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="13" height="13" style="vertical-align:-2px;margin-right:5px;"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.93 4.93l1.41 1.41M17.66 6.34l-1.41 1.41"/></svg>Orientations optimisées</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ─── CTA ──────────────────────────────────────────────────── -->
+<section class="section" style="background:var(--beige);">
+  <div class="container text-center reveal">
+    <p class="eyebrow" style="justify-content:center;">Prochaine étape</p>
+    <h2 class="section-title">Découvrez nos <em>appartements</em></h2>
+    <p class="section-lead mt-2 mb-4">
+      Trois typologies pour répondre à tous vos souhaits, avec des prestations haut de gamme et une personnalisation complète.
+    </p>
+    <div class="d-flex gap-3 align-center flex-wrap" style="justify-content:center;">
+      <a href="logements.html" class="btn btn-primary">Voir les logements</a>
+      <a href="contact.html" class="btn btn-outline-dark">Nous contacter</a>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="footer-logo">59 Cézanne</div>
+        <div class="footer-logo-sub">Aix-en-Provence</div>
+        <p>Résidence exclusive de 8 appartements d'exception avec vue imprenable sur la Sainte-Victoire. Une réalisation Ponthieu Développement Holding.</p>
+        <div class="eco-badges">
+          <span class="eco-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="14" height="14" style="vertical-align:-2px;margin-right:5px;"><path d="M12 22V12M12 12C9 12 6 9 5 5c3 1 6 3 7 7M12 12c3 0 6-3 7-7-3 1-6 3-7 7"/></svg>Éco-responsable</span>
+          <span class="eco-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="14" height="14" style="vertical-align:-2px;margin-right:5px;"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M17.66 6.34l-1.41 1.41M6.34 17.66l-1.41 1.41"/></svg>Photovoltaïque</span>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h4>Navigation</h4>
+        <ul>
+          <li><a href="index.html">Accueil</a></li>
+          <li><a href="presentation.html">Présentation</a></li>
+          <li><a href="logements.html">Logements</a></li>
+          <li><a href="exterieurs.html">Espaces Communs</a></li>
+          <li><a href="localisation.html">Localisation</a></li>
+          <li><a href="promoteur.html">Le Promoteur</a></li>
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Logements</h4>
+        <ul>
+          <li><a href="logements.html#t4">Appartements T4</a></li>
+          <li><a href="logements.html#t3duplex">T3 Duplex</a></li>
+          <li><a href="logements.html#t2">Appartements T2</a></li>
+          <li><a href="logements.html#prestations">Prestations</a></li>
+          <li><a href="contact.html">Réserver</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Contact</h4>
+        <div class="footer-contact-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          59 Avenue Paul Cézanne,<br>13100 Aix-en-Provence
+        </div>
+        <div class="footer-contact-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81 19.79 19.79 0 01.01 1.18 2 2 0 012 0h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+          <a href="tel:0620534392" style="color:rgba(255,255,255,0.6)">06 20 53 43 92</a>
+        </div>
+        <div class="footer-contact-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+          <a href="mailto:stephane@ponthieu.fr" style="color:rgba(255,255,255,0.6)">stephane@ponthieu.fr</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2025 Ponthieu Développement Holding — Tous droits réservés</p>
+      <div class="footer-legal">
+        <a href="#">Mentions légales</a>
+        <a href="#">Politique de confidentialité</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- Floating CTA -->
+<div class="floating-cta">
+  <a href="https://wa.me/33620534392" target="_blank" class="float-btn float-btn-whatsapp">
+    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.890-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+  </a>
+  <a href="tel:0620534392" class="float-btn float-btn-phone">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81 19.79 19.79 0 01.01 1.18 2 2 0 012 0h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+  </a>
+</div>
+
+<div id="lightbox">
+  <button class="lightbox-close" onclick="closeLightbox()">✕</button>
+  <button class="lightbox-nav lightbox-prev" onclick="lightboxNav(-1)">‹</button>
+  <div class="lightbox-img-wrap">
+    <img id="lightbox-img" src="" alt="" />
+    <div class="lightbox-caption" id="lightbox-caption"></div>
+    <div class="lightbox-counter" id="lightbox-counter"></div>
+  </div>
+  <button class="lightbox-nav lightbox-next" onclick="lightboxNav(1)">›</button>
+</div>
+
+<script src="animations.js"></script>
+<script>
+function setLang(lang) {
+  document.querySelectorAll('[data-lang-' + lang + ']').forEach(el => {
+    el.innerHTML = el.getAttribute('data-lang-' + lang);
+  });
+  document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.lang-btn[onclick*="' + lang + '"]').forEach(b => b.classList.add('active'));
+}
+</script>
+</body>
+</html>

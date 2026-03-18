@@ -1,0 +1,1101 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Les Logements — 59 Cézanne | T2, T3 Duplex, T4 Aix-en-Provence</title>
+  <meta name="description" content="Découvrez les 8 appartements de la résidence 59 Cézanne : T4, T3 Duplex et T2 avec jardins privatifs, prestations haut de gamme et vue Sainte-Victoire." />
+
+  <meta property="og:title" content="Les Logements — 59 Cézanne" />
+  <meta property="og:description" content="T4, T3 Duplex et T2 avec jardins privatifs de 30 à 312 m², piscine chauffée, double parking Wall Box EV." />
+  <meta property="og:image" content="Photo 59 Cézanne/3D interieur/LOGEMENT_1_A_02.jpg" />
+
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+  <style>
+    /* ── Logements-specific ── */
+    .prestige-list {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+
+    .prestige-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.8rem;
+      padding: 1rem 1.2rem;
+      border-radius: var(--radius);
+      background: var(--white);
+      border: 1px solid var(--border);
+      font-size: 0.85rem;
+      color: var(--text-mid);
+      line-height: 1.5;
+      transition: border-color var(--transition-fast);
+    }
+
+    .prestige-item:hover { border-color: var(--or); }
+
+    .prestige-item::before {
+      content: '✦';
+      color: var(--or);
+      font-size: 0.6rem;
+      margin-top: 3px;
+      flex-shrink: 0;
+    }
+
+    .logement-full {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+      align-items: start;
+      padding: 4rem 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .logement-full:last-child { border-bottom: none; }
+
+    .logement-gallery {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: auto auto;
+      gap: 0.5rem;
+    }
+
+    .lg-main {
+      grid-column: 1 / -1;
+      aspect-ratio: 16/9;
+      overflow: hidden;
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      position: relative;
+    }
+
+    .lg-main img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.7s ease;
+    }
+
+    .lg-main:hover img { transform: scale(1.04); }
+
+    .lg-thumb {
+      aspect-ratio: 4/3;
+      overflow: hidden;
+      border-radius: var(--radius);
+      cursor: pointer;
+      position: relative;
+    }
+
+    .lg-thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.7s ease;
+    }
+
+    .lg-thumb:hover img { transform: scale(1.05); }
+
+    .gal-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(0,0,0,0.35);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transition: opacity var(--transition);
+      color: white;
+      font-size: 1.8rem;
+    }
+
+    .lg-main:hover .gal-overlay,
+    .lg-thumb:hover .gal-overlay { opacity: 1; }
+
+    .logement-info {
+      position: sticky;
+      top: calc(var(--nav-height) + 2rem);
+    }
+
+    .logement-meta-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+      margin: 2rem 0;
+      background: var(--beige);
+      border-radius: var(--radius-md);
+      padding: 1.5rem;
+    }
+
+    .lmg-item {
+      text-align: center;
+    }
+
+    .lmg-val {
+      display: block;
+      font-family: var(--font-serif);
+      font-size: 1.6rem;
+      font-weight: 300;
+      color: var(--or);
+      line-height: 1;
+    }
+
+    .lmg-key {
+      display: block;
+      font-size: 0.65rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-light);
+      margin-top: 4px;
+    }
+
+    .logement-features {
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+      margin-bottom: 2rem;
+    }
+
+    .lf-item {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      font-size: 0.85rem;
+      color: var(--text-mid);
+      padding: 0.5rem 0;
+      border-bottom: 1px solid rgba(0,0,0,0.04);
+    }
+
+    .lf-item svg {
+      width: 16px;
+      height: 16px;
+      color: var(--or);
+      flex-shrink: 0;
+    }
+
+    .personnal-section {
+      background: var(--dark);
+      padding: var(--section-py) 0;
+    }
+
+    .personnal-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1.5rem;
+    }
+
+    .personnal-item {
+      text-align: center;
+      padding: 2rem 1rem;
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: var(--radius-md);
+      transition: border-color var(--transition), background var(--transition);
+    }
+
+    .personnal-item:hover {
+      border-color: rgba(201,169,110,0.4);
+      background: rgba(201,169,110,0.05);
+    }
+
+    .personnal-item-icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 56px;
+      height: 56px;
+      background: rgba(201,169,110,0.12);
+      border-radius: 50%;
+      color: var(--or);
+      margin: 0 auto 1rem;
+    }
+
+    .personnal-item h3 {
+      font-family: var(--font-serif);
+      font-size: 1rem;
+      font-weight: 400;
+      color: var(--white);
+      margin-bottom: 0.5rem;
+    }
+
+    .personnal-item p {
+      font-size: 0.78rem;
+      color: rgba(255,255,255,0.5);
+      line-height: 1.65;
+    }
+
+    .security-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.5rem;
+    }
+
+    .security-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 1.2rem;
+      padding: 1.5rem;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+      background: var(--white);
+    }
+
+    .security-icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 48px;
+      height: 48px;
+      background: rgba(201,169,110,0.1);
+      border-radius: 50%;
+      color: var(--or);
+      flex-shrink: 0;
+    }
+
+    .security-text h4 {
+      font-family: var(--font-serif);
+      font-size: 1rem;
+      font-weight: 400;
+      color: var(--text);
+      margin-bottom: 0.3rem;
+    }
+
+    .security-text p {
+      font-size: 0.82rem;
+      color: var(--text-mid);
+      line-height: 1.6;
+    }
+
+    @media (max-width: 1024px) {
+      .logement-full { grid-template-columns: 1fr; gap: 2.5rem; }
+      .logement-info { position: static; }
+      .personnal-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    @media (max-width: 768px) {
+      .prestige-list { grid-template-columns: 1fr; }
+      .security-grid { grid-template-columns: 1fr; }
+      .logement-gallery { grid-template-columns: 1fr; }
+      .lg-main { grid-column: 1; }
+      .personnal-grid { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+<div id="scroll-progress"></div>
+<div id="loader">
+  <div class="loader-logo">59 Cézanne<span>Aix-en-Provence</span></div>
+  <div class="loader-bar"></div>
+</div>
+
+<nav id="navbar" class="transparent">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">
+      <span class="logo-main">59 Cézanne</span>
+      <span class="logo-sub">Aix-en-Provence</span>
+    </a>
+    <div class="nav-links">
+      <a href="index.html">Accueil</a>
+      <a href="presentation.html">Présentation</a>
+      <a href="logements.html" class="active">Logements</a>
+      <a href="exterieurs.html">Espaces Communs</a>
+      <a href="localisation.html">Localisation</a>
+      <a href="promoteur.html">Le Promoteur</a>
+      <a href="contact.html">Contact</a>
+    </div>
+    <div class="d-flex align-center gap-2">
+      <div class="lang-toggle">
+        <button class="lang-btn active" onclick="setLang('fr')">FR</button>
+        <button class="lang-btn" onclick="setLang('en')">EN</button>
+      </div>
+      <div class="nav-burger" id="burger" onclick="toggleMobile()">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<div class="nav-mobile" id="mobileMenu">
+  <a href="index.html" onclick="toggleMobile()">Accueil</a>
+  <a href="presentation.html" onclick="toggleMobile()">Présentation</a>
+  <a href="logements.html" onclick="toggleMobile()">Logements</a>
+  <a href="exterieurs.html" onclick="toggleMobile()">Espaces Communs</a>
+  <a href="localisation.html" onclick="toggleMobile()">Localisation</a>
+  <a href="promoteur.html" onclick="toggleMobile()">Le Promoteur</a>
+  <a href="contact.html" onclick="toggleMobile()">Contact</a>
+  <div class="nav-mobile-lang">
+    <button class="lang-btn active" onclick="setLang('fr')">FR</button>
+    <button class="lang-btn" onclick="setLang('en')">EN</button>
+  </div>
+</div>
+
+<!-- Hero -->
+<section class="page-hero">
+  <div class="hero-bg">
+    <!-- IMAGE: Vue jardin privatif avec Sainte-Victoire en fond -->
+    <img
+      src="Photo 59 Cézanne/3D Exterieur/PV_JARDIN_LOGEMENT-04_Panorama_St-Victoire.webp"
+      alt="Jardin privatif appartement 59 Cézanne - Vue Sainte-Victoire"
+      loading="eager"
+    />
+  </div>
+  <div class="hero-overlay"></div>
+  <div class="hero-content">
+    <p class="hero-eyebrow">Nos appartements</p>
+    <h1 class="hero-title" style="font-size:clamp(2rem,4vw,3.5rem);">3 typologies, <em>8 appartements</em><br>d'exception</h1>
+    <p class="hero-subtitle">Chaque appartement est unique. Chaque vue, imprenable.</p>
+  </div>
+</section>
+
+<!-- Prestige Ribbon -->
+<div class="prestige-ribbon">
+  Jardins privatifs de 30 à 312 m² · Double parking avec Wall Box EV · Cave privée 6 m² · Vue Sainte-Victoire garantie
+</div>
+
+<!-- ─── Tab Nav ───────────────────────────────────────────────── -->
+<section class="section">
+  <div class="container">
+    <div class="section-header reveal">
+      <p class="eyebrow">Les logements</p>
+      <h2 class="section-title">8 appartements<br><em>d'exception</em></h2>
+      <p class="section-lead mt-2">Chaque appartement est conçu pour offrir le meilleur de l'art de vivre provençal — vue garantie sur la Sainte-Victoire, jardins privatifs et finitions haut de gamme.</p>
+    </div>
+
+    <div class="logement-tab-nav">
+      <button class="logement-tab-btn active" onclick="switchTab('t4')">Appartements T4 — 4 unités</button>
+      <button class="logement-tab-btn" onclick="switchTab('t3duplex')">T3 Duplex — 2 unités</button>
+      <button class="logement-tab-btn" onclick="switchTab('t2')">Appartements T2 — 2 unités</button>
+    </div>
+
+    <!-- T4 Panel -->
+    <div class="logement-tab-panel active" id="tab-t4">
+      <div class="logement-full">
+        <div class="logement-gallery reveal-left">
+          <div class="lg-main" onclick="openLightbox(this,0)" data-src="Photo 59 Cézanne/3D interieur/LOGEMENT_1_B_02.webp" data-caption="Appartement T4 - Séjour vue Sainte-Victoire">
+            <!-- IMAGE: Grand séjour lumineux T4 avec baie vitrée et vue Sainte-Victoire -->
+            <img src="Photo 59 Cézanne/3D interieur/LOGEMENT_1_B_02.webp" alt="Appartement T4 séjour" loading="lazy" />
+            <div class="gal-overlay">⊕</div>
+          </div>
+          <div class="lg-thumb" onclick="openLightbox(this,1)" data-src="Photo 59 Cézanne/3D interieur/LOGEMENT_1_A_02.webp" data-caption="Appartement T4 - Vue séjour/cuisine">
+            <!-- IMAGE: Cuisine ouverte sur séjour, appartement T4, finitions premium -->
+            <img src="Photo 59 Cézanne/3D interieur/LOGEMENT_1_A_02.webp" alt="Appartement T4 cuisine" loading="lazy" />
+            <div class="gal-overlay">⊕</div>
+          </div>
+          <div class="lg-thumb" onclick="openLightbox(this,2)" data-src="Photo 59 Cézanne/Photo Vue depuis chaque appartement/Vue Lot 1.webp" data-caption="Vue depuis le Lot 1 sur la Sainte-Victoire">
+            <!-- IMAGE: Vue réelle depuis l'appartement Lot 1 sur la Sainte-Victoire -->
+            <img src="Photo 59 Cézanne/Photo Vue depuis chaque appartement/Vue Lot 1.webp" alt="Vue depuis l'appartement T4" loading="lazy" />
+            <div class="gal-overlay">⊕</div>
+          </div>
+        </div>
+
+        <div class="logement-info reveal-right" id="t4">
+          <p class="eyebrow">Appartements T4</p>
+          <h2 class="section-title" style="font-size:2rem;">Résidences <em>familiales</em><br>d'exception</h2>
+          <div class="divider"></div>
+          <p style="font-size:0.88rem;color:var(--text-mid);line-height:1.85;margin-bottom:1rem;">
+            Les appartements T4 représentent le summum de la résidence 59 Cézanne. Avec des surfaces généreuses et des jardins privatifs exceptionnels allant jusqu'à 312 m², ils sont conçus pour accueillir familles et amateurs d'espace.
+          </p>
+
+          <div class="logement-meta-grid">
+            <div class="lmg-item">
+              <span class="lmg-val">4</span>
+              <span class="lmg-key">Unités</span>
+            </div>
+            <div class="lmg-item">
+              <span class="lmg-val">~110m²</span>
+              <span class="lmg-key">Superficie</span>
+            </div>
+            <div class="lmg-item">
+              <span class="lmg-val">≤ 312m²</span>
+              <span class="lmg-key">Jardin privatif</span>
+            </div>
+          </div>
+
+          <div class="logement-features">
+            <div class="lf-item">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+              Séjour / salle à manger spacieux, cuisine ouverte
+            </div>
+            <div class="lf-item">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+              3 chambres dont une suite parentale
+            </div>
+            <div class="lf-item">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+              2 salles de bain complètes + WC séparé
+            </div>
+            <div class="lf-item">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+              Jardin privatif 30 à 312 m² (selon lot)
+            </div>
+            <div class="lf-item">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+              Double parking en sous-sol avec Wall Box EV
+            </div>
+            <div class="lf-item">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+              Cave privée 6 m²
+            </div>
+            <div class="lf-item">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+              Grandes baies vitrées sur-mesure, vue Sainte-Victoire
+            </div>
+            <div class="lf-item">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+              Carrelage 120×120 cm ou parquet massif au choix
+            </div>
+          </div>
+
+          <a href="contact.html" class="btn btn-primary" style="width:100%;justify-content:center;">
+            Demander des informations
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- T3 Duplex Panel -->
+    <div class="logement-tab-panel" id="tab-t3duplex">
+      <div class="logement-full">
+        <div class="logement-gallery reveal-left">
+          <div class="lg-main" onclick="openLightbox(this,0)" data-src="Photo 59 Cézanne/3D interieur/LOGEMENT_1_A_02.webp" data-caption="Appartement T3 Duplex - Vue séjour">
+            <!-- IMAGE: Séjour duplex avec double hauteur sous plafond et vue panoramique -->
+            <img src="Photo 59 Cézanne/3D interieur/LOGEMENT_1_A_02.webp" alt="T3 Duplex séjour" loading="lazy" />
+            <div class="gal-overlay">⊕</div>
+          </div>
+          <div class="lg-thumb" onclick="openLightbox(this,1)" data-src="Photo 59 Cézanne/Photo Vue depuis chaque appartement/Vue T3 R+1.webp" data-caption="Vue depuis le T3 au R+1 sur la Sainte-Victoire">
+            <!-- IMAGE: Vue réelle depuis un appartement T3 R+1 sur la Sainte-Victoire -->
+            <img src="Photo 59 Cézanne/Photo Vue depuis chaque appartement/Vue T3 R+1.webp" alt="Vue T3 Duplex" loading="lazy" />
+            <div class="gal-overlay">⊕</div>
+          </div>
+          <div class="lg-thumb" onclick="openLightbox(this,2)" data-src="Dossier de commercialisation 59 Cézanne/3D Exterieur/PV_JARDIN_LOGEMENT-04_Panorama_St-Victoire.webp" data-caption="Jardin privatif Logement 04">
+            <!-- IMAGE: Vue depuis le jardin privatif du logement 04, avec la Sainte-Victoire en arrière-plan -->
+            <img src="Dossier de commercialisation 59 Cézanne/3D Exterieur/PV_JARDIN_LOGEMENT-04_Panorama_St-Victoire.webp" alt="Jardin privatif T3 Duplex" loading="lazy" />
+            <div class="gal-overlay">⊕</div>
+          </div>
+        </div>
+
+        <div class="logement-info reveal-right" id="t3duplex">
+          <p class="eyebrow">T3 Duplex</p>
+          <h2 class="section-title" style="font-size:2rem;">Maison de ville<br><em>sur deux niveaux</em></h2>
+          <div class="divider"></div>
+          <p style="font-size:0.88rem;color:var(--text-mid);line-height:1.85;margin-bottom:1rem;">
+            Les T3 Duplex offrent une expérience unique : deux niveaux pour la sensation d'une maison individuelle, avec toutes les prestations d'une résidence de prestige collective. Un bien rare, à la croisée de l'appartement et de la villa.
+          </p>
+
+          <div class="logement-meta-grid">
+            <div class="lmg-item">
+              <span class="lmg-val">2</span>
+              <span class="lmg-key">Unités</span>
+            </div>
+            <div class="lmg-item">
+              <span class="lmg-val">~90m²</span>
+              <span class="lmg-key">Superficie</span>
+            </div>
+            <div class="lmg-item">
+              <span class="lmg-val">≤ 120m²</span>
+              <span class="lmg-key">Jardin privatif</span>
+            </div>
+          </div>
+
+          <div class="logement-features">
+            <div class="lf-item">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+              Configuration sur 2 niveaux avec escalier intérieur
+            </div>
+            <div class="lf-item">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+              Séjour / cuisine en RDC ouvrant sur jardin privatif
+            </div>
+            <div class="lf-item">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+              2 chambres à l'étage avec vue dégagée
+            </div>
+            <div class="lf-item">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+              1 salle de bain principale + salle de douche
+            </div>
+            <div class="lf-item">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+              Jardin privatif 30 à 120 m² (selon lot)
+            </div>
+            <div class="lf-item">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+              Double parking avec Wall Box EV + Cave 6 m²
+            </div>
+            <div class="lf-item">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+              Ambiance maison individuelle avec intimité totale
+            </div>
+          </div>
+
+          <a href="contact.html" class="btn btn-primary" style="width:100%;justify-content:center;">
+            Demander des informations
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- T2 Panel -->
+    <div class="logement-tab-panel" id="tab-t2">
+      <div class="logement-full">
+        <div class="logement-gallery reveal-left">
+          <div class="lg-main" onclick="openLightbox(this,0)" data-src="Dossier de commercialisation 59 Cézanne/3D Interieur/LOGEMENT_2_02.webp" data-caption="Appartement T2 - Séjour raffiné">
+            <!-- IMAGE: Appartement T2 avec séjour contemporain, cuisine ouverte et terrasse -->
+            <img src="Dossier de commercialisation 59 Cézanne/3D Interieur/LOGEMENT_2_02.webp" alt="Appartement T2 séjour" loading="lazy" />
+            <div class="gal-overlay">⊕</div>
+          </div>
+          <div class="lg-thumb" onclick="openLightbox(this,1)" data-src="Photo 59 Cézanne/Photo Vue depuis chaque appartement/Vue Lot 5.webp" data-caption="Vue depuis le Lot 5 sur la Sainte-Victoire">
+            <!-- IMAGE: Vue réelle depuis l'appartement Lot 5 sur la Sainte-Victoire -->
+            <img src="Photo 59 Cézanne/Photo Vue depuis chaque appartement/Vue Lot 5.webp" alt="Vue T2 Lot 5" loading="lazy" />
+            <div class="gal-overlay">⊕</div>
+          </div>
+          <div class="lg-thumb" onclick="openLightbox(this,2)" data-src="Photo 59 Cézanne/Photo Vue depuis chaque appartement/Vue Lot 8.webp" data-caption="Vue depuis le Lot 8 sur la Sainte-Victoire">
+            <!-- IMAGE: Vue réelle depuis l'appartement Lot 8 sur la Sainte-Victoire -->
+            <img src="Photo 59 Cézanne/Photo Vue depuis chaque appartement/Vue Lot 8.webp" alt="Vue T2 Lot 8" loading="lazy" />
+            <div class="gal-overlay">⊕</div>
+          </div>
+        </div>
+
+        <div class="logement-info reveal-right" id="t2">
+          <p class="eyebrow">Appartements T2</p>
+          <h2 class="section-title" style="font-size:2rem;">Intimité et <em>raffinement</em><br>absolus</h2>
+          <div class="divider"></div>
+          <p style="font-size:0.88rem;color:var(--text-mid);line-height:1.85;margin-bottom:1rem;">
+            Compacts mais jamais à l'étroit, les appartements T2 de la résidence 59 Cézanne offrent une qualité de vie exceptionnelle dans un espace optimisé avec intelligence. Parfaits pour une résidence principale ou un pied-à-terre de prestige.
+          </p>
+
+          <div class="logement-meta-grid">
+            <div class="lmg-item">
+              <span class="lmg-val">2</span>
+              <span class="lmg-key">Unités</span>
+            </div>
+            <div class="lmg-item">
+              <span class="lmg-val">~65m²</span>
+              <span class="lmg-key">Superficie</span>
+            </div>
+            <div class="lmg-item">
+              <span class="lmg-val">≤ 60m²</span>
+              <span class="lmg-key">Jardin privatif</span>
+            </div>
+          </div>
+
+          <div class="logement-features">
+            <div class="lf-item">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+              Séjour lumineux, cuisine ouverte entièrement équipée
+            </div>
+            <div class="lf-item">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+              1 chambre master avec dressing intégré
+            </div>
+            <div class="lf-item">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+              Salle de bain complète (douche italienne ou baignoire)
+            </div>
+            <div class="lf-item">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+              Jardin privatif 30 à 60 m² (selon lot)
+            </div>
+            <div class="lf-item">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+              Double parking avec Wall Box EV + Cave 6 m²
+            </div>
+            <div class="lf-item">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+              Plans optimisés sans m² perdu
+            </div>
+            <div class="lf-item">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+              Vue Sainte-Victoire depuis le séjour
+            </div>
+          </div>
+
+          <a href="contact.html" class="btn btn-primary" style="width:100%;justify-content:center;">
+            Demander des informations
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── Prestations Haut de Gamme ────────────────────────────── -->
+<section class="section section-alt" id="prestations">
+  <div class="container">
+    <div class="section-header reveal">
+      <p class="eyebrow">Qualité & Prestige</p>
+      <h2 class="section-title">Prestations <em>haut de gamme</em></h2>
+      <p class="section-lead mt-2">Chaque détail est pensé pour offrir une expérience de vie incomparable. Des matériaux nobles, des équipements de grandes marques, des finitions irréprochables.</p>
+    </div>
+
+    <div class="two-col" style="gap:4rem;">
+      <div class="reveal-left">
+        <h3 style="font-family:var(--font-serif);font-size:1.5rem;font-weight:400;color:var(--text);margin-bottom:1.5rem;">Sols & Revêtements</h3>
+        <div class="prestige-list">
+          <div class="prestige-item">Carrelage grands formats 80×80, 100×100 ou 120×120 cm</div>
+          <div class="prestige-item">Parquet massif au choix (chêne naturel, huilé ou verni)</div>
+          <div class="prestige-item">Dalles de pierre naturelle dans les parties nobles</div>
+          <div class="prestige-item">Finitions plinthes invisibles</div>
+        </div>
+
+        <h3 style="font-family:var(--font-serif);font-size:1.5rem;font-weight:400;color:var(--text);margin:2rem 0 1.5rem;">Menuiseries & Baies</h3>
+        <div class="prestige-list">
+          <div class="prestige-item">Grandes baies vitrées sur-mesure triple vitrage</div>
+          <div class="prestige-item">Ouvertures à galandage pour une continuité intérieur/extérieur</div>
+          <div class="prestige-item">Volets roulants motorisés connectés</div>
+          <div class="prestige-item">Portes intérieures pleine hauteur (H.260 cm)</div>
+        </div>
+      </div>
+
+      <div class="reveal-right">
+        <h3 style="font-family:var(--font-serif);font-size:1.5rem;font-weight:400;color:var(--text);margin-bottom:1.5rem;">Salles de Bain</h3>
+        <div class="prestige-list">
+          <div class="prestige-item">Douche italienne XL ou baignoire îlot Duravit / Villeroy & Boch</div>
+          <div class="prestige-item">Double vasque suspendue sur meuble laqué</div>
+          <div class="prestige-item">Robinetterie Fantini ou Tremme (finition mat/or)</div>
+          <div class="prestige-item">WC suspendu Geberit avec plaque de commande design</div>
+          <div class="prestige-item">Carrelage mural grand format effet marbre</div>
+          <div class="prestige-item">Chauffage au sol radiant dans les SDB</div>
+        </div>
+
+        <h3 style="font-family:var(--font-serif);font-size:1.5rem;font-weight:400;color:var(--text);margin:2rem 0 1.5rem;">Équipements & Domotique</h3>
+        <div class="prestige-list">
+          <div class="prestige-item">Pompe à chaleur air/eau haute performance</div>
+          <div class="prestige-item">Plancher chauffant/rafraîchissant dans toutes les pièces</div>
+          <div class="prestige-item">Ventilation double flux avec récupération de chaleur</div>
+          <div class="prestige-item">Installation domotique Home Automation prête</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── Gallery Intérieurs ───────────────────────────────────── -->
+<section class="section">
+  <div class="container">
+    <div class="section-header reveal">
+      <p class="eyebrow">Intérieurs</p>
+      <h2 class="section-title">Vues depuis <em>les appartements</em></h2>
+    </div>
+
+    <div class="gallery-grid" style="grid-template-columns:repeat(3,1fr);gap:0.5rem;">
+      <div class="gallery-item wide" onclick="openLightbox(this,0)" data-src="Photo 59 Cézanne/3D interieur/LOGEMENT_1_A_02.webp" data-caption="Appartement - Vue séjour">
+        <!-- IMAGE: Séjour avec vue panoramique, appartement T4 -->
+        <img src="Photo 59 Cézanne/3D interieur/LOGEMENT_1_A_02.webp" alt="Séjour T4" loading="lazy" />
+        <div class="gallery-overlay"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg></div>
+      </div>
+      <div class="gallery-item" onclick="openLightbox(this,1)" data-src="Photo 59 Cézanne/3D interieur/LOGEMENT_1_B_02.webp" data-caption="Appartement T4 - Vue sur le jardin">
+        <!-- IMAGE: Vue depuis la terrasse/séjour sur le jardin privatif et la Sainte-Victoire -->
+        <img src="Photo 59 Cézanne/3D interieur/LOGEMENT_1_B_02.webp" alt="Vue jardin T4" loading="lazy" />
+        <div class="gallery-overlay"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg></div>
+      </div>
+      <div class="gallery-item" onclick="openLightbox(this,2)" data-src="Dossier de commercialisation 59 Cézanne/3D Interieur/LOGEMENT_2_02.webp" data-caption="Appartement T2 - Intérieur">
+        <!-- IMAGE: Appartement T2 vue intérieure depuis le séjour -->
+        <img src="Dossier de commercialisation 59 Cézanne/3D Interieur/LOGEMENT_2_02.webp" alt="Intérieur T2" loading="lazy" />
+        <div class="gallery-overlay"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg></div>
+      </div>
+      <div class="gallery-item" onclick="openLightbox(this,3)" data-src="Photo 59 Cézanne/Photo Vue depuis chaque appartement/Vue Lot 1.webp" data-caption="Vue Lot 1 - Sainte-Victoire">
+        <!-- IMAGE: Vue réelle depuis le Lot 1 vers la Sainte-Victoire -->
+        <img src="Photo 59 Cézanne/Photo Vue depuis chaque appartement/Vue Lot 1.webp" alt="Vue Lot 1" loading="lazy" />
+        <div class="gallery-overlay"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg></div>
+      </div>
+      <div class="gallery-item" onclick="openLightbox(this,4)" data-src="Photo 59 Cézanne/Photo Vue depuis chaque appartement/Vue lot 4.webp" data-caption="Vue Lot 4 - Sainte-Victoire">
+        <!-- IMAGE: Vue réelle depuis le Lot 4 vers la Sainte-Victoire et la végétation -->
+        <img src="Photo 59 Cézanne/Photo Vue depuis chaque appartement/Vue lot 4.webp" alt="Vue Lot 4" loading="lazy" />
+        <div class="gallery-overlay"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg></div>
+      </div>
+      <div class="gallery-item" onclick="openLightbox(this,5)" data-src="Photo 59 Cézanne/Photo Vue depuis chaque appartement/Vue Lot 8.webp" data-caption="Vue Lot 8 - Sainte-Victoire">
+        <!-- IMAGE: Vue réelle depuis le Lot 8 vers la Sainte-Victoire -->
+        <img src="Photo 59 Cézanne/Photo Vue depuis chaque appartement/Vue Lot 8.webp" alt="Vue Lot 8" loading="lazy" />
+        <div class="gallery-overlay"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── Plans & Axonométries ─────────────────────────────────── -->
+<section class="section section-stone" id="plans">
+  <div class="container">
+    <div class="section-header reveal">
+      <p class="eyebrow">Plans & Perspectives</p>
+      <h2 class="section-title">Axonométries <em>3D</em><br>par logement</h2>
+      <p class="section-lead mt-2">Visualisez la configuration de chaque appartement grâce aux vues axonométriques 3D réalisées par notre bureau d'architecture.</p>
+    </div>
+
+    <div class="logement-tab-nav">
+      <button class="logement-tab-btn active" onclick="switchPlanTab('lot2')">Lot 2</button>
+      <button class="logement-tab-btn" onclick="switchPlanTab('lot4')">Lot 4</button>
+      <button class="logement-tab-btn" onclick="switchPlanTab('lot6')">Lot 6</button>
+      <button class="logement-tab-btn" onclick="switchPlanTab('lot8')">Lot 8</button>
+    </div>
+
+    <!-- Lot 2 -->
+    <div class="logement-tab-panel active" id="plan-lot2">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;" class="reveal">
+        <div class="gallery-item" style="aspect-ratio:4/3;cursor:pointer;"
+          onclick="openLightbox(this,0)"
+          data-src="Photo 59 Cézanne/Axonometrie/Logement 2/LOGEMENT_02_3D_FB.webp"
+          data-caption="Lot 2 — Vue axonométrique fond blanc">
+          <!-- IMAGE: Axonométrie 3D Logement 2 - fond blanc -->
+          <img src="Photo 59 Cézanne/Axonometrie/Logement 2/LOGEMENT_02_3D_FB.webp" alt="Axonométrie Lot 2 fond blanc" loading="lazy" style="width:100%;height:100%;object-fit:cover;" />
+          <div class="gallery-overlay"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg></div>
+        </div>
+        <div class="gallery-item" style="aspect-ratio:4/3;cursor:pointer;"
+          onclick="openLightbox(this,1)"
+          data-src="Photo 59 Cézanne/Axonometrie/Logement 2/LOGEMENT_02_3D_FN.webp"
+          data-caption="Lot 2 — Vue axonométrique fond noir">
+          <!-- IMAGE: Axonométrie 3D Logement 2 - fond noir -->
+          <img src="Photo 59 Cézanne/Axonometrie/Logement 2/LOGEMENT_02_3D_FN.webp" alt="Axonométrie Lot 2 fond noir" loading="lazy" style="width:100%;height:100%;object-fit:cover;" />
+          <div class="gallery-overlay"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Lot 4 -->
+    <div class="logement-tab-panel" id="plan-lot4">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;" class="reveal">
+        <div class="gallery-item" style="aspect-ratio:4/3;cursor:pointer;"
+          onclick="openLightbox(this,0)"
+          data-src="Photo 59 Cézanne/Axonometrie/Logement 4/LOGEMENT_04_3D_FB.webp"
+          data-caption="Lot 4 — Vue axonométrique fond blanc">
+          <!-- IMAGE: Axonométrie 3D Logement 4 - fond blanc -->
+          <img src="Photo 59 Cézanne/Axonometrie/Logement 4/LOGEMENT_04_3D_FB.webp" alt="Axonométrie Lot 4 fond blanc" loading="lazy" style="width:100%;height:100%;object-fit:cover;" />
+          <div class="gallery-overlay"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg></div>
+        </div>
+        <div class="gallery-item" style="aspect-ratio:4/3;cursor:pointer;"
+          onclick="openLightbox(this,1)"
+          data-src="Photo 59 Cézanne/Axonometrie/Logement 4/LOGEMENT_04_3D_FN.webp"
+          data-caption="Lot 4 — Vue axonométrique fond noir">
+          <!-- IMAGE: Axonométrie 3D Logement 4 - fond noir -->
+          <img src="Photo 59 Cézanne/Axonometrie/Logement 4/LOGEMENT_04_3D_FN.webp" alt="Axonométrie Lot 4 fond noir" loading="lazy" style="width:100%;height:100%;object-fit:cover;" />
+          <div class="gallery-overlay"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Lot 6 -->
+    <div class="logement-tab-panel" id="plan-lot6">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;" class="reveal">
+        <div class="gallery-item" style="aspect-ratio:4/3;cursor:pointer;"
+          onclick="openLightbox(this,0)"
+          data-src="Photo 59 Cézanne/Axonometrie/Logement 6/LOGEMENT_06_3D_FB.webp"
+          data-caption="Lot 6 — Vue axonométrique fond blanc">
+          <!-- IMAGE: Axonométrie 3D Logement 6 - fond blanc -->
+          <img src="Photo 59 Cézanne/Axonometrie/Logement 6/LOGEMENT_06_3D_FB.webp" alt="Axonométrie Lot 6 fond blanc" loading="lazy" style="width:100%;height:100%;object-fit:cover;" />
+          <div class="gallery-overlay"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg></div>
+        </div>
+        <div class="gallery-item" style="aspect-ratio:4/3;cursor:pointer;"
+          onclick="openLightbox(this,1)"
+          data-src="Photo 59 Cézanne/Axonometrie/Logement 6/LOGEMENT_06_3D_FN.webp"
+          data-caption="Lot 6 — Vue axonométrique fond noir">
+          <!-- IMAGE: Axonométrie 3D Logement 6 - fond noir -->
+          <img src="Photo 59 Cézanne/Axonometrie/Logement 6/LOGEMENT_06_3D_FN.webp" alt="Axonométrie Lot 6 fond noir" loading="lazy" style="width:100%;height:100%;object-fit:cover;" />
+          <div class="gallery-overlay"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Lot 8 -->
+    <div class="logement-tab-panel" id="plan-lot8">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;" class="reveal">
+        <div class="gallery-item" style="aspect-ratio:4/3;cursor:pointer;"
+          onclick="openLightbox(this,0)"
+          data-src="Photo 59 Cézanne/Axonometrie/Logement 8/LOGEMENT_08_3D_FB.webp"
+          data-caption="Lot 8 — Vue axonométrique fond blanc">
+          <!-- IMAGE: Axonométrie 3D Logement 8 - fond blanc -->
+          <img src="Photo 59 Cézanne/Axonometrie/Logement 8/LOGEMENT_08_3D_FB.webp" alt="Axonométrie Lot 8 fond blanc" loading="lazy" style="width:100%;height:100%;object-fit:cover;" />
+          <div class="gallery-overlay"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg></div>
+        </div>
+        <div class="gallery-item" style="aspect-ratio:4/3;cursor:pointer;"
+          onclick="openLightbox(this,1)"
+          data-src="Photo 59 Cézanne/Axonometrie/Logement 8/LOGEMENT_08_3D_FN.webp"
+          data-caption="Lot 8 — Vue axonométrique fond noir">
+          <!-- IMAGE: Axonométrie 3D Logement 8 - fond noir -->
+          <img src="Photo 59 Cézanne/Axonometrie/Logement 8/LOGEMENT_08_3D_FN.webp" alt="Axonométrie Lot 8 fond noir" loading="lazy" style="width:100%;height:100%;object-fit:cover;" />
+          <div class="gallery-overlay"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg></div>
+        </div>
+      </div>
+    </div>
+
+    <p style="text-align:center;font-size:0.8rem;color:var(--text-light);margin-top:2rem;">
+      Plans détaillés et grille de prix disponibles sur demande — <a href="contact.html" style="color:var(--or);">nous contacter</a>
+    </p>
+  </div>
+</section>
+
+<!-- ─── Vues depuis les appartements ────────────────────────── -->
+<section class="section" id="vues">
+  <div class="container">
+    <div class="section-header reveal">
+      <p class="eyebrow">Chaque appartement</p>
+      <h2 class="section-title">Les <em>vues réelles</em> depuis les logements</h2>
+      <p class="section-subtitle" style="max-width:620px;margin:1rem auto 0;">
+        Ces photos ont été prises directement depuis le terrain — elles témoignent des panoramas authentiques qui s'offriront à vous depuis chacun des logements de la résidence 59 Cézanne.
+      </p>
+    </div>
+
+    <div class="gallery-grid reveal">
+      <div class="gallery-item wide" onclick="openLightbox(this,0)"
+           data-src="Photo 59 Cézanne/Photo Vue depuis chaque appartement/Vue Lot 1 Arbre coupé.webp"
+           data-caption="Vue depuis le Lot 1 — La Sainte-Victoire dégagée (arbre taillé)">
+        <!-- IMAGE: Vue réelle depuis le Lot 1 avec la Sainte-Victoire en plein cadre -->
+        <img src="Photo 59 Cézanne/Photo Vue depuis chaque appartement/Vue Lot 1 Arbre coupé.webp" alt="Vue depuis Lot 1" loading="lazy" />
+        <div class="gallery-overlay"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg></div>
+      </div>
+      <div class="gallery-item" onclick="openLightbox(this,1)"
+           data-src="Photo 59 Cézanne/Photo Vue depuis chaque appartement/Vue Lot 1.webp"
+           data-caption="Vue depuis le Lot 1 — Panorama naturel">
+        <!-- IMAGE: Vue réelle depuis le Lot 1 avec végétation environnante -->
+        <img src="Photo 59 Cézanne/Photo Vue depuis chaque appartement/Vue Lot 1.webp" alt="Vue Lot 1 naturelle" loading="lazy" />
+        <div class="gallery-overlay"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg></div>
+      </div>
+      <div class="gallery-item" onclick="openLightbox(this,2)"
+           data-src="Photo 59 Cézanne/Photo Vue depuis chaque appartement/Vue lot 4.webp"
+           data-caption="Vue depuis le Lot 4 — Terrasse avec vue dégagée">
+        <!-- IMAGE: Vue réelle depuis la terrasse du Lot 4 -->
+        <img src="Photo 59 Cézanne/Photo Vue depuis chaque appartement/Vue lot 4.webp" alt="Vue Lot 4" loading="lazy" />
+        <div class="gallery-overlay"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg></div>
+      </div>
+      <div class="gallery-item" onclick="openLightbox(this,3)"
+           data-src="Photo 59 Cézanne/Photo Vue depuis chaque appartement/Vue Lot 5.webp"
+           data-caption="Vue depuis le Lot 5 — Environnement verdoyant">
+        <!-- IMAGE: Vue réelle depuis le Lot 5 -->
+        <img src="Photo 59 Cézanne/Photo Vue depuis chaque appartement/Vue Lot 5.webp" alt="Vue Lot 5" loading="lazy" />
+        <div class="gallery-overlay"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg></div>
+      </div>
+      <div class="gallery-item wide" onclick="openLightbox(this,4)"
+           data-src="Photo 59 Cézanne/Photo Vue depuis chaque appartement/Vue Lot 8.webp"
+           data-caption="Vue depuis le Lot 8 — Grand appartement de rez-de-jardin">
+        <!-- IMAGE: Vue depuis le Lot 8 en rez-de-jardin -->
+        <img src="Photo 59 Cézanne/Photo Vue depuis chaque appartement/Vue Lot 8.webp" alt="Vue Lot 8" loading="lazy" />
+        <div class="gallery-overlay"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg></div>
+      </div>
+      <div class="gallery-item" onclick="openLightbox(this,5)"
+           data-src="Photo 59 Cézanne/Photo Vue depuis chaque appartement/Vue T3 R+1.webp"
+           data-caption="Vue depuis les T3 Duplex en R+1 — Hauteur et dégagement">
+        <!-- IMAGE: Vue depuis les T3 Duplex au premier étage -->
+        <img src="Photo 59 Cézanne/Photo Vue depuis chaque appartement/Vue T3 R+1.webp" alt="Vue T3 Duplex R+1" loading="lazy" />
+        <div class="gallery-overlay"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg></div>
+      </div>
+      <div class="gallery-item" onclick="openLightbox(this,6)"
+           data-src="Photo 59 Cézanne/Photo Vue depuis chaque appartement/Vue derrière les arbres.webp"
+           data-caption="Vue depuis le terrain — Cadre naturel préservé">
+        <!-- IMAGE: Vue naturelle derrière la végétation existante du terrain -->
+        <img src="Photo 59 Cézanne/Photo Vue depuis chaque appartement/Vue derrière les arbres.webp" alt="Vue naturelle derrière les arbres" loading="lazy" />
+        <div class="gallery-overlay"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── Personnalisation ─────────────────────────────────────── -->
+<div class="personnal-section" id="personnalisation">
+  <div class="container">
+    <div class="section-header reveal" style="color:white;">
+      <p class="eyebrow">Votre appartement, vos choix</p>
+      <h2 class="section-title" style="color:var(--white);">Personnalisation <em>sur mesure</em></h2>
+      <p class="section-lead" style="color:rgba(255,255,255,0.6);">Avec 59 Cézanne, vous êtes acteur de votre futur chez-vous. Choisissez vos matériaux et finitions pour un appartement qui vous ressemble.</p>
+    </div>
+
+    <div class="personnal-grid">
+      <div class="personnal-item reveal reveal-delay-1">
+        <div class="personnal-item-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="28" height="28"><rect x="2" y="14" width="20" height="6" rx="1"/><rect x="2" y="4" width="20" height="6" rx="1"/><path d="M6 10v4M12 10v4M18 10v4"/></svg></div>
+        <h3>Sols</h3>
+        <p>Parquet massif chêne, carrelage grands formats pierre naturelle ou béton ciré. Plusieurs teintes disponibles.</p>
+      </div>
+      <div class="personnal-item reveal reveal-delay-2">
+        <div class="personnal-item-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="28" height="28"><path d="M4 12h16a1 1 0 010 2H4a1 1 0 010-2z"/><path d="M6 12V9a3 3 0 013-3h0a3 3 0 013 3v3M6 14v2a2 2 0 002 2h8a2 2 0 002-2v-2"/></svg></div>
+        <h3>Salles de bain</h3>
+        <p>Choix de la baignoire ou douche italienne, finition robinetterie or / noir mat / chromé, carrelages et matières.</p>
+      </div>
+      <div class="personnal-item reveal reveal-delay-3">
+        <div class="personnal-item-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="28" height="28"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 002-2V2M7 2v20M21 15V2h0a5 5 0 00-5 5v6c0 1.1.9 2 2 2h3zm0 0v7"/></svg></div>
+        <h3>Cuisine</h3>
+        <p>Façades laquées ou bois, plans de travail pierre ou Dekton, crédences sur mesure, électroménager premium.</p>
+      </div>
+      <div class="personnal-item reveal reveal-delay-4">
+        <div class="personnal-item-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="28" height="28"><circle cx="13.5" cy="6.5" r="1.5" fill="currentColor"/><circle cx="17.5" cy="10.5" r="1.5" fill="currentColor"/><circle cx="8.5" cy="7.5" r="1.5" fill="currentColor"/><circle cx="6.5" cy="12.5" r="1.5" fill="currentColor"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.83 0 1.5-.67 1.5-1.5 0-.39-.15-.74-.39-1-.23-.27-.38-.62-.38-1a1.5 1.5 0 011.5-1.5H16c2.76 0 5-2.24 5-5 0-4.42-4.03-8-9-8z"/></svg></div>
+        <h3>Couleurs & Enduits</h3>
+        <p>Palette de peintures et enduits naturels sélectionnée avec nos décorateurs pour harmoniser chaque espace.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ─── Sécurité ─────────────────────────────────────────────── -->
+<section class="section section-stone" id="securite">
+  <div class="container">
+    <div class="section-header reveal">
+      <p class="eyebrow">Sécurité & Tranquillité</p>
+      <h2 class="section-title">Votre sécurité,<br>notre <em>priorité</em></h2>
+    </div>
+
+    <div class="security-grid">
+      <div class="security-item reveal reveal-delay-1">
+        <div class="security-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="24" height="24"><path d="M23 7l-7 5 7 5V7z"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg></div>
+        <div class="security-text">
+          <h4>Vidéosurveillance 24/7</h4>
+          <p>Système de caméras HD couvrant l'ensemble des parties communes, accès, parking et espaces extérieurs. Enregistrement continu.</p>
+        </div>
+      </div>
+      <div class="security-item reveal reveal-delay-2">
+        <div class="security-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="24" height="24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg></div>
+        <div class="security-text">
+          <h4>Accès sécurisé triple</h4>
+          <p>Badge sans contact, digicode à code personnel et télécommande pour chaque résident. Entrée principale, parking et accès piéton.</p>
+        </div>
+      </div>
+      <div class="security-item reveal reveal-delay-3">
+        <div class="security-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="24" height="24"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0"/></svg></div>
+        <div class="security-text">
+          <h4>Alarme pré-installée</h4>
+          <p>Système d'alarme intrusion pré-câblé dans chaque appartement, compatible avec tous les prestataires de télésurveillance du marché.</p>
+        </div>
+      </div>
+      <div class="security-item reveal reveal-delay-4">
+        <div class="security-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="24" height="24"><path d="M3 21V5a2 2 0 012-2h14a2 2 0 012 2v16"/><path d="M9 21V12a1 1 0 011-1h4a1 1 0 011 1v9"/><circle cx="15.5" cy="8.5" r=".75" fill="currentColor"/></svg></div>
+        <div class="security-text">
+          <h4>Porte blindée multipoints</h4>
+          <p>Porte d'entrée blindée certification A2P avec serrure 3 points et huisserie renforcée. Oeilleton digital grande vision disponible.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="section section-dark">
+  <div class="container text-center">
+    <p class="eyebrow" style="justify-content:center;color:var(--or);">Votre appartement vous attend</p>
+    <h2 class="section-title" style="color:var(--white);max-width:560px;margin:0 auto 1rem;">Intéressé par<br>un appartement <em>59 Cézanne</em> ?</h2>
+    <p style="color:rgba(255,255,255,0.6);font-size:0.9rem;max-width:480px;margin:0 auto 3rem;line-height:1.85;">
+      Contactez-nous pour obtenir les plans détaillés, les grilles de prix et organiser une visite du chantier ou une présentation 3D immersive.
+    </p>
+    <div class="d-flex gap-3 align-center flex-wrap" style="justify-content:center;">
+      <a href="contact.html" class="btn btn-primary">Demander la plaquette</a>
+      <a href="tel:0620534392" class="btn btn-outline">06 20 53 43 92</a>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="footer-logo">59 Cézanne</div>
+        <div class="footer-logo-sub">Aix-en-Provence</div>
+        <p>Résidence exclusive de 8 appartements d'exception avec vue imprenable sur la Sainte-Victoire. Une réalisation Ponthieu Développement Holding.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Navigation</h4>
+        <ul>
+          <li><a href="index.html">Accueil</a></li>
+          <li><a href="presentation.html">Présentation</a></li>
+          <li><a href="logements.html">Logements</a></li>
+          <li><a href="exterieurs.html">Espaces Communs</a></li>
+          <li><a href="localisation.html">Localisation</a></li>
+          <li><a href="promoteur.html">Le Promoteur</a></li>
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Logements</h4>
+        <ul>
+          <li><a href="#t4">Appartements T4</a></li>
+          <li><a href="#t3duplex">T3 Duplex</a></li>
+          <li><a href="#t2">Appartements T2</a></li>
+          <li><a href="#prestations">Prestations</a></li>
+          <li><a href="#personnalisation">Personnalisation</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Contact</h4>
+        <div class="footer-contact-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          59 Avenue Paul Cézanne,<br>13100 Aix-en-Provence
+        </div>
+        <div class="footer-contact-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81 19.79 19.79 0 01.01 1.18 2 2 0 012 0h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+          <a href="tel:0620534392" style="color:rgba(255,255,255,0.6)">06 20 53 43 92</a>
+        </div>
+        <div class="footer-contact-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+          <a href="mailto:stephane@ponthieu.fr" style="color:rgba(255,255,255,0.6)">stephane@ponthieu.fr</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2025 Ponthieu Développement Holding — Tous droits réservés</p>
+      <div class="footer-legal">
+        <a href="#">Mentions légales</a>
+        <a href="#">Politique de confidentialité</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<div class="floating-cta">
+  <a href="https://wa.me/33620534392" target="_blank" class="float-btn float-btn-whatsapp">
+    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.890-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+  </a>
+  <a href="tel:0620534392" class="float-btn float-btn-phone">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81 19.79 19.79 0 01.01 1.18 2 2 0 012 0h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+  </a>
+</div>
+
+<div id="lightbox">
+  <button class="lightbox-close" onclick="closeLightbox()">✕</button>
+  <button class="lightbox-nav lightbox-prev" onclick="lightboxNav(-1)">‹</button>
+  <div class="lightbox-img-wrap">
+    <img id="lightbox-img" src="" alt="" />
+    <div class="lightbox-caption" id="lightbox-caption"></div>
+    <div class="lightbox-counter" id="lightbox-counter"></div>
+  </div>
+  <button class="lightbox-nav lightbox-next" onclick="lightboxNav(1)">›</button>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+<script src="animations.js"></script>
+<script>
+function setLang(lang) {
+  document.querySelectorAll('[data-lang-' + lang + ']').forEach(el => {
+    el.innerHTML = el.getAttribute('data-lang-' + lang);
+  });
+  document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.lang-btn[onclick*="' + lang + '"]').forEach(b => b.classList.add('active'));
+}
+
+function switchTab(id) {
+  document.querySelectorAll('.logement-tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.logement-tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + id).classList.add('active');
+  event.currentTarget.classList.add('active');
+  // scroll to anchor
+  const el = document.getElementById(id);
+  if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function switchPlanTab(id) {
+  const section = document.getElementById('plans');
+  if (!section) return;
+  // Deactivate all panels and buttons within the plans section
+  section.querySelectorAll('.logement-tab-panel').forEach(p => p.classList.remove('active'));
+  section.querySelectorAll('.logement-tab-btn').forEach(b => b.classList.remove('active'));
+  // Activate target panel and clicked button
+  const panel = document.getElementById('plan-' + id);
+  if (panel) panel.classList.add('active');
+  event.currentTarget.classList.add('active');
+}
+
+// Handle hash on load
+window.addEventListener('DOMContentLoaded', () => {
+  const hash = location.hash.replace('#', '');
+  if (['t4','t3duplex','t2'].includes(hash)) {
+    switchTab(hash);
+  }
+  // First plan tab is already active via HTML `active` class — no action needed
+});
+</script>
+</body>
+</html>

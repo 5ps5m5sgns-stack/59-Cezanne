@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Localisation — 59 Cézanne | 59 Avenue Paul Cézanne, Aix-en-Provence</title>
+  <meta name="description" content="59 Cézanne idéalement situé au 59 Avenue Paul Cézanne, Aix-en-Provence. 4 min du centre-ville, 15 min gare TGV, 22 min aéroport. Transports, commerces, écoles à proximité." />
+
+  <meta property="og:title" content="Localisation — 59 Cézanne" />
+  <meta property="og:description" content="59 Avenue Paul Cézanne, Aix-en-Provence. Accessibilité exceptionnelle : 4 min centre, 15 min TGV, 22 min aéroport." />
+
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    /* ── Localisation-specific ── */
+    .big-distance-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1.2rem;
+    }
+
+    .big-dist-item {
+      background: var(--white);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+      padding: 1.8rem 1.5rem;
+      text-align: center;
+      transition: transform var(--transition), box-shadow var(--transition), border-color var(--transition);
+      cursor: default;
+    }
+
+    .big-dist-item:hover {
+      transform: translateY(-5px);
+      box-shadow: var(--shadow);
+      border-color: rgba(201,169,110,0.4);
+    }
+
+    .bdi-icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 52px;
+      height: 52px;
+      background: rgba(201,169,110,0.1);
+      border-radius: 50%;
+      color: var(--or);
+      margin: 0 auto 0.8rem;
+    }
+
+    .bdi-name {
+      font-family: var(--font-serif);
+      font-size: 1rem;
+      font-weight: 400;
+      color: var(--text);
+      margin-bottom: 0.5rem;
+    }
+
+    .bdi-vals {
+      display: flex;
+      flex-direction: column;
+      gap: 0.2rem;
+    }
+
+    .bdi-val {
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--or);
+    }
+
+    .bdi-val-label {
+      font-size: 0.68rem;
+      color: var(--text-light);
+    }
+
+    .proximity-section-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 2rem;
+    }
+
+    .proximity-col h3 {
+      font-family: var(--font-serif);
+      font-size: 1.2rem;
+      font-weight: 400;
+      color: var(--text);
+      margin-bottom: 1rem;
+      padding-bottom: 0.6rem;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .proximity-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+    }
+
+    .proximity-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.6rem 0;
+      border-bottom: 1px solid rgba(0,0,0,0.04);
+      font-size: 0.85rem;
+    }
+
+    .proximity-item-name {
+      color: var(--text);
+    }
+
+    .proximity-item-dist {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--or);
+      white-space: nowrap;
+    }
+
+    .transport-cards {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.5rem;
+    }
+
+    .transport-card {
+      padding: 1.8rem;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+      background: var(--white);
+      text-align: center;
+      transition: transform var(--transition), box-shadow var(--transition);
+    }
+
+    .transport-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow);
+    }
+
+    .transport-card-icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 52px;
+      height: 52px;
+      margin: 0 auto 1.2rem;
+      background: rgba(201,169,110,0.1);
+      border-radius: 50%;
+      color: var(--or);
+    }
+
+    .transport-card h3 {
+      font-family: var(--font-serif);
+      font-size: 1.1rem;
+      font-weight: 400;
+      color: var(--text);
+      margin-bottom: 0.5rem;
+    }
+
+    .transport-card p {
+      font-size: 0.82rem;
+      color: var(--text-mid);
+      line-height: 1.7;
+    }
+
+    .transport-card .dist-badge {
+      display: inline-block;
+      background: rgba(201,169,110,0.1);
+      color: var(--or);
+      font-size: 0.7rem;
+      font-weight: 600;
+      padding: 3px 10px;
+      border-radius: 50px;
+      margin-top: 0.8rem;
+    }
+
+    @media (max-width: 1024px) {
+      .big-distance-grid { grid-template-columns: repeat(2, 1fr); }
+      .proximity-section-grid { grid-template-columns: 1fr 1fr; }
+      .transport-cards { grid-template-columns: 1fr 1fr; }
+    }
+
+    @media (max-width: 768px) {
+      .big-distance-grid { grid-template-columns: 1fr 1fr; }
+      .proximity-section-grid { grid-template-columns: 1fr; }
+      .transport-cards { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+<div id="scroll-progress"></div>
+<div id="loader">
+  <div class="loader-logo">59 Cézanne<span>Aix-en-Provence</span></div>
+  <div class="loader-bar"></div>
+</div>
+
+<nav id="navbar" class="transparent">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">
+      <span class="logo-main">59 Cézanne</span>
+      <span class="logo-sub">Aix-en-Provence</span>
+    </a>
+    <div class="nav-links">
+      <a href="index.html">Accueil</a>
+      <a href="presentation.html">Présentation</a>
+      <a href="logements.html">Logements</a>
+      <a href="exterieurs.html">Espaces Communs</a>
+      <a href="localisation.html" class="active">Localisation</a>
+      <a href="promoteur.html">Le Promoteur</a>
+      <a href="contact.html">Contact</a>
+    </div>
+    <div class="d-flex align-center gap-2">
+      <div class="lang-toggle">
+        <button class="lang-btn active" onclick="setLang('fr')">FR</button>
+        <button class="lang-btn" onclick="setLang('en')">EN</button>
+      </div>
+      <div class="nav-burger" id="burger" onclick="toggleMobile()">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<div class="nav-mobile" id="mobileMenu">
+  <a href="index.html" onclick="toggleMobile()">Accueil</a>
+  <a href="presentation.html" onclick="toggleMobile()">Présentation</a>
+  <a href="logements.html" onclick="toggleMobile()">Logements</a>
+  <a href="exterieurs.html" onclick="toggleMobile()">Espaces Communs</a>
+  <a href="localisation.html" onclick="toggleMobile()">Localisation</a>
+  <a href="promoteur.html" onclick="toggleMobile()">Le Promoteur</a>
+  <a href="contact.html" onclick="toggleMobile()">Contact</a>
+  <div class="nav-mobile-lang">
+    <button class="lang-btn active" onclick="setLang('fr')">FR</button>
+    <button class="lang-btn" onclick="setLang('en')">EN</button>
+  </div>
+</div>
+
+<!-- Hero -->
+<section class="page-hero">
+  <div class="hero-bg">
+    <!-- IMAGE: Vue 3D de synthèse de la résidence 59 Cézanne intégrée dans le quartier des Lauves -->
+    <img
+      src="Photo 59 Cézanne/3D Groove Architecture/Edited/050-APC-230309-INSERTION-enhanced.webp"
+      alt="Résidence 59 Cézanne - Quartier des Lauves, Aix-en-Provence"
+      loading="eager"
+    />
+  </div>
+  <div class="hero-overlay"></div>
+  <div class="hero-content">
+    <p class="hero-eyebrow">Localisation</p>
+    <h1 class="hero-title" style="font-size:clamp(2rem,4vw,3.5rem);">Une situation<br><em>idéale</em></h1>
+    <p class="hero-subtitle">59 Avenue Paul Cézanne — Quartier des Lauves, 13100 Aix-en-Provence</p>
+  </div>
+</section>
+
+<!-- ─── Carte Interactive ─────────────────────────────────────── -->
+<section class="section">
+  <div class="container">
+    <div class="section-header reveal">
+      <p class="eyebrow">L'adresse</p>
+      <h2 class="section-title">59 Avenue Paul Cézanne,<br><em>Aix-en-Provence</em></h2>
+    </div>
+
+    <div class="two-col">
+      <div class="reveal-left">
+        <p style="font-size:0.92rem;color:var(--text-mid);line-height:1.9;margin-bottom:2rem;">
+          Niché dans le quartier résidentiel et calme des Lauves, à seulement quelques minutes à pied du Terrain des Peintres et de la Bastide du Jas de Bouffan, la résidence 59 Cézanne bénéficie d'une situation privilégiée : proche de tout, au calme de tout.
+        </p>
+
+        <div class="address-block" style="display:flex;gap:1rem;padding:1.5rem;background:var(--beige);border-radius:var(--radius-md);margin-bottom:1.5rem;">
+          <div style="flex-shrink:0;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="28" height="28" style="color:var(--or);"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg></div>
+          <div>
+            <strong style="font-family:var(--font-serif);font-size:1.15rem;font-weight:400;color:var(--text);display:block;">59 Avenue Paul Cézanne</strong>
+            <span style="font-size:0.85rem;color:var(--text-mid);">13100 Aix-en-Provence — Quartier des Lauves</span>
+          </div>
+        </div>
+
+        <div class="info-grid" style="grid-template-columns:1fr 1fr;">
+          <div class="info-box">
+            <div class="info-box-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="28" height="28"><rect x="3" y="5" width="18" height="13" rx="2"/><path d="M3 10h18M8 19l-1 2M16 19l1 2M7 15h.01M17 15h.01"/></svg></div>
+            <h3>Bus Ligne 5</h3>
+            <p>Connexion directe Centre-Ville, arrêt à 1 min à pied</p>
+          </div>
+          <div class="info-box">
+            <div class="info-box-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="28" height="28"><rect x="3" y="5" width="18" height="13" rx="2"/><path d="M3 10h18M8 19l-1 2M16 19l1 2M7 15h.01M17 15h.01"/></svg></div>
+            <h3>Bus Ligne 12</h3>
+            <p>Accès Gare, arrêt à 7 min à pied</p>
+          </div>
+          <div class="info-box">
+            <div class="info-box-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="28" height="28"><rect x="2" y="8" width="20" height="10" rx="2"/><path d="M8 8V6a2 2 0 114 0v2M16 8V6a2 2 0 114 0v2"/><circle cx="8" cy="15" r="1" fill="currentColor"/><circle cx="16" cy="15" r="1" fill="currentColor"/></svg></div>
+            <h3>Autoroute A51</h3>
+            <p>Accès direct en 3 minutes, liaison Marseille / Gap</p>
+          </div>
+          <div class="info-box">
+            <div class="info-box-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="28" height="28"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg></div>
+            <h3>Centre-ville</h3>
+            <p>20 min à pied, 8 min en bus, 4 min en voiture</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="reveal-right">
+        <div class="map-container">
+          <!-- Carte Google Maps centrée sur 59 Avenue Paul Cézanne -->
+          <iframe
+            src="https://maps.google.com/maps?q=59+Avenue+Paul+C%C3%A9zanne+13100+Aix-en-Provence&t=&z=15&ie=UTF8&iwloc=&output=embed"
+            allowfullscreen=""
+            loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade"
+            title="59 Avenue Paul Cézanne, Aix-en-Provence"
+          ></iframe>
+        </div>
+        <p style="text-align:center;font-size:0.78rem;color:var(--text-light);margin-top:0.8rem;">
+          59 Avenue Paul Cézanne, 13100 Aix-en-Provence · Quartier des Lauves
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── Distances Animées ─────────────────────────────────────── -->
+<section class="section section-alt">
+  <div class="container">
+    <div class="section-header reveal">
+      <p class="eyebrow">Accessibilité</p>
+      <h2 class="section-title">Tout est <em>accessible</em></h2>
+      <p class="section-lead mt-2">La résidence 59 Cézanne bénéficie d'une position stratégique pour accéder rapidement à l'ensemble des services et infrastructures de la région.</p>
+    </div>
+
+    <div class="big-distance-grid">
+      <div class="big-dist-item reveal reveal-delay-1">
+        <div class="bdi-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="26" height="26"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg></div>
+        <div class="bdi-name">Centre-ville d'Aix</div>
+        <div class="bdi-vals">
+          <span class="bdi-val">4 min</span>
+          <span class="bdi-val-label">en voiture</span>
+          <span class="bdi-val" style="margin-top:4px;">8 min</span>
+          <span class="bdi-val-label">en bus (L5/L12)</span>
+          <span class="bdi-val" style="margin-top:4px;">20 min</span>
+          <span class="bdi-val-label">à pied</span>
+        </div>
+      </div>
+      <div class="big-dist-item reveal reveal-delay-2">
+        <div class="bdi-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="26" height="26"><rect x="2" y="8" width="20" height="10" rx="2"/><path d="M8 8V6a2 2 0 114 0v2M16 8V6a2 2 0 114 0v2"/><circle cx="8" cy="15" r="1" fill="currentColor"/><circle cx="16" cy="15" r="1" fill="currentColor"/></svg></div>
+        <div class="bdi-name">Autoroute A51</div>
+        <div class="bdi-vals">
+          <span class="bdi-val">3 min</span>
+          <span class="bdi-val-label">en voiture</span>
+        </div>
+      </div>
+      <div class="big-dist-item reveal reveal-delay-3">
+        <div class="bdi-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="26" height="26"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M12 8v8M8 12h8"/></svg></div>
+        <div class="bdi-name">Hôpital</div>
+        <div class="bdi-vals">
+          <span class="bdi-val">7 min</span>
+          <span class="bdi-val-label">en voiture</span>
+        </div>
+      </div>
+      <div class="big-dist-item reveal reveal-delay-4">
+        <div class="bdi-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="26" height="26"><path d="M3 17l3-9h12l3 9H3z"/><path d="M4 17h16M7 17v2M17 17v2"/><path d="M4 13h16"/><path d="M7 9v4M12 9v4M17 9v4"/></svg></div>
+        <div class="bdi-name">Gare TGV</div>
+        <div class="bdi-vals">
+          <span class="bdi-val">15 min</span>
+          <span class="bdi-val-label">en voiture</span>
+          <span class="bdi-val" style="margin-top:4px;">Paris en ~3h</span>
+          <span class="bdi-val-label">via Marseille</span>
+        </div>
+      </div>
+      <div class="big-dist-item reveal reveal-delay-1">
+        <div class="bdi-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="26" height="26"><path d="M22 16.5H2l2-5h1.5L7 8h10l1.5 3.5H20l2 5z"/><path d="M12 3v5M8 19h8"/></svg></div>
+        <div class="bdi-name">Aéroport Marseille Provence</div>
+        <div class="bdi-vals">
+          <span class="bdi-val">22 min</span>
+          <span class="bdi-val-label">en voiture</span>
+        </div>
+      </div>
+      <div class="big-dist-item reveal reveal-delay-2">
+        <div class="bdi-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="26" height="26"><path d="M3 21h18M5 21V7l7-4 7 4v14"/><path d="M9 21v-6h6v6"/></svg></div>
+        <div class="bdi-name">Marseille</div>
+        <div class="bdi-vals">
+          <span class="bdi-val">30 min</span>
+          <span class="bdi-val-label">en voiture</span>
+        </div>
+      </div>
+      <div class="big-dist-item reveal reveal-delay-3">
+        <div class="bdi-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="26" height="26"><path d="M2 17s3-4 6-4 5 4 8 4 6-4 6-4M2 12s3-4 6-4 5 4 8 4 6-4 6-4"/><path d="M1 20L8 9l4 5 3-4 8 10H1z" opacity=".35"/></svg></div>
+        <div class="bdi-name">Calanques</div>
+        <div class="bdi-vals">
+          <span class="bdi-val">45 min</span>
+          <span class="bdi-val-label">en voiture</span>
+        </div>
+      </div>
+      <div class="big-dist-item reveal reveal-delay-4">
+        <div class="bdi-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="26" height="26"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg></div>
+        <div class="bdi-name">Grand Théâtre de Provence</div>
+        <div class="bdi-vals">
+          <span class="bdi-val">6 min</span>
+          <span class="bdi-val-label">en voiture</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── Commerces, Écoles, Transports ────────────────────────── -->
+<section class="section">
+  <div class="container">
+    <div class="section-header reveal">
+      <p class="eyebrow">Vie de quartier</p>
+      <h2 class="section-title">Tout <em>à proximité</em></h2>
+      <p class="section-lead mt-2">Le quartier des Lauves offre toutes les commodités du quotidien, à quelques minutes à pied ou en voiture.</p>
+    </div>
+
+    <div class="proximity-section-grid">
+      <!-- Commerces -->
+      <div class="proximity-col reveal reveal-delay-1">
+        <h3> Commerces</h3>
+        <div class="proximity-list">
+          <div class="proximity-item">
+            <span class="proximity-item-name">Picard Surgelés</span>
+            <span class="proximity-item-dist">4 min</span>
+          </div>
+          <div class="proximity-item">
+            <span class="proximity-item-name">Intermarché</span>
+            <span class="proximity-item-dist">5 min</span>
+          </div>
+          <div class="proximity-item">
+            <span class="proximity-item-name">Vival Supérette</span>
+            <span class="proximity-item-dist">3 min</span>
+          </div>
+          <div class="proximity-item">
+            <span class="proximity-item-name">Boulangerie / Tabac</span>
+            <span class="proximity-item-dist">3 min</span>
+          </div>
+          <div class="proximity-item">
+            <span class="proximity-item-name">Pharmacie</span>
+            <span class="proximity-item-dist">4 min</span>
+          </div>
+          <div class="proximity-item">
+            <span class="proximity-item-name">Centre Commercial</span>
+            <span class="proximity-item-dist">7 min</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Écoles -->
+      <div class="proximity-col reveal reveal-delay-2">
+        <h3> Écoles</h3>
+        <div class="proximity-list">
+          <div class="proximity-item">
+            <span class="proximity-item-name">Maternelle des Lauves</span>
+            <span class="proximity-item-dist">6 min à pied</span>
+          </div>
+          <div class="proximity-item">
+            <span class="proximity-item-name">École primaire des Lauves</span>
+            <span class="proximity-item-dist">7 min à pied</span>
+          </div>
+          <div class="proximity-item">
+            <span class="proximity-item-name">Collège Nina Simone</span>
+            <span class="proximity-item-dist">8 min voiture</span>
+          </div>
+          <div class="proximity-item">
+            <span class="proximity-item-name">Lycée Paul Cézanne</span>
+            <span class="proximity-item-dist">6 min voiture</span>
+          </div>
+          <div class="proximity-item">
+            <span class="proximity-item-name">Université AMU</span>
+            <span class="proximity-item-dist">10 min voiture</span>
+          </div>
+          <div class="proximity-item">
+            <span class="proximity-item-name">Sciences Po Aix</span>
+            <span class="proximity-item-dist">8 min voiture</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Loisirs & Culture -->
+      <div class="proximity-col reveal reveal-delay-3">
+        <h3> Loisirs & Culture</h3>
+        <div class="proximity-list">
+          <div class="proximity-item">
+            <span class="proximity-item-name">Terrain des Peintres</span>
+            <span class="proximity-item-dist">10 min à pied</span>
+          </div>
+          <div class="proximity-item">
+            <span class="proximity-item-name">Cours Mirabeau</span>
+            <span class="proximity-item-dist">6 min voiture</span>
+          </div>
+          <div class="proximity-item">
+            <span class="proximity-item-name">Musée Granet</span>
+            <span class="proximity-item-dist">7 min voiture</span>
+          </div>
+          <div class="proximity-item">
+            <span class="proximity-item-name">Grand Théâtre de Provence</span>
+            <span class="proximity-item-dist">6 min voiture</span>
+          </div>
+          <div class="proximity-item">
+            <span class="proximity-item-name">Stade de Parc des Sports</span>
+            <span class="proximity-item-dist">5 min voiture</span>
+          </div>
+          <div class="proximity-item">
+            <span class="proximity-item-name">Cinéma Cézanne</span>
+            <span class="proximity-item-dist">8 min voiture</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── Transport ─────────────────────────────────────────────── -->
+<section class="section section-alt">
+  <div class="container">
+    <div class="section-header reveal">
+      <p class="eyebrow">Mobilité</p>
+      <h2 class="section-title">Connexions <em>exceptionnelles</em></h2>
+    </div>
+
+    <div class="transport-cards">
+      <div class="transport-card reveal reveal-delay-1">
+        <div class="transport-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="32" height="32"><rect x="3" y="5" width="18" height="13" rx="2"/><path d="M3 10h18M8 19l-1 2M16 19l1 2M7 15h.01M17 15h.01"/></svg></div>
+        <h3>Bus urbains</h3>
+        <p>Lignes 5 et 12 desservent directement le quartier des Lauves vers le centre-ville, la gare routière et les principales destinations aixoises.</p>
+        <span class="dist-badge">Arrêts à 1 min à pied</span>
+      </div>
+      <div class="transport-card reveal reveal-delay-2">
+        <div class="transport-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="32" height="32"><path d="M3 17l3-9h12l3 9H3z"/><path d="M4 17h16M7 17v2M17 17v2"/><path d="M4 13h16"/><path d="M7 9v4M12 9v4M17 9v4"/></svg></div>
+        <h3>TGV Aix-en-Provence</h3>
+        <p>La gare TGV Aix-en-Provence relie Paris en 3h et Lyon en 1h30. Une connexion directe avec les grandes métropoles françaises et européennes.</p>
+        <span class="dist-badge">15 min en voiture</span>
+      </div>
+      <div class="transport-card reveal reveal-delay-3">
+        <div class="transport-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="32" height="32"><path d="M22 16.5H2l2-5h1.5L7 8h10l1.5 3.5H20l2 5z"/><path d="M12 3v5M8 19h8"/></svg></div>
+        <h3>Aéroport Marseille Provence</h3>
+        <p>Le 2e aéroport de France dessert plus de 100 destinations directes. Un hub international à seulement 22 minutes depuis la résidence.</p>
+        <span class="dist-badge">22 min en voiture</span>
+      </div>
+      <div class="transport-card reveal reveal-delay-1">
+        <div class="transport-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="32" height="32"><rect x="2" y="8" width="20" height="10" rx="2"/><path d="M8 8V6a2 2 0 114 0v2M16 8V6a2 2 0 114 0v2"/><circle cx="8" cy="15" r="1" fill="currentColor"/><circle cx="16" cy="15" r="1" fill="currentColor"/></svg></div>
+        <h3>Autoroutes A8 / A51</h3>
+        <p>Accès direct A51 en 3 min. Jonction A8 (Aix-Marseille) en 8 min. Nice en 1h30, Monaco en 2h, Paris en 5h.</p>
+        <span class="dist-badge">Accès A51 : 3 min</span>
+      </div>
+      <div class="transport-card reveal reveal-delay-2">
+        <div class="transport-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="32" height="32"><circle cx="18" cy="17" r="3"/><circle cx="6" cy="17" r="3"/><path d="M9 17H6M12 17V8l-3 4h6M12 8l3 4"/><path d="M14 6l2-2M16 4l2-1"/></svg></div>
+        <h3>Mobilités douces</h3>
+        <p>Pistes cyclables du quartier des Lauves. Service de vélos en libre service V'hello d'Aix-en-Provence. Trottinettes électriques disponibles.</p>
+        <span class="dist-badge">Vélos à 300 m</span>
+      </div>
+      <div class="transport-card reveal reveal-delay-3">
+        <div class="transport-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="32" height="32"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg></div>
+        <h3>Mobilité électrique</h3>
+        <p>Chaque parking de la résidence est équipé d'une prise Wall Box EV dédiée. Des bornes de recharge publiques sont également disponibles à proximité.</p>
+        <span class="dist-badge">Wall Box incluse</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── Vue drone ────────────────────────────────────────────── -->
+<section class="section section-dark">
+  <div class="container">
+    <div class="two-col">
+      <div class="reveal-left">
+        <p class="eyebrow">Depuis les airs</p>
+        <h2 class="section-title" style="color:var(--white);">Le quartier des <em>Lauves</em></h2>
+        <div class="divider"></div>
+        <p style="font-size:0.9rem;color:rgba(255,255,255,0.65);line-height:1.9;margin-bottom:1.5rem;">
+          Le quartier des Lauves est l'un des secteurs les plus prisés d'Aix-en-Provence. Résidentiel, calme et verdoyant, il offre un cadre de vie exceptionnel à deux pas du centre historique.
+        </p>
+        <p style="font-size:0.9rem;color:rgba(255,255,255,0.65);line-height:1.9;margin-bottom:2rem;">
+          C'est depuis ce quartier que Paul Cézanne contemplait et peignait la Sainte-Victoire, à quelques pas du célèbre Terrain des Peintres. Une adresse chargée d'histoire et d'art.
+        </p>
+
+        <div class="d-flex gap-2 flex-wrap">
+          <span class="eco-badge" style="background:rgba(201,169,110,0.1);border-color:rgba(201,169,110,0.3);color:var(--or-light);"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="13" height="13" style="vertical-align:-2px;margin-right:5px;"><path d="M12 22V12M12 12C9 12 6 9 5 5c3 1 6 3 7 7M12 12c3 0 6-3 7-7-3 1-6 3-7 7"/></svg>Quartier verdoyant</span>
+          <span class="eco-badge" style="background:rgba(201,169,110,0.1);border-color:rgba(201,169,110,0.3);color:var(--or-light);"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="13" height="13" style="vertical-align:-2px;margin-right:5px;"><circle cx="12" cy="8" r="6"/><path d="M12 14v8M8 22h8"/></svg>Terrain des Peintres</span>
+          <span class="eco-badge" style="background:rgba(201,169,110,0.1);border-color:rgba(201,169,110,0.3);color:var(--or-light);"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="13" height="13" style="vertical-align:-2px;margin-right:5px;"><path d="M1 20L8 8l4 5 3-4 8 11H1z"/></svg>Vue Sainte-Victoire</span>
+          <span class="eco-badge" style="background:rgba(201,169,110,0.1);border-color:rgba(201,169,110,0.3);color:var(--or-light);"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="13" height="13" style="vertical-align:-2px;margin-right:5px;"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/></svg>Résidentiel calme</span>
+        </div>
+      </div>
+
+      <div class="reveal-right">
+        <div class="two-col-img">
+          <!-- IMAGE: Vue drone plongeante sur le quartier des Lauves et la Sainte-Victoire -->
+          <img
+            src="Photo 59 Cézanne/Photo drone/Vue Nord/dji_fly_20230307_122752_329_1678275422126_photo.webp"
+            alt="Vue drone Quartier des Lauves - Aix-en-Provence"
+            loading="lazy"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="section" style="background:var(--beige);">
+  <div class="container text-center reveal">
+    <p class="eyebrow" style="justify-content:center;">Venez nous rendre visite</p>
+    <h2 class="section-title">Découvrez la résidence <em>en personne</em></h2>
+    <p class="section-lead mt-2 mb-4">
+      Notre équipe se tient à votre disposition pour vous faire visiter le site et vous présenter les plans et maquettes 3D de la résidence.
+    </p>
+    <div class="d-flex gap-3 align-center flex-wrap" style="justify-content:center;">
+      <a href="contact.html" class="btn btn-primary">Organiser une visite</a>
+      <a href="tel:0620534392" class="btn btn-outline-dark">06 20 53 43 92</a>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="footer-logo">59 Cézanne</div>
+        <div class="footer-logo-sub">Aix-en-Provence</div>
+        <p>Résidence exclusive de 8 appartements d'exception avec vue imprenable sur la Sainte-Victoire. Une réalisation Ponthieu Développement Holding.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Navigation</h4>
+        <ul>
+          <li><a href="index.html">Accueil</a></li>
+          <li><a href="presentation.html">Présentation</a></li>
+          <li><a href="logements.html">Logements</a></li>
+          <li><a href="exterieurs.html">Espaces Communs</a></li>
+          <li><a href="localisation.html">Localisation</a></li>
+          <li><a href="promoteur.html">Le Promoteur</a></li>
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Localisation</h4>
+        <ul>
+          <li><a href="#piscine">Distances clés</a></li>
+          <li><a href="#jardins">Commerces & Écoles</a></li>
+          <li><a href="#ecologie">Transports</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Contact</h4>
+        <div class="footer-contact-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          59 Avenue Paul Cézanne,<br>13100 Aix-en-Provence
+        </div>
+        <div class="footer-contact-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81 19.79 19.79 0 01.01 1.18 2 2 0 012 0h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+          <a href="tel:0620534392" style="color:rgba(255,255,255,0.6)">06 20 53 43 92</a>
+        </div>
+        <div class="footer-contact-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+          <a href="mailto:stephane@ponthieu.fr" style="color:rgba(255,255,255,0.6)">stephane@ponthieu.fr</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2025 Ponthieu Développement Holding — Tous droits réservés</p>
+      <div class="footer-legal">
+        <a href="#">Mentions légales</a>
+        <a href="#">Politique de confidentialité</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<div class="floating-cta">
+  <a href="https://wa.me/33620534392" target="_blank" class="float-btn float-btn-whatsapp">
+    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.890-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+  </a>
+  <a href="tel:0620534392" class="float-btn float-btn-phone">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81 19.79 19.79 0 01.01 1.18 2 2 0 012 0h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+  </a>
+</div>
+
+<div id="lightbox">
+  <button class="lightbox-close" onclick="closeLightbox()">✕</button>
+  <button class="lightbox-nav lightbox-prev" onclick="lightboxNav(-1)">‹</button>
+  <div class="lightbox-img-wrap">
+    <img id="lightbox-img" src="" alt="" />
+    <div class="lightbox-caption" id="lightbox-caption"></div>
+    <div class="lightbox-counter" id="lightbox-counter"></div>
+  </div>
+  <button class="lightbox-nav lightbox-next" onclick="lightboxNav(1)">›</button>
+</div>
+
+<script src="animations.js"></script>
+<script>
+function setLang(lang) {
+  document.querySelectorAll('[data-lang-' + lang + ']').forEach(el => {
+    el.innerHTML = el.getAttribute('data-lang-' + lang);
+  });
+  document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.lang-btn[onclick*="' + lang + '"]').forEach(b => b.classList.add('active'));
+}
+</script>
+</body>
+</html>
