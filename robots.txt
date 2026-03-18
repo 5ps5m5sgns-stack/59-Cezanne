@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://59cezanne.fr/sitemap.xml
+Sitemap: https://59-cezanne.com/sitemap.xml
