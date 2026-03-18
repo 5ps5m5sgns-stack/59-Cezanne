@@ -1,0 +1,81 @@
+# ── Netlify configuration — 59 Cézanne ──────────────────────
+
+[build]
+  publish = "."
+
+# ── Compression ──────────────────────────────────────────────
+[build.processing]
+  skip_processing = false
+
+[build.processing.css]
+  bundle = false
+  minify = true
+
+[build.processing.js]
+  bundle = false
+  minify = true
+
+[build.processing.html]
+  pretty_urls = true
+
+[build.processing.images]
+  compress = true
+
+# ── Cache headers (performance + SEO) ────────────────────────
+
+# Images WebP — cache 1 an
+[[headers]]
+  for = "*.webp"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+# CSS/JS — cache 1 mois
+[[headers]]
+  for = "*.css"
+  [headers.values]
+    Cache-Control = "public, max-age=2592000"
+
+[[headers]]
+  for = "*.js"
+  [headers.values]
+    Cache-Control = "public, max-age=2592000"
+
+# HTML — revalidation rapide
+[[headers]]
+  for = "*.html"
+  [headers.values]
+    Cache-Control = "public, max-age=3600, must-revalidate"
+
+# Sitemap et robots — toujours frais
+[[headers]]
+  for = "/sitemap.xml"
+  [headers.values]
+    Cache-Control = "public, max-age=86400"
+
+[[headers]]
+  for = "/robots.txt"
+  [headers.values]
+    Cache-Control = "public, max-age=86400"
+
+# ── Headers de sécurité ───────────────────────────────────────
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "camera=(), microphone=(), geolocation=()"
+
+# ── Redirections ──────────────────────────────────────────────
+# www → sans www
+[[redirects]]
+  from = "https://www.59-cezanne.com/*"
+  to = "https://59-cezanne.com/:splat"
+  status = 301
+  force = true
+
+# Page 404 custom
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 404
