@@ -122,7 +122,8 @@
 <nav id="navbar">
   <div class="nav-inner">
     <a href="index.html" class="nav-logo">
-      <span class="logo-59">59</span><span class="logo-cez">Cézanne</span>
+      <span class="logo-main">59 Cézanne</span>
+      <span class="logo-sub">Aix-en-Provence</span>
     </a>
     <div class="nav-links">
       <a href="index.html">Accueil</a>
@@ -134,19 +135,18 @@
       <a href="contact.html">Contact</a>
       <a href="actualites.html" class="active">Actualités</a>
     </div>
-    <div class="nav-right">
+    <div class="d-flex align-center gap-2">
       <div class="lang-toggle">
         <button class="lang-btn active" onclick="setLang('fr')">FR</button>
         <button class="lang-btn" onclick="setLang('en')">EN</button>
       </div>
-      <a href="contact.html" class="btn btn-primary btn-sm">Nous contacter</a>
-      <button class="nav-burger" onclick="toggleMobile()" aria-label="Menu">
+      <div class="nav-burger" id="burger" onclick="toggleMobile()">
         <span></span><span></span><span></span>
-      </button>
+      </div>
     </div>
   </div>
 </nav>
-<div class="nav-mobile" id="navMobile">
+<div class="nav-mobile" id="mobileMenu">
   <a href="index.html" onclick="toggleMobile()">Accueil</a>
   <a href="presentation.html" onclick="toggleMobile()">Présentation</a>
   <a href="logements.html" onclick="toggleMobile()">Logements</a>
@@ -154,7 +154,10 @@
   <a href="localisation.html" onclick="toggleMobile()">Localisation</a>
   <a href="promoteur.html" onclick="toggleMobile()">Le Promoteur</a>
   <a href="contact.html" onclick="toggleMobile()">Contact</a>
-  <a href="actualites.html" onclick="toggleMobile()">Actualités</a>
+  <div class="nav-mobile-lang">
+    <button class="lang-btn active" onclick="setLang('fr')">FR</button>
+    <button class="lang-btn" onclick="setLang('en')">EN</button>
+  </div>
 </div>
 
 <!-- ─── Hero ──────────────────────────────────────────────────── -->
