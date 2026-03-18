@@ -277,7 +277,9 @@
         <h2 class="form-title">Votre demande</h2>
         <p class="form-subtitle">Remplissez ce formulaire pour recevoir la plaquette, les plans et la grille de prix, ou pour organiser une visite.</p>
 
-        <form id="contactForm" novalidate>
+        <form id="contactForm" name="contact" data-netlify="true" netlify-honeypot="bot-field" novalidate>
+          <input type="hidden" name="form-name" value="contact" />
+          <input type="hidden" name="bot-field" style="display:none;" />
           <div class="form-grid">
             <div class="form-group" id="fg-nom">
               <label class="form-label" for="nom">Nom *</label>
@@ -520,10 +522,6 @@
         <div class="footer-logo">59 Cézanne</div>
         <div class="footer-logo-sub">Aix-en-Provence</div>
         <p>Résidence exclusive de 8 appartements d'exception avec vue imprenable sur la Sainte-Victoire. Une réalisation Ponthieu Développement Holding.</p>
-        <div class="eco-badges">
-          <span class="eco-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="14" height="14" style="vertical-align:-2px;margin-right:5px;"><path d="M12 22V12M12 12C9 12 6 9 5 5c3 1 6 3 7 7M12 12c3 0 6-3 7-7-3 1-6 3-7 7"/></svg>Éco-responsable</span>
-          <span class="eco-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="14" height="14" style="vertical-align:-2px;margin-right:5px;"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M17.66 6.34l-1.41 1.41M6.34 17.66l-1.41 1.41"/></svg>Photovoltaïque</span>
-        </div>
       </div>
       <div class="footer-col">
         <h4>Navigation</h4>

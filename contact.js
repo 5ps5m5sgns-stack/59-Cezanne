@@ -142,19 +142,24 @@ document.addEventListener('DOMContentLoaded', function () {
       });
   });
 
-  /* ─── Simulate API call ─────────────────────────────────── */
+  /* ─── Netlify Forms submission ──────────────────────────── */
   function simulateSubmit(data) {
-    return new Promise((resolve) => {
-      // Replace this with actual fetch/XMLHttpRequest call
-      // Example:
-      // return fetch('/api/contact', {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify(data)
-      // }).then(res => { if (!res.ok) throw new Error('Network error'); return res.json(); });
+    const body = new URLSearchParams({
+      'form-name': 'contact',
+      'nom':       data.nom,
+      'prenom':    data.prenom,
+      'email':     data.email,
+      'tel':       data.tel,
+      'typology':  data.typology,
+      'message':   data.message,
+    });
 
-      console.log('Form data to submit:', data);
-      setTimeout(resolve, 1500); // Simulated 1.5s delay
+    return fetch('/', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: body.toString()
+    }).then(res => {
+      if (!res.ok) throw new Error('Netlify error ' + res.status);
     });
   }
 
