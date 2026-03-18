@@ -3,3 +3,9 @@
 .claude/
 *.psd
 *.PSD
+serve.py
+wrangler.jsonc
+
+# PDFs trop lourds pour Cloudflare (>25 MB) — non utilisés sur le site
+Dossier de commercialisation 59 Cézanne/050-APC-PRECOM 59 Cézanne.pdf
+Dossier de commercialisation 59 Cézanne/Plaquette 59 Cézanne.pdf
