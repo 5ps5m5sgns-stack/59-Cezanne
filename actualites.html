@@ -5,67 +5,44 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Actualités — 59 Cézanne | Immobilier Neuf Aix-en-Provence</title>
   <link rel="canonical" href="https://59-cezanne.com/actualites.html" />
-  <meta name="description" content="Actualités et conseils immobiliers autour de la résidence 59 Cézanne à Aix-en-Provence. Investissement, quartier des Lauves, marché immobilier provençal." />
-  <meta name="keywords" content="immobilier neuf Aix-en-Provence 2026, investir appartement Aix, quartier des Lauves résidentiel, achat appartement vue Sainte-Victoire, programme neuf Provence, appartement haut de gamme 13100" />
+  <meta name="description" content="Actualités et conseils immobiliers autour de la résidence 59 Cézanne à Aix-en-Provence. Investissement, quartier des Lauves, vue Sainte-Victoire, appartements neufs." />
+  <meta name="keywords" content="appartement neuf Aix-en-Provence, investissement immobilier Lauves, vue Sainte-Victoire, achat appartement neuf 13100, résidence prestige Aix, immobilier haut de gamme Provence" />
   <meta name="author" content="Ponthieu Développement Holding" />
   <meta property="og:type" content="website" />
-  <meta property="og:title" content="Actualités — 59 Cézanne | Aix-en-Provence" />
-  <meta property="og:description" content="Conseils et actualités immobilières autour de la résidence 59 Cézanne, programme neuf haut de gamme à Aix-en-Provence." />
-  <meta property="og:image" content="https://59-cezanne.com/Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_EXT_Panorama_St-Victoire.webp" />
+  <meta property="og:title" content="Actualités — 59 Cézanne | Immobilier Neuf Aix-en-Provence" />
+  <meta property="og:description" content="Conseils et actualités sur l'immobilier neuf à Aix-en-Provence autour de la résidence 59 Cézanne." />
   <meta property="og:url" content="https://59-cezanne.com/actualites.html" />
   <meta property="og:locale" content="fr_FR" />
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="Actualités — 59 Cézanne | Aix-en-Provence" />
-  <meta name="twitter:description" content="Conseils et actualités immobilières autour de la résidence 59 Cézanne." />
-  <meta name="twitter:image" content="https://59-cezanne.com/Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_EXT_Panorama_St-Victoire.webp" />
-
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "Blog",
-    "name": "Actualités 59 Cézanne",
-    "url": "https://59-cezanne.com/actualites.html",
-    "description": "Actualités et conseils immobiliers autour de la résidence 59 Cézanne à Aix-en-Provence.",
-    "publisher": {
-      "@type": "Organization",
-      "name": "Ponthieu Développement Holding"
-    }
-  }
-  </script>
-
   <link rel="stylesheet" href="style.css" />
   <style>
     .articles-grid {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 2rem;
+      grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+      gap: 2.5rem;
       margin-top: 3rem;
     }
     .article-card {
       background: var(--white);
-      border-radius: 12px;
+      border-radius: var(--radius-md);
       overflow: hidden;
-      box-shadow: 0 2px 20px rgba(0,0,0,0.07);
+      box-shadow: var(--shadow);
       transition: transform 0.3s ease, box-shadow 0.3s ease;
-      display: flex;
-      flex-direction: column;
     }
     .article-card:hover {
       transform: translateY(-4px);
-      box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+      box-shadow: var(--shadow-lg);
     }
-    .article-img {
+    .article-card-img {
       width: 100%;
       height: 220px;
       object-fit: cover;
+      display: block;
     }
-    .article-body {
+    .article-card-body {
       padding: 1.8rem;
-      flex: 1;
-      display: flex;
-      flex-direction: column;
     }
     .article-tag {
+      display: inline-block;
       font-family: var(--font-sans);
       font-size: 0.7rem;
       font-weight: 600;
@@ -74,32 +51,27 @@
       color: var(--or);
       margin-bottom: 0.8rem;
     }
-    .article-title {
+    .article-card-title {
       font-family: var(--font-serif);
-      font-size: 1.15rem;
+      font-size: 1.25rem;
       font-weight: 400;
       color: var(--text);
-      line-height: 1.5;
+      line-height: 1.45;
       margin-bottom: 1rem;
     }
-    .article-excerpt {
+    .article-card-excerpt {
       font-size: 0.88rem;
       color: var(--text-mid);
-      line-height: 1.8;
-      flex: 1;
+      line-height: 1.85;
+      margin-bottom: 1.5rem;
     }
-    .article-meta {
-      margin-top: 1.5rem;
-      font-size: 0.78rem;
+    .article-date {
+      font-size: 0.75rem;
       color: var(--text-light);
       font-family: var(--font-sans);
-      padding-top: 1rem;
-      border-top: 1px solid var(--border);
     }
-
-    /* Article complet */
     .article-full {
-      max-width: 780px;
+      max-width: 820px;
       margin: 0 auto;
     }
     .article-full h2 {
@@ -108,58 +80,45 @@
       font-weight: 400;
       color: var(--text);
       line-height: 1.35;
-      margin-bottom: 1rem;
+      margin-bottom: 0.5rem;
     }
     .article-full h3 {
       font-family: var(--font-serif);
       font-size: 1.2rem;
       font-weight: 400;
       color: var(--text);
-      margin: 2rem 0 0.8rem;
+      margin: 2rem 0 0.75rem;
     }
     .article-full p {
-      font-size: 0.95rem;
+      font-size: 0.92rem;
       color: var(--text-mid);
       line-height: 1.9;
       margin-bottom: 1.2rem;
     }
-    .article-full strong {
-      color: var(--text);
-      font-weight: 600;
-    }
+    .article-full strong { color: var(--text); }
     .article-divider {
-      width: 48px;
-      height: 1px;
-      background: var(--or);
-      margin: 1.5rem 0;
-    }
-    .article-date {
-      font-family: var(--font-sans);
-      font-size: 0.78rem;
-      color: var(--text-light);
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      margin-bottom: 2rem;
-    }
-    .article-separator {
       border: none;
       border-top: 1px solid var(--border);
-      margin: 5rem 0;
+      margin: 4rem 0;
     }
-
-    @media (max-width: 900px) {
+    .article-anchor {
+      display: block;
+      position: relative;
+      top: -80px;
+      visibility: hidden;
+    }
+    @media (max-width: 768px) {
       .articles-grid { grid-template-columns: 1fr; }
     }
   </style>
 </head>
 <body>
 
-<!-- Navigation -->
-<nav class="nav" id="navbar">
+<!-- ─── Navigation ────────────────────────────────────────────── -->
+<nav id="navbar">
   <div class="nav-inner">
     <a href="index.html" class="nav-logo">
-      <span class="nav-logo-num">59</span>
-      <span class="nav-logo-text">Cézanne</span>
+      <span class="logo-59">59</span><span class="logo-cez">Cézanne</span>
     </a>
     <div class="nav-links">
       <a href="index.html">Accueil</a>
@@ -171,19 +130,18 @@
       <a href="contact.html">Contact</a>
       <a href="actualites.html" class="active">Actualités</a>
     </div>
-    <div class="d-flex align-center gap-2">
+    <div class="nav-right">
       <div class="lang-toggle">
         <button class="lang-btn active" onclick="setLang('fr')">FR</button>
         <button class="lang-btn" onclick="setLang('en')">EN</button>
       </div>
-      <div class="nav-burger" id="burger" onclick="toggleMobile()">
+      <a href="contact.html" class="btn btn-primary btn-sm">Nous contacter</a>
+      <button class="nav-burger" onclick="toggleMobile()" aria-label="Menu">
         <span></span><span></span><span></span>
-      </div>
+      </button>
     </div>
   </div>
 </nav>
-
-<!-- Nav mobile -->
 <div class="nav-mobile" id="navMobile">
   <a href="index.html" onclick="toggleMobile()">Accueil</a>
   <a href="presentation.html" onclick="toggleMobile()">Présentation</a>
@@ -195,194 +153,133 @@
   <a href="actualites.html" onclick="toggleMobile()">Actualités</a>
 </div>
 
-<!-- Hero -->
+<!-- ─── Hero ──────────────────────────────────────────────────── -->
 <section class="page-hero">
   <div class="hero-bg">
-    <img src="Photo 59 Cézanne/3D Exterieur/PV_EXT_Panorama_St-Victoire.webp"
-         alt="Résidence 59 Cézanne — Actualités immobilières Aix-en-Provence"
-         loading="eager" />
+    <img src="Photo 59 Cézanne/3D Exterieur/PV_EXT_Panorama_St-Victoire.webp" alt="Résidence 59 Cézanne Aix-en-Provence" loading="eager" />
   </div>
   <div class="hero-overlay"></div>
   <div class="hero-content">
-    <p class="hero-eyebrow">Conseils & Insights</p>
-    <h1 class="hero-title" style="font-size:clamp(2rem,4vw,3.5rem);">Actualités <em>immobilières</em></h1>
-    <p class="hero-subtitle">Tout ce qu'il faut savoir pour bien investir à Aix-en-Provence</p>
+    <p class="hero-eyebrow">Actualités & Conseils</p>
+    <h1 class="hero-title" style="font-size:clamp(2rem,4vw,3.2rem);">Investir à <em>Aix-en-Provence</em></h1>
+    <p class="hero-subtitle">Tout ce que vous devez savoir sur l'immobilier neuf de prestige dans la capitale provençale.</p>
   </div>
 </section>
 
-<!-- ─── Liste des articles ────────────────────────────────────── -->
+<!-- ─── Articles ──────────────────────────────────────────────── -->
 <section class="section">
   <div class="container">
-    <div class="section-header reveal">
-      <p class="eyebrow">Le blog 59 Cézanne</p>
-      <h2 class="section-title">Nos <em>derniers articles</em></h2>
-      <p class="section-lead mt-2">Conseils d'experts, analyses du marché et actualités de la résidence 59 Cézanne.</p>
+
+    <span class="article-anchor" id="lauves"></span>
+    <div class="article-full reveal">
+      <span class="article-tag">Quartier · Investissement</span>
+      <h2>Pourquoi le quartier des Lauves est le meilleur endroit où acheter à Aix-en-Provence en 2026</h2>
+      <p class="article-date">Mars 2026 · Par Ponthieu Développement Holding</p>
+      <div class="divider" style="margin:1.5rem 0 2rem;"></div>
+
+      <p>Le quartier des Lauves, situé au nord-est d'Aix-en-Provence, s'impose progressivement comme l'une des adresses les plus recherchées par les acheteurs à la fois exigeants et avisés. À mi-chemin entre la tranquillité résidentielle et la proximité immédiate du centre-ville, il concentre tous les atouts d'un cadre de vie idéal en Provence.</p>
+
+      <h3>Une localisation stratégique</h3>
+      <p>Depuis le quartier des Lauves, le <strong>centre-ville d'Aix-en-Provence</strong> est accessible en 4 minutes en voiture, 8 minutes en bus par les lignes 5 et 12, ou 20 minutes à pied le long de l'avenue Paul Cézanne. L'autoroute A51, reliant Aix à Marseille et à la région PACA, est à moins de 3 minutes. L'<strong>aéroport de Marseille Provence</strong> se trouve à 25 minutes, et la <strong>gare TGV d'Aix-en-Provence</strong> à 15 minutes — permettant de rejoindre Paris en moins de 3 heures.</p>
+
+      <h3>Un quartier résidentiel et verdoyant</h3>
+      <p>Le quartier des Lauves est l'un des rares secteurs d'Aix-en-Provence qui allie densité de services et calme résidentiel. On y trouve commerces de proximité, boulangeries, pharmacies, écoles maternelles et primaires à moins de 10 minutes à pied. Les familles y apprécient la qualité des établissements scolaires, du collège Nina Simone au lycée Paul Cézanne, en passant par la <strong>faculté d'Aix-Marseille Université</strong> à 10 minutes.</p>
+
+      <h3>Une valeur patrimoniale en progression</h3>
+      <p>L'immobilier neuf dans le quartier des Lauves a connu une valorisation constante ces dernières années, portée par la rareté du foncier disponible et la qualité des programmes neufs livrés. Acheter un <strong>appartement neuf à Aix-en-Provence</strong> dans ce secteur représente aujourd'hui un investissement patrimonial solide, que ce soit pour y résider ou pour le mettre en location. Le dispositif Pinel (zones éligibles) ainsi que le statut LMNP permettent d'optimiser la fiscalité de votre acquisition.</p>
+
+      <h3>Le Terrain des Peintres à 10 minutes à pied</h3>
+      <p>À quelques pas du quartier, le <strong>Terrain des Peintres</strong> — espace naturel classé d'où Paul Cézanne peignait la Sainte-Victoire — confère au secteur une dimension culturelle et artistique unique. C'est depuis ces mêmes hauteurs que la Montagne Sainte-Victoire déploie sa silhouette emblématique, immortalisée dans plus de soixante tableaux du maître aixois.</p>
+
+      <p>La résidence <strong>59 Cézanne</strong>, implantée au 59 Avenue Paul Cézanne, incarne cette excellence de localisation : 8 appartements d'exception, jardins privatifs, piscine chauffée, et vue garantie sur la Sainte-Victoire depuis chaque appartement.</p>
     </div>
 
-    <div class="articles-grid">
-      <a href="#article1" class="article-card reveal reveal-delay-1" style="text-decoration:none;">
-        <img class="article-img"
-             src="Photo 59 Cézanne/3D Exterieur/PV_JARDIN_LOGEMENT-04_Panorama_St-Victoire.webp"
-             alt="Investir dans l'immobilier neuf à Aix-en-Provence en 2026"
-             loading="lazy" />
-        <div class="article-body">
-          <p class="article-tag">Investissement</p>
-          <h2 class="article-title">Pourquoi investir dans l'immobilier neuf à Aix-en-Provence en 2026 ?</h2>
-          <p class="article-excerpt">Marché tendu, forte demande locative, dispositifs fiscaux avantageux... Aix-en-Provence reste l'une des villes les plus attractives de France pour l'investissement immobilier.</p>
-          <p class="article-meta">Mars 2026 · 5 min de lecture</p>
-        </div>
-      </a>
+    <hr class="article-divider" />
 
-      <a href="#article2" class="article-card reveal reveal-delay-2" style="text-decoration:none;">
-        <img class="article-img"
-             src="Photo 59 Cézanne/Photo drone/Vue Nord/dji_fly_20230307_122546_324_1678275419539_photo.webp"
-             alt="Quartier des Lauves Aix-en-Provence — adresse prisée"
-             loading="lazy" />
-        <div class="article-body">
-          <p class="article-tag">Quartier</p>
-          <h2 class="article-title">Le quartier des Lauves : l'adresse la plus prisée d'Aix-en-Provence</h2>
-          <p class="article-excerpt">Calme, résidentiel, proche du centre et de la nature — le quartier des Lauves cumule tous les atouts. Pourquoi les acquéreurs se l'arrachent.</p>
-          <p class="article-meta">Février 2026 · 4 min de lecture</p>
-        </div>
-      </a>
+    <span class="article-anchor" id="sainte-victoire"></span>
+    <div class="article-full reveal">
+      <span class="article-tag">Art de vivre · Prestige</span>
+      <h2>Vue sur la Sainte-Victoire : pourquoi ce critère fait toute la différence dans l'immobilier aixois</h2>
+      <p class="article-date">Février 2026 · Par Ponthieu Développement Holding</p>
+      <div class="divider" style="margin:1.5rem 0 2rem;"></div>
 
-      <a href="#article3" class="article-card reveal reveal-delay-3" style="text-decoration:none;">
-        <img class="article-img"
-             src="Photo 59 Cézanne/Photo Sainte-Victoire pour Boris/Drone/DJI_0874.webp"
-             alt="Vue sur la Sainte-Victoire depuis un appartement"
-             loading="lazy" />
-        <div class="article-body">
-          <p class="article-tag">Art de vivre</p>
-          <h2 class="article-title">Vue sur la Sainte-Victoire : quand votre appartement devient une œuvre d'art</h2>
-          <p class="article-excerpt">La montagne que Cézanne a peinte plus de 60 fois s'offre à vous chaque matin. Ce que signifie vivre avec ce panorama unique au monde.</p>
-          <p class="article-meta">Janvier 2026 · 4 min de lecture</p>
-        </div>
-      </a>
+      <p>Dans l'immobilier de prestige à Aix-en-Provence, un critère surpasse tous les autres : la <strong>vue sur la Montagne Sainte-Victoire</strong>. Ce massif calcaire de 1 011 mètres, rendu célèbre par Paul Cézanne qui l'a peint plus de soixante fois, est bien plus qu'un horizon — c'est un patrimoine vivant qui donne à chaque appartement une dimension artistique et émotionnelle unique.</p>
+
+      <h3>Une vue qui change à chaque heure</h3>
+      <p>La Sainte-Victoire est un spectacle en perpétuel mouvement. Rose à l'aube, ocre en fin d'après-midi, blanche sous la neige en hiver, gris-bleu dans les orages de printemps — chaque moment de la journée offre une lumière différente. Depuis un appartement bénéficiant de cette <strong>vue dégagée sur la Sainte-Victoire</strong>, chaque matin est une œuvre d'art nouvelle.</p>
+
+      <h3>Un critère de valorisation immobilière prouvé</h3>
+      <p>Les professionnels de l'immobilier aixois s'accordent sur un point : un appartement avec <strong>vue Sainte-Victoire</strong> se valorise significativement plus vite qu'un bien sans vue comparable. À surface et prestations équivalentes, la prime de vue représente une plus-value de 15 à 25 % selon les estimations du marché local. C'est un facteur de différenciation fort, aussi bien à la revente qu'à la location.</p>
+
+      <h3>Rareté et exclusivité</h3>
+      <p>Les programmes immobiliers neufs bénéficiant d'une <strong>vue imprenable et garantie sur la Sainte-Victoire</strong> depuis chaque appartement sont extrêmement rares à Aix-en-Provence. La topographie de la ville, la densité urbaine du centre et la concurrence foncière rendent cette configuration difficile à reproduire. La résidence <strong>59 Cézanne</strong>, positionnée sur les hauteurs du quartier des Lauves, est l'une des rares adresses neuves à offrir cette garantie absolue.</p>
+
+      <h3>Dans les pas de Cézanne</h3>
+      <p>Habiter face à la Sainte-Victoire, c'est aussi s'inscrire dans une tradition artistique et culturelle mondiale. L'avenue Paul Cézanne, le Terrain des Peintres tout proche, l'atelier du peintre à quelques minutes — tout rappelle que ce quartier est le berceau d'un art qui a changé l'histoire de la peinture. Pour beaucoup d'acquéreurs, ce contexte culturel exceptionnel est autant un critère de choix que les prestations elles-mêmes.</p>
+
+      <p>Les 8 appartements de la résidence <strong>59 Cézanne</strong> — T2, T3 Duplex et T4 — bénéficient tous d'une <strong>orientation optimisée</strong> et d'une vue certifiée sur la Sainte-Victoire, sans vis-à-vis.</p>
     </div>
-  </div>
-</section>
 
-<!-- ─── Articles complets ─────────────────────────────────────── -->
-<section class="section section-alt">
-  <div class="container">
+    <hr class="article-divider" />
 
-    <!-- Article 1 -->
-    <article class="article-full reveal" id="article1" itemscope itemtype="https://schema.org/Article">
-      <meta itemprop="author" content="Ponthieu Développement Holding" />
-      <meta itemprop="datePublished" content="2026-03-01" />
-      <p class="article-tag" itemprop="articleSection">Investissement immobilier</p>
-      <h2 itemprop="headline">Pourquoi investir dans l'immobilier neuf à Aix-en-Provence en 2026 ?</h2>
-      <p class="article-date">Mars 2026</p>
-      <div class="article-divider"></div>
+    <span class="article-anchor" id="guide-achat"></span>
+    <div class="article-full reveal">
+      <span class="article-tag">Guide pratique · Achat neuf</span>
+      <h2>Acheter un appartement neuf à Aix-en-Provence en 2026 : tout ce qu'il faut savoir</h2>
+      <p class="article-date">Janvier 2026 · Par Ponthieu Développement Holding</p>
+      <div class="divider" style="margin:1.5rem 0 2rem;"></div>
 
-      <p itemprop="description">Aix-en-Provence s'impose depuis plusieurs années comme l'une des destinations immobilières les plus attractives du Sud de la France. En 2026, plusieurs facteurs convergent pour faire de cette ville une valeur sûre pour les investisseurs comme pour les acquéreurs en résidence principale.</p>
+      <p>Aix-en-Provence est l'une des villes les plus attractives de France pour l'acquisition d'un <strong>appartement neuf haut de gamme</strong>. Université de renom, dynamisme économique, qualité de vie exceptionnelle, connexions TGV et aéroport — la ville cumule des atouts qui en font une valeur refuge pour les investisseurs comme pour les primo-accédants exigeants. Voici les points essentiels à connaître avant d'acheter.</p>
 
-      <h3>Un marché sous tension favorable aux vendeurs</h3>
-      <p>La demande en logements à Aix-en-Provence dépasse largement l'offre disponible. Avec plus de <strong>143 000 habitants</strong> et une population étudiante de premier plan (Université AMU, Sciences Po Aix, Kedge Business School), la ville génère une demande locative structurelle très forte. Les programmes neufs de qualité se vendent quasi intégralement avant leur livraison.</p>
+      <h3>Pourquoi acheter neuf plutôt qu'ancien ?</h3>
+      <p>L'achat dans le neuf présente de nombreux avantages concrets. Les <strong>frais de notaire réduits</strong> (2 à 3 % contre 7 à 8 % dans l'ancien) représentent une économie substantielle. Les normes de construction actuelles (RE2020, isolation thermique et acoustique renforcées, pompe à chaleur, VMC double flux) garantissent des charges de copropriété maîtrisées et une consommation énergétique réduite. Sans parler des <strong>garanties légales</strong> — garantie décennale, parfait achèvement, biennale — qui protègent l'acheteur pendant 10 ans après la livraison.</p>
 
-      <h3>L'immobilier neuf : des avantages fiscaux et pratiques</h3>
-      <p>Acheter dans le neuf à Aix-en-Provence en 2026 permet de bénéficier de <strong>frais de notaire réduits</strong> (2 à 3 % au lieu de 7 à 8 % dans l'ancien), d'une <strong>exonération de taxe foncière</strong> pendant 2 ans, et de garanties décennales qui sécurisent votre investissement sur le long terme. Les normes RT2020 assurent par ailleurs des charges énergétiques très faibles.</p>
+      <h3>Le marché immobilier aixois en 2026</h3>
+      <p>Aix-en-Provence affiche une tension immobilière persistante, caractéristique des grandes métropoles du sud de la France. La demande en <strong>appartements neufs à Aix-en-Provence</strong> dépasse l'offre disponible, notamment dans les secteurs résidentiels prisés comme les Lauves, Jas de Bouffan ou Puyricard. Cette rareté soutient les prix et renforce la perspective de valorisation à moyen terme pour tout acquéreur.</p>
 
-      <h3>Aix-en-Provence, ville d'art et de prestige</h3>
-      <p>Classée parmi les villes françaises offrant la meilleure qualité de vie, Aix bénéficie d'une <strong>accessibilité exceptionnelle</strong> : 15 minutes de la gare TGV (Paris en 3h), 25 minutes de l'aéroport international de Marseille Provence, et une autoroute qui dessert directement Marseille et la Côte d'Azur. Ces atouts font d'Aix une ville de cadres et de familles aisées, ce qui soutient durablement les prix immobiliers.</p>
+      <h3>Les aides et dispositifs fiscaux</h3>
+      <p>L'achat d'un <strong>appartement neuf en zone tendue</strong> peut ouvrir droit à plusieurs dispositifs : le Prêt à Taux Zéro (PTZ) pour les primo-accédants sous conditions de ressources, le dispositif Pinel+ pour les investisseurs locatifs souhaitant réduire leur impôt sur le revenu, ou encore le statut LMNP (Loueur Meublé Non Professionnel) permettant une fiscalité avantageuse sur les revenus locatifs. Il est conseillé de se rapprocher d'un conseiller en gestion de patrimoine pour optimiser votre montage.</p>
 
-      <h3>La résidence 59 Cézanne : un positionnement unique</h3>
-      <p>Avec seulement <strong>8 appartements</strong> dans une résidence confidentielle, des jardins privatifs allant jusqu'à 312 m², une piscine chauffée et une vue garantie sur la Sainte-Victoire, la résidence 59 Cézanne répond à une demande haut de gamme très spécifique et peu couverte sur le marché aixois actuel.</p>
+      <h3>Choisir son promoteur : les bons critères</h3>
+      <p>Le choix du promoteur immobilier est décisif. Vérifiez son ancienneté, le nombre de programmes livrés, sa solidité financière et les avis de ses acquéreurs précédents. <strong>Ponthieu Développement Holding</strong>, fondée en 2001, a réalisé 84 projets et livré plus de 420 logements en Provence. La résidence <strong>59 Cézanne</strong> est le fruit de deux décennies d'expertise au service de l'excellence immobilière.</p>
 
-      <div style="margin-top:2rem;">
-        <a href="contact.html" class="btn btn-primary">Demander une plaquette commerciale</a>
-      </div>
-    </article>
+      <h3>Les étapes clés de votre achat</h3>
+      <p><strong>1. Réservation</strong> — Signature du contrat de réservation et versement du dépôt de garantie (5 % du prix).<br/>
+      <strong>2. Financement</strong> — Obtention de votre prêt immobilier dans le délai de 45 à 60 jours.<br/>
+      <strong>3. Acte de vente</strong> — Signature chez le notaire de l'acte authentique de vente en VEFA (Vente en l'État Futur d'Achèvement).<br/>
+      <strong>4. Personnalisation</strong> — Choix des finitions (sols, faïences, cuisine, peintures) selon le catalogue de prestations.<br/>
+      <strong>5. Livraison</strong> — Remise des clés, visite de réception, établissement de la liste des réserves.</p>
 
-    <hr class="article-separator" />
-
-    <!-- Article 2 -->
-    <article class="article-full reveal" id="article2" itemscope itemtype="https://schema.org/Article">
-      <meta itemprop="author" content="Ponthieu Développement Holding" />
-      <meta itemprop="datePublished" content="2026-02-15" />
-      <p class="article-tag" itemprop="articleSection">Vie de quartier</p>
-      <h2 itemprop="headline">Le quartier des Lauves : l'adresse la plus prisée d'Aix-en-Provence</h2>
-      <p class="article-date">Février 2026</p>
-      <div class="article-divider"></div>
-
-      <p itemprop="description">Situé au nord-est d'Aix-en-Provence, le quartier des Lauves bénéficie d'une réputation bien établie parmi les familles et les cadres qui cherchent à combiner qualité de vie résidentielle et proximité immédiate du centre-ville.</p>
-
-      <h3>Un quartier résidentiel calme et verdoyant</h3>
-      <p>Les Lauves offrent un cadre de vie apaisé, loin de l'agitation du centre mais à <strong>seulement 4 minutes en voiture</strong> du Cours Mirabeau. Les rues bordées de pins et de platanes, les résidences à taille humaine et les espaces naturels environnants — dont le célèbre <strong>Terrain des Peintres</strong> fréquenté par Cézanne — en font l'un des quartiers les plus recherchés d'Aix.</p>
-
-      <h3>Toutes les commodités à pied</h3>
-      <p>Le quartier dispose de <strong>commerces de proximité</strong> (boulangerie, pharmacie, supérette), de <strong>plusieurs établissements scolaires</strong> de la maternelle au lycée, et d'arrêts de bus desservant directement le centre-ville et la gare. Un équilibre rare entre autonomie quotidienne et sérénité résidentielle.</p>
-
-      <h3>Une valeur patrimoniale solide</h3>
-      <p>Les prix dans le quartier des Lauves ont progressé régulièrement au fil des années, portés par une demande constante et une offre limitée. Les biens de standing y trouvent acquéreur rapidement, souvent <strong>avant même leur mise en commercialisation officielle</strong>. C'est précisément pourquoi la résidence 59 Cézanne a choisi cet emplacement pour son programme d'exception.</p>
-
-      <h3>La Sainte-Victoire, horizon quotidien</h3>
-      <p>L'un des atouts majeurs du quartier des Lauves est son <strong>orientation est/sud-est</strong>, qui offre des vues dégagées sur la Montagne Sainte-Victoire. Cette vue — garantie dans chaque appartement de la résidence 59 Cézanne — constitue un avantage patrimonial et émotionnel sans équivalent dans le parc immobilier aixois.</p>
-
-      <div style="margin-top:2rem;">
-        <a href="localisation.html" class="btn btn-primary">Voir la localisation</a>
-      </div>
-    </article>
-
-    <hr class="article-separator" />
-
-    <!-- Article 3 -->
-    <article class="article-full reveal" id="article3" itemscope itemtype="https://schema.org/Article">
-      <meta itemprop="author" content="Ponthieu Développement Holding" />
-      <meta itemprop="datePublished" content="2026-01-20" />
-      <p class="article-tag" itemprop="articleSection">Art de vivre provençal</p>
-      <h2 itemprop="headline">Vue sur la Sainte-Victoire : quand votre appartement devient une œuvre d'art</h2>
-      <p class="article-date">Janvier 2026</p>
-      <div class="article-divider"></div>
-
-      <p itemprop="description">Il existe peu d'endroits au monde où votre fenêtre de salon vous offre le même panorama qu'un tableau de maître exposé dans les plus grands musées. À la résidence 59 Cézanne, c'est pourtant votre quotidien.</p>
-
-      <h3>La montagne de Cézanne</h3>
-      <p>La Montagne Sainte-Victoire culmine à <strong>1 011 mètres</strong> et domine le paysage provençal depuis des millions d'années. Mais c'est Paul Cézanne qui lui a donné une dimension universelle en la représentant dans plus de <strong>60 huiles sur toile et aquarelles</strong> entre 1882 et 1906. Aujourd'hui, ses tableaux sont exposés à Paris, New York, Londres et Tokyo — mais la montagne, elle, est toujours là, immuable et majestueuse.</p>
-
-      <h3>Un spectacle qui change à chaque heure</h3>
-      <p>Ce qui fascine dans la Sainte-Victoire, c'est son <strong>caractère vivant</strong>. Rose pâle à l'aube, blanc lumineux en pleine journée, ocre et mordoré au coucher du soleil, enneigée quelques jours en hiver — la montagne est un tableau qui se renouvelle constamment. Les résidents de la résidence 59 Cézanne en témoignent : on ne s'y habitue jamais.</p>
-
-      <h3>Une vue certifiée depuis chaque appartement</h3>
-      <p>La résidence 59 Cézanne a été conçue avec une attention particulière à l'<strong>orientation et aux dégagements visuels</strong>. Chaque appartement — T2, T3 Duplex ou T4 — bénéficie d'une vue dégagée sur la Sainte-Victoire, garantie dans les documents contractuels. Les baies vitrées généreuses et les grandes terrasses permettent de profiter de ce panorama depuis le salon, la cuisine et les chambres principales.</p>
-
-      <h3>Un atout patrimonial durable</h3>
-      <p>Au-delà de l'émotion quotidienne, la vue sur la Sainte-Victoire constitue un <strong>avantage immobilier tangible et durable</strong>. Sur le marché aixois, les biens offrant ce panorama se revendent significativement plus vite et à de meilleures conditions. C'est une valeur refuge qui traverse les cycles immobiliers.</p>
-
-      <div style="margin-top:2rem;">
-        <a href="logements.html" class="btn btn-primary">Découvrir les appartements</a>
-      </div>
-    </article>
+      <p>Pour découvrir les appartements disponibles à la résidence <strong>59 Cézanne</strong> — T2 depuis 65m², T3 Duplex et T4 jusqu'à 312m² de jardin — ou pour obtenir une documentation complète, contactez notre équipe directement.</p>
+    </div>
 
   </div>
 </section>
 
-<!-- ─── CTA ──────────────────────────────────────────────────── -->
+<!-- ─── CTA ───────────────────────────────────────────────────── -->
 <section class="section" style="background:var(--beige);">
   <div class="container text-center reveal">
     <p class="eyebrow" style="justify-content:center;">Prochaine étape</p>
-    <h2 class="section-title">Intéressé par la résidence<br><em>59 Cézanne</em> ?</h2>
-    <p class="section-lead mt-2 mb-4">Notre équipe est disponible pour répondre à toutes vos questions et organiser une présentation personnalisée.</p>
-    <div class="d-flex gap-3 align-center flex-wrap" style="justify-content:center;">
-      <a href="contact.html" class="btn btn-primary">Nous contacter</a>
-      <a href="logements.html" class="btn btn-outline-dark">Voir les appartements</a>
+    <h2 class="section-title">Découvrez la résidence <em>59 Cézanne</em></h2>
+    <p class="section-lead mt-2 mb-4">8 appartements d'exception. Vue Sainte-Victoire garantie. Livraison 2027.</p>
+    <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;">
+      <a href="logements.html" class="btn btn-primary">Voir les appartements</a>
+      <a href="contact.html" class="btn btn-outline-dark">Nous contacter</a>
     </div>
   </div>
 </section>
 
-<!-- ─── Footer ───────────────────────────────────────────────── -->
-<footer class="footer">
+<!-- ─── Footer ────────────────────────────────────────────────── -->
+<footer class="site-footer">
   <div class="container">
     <div class="footer-grid">
-      <div class="footer-col footer-brand">
-        <div class="footer-logo">
-          <span class="footer-logo-num">59</span>
-          <span class="footer-logo-text">Cézanne</span>
-        </div>
-        <div class="footer-logo-sub">Aix-en-Provence</div>
-        <p>Résidence exclusive de 8 appartements d'exception avec vue imprenable sur la Sainte-Victoire. Une réalisation Ponthieu Développement Holding.</p>
+      <div class="footer-brand">
+        <a href="index.html" class="nav-logo" style="margin-bottom:1rem;display:inline-block;">
+          <span class="logo-59">59</span><span class="logo-cez">Cézanne</span>
+        </a>
+        <p style="font-size:0.82rem;color:rgba(255,255,255,0.45);line-height:1.7;max-width:240px;">Résidence exclusive de 8 appartements au cœur d'Aix-en-Provence.</p>
       </div>
-      <div class="footer-col">
+      <div class="footer-links">
         <h4>Navigation</h4>
         <ul>
           <li><a href="index.html">Accueil</a></li>
@@ -395,19 +292,16 @@
           <li><a href="contact.html">Contact</a></li>
         </ul>
       </div>
-      <div class="footer-col">
+      <div class="footer-contact">
         <h4>Contact</h4>
-        <ul>
-          <li>59 Avenue Paul Cézanne</li>
-          <li>13100 Aix-en-Provence</li>
-          <li><a href="tel:+33620534392">06 20 53 43 92</a></li>
-          <li><a href="mailto:contact@ponthieu-dev.fr">contact@ponthieu-dev.fr</a></li>
-        </ul>
+        <p>Ponthieu Développement Holding</p>
+        <p>418 Ancienne Route des Alpes<br/>13100 Aix-en-Provence</p>
+        <p><a href="tel:+33620534392">06 20 53 43 92</a></p>
       </div>
     </div>
     <div class="footer-bottom">
       <p>© 2026 Ponthieu Développement Holding — Tous droits réservés</p>
-      <p style="font-size:0.75rem;margin-top:0.3rem;opacity:0.5;">59 Avenue Paul Cézanne, 13100 Aix-en-Provence · SIRET : en cours · Mentions légales</p>
+      <p style="font-size:0.75rem;color:rgba(255,255,255,0.3);margin-top:0.25rem;">59 Avenue Paul Cézanne, 13100 Aix-en-Provence · SIRET : en cours</p>
     </div>
   </div>
 </footer>
