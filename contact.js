@@ -101,23 +101,8 @@ document.addEventListener('DOMContentLoaded', function () {
       return;
     }
 
-    // Collect form data
-    const typology = document.getElementById('typology');
-    const message  = document.getElementById('message');
-
-    const formData = {
-      nom:      nom.value.trim(),
-      prenom:   prenom.value.trim(),
-      email:    email.value.trim().toLowerCase(),
-      tel:      tel.value.trim(),
-      typology: typology ? typology.value : '',
-      message:  message ? message.value.trim() : '',
-      timestamp: new Date().toISOString()
-    };
-
     // Show loading state
     const submitBtn = form.querySelector('.btn-submit');
-    const originalBtnHTML = submitBtn.innerHTML;
     submitBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="animation:spin 1s linear infinite;width:18px;height:18px;"><circle cx="12" cy="12" r="10" stroke-dasharray="60" stroke-dashoffset="30"/></svg>&nbsp; Envoi en cours...';
     submitBtn.disabled = true;
 
@@ -129,69 +114,18 @@ document.addEventListener('DOMContentLoaded', function () {
       document.head.appendChild(style);
     }
 
-    // Simulate submission (replace with actual API call)
-    simulateSubmit(formData)
-      .then(() => {
-        showSuccess();
-      })
-      .catch((err) => {
-        console.error('Form submission error:', err);
-        submitBtn.innerHTML = originalBtnHTML;
-        submitBtn.disabled = false;
-        showSubmitError();
-      });
-  });
-
-  /* ─── Netlify Forms submission ──────────────────────────── */
-  function simulateSubmit(data) {
-    const body = new URLSearchParams({
-      'form-name': 'contact',
-      'nom':       data.nom,
-      'prenom':    data.prenom,
-      'email':     data.email,
-      'tel':       data.tel,
-      'typology':  data.typology,
-      'message':   data.message,
-    });
-
-    return fetch('/', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: body.toString()
-    }).then(res => {
-      if (!res.ok) throw new Error('Netlify error ' + res.status);
-    });
-  }
-
-  /* ─── Success state ─────────────────────────────────────── */
-  function showSuccess() {
-    form.style.display = 'none';
-    const successEl = document.getElementById('formSuccess');
-    if (successEl) {
-      successEl.classList.add('visible');
-      successEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    }
-
-    // Track conversion (Google Analytics)
+    // Track conversion before native submit
     if (typeof gtag === 'function') {
       gtag('event', 'form_submit', {
         event_category: 'Contact',
         event_label: '59 Cézanne Contact Form'
       });
     }
-  }
 
-  /* ─── Error state ───────────────────────────────────────── */
-  function showSubmitError() {
-    const existing = document.getElementById('submit-error-msg');
-    if (existing) return;
+    // Native Netlify Forms submission → redirects to action URL (merci.html)
+    form.submit();
+  });
 
-    const errorDiv = document.createElement('div');
-    errorDiv.id = 'submit-error-msg';
-    errorDiv.style.cssText = 'margin-top:1rem;padding:1rem;background:rgba(224,82,82,0.08);border:1px solid rgba(224,82,82,0.3);border-radius:6px;color:#c84444;font-size:0.85rem;text-align:center;';
-    errorDiv.textContent = 'Une erreur est survenue lors de l\'envoi. Veuillez réessayer ou nous contacter directement par téléphone au 06 20 53 43 92.';
-    form.appendChild(errorDiv);
-  }
 });
 
 /* ─── Callback button animation ────────────────────────────── */
