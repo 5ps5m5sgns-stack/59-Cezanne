@@ -1,9 +1,12 @@
 /* ============================================================
    59 CÉZANNE — contact.js
-   Form validation & submission
+   Form validation & submission (Formspree)
    ============================================================ */
 
 'use strict';
+
+/* ── Replace FORMSPREE_ID with your actual Formspree form ID ── */
+const FORMSPREE_ENDPOINT = 'https://formspree.io/f/meervrgl';
 
 document.addEventListener('DOMContentLoaded', function () {
   const form = document.getElementById('contactForm');
@@ -93,7 +96,6 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     if (!isValid) {
-      // Scroll to first error
       const firstError = form.querySelector('.form-group.error');
       if (firstError) {
         firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -103,10 +105,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Show loading state
     const submitBtn = form.querySelector('.btn-submit');
+    const originalBtnHtml = submitBtn.innerHTML;
     submitBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="animation:spin 1s linear infinite;width:18px;height:18px;"><circle cx="12" cy="12" r="10" stroke-dasharray="60" stroke-dashoffset="30"/></svg>&nbsp; Envoi en cours...';
     submitBtn.disabled = true;
 
-    // Add spinner CSS if not already added
     if (!document.getElementById('spin-style')) {
       const style = document.createElement('style');
       style.id = 'spin-style';
@@ -114,7 +116,7 @@ document.addEventListener('DOMContentLoaded', function () {
       document.head.appendChild(style);
     }
 
-    // Track conversion before native submit
+    // Track conversion
     if (typeof gtag === 'function') {
       gtag('event', 'form_submit', {
         event_category: 'Contact',
@@ -122,8 +124,41 @@ document.addEventListener('DOMContentLoaded', function () {
       });
     }
 
-    // Native Netlify Forms submission → redirects to action URL (merci.html)
-    form.submit();
+    // Submit to Formspree
+    fetch(FORMSPREE_ENDPOINT, {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        nom:      nom.value.trim(),
+        prenom:   prenom.value.trim(),
+        email:    email.value.trim(),
+        tel:      tel.value.trim(),
+        typology: (document.getElementById('typology') || {}).value || '',
+        message:  ((document.getElementById('message') || {}).value || '').trim()
+      })
+    })
+    .then(function (res) {
+      if (res.ok) {
+        window.location.href = 'merci.html';
+      } else {
+        return res.json().then(function (data) { throw data; });
+      }
+    })
+    .catch(function () {
+      submitBtn.innerHTML = originalBtnHtml;
+      submitBtn.disabled = false;
+      let errEl = document.getElementById('form-submit-error');
+      if (!errEl) {
+        errEl = document.createElement('p');
+        errEl.id = 'form-submit-error';
+        errEl.style.cssText = 'color:#c0392b;font-size:0.85rem;margin-top:0.8rem;text-align:center;';
+        submitBtn.insertAdjacentElement('afterend', errEl);
+      }
+      errEl.textContent = 'Une erreur est survenue. Veuillez réessayer ou nous contacter par téléphone.';
+    });
   });
 
 });
