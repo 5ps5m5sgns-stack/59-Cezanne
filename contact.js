@@ -6,7 +6,7 @@
 'use strict';
 
 /* ── Replace FORMSPREE_ID with your actual Formspree form ID ── */
-const FORMSPREE_ENDPOINT = 'https://formspree.io/f/meervrgl';
+const FORMSPREE_ENDPOINT = 'https://formspree.io/f/xpqybwkw';
 
 document.addEventListener('DOMContentLoaded', function () {
   const form = document.getElementById('contactForm');
