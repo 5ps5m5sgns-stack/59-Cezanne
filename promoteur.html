@@ -26,49 +26,112 @@
       align-items: center;
     }
 
-    .pdh-portrait {
-      position: relative;
-    }
-
-    .pdh-portrait-img {
-      width: 100%;
-      aspect-ratio: 3/4;
-      object-fit: cover;
+    /* Brand identity card replacing photo */
+    .pdh-identity-card {
+      background: linear-gradient(160deg, #1a1810 0%, #13110c 100%);
       border-radius: var(--radius-md);
-      box-shadow: var(--shadow-lg);
-    }
-
-    .pdh-portrait-placeholder {
-      width: 100%;
-      aspect-ratio: 3/4;
-      background: linear-gradient(160deg, var(--stone) 0%, var(--beige) 100%);
-      border-radius: var(--radius-md);
+      border: 1px solid rgba(201,169,110,0.18);
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 1rem;
+      gap: 2.5rem;
+      padding: 3.5rem 2.5rem;
+      position: relative;
+      overflow: hidden;
+      min-height: 380px;
     }
 
-    .pdh-portrait-placeholder .portrait-initial {
-      width: 100px;
-      height: 100px;
-      border-radius: 50%;
-      background: var(--or);
+    .pdh-identity-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at 50% 30%, rgba(201,169,110,0.08) 0%, transparent 65%);
+      pointer-events: none;
+    }
+
+    .pdh-identity-card .pdh-logo-wrap {
+      position: relative;
+      z-index: 1;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-family: var(--font-serif);
-      font-size: 2.5rem;
-      font-weight: 300;
-      color: var(--dark);
+      background: rgba(255,255,255,0.97);
+      border-radius: 12px;
+      padding: 1.8rem 2.4rem;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.35);
     }
 
-    .pdh-portrait-placeholder p {
+    .pdh-identity-card .pdh-logo-wrap img {
+      max-height: 72px;
+      max-width: 220px;
+      object-fit: contain;
+      display: block;
+    }
+
+    .pdh-identity-divider {
+      width: 40px;
+      height: 1px;
+      background: rgba(201,169,110,0.5);
+      position: relative;
+      z-index: 1;
+    }
+
+    .pdh-identity-meta {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .pdh-identity-meta strong {
       font-family: var(--font-serif);
-      font-size: 1.1rem;
+      font-size: 1.05rem;
       font-weight: 400;
-      color: var(--text-mid);
+      color: rgba(255,255,255,0.92);
+      letter-spacing: 0.03em;
+    }
+
+    .pdh-identity-meta span {
+      font-size: 0.72rem;
+      font-weight: 500;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--or);
+    }
+
+    .pdh-identity-badges {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      width: 100%;
+    }
+
+    .pdh-identity-badge {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-size: 0.78rem;
+      color: rgba(255,255,255,0.65);
+      letter-spacing: 0.03em;
+      padding: 0.4rem 0;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .pdh-identity-badge:last-child { border-bottom: none; }
+
+    .pdh-identity-badge::before {
+      content: '';
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--or);
+      flex-shrink: 0;
+      opacity: 0.7;
     }
 
     .pdh-stats-band {
@@ -398,30 +461,30 @@
 <section class="section">
   <div class="container">
     <div class="pdh-hero-block">
-      <div class="pdh-portrait reveal-left">
-        <!-- IMAGE: Photo d'un projet PDH ou portrait Stéphane Ponthieu -->
-        <img
-          src="Photo 59 Cézanne/Photo GTP/Photo GTP Intérieur.webp"
-          alt="Réalisation Ponthieu Développement Holding"
-          class="pdh-portrait-img"
-          loading="lazy"
-          onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"
-        />
-        <div class="pdh-portrait-placeholder" style="display:none;">
-          <div class="portrait-initial">SP</div>
-          <p>Stéphane Ponthieu</p>
+      <!-- Brand identity card -->
+      <div class="pdh-identity-card reveal-left">
+        <div class="pdh-logo-wrap">
+          <img
+            src="Photo 59 Cézanne/Logo PONTHIEU/Logo Ponthieu.webp"
+            alt="Logo Ponthieu Développement Holding"
+            loading="lazy"
+            onerror="this.style.display='none';"
+          />
+        </div>
+        <div class="pdh-identity-divider"></div>
+        <div class="pdh-identity-meta">
+          <strong>Ponthieu Développement Holding</strong>
+          <span>Fondée en 2001 · Aix-en-Provence</span>
+        </div>
+        <div class="pdh-identity-badges">
+          <div class="pdh-identity-badge" data-lang-fr="84 projets réalisés" data-lang-en="84 completed projects">84 projets réalisés</div>
+          <div class="pdh-identity-badge" data-lang-fr="420 logements livrés" data-lang-en="420 homes delivered">420 logements livrés</div>
+          <div class="pdh-identity-badge" data-lang-fr="25 ans d'expertise" data-lang-en="25 years of expertise">25 ans d'expertise</div>
+          <div class="pdh-identity-badge" data-lang-fr="Sud de la France" data-lang-en="South of France">Sud de la France</div>
         </div>
       </div>
 
       <div class="reveal-right">
-        <!-- Logo PDH -->
-        <img
-          src="Photo 59 Cézanne/Logo PONTHIEU/Logo Ponthieu.webp"
-          alt="Logo Ponthieu Développement Holding"
-          style="max-height:100px;max-width:280px;object-fit:contain;margin-bottom:2rem;display:block;"
-          loading="lazy"
-          onerror="this.style.display='none';"
-        />
 
         <p class="eyebrow" data-lang-fr="Fondée en 2001" data-lang-en="Founded in 2001">Fondée en 2001</p>
         <h2 class="section-title" data-lang-fr="Stéphane Ponthieu &amp;<br><em>l'excellence immobilière</em>" data-lang-en="Stéphane Ponthieu &amp;<br><em>real estate excellence</em>">Stéphane Ponthieu &<br><em>l'excellence immobilière</em></h2>
