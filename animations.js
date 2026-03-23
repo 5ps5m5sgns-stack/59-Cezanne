@@ -428,14 +428,14 @@ function setLang(lang) {
   });
   document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
   document.querySelectorAll('.lang-btn[onclick*="' + lang + '"]').forEach(b => b.classList.add('active'));
-  // Store preference
-  try { localStorage.setItem('59cezanne-lang', lang); } catch(e) {}
+  // Store preference for this session only
+  try { sessionStorage.setItem('59cezanne-lang', lang); } catch(e) {}
 }
 
-// Restore saved language preference
+// Restore saved language preference within the same session
 (function restoreLang() {
   try {
-    const saved = localStorage.getItem('59cezanne-lang');
+    const saved = sessionStorage.getItem('59cezanne-lang');
     if (saved && saved !== 'fr') setLang(saved);
   } catch(e) {}
 })();
