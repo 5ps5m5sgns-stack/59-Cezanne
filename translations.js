@@ -22,14 +22,14 @@ window.setLang = function(lang) {
     b.classList.toggle('active', b.getAttribute('onclick')?.includes("'" + lang + "'"));
   });
 
-  // 5. Save preference
-  try { localStorage.setItem('59cezanne-lang', lang); } catch(e) {}
+  // 5. Save preference for this session only
+  try { sessionStorage.setItem('59cezanne-lang', lang); } catch(e) {}
 };
 
-/* Restore saved language on page load */
+/* Restore saved language across pages within the same session */
 document.addEventListener('DOMContentLoaded', function() {
   try {
-    const saved = localStorage.getItem('59cezanne-lang');
+    const saved = sessionStorage.getItem('59cezanne-lang');
     if (saved && saved !== 'fr') window.setLang(saved);
   } catch(e) {}
 });
