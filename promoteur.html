@@ -63,8 +63,8 @@
     }
 
     .pdh-identity-card .pdh-logo-wrap img {
-      max-height: 100px;
-      max-width: 300px;
+      max-height: 140px;
+      max-width: 380px;
       object-fit: contain;
       display: block;
     }
@@ -578,7 +578,7 @@
   <div class="container">
     <div class="expertise-cols">
       <div class="reveal-left">
-        <p class="eyebrow" data-lang-fr="Domaine 1" data-lang-en="Area 1">Domaine 1</p>
+        <p class="eyebrow" style="color:var(--white);" data-lang-fr="Domaine 1" data-lang-en="Area 1">Domaine 1</p>
         <h3 data-lang-fr="Promotion <em>immobilière neuve</em>" data-lang-en="<em>New-build</em> property development">Promotion <em>immobilière neuve</em></h3>
         <p data-lang-fr="PDH conçoit et réalise des programmes immobiliers résidentiels haut de gamme dans les secteurs les plus prisés du Sud de la France. Chaque programme est une œuvre d'architecture pensée pour durer." data-lang-en="PDH designs and delivers premium residential property schemes in the most sought-after areas of the South of France. Every scheme is an architectural work built to last.">
           PDH conçoit et réalise des programmes immobiliers résidentiels haut de gamme dans les secteurs les plus prisés du Sud de la France. Chaque programme est une œuvre d'architecture pensée pour durer.
@@ -594,7 +594,7 @@
       </div>
 
       <div class="reveal-right">
-        <p class="eyebrow" data-lang-fr="Domaine 2" data-lang-en="Area 2">Domaine 2</p>
+        <p class="eyebrow" style="color:var(--white);" data-lang-fr="Domaine 2" data-lang-en="Area 2">Domaine 2</p>
         <h3 data-lang-fr="Restauration du <em>patrimoine</em>" data-lang-en="<em>Heritage</em> restoration">Restauration du <em>patrimoine</em></h3>
         <p data-lang-fr="Avec une expertise particulière dans la restauration du bâti ancien, PDH redonne vie à des édifices historiques en les transformant en biens résidentiels ou tertiaires d'exception." data-lang-en="With specialist expertise in historic building restoration, PDH breathes new life into historical buildings by transforming them into exceptional residential or commercial properties.">
           Avec une expertise particulière dans la restauration du bâti ancien, PDH redonne vie à des édifices historiques en les transformant en biens résidentiels ou tertiaires d'exception.
@@ -741,15 +741,6 @@
 
 <script src="translations.js"></script>
 <script src="animations.js"></script>
-<script>
-function setLang(lang) {
-  document.querySelectorAll('[data-lang-' + lang + ']').forEach(el => {
-    el.innerHTML = el.getAttribute('data-lang-' + lang);
-  });
-  document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
-  document.querySelectorAll('.lang-btn[onclick*="' + lang + '"]').forEach(b => b.classList.add('active'));
-}
-</script>
 <script src="cookie.js"></script>
 </body>
 </html>

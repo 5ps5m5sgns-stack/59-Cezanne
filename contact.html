@@ -341,9 +341,9 @@
               <label class="form-label" for="typology" data-lang-fr="Typologie souhaitée" data-lang-en="Preferred apartment type">Typologie souhaitée</label>
               <select class="form-select" id="typology" name="typology">
                 <option value="" disabled selected data-lang-fr="Choisissez une typologie" data-lang-en="Choose an apartment type">Choisissez une typologie</option>
-                <option value="t4" data-lang-fr="T4 — Appartement familial (~110 m²)" data-lang-en="T4 — Family apartment (~110 m²)">T4 — Appartement familial (~110 m²)</option>
-                <option value="t3duplex" data-lang-fr="T3 Duplex — Maison sur 2 niveaux (~90 m²)" data-lang-en="T3 Duplex — 2-level home (~90 m²)">T3 Duplex — Maison sur 2 niveaux (~90 m²)</option>
-                <option value="t2" data-lang-fr="T2 — Appartement intimiste (~65 m²)" data-lang-en="T2 — Intimate apartment (~65 m²)">T2 — Appartement intimiste (~65 m²)</option>
+                <option value="t4" data-lang-fr="4 pièces — Appartement familial (102 à 139 m²)" data-lang-en="4 rooms — Family apartment (102 to 139 m²)">4 pièces — Appartement familial (102 à 139 m²)</option>
+                <option value="t3duplex" data-lang-fr="3 pièces Duplex — Maison sur 2 niveaux (~104 m²)" data-lang-en="3-room Duplex — Two-level home (~104 m²)">3 pièces Duplex — Maison sur 2 niveaux (~104 m²)</option>
+                <option value="t2" data-lang-fr="2 pièces — Appartement intimiste (~46 m²)" data-lang-en="2 rooms — Intimate apartment (~46 m²)">2 pièces — Appartement intimiste (~46 m²)</option>
                 <option value="non-decide" data-lang-fr="Je ne sais pas encore" data-lang-en="Not decided yet">Je ne sais pas encore</option>
                 <option value="info" data-lang-fr="Informations générales seulement" data-lang-en="General information only">Informations générales seulement</option>
               </select>
@@ -639,14 +639,6 @@
 <script src="animations.js"></script>
 <script src="contact.js"></script>
 <script>
-function setLang(lang) {
-  document.querySelectorAll('[data-lang-' + lang + ']').forEach(el => {
-    el.innerHTML = el.getAttribute('data-lang-' + lang);
-  });
-  document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
-  document.querySelectorAll('.lang-btn[onclick*="' + lang + '"]').forEach(b => b.classList.add('active'));
-}
-
 function toggleFaq(el) {
   const item = el.parentElement;
   const isOpen = item.classList.contains('open');
