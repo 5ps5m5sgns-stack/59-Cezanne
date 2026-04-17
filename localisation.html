@@ -13,6 +13,7 @@
   <meta property="og:description" content="4 min du centre-ville, 15 min gare TGV, 25 min aéroport. Au cœur du quartier des Lauves à Aix-en-Provence." />
 
   <link rel="icon" type="image/x-icon" href="favicon.ico" />
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png" />
   <link rel="icon" type="image/png" sizes="192x192" href="favicon-192.png" />
   <link rel="icon" type="image/png" sizes="512x512" href="favicon-512.png" />
   <link rel="apple-touch-icon" href="apple-touch-icon.png" />
@@ -706,15 +707,6 @@
 
 <script src="translations.js"></script>
 <script src="animations.js"></script>
-<script>
-function setLang(lang) {
-  document.querySelectorAll('[data-lang-' + lang + ']').forEach(el => {
-    el.innerHTML = el.getAttribute('data-lang-' + lang);
-  });
-  document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
-  document.querySelectorAll('.lang-btn[onclick*="' + lang + '"]').forEach(b => b.classList.add('active'));
-}
-</script>
 <script src="cookie.js"></script>
 </body>
 </html>

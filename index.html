@@ -28,6 +28,7 @@
   <!-- <script async src="https://www.googletagmanager.com/gtag/js?id=GA_MEASUREMENT_ID"></script> -->
 
   <link rel="icon" type="image/x-icon" href="favicon.ico" />
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png" />
   <link rel="icon" type="image/png" sizes="192x192" href="favicon-192.png" />
   <link rel="icon" type="image/png" sizes="512x512" href="favicon-512.png" />
   <link rel="apple-touch-icon" href="apple-touch-icon.png" />
@@ -968,20 +969,6 @@
 <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 <script src="translations.js"></script>
 <script src="animations.js"></script>
-<script>
-  // Language switch
-  function setLang(lang) {
-    document.querySelectorAll('[data-lang-' + lang + ']').forEach(el => {
-      el.innerHTML = el.getAttribute('data-lang-' + lang);
-    });
-    document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
-    document.querySelector('.lang-btn[onclick*="' + lang + '"]').classList.add('active');
-    // Also update mobile menu lang buttons
-    document.querySelectorAll('.nav-mobile-lang .lang-btn').forEach(b => {
-      b.classList.toggle('active', b.getAttribute('onclick').includes(lang));
-    });
-  }
-</script>
 <script src="cookie.js"></script>
 </body>
 </html>
