@@ -1,19 +1,25 @@
 /* ============================================================
    59 CÉZANNE — blog.css
    Feuille de style du blog (hub /blog + articles /blog/<slug>)
-   et des cartes « Pour aller plus loin » des pages produit.
+   et des cartes « À lire aussi » des articles.
 
    Principes
    - Se charge APRÈS /style.css et n'utilise que ses variables
      (--creme, --beige, --or, --stone…, polices serif/sans, .btn, .container).
+     Rappel : html { font-size: 18px } dans style.css, donc 1 rem = 18 px.
    - Tout sélecteur est scopé (.blog-*, .post-*) : la feuille est
-     inoffensive sur une page produit. Seuls .post-related, .post-cards,
-     .post-card (+ .post-card-pillar / .post-card-title) sont conçus pour
-     être utilisés hors blog (aucune dépendance à body.blog-page).
+     inoffensive sur une page produit.
    - Le doré --or (#C9A96E) est trop pâle pour du texte sur fond clair
      (2,2:1 sur blanc). Texte doré = --blog-gold-text (= --or-texte de
-     style.css, repli #7A5F1F) : ≥ 4,5:1 sur --creme, --beige, --stone-light.
+     style.css, repli #7F6422) : ≥ 4,5:1 sur --creme, --beige, --stone-light.
    - Aucun JavaScript requis (sommaire = liste d'ancres, FAQ = details).
+
+   Mise en page des articles (refonte « lecture confortable »)
+   - Colonne de lecture étroite et centrée (≈ 62 caractères par ligne,
+     texte ≈ 1,3 rem, interligne 1,62).
+   - Les figures sortent de la colonne : jusqu'à 1100 px sur grand écran,
+     pleine largeur d'écran sur mobile. Les tableaux sont un peu plus larges
+     que le texte. Rien n'est modifié dans le HTML des articles.
    ============================================================ */
 
 
@@ -23,13 +29,17 @@
 .post-cards,
 .post-card,
 .post-cta {
-  --blog-gold-text: var(--or-texte, #7A5F1F);   /* texte doré (jeton de style.css), ≥ 4,5:1 sur fonds clairs */
+  --blog-gold-text: var(--or-texte, #7F6422);   /* texte doré (jeton de style.css), ≥ 4,5:1 sur fonds clairs */
   --blog-gold-hover: #5C4513;                   /* survol des liens dorés */
-  --blog-focus: var(--focus-ring, #7A5F1F);     /* anneau de focus sur fond clair */
-  --blog-nav-h: 64px;             /* hauteur de la barre fixe sur les pages blog */
-  --blog-toc-w: 14rem;            /* colonne du sommaire */
-  --blog-body-w: 40rem;           /* colonne de lecture (~70 caractères à 18 px) */
-  --blog-gap: clamp(2rem, 4vw, 4rem);
+  --blog-focus: var(--focus-ring, #7F6422);     /* anneau de focus sur fond clair */
+  --blog-nav-h: 64px;                           /* hauteur de la barre fixe sur les pages blog */
+  --blog-text-w: 39.5rem;                       /* colonne de lecture : ≈ 65 caractères par ligne (30 em de large) */
+  --blog-table-w: 52rem;                        /* tableaux : plus larges que le texte, moins que les figures */
+  --blog-wide-w: 1100px;                        /* figures et en-tête sur grand écran */
+  --blog-pad: 2rem;                             /* marge latérale de .container (style.css) */
+}
+@media (max-width: 420px) {
+  .blog-page { --blog-pad: 1.25rem; }
 }
 
 
@@ -66,55 +76,43 @@
   outline-offset: 4px;
 }
 
+/* Très petits écrans : marges latérales réduites pour garder une ligne lisible */
+@media (max-width: 420px) {
+  .blog-page .container { padding-left: var(--blog-pad); padding-right: var(--blog-pad); }
+}
 
-/* ─── 2. Hero d'article ────────────────────────────────────── */
+
+/* ─── 2. En-tête d'article ─────────────────────────────────── */
 .post-hero {
   background: linear-gradient(180deg, var(--beige) 0%, var(--creme) 100%);
   border-bottom: 1px solid var(--border);
-  padding: clamp(1.75rem, 4vw, 3rem) 0 clamp(2.25rem, 5vw, 3.75rem);
+  padding: clamp(1.75rem, 4vw, 3rem) 0 clamp(2.5rem, 6vw, 4.5rem);
 }
 
-/* Le bloc héros et la grille de lecture partagent la même largeur :
-   le texte du héros s'aligne sur le bord gauche du sommaire. */
+/* L'en-tête et la grille de lecture partagent la largeur « large » des figures */
 .container.post-hero-inner,
 .container.post-layout {
-  max-width: calc(var(--blog-body-w) + 4rem);
-}
-@media (min-width: 1024px) {
-  .container.post-hero-inner,
-  .container.post-layout {
-    max-width: calc(var(--blog-toc-w) + var(--blog-gap) + var(--blog-body-w) + 4rem);
-  }
-}
-/* Très petits écrans : marges latérales réduites pour garder une ligne lisible */
-@media (max-width: 420px) {
-  .blog-page .container { padding-left: 1.25rem; padding-right: 1.25rem; }
+  max-width: calc(var(--blog-wide-w) + 2 * var(--blog-pad));
 }
 
 /* Fil d'Ariane */
 .post-breadcrumb {
-  margin-bottom: clamp(1.25rem, 3vw, 2rem);
-  font-size: 0.8125rem;
+  margin-bottom: clamp(1.5rem, 3.5vw, 2.5rem);
+  font-size: 0.9rem;
   line-height: 1.5;
 }
 .post-breadcrumb ol {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 0.2rem 0.55rem;
   padding: 0;
   margin: 0;
   list-style: none;
 }
 .post-breadcrumb li {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.55rem;
+  display: inline;
   color: var(--text-mid);
 }
 .post-breadcrumb li + li::before {
-  content: "\203A";
-  content: "\203A" / "";
+  content: "\00A0\203A\00A0\00A0";
+  content: "\00A0\203A\00A0\00A0" / "";
   color: var(--text-mid);
   opacity: 0.7;
 }
@@ -144,30 +142,30 @@
   display: flex;
   align-items: center;
   gap: 0.8rem;
-  margin-bottom: 1rem;
+  margin-bottom: 1.1rem;
   font-family: var(--font-sans);
-  font-size: 0.72rem;
+  font-size: 0.8rem;
   font-weight: 700;
-  letter-spacing: 0.22em;
+  letter-spacing: 0.2em;
   text-transform: uppercase;
   color: var(--blog-gold-text);
 }
 .post-pillar::before {
   content: "";
   flex: none;
-  width: 28px;
+  width: 32px;
   height: 1px;
   background: currentColor;
 }
 
 /* Titre H1 */
 .post-title {
-  max-width: 21em;
+  max-width: 19em;
   font-family: var(--font-serif);
-  font-size: clamp(2rem, 1.35rem + 2.7vw, 3.35rem);
+  font-size: clamp(2.15rem, 1.4rem + 3.6vw, 4.2rem);
   font-weight: 400;
-  line-height: 1.14;
-  letter-spacing: -0.005em;
+  line-height: 1.08;
+  letter-spacing: -0.01em;
   font-variant-numeric: lining-nums;
   color: var(--text);
   text-wrap: balance;
@@ -175,9 +173,10 @@
 
 /* Signature, dates, temps de lecture */
 .post-meta {
-  margin-top: 1.5rem;
-  font-size: 0.875rem;
-  line-height: 1.8;
+  max-width: 60rem;
+  margin-top: 1.75rem;
+  font-size: 0.95rem;
+  line-height: 1.75;
   color: var(--text-mid);
 }
 .post-meta a {
@@ -194,37 +193,27 @@
 }
 
 
-/* ─── 3. Grille de lecture : sommaire + corps ───────────────── */
+/* ─── 3. Grille de lecture : sommaire discret + corps ───────── */
 .container.post-layout {
   display: block;
   padding-top: clamp(2rem, 4vw, 3.25rem);
-  padding-bottom: clamp(3rem, 6vw, 5.5rem);
+  padding-bottom: clamp(3.5rem, 7vw, 6rem);
 }
 
-@media (min-width: 1024px) {
-  .container.post-layout {
-    display: grid;
-    grid-template-columns: var(--blog-toc-w) minmax(0, var(--blog-body-w));
-    column-gap: var(--blog-gap);
-    align-items: start;
-    padding-top: clamp(2.75rem, 4vw, 3.75rem);
-  }
-}
-
-/* Sommaire (liste d'ancres, sticky sur grand écran) */
+/* Sommaire : liste d'ancres compacte, sans cadre, à la largeur du texte */
 .post-toc {
-  margin-bottom: 2.25rem;
-  padding: 1.25rem 1.5rem;
-  background: var(--beige);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-md);
-  font-size: 0.9rem;
-  line-height: 1.45;
+  max-width: var(--blog-text-w);
+  margin: 0 auto clamp(2.25rem, 4vw, 3rem);
+  padding: 1rem 0 1.1rem;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  font-size: 0.95rem;
+  line-height: 1.4;
 }
 .post-toc-title {
-  margin-bottom: 0.9rem;
+  margin-bottom: 0.45rem;
   font-family: var(--font-sans);
-  font-size: 0.68rem;
+  font-size: 0.74rem;
   font-weight: 700;
   letter-spacing: 0.22em;
   text-transform: uppercase;
@@ -238,9 +227,9 @@
 .post-toc li { break-inside: avoid; }
 .post-toc a {
   display: block;
-  padding: 0.4rem 0;
+  padding: 0.3rem 0;
   color: var(--text-mid);
-  transition: color var(--transition-fast), border-color var(--transition-fast);
+  transition: color var(--transition-fast);
 }
 .post-toc a:hover { color: var(--text); text-decoration: underline; text-underline-offset: 0.2em; }
 .post-toc a:focus-visible {
@@ -249,32 +238,40 @@
   border-radius: 2px;
 }
 
-@media (min-width: 600px) and (max-width: 1023px) {
+@media (min-width: 701px) {
   .post-toc ol { column-count: 2; column-gap: 2.5rem; }
 }
 
-@media (min-width: 1024px) {
+/* Mobile : le sommaire tient sur une seule ligne qu'on fait défiler (un cran de texte en moins avant l'article) */
+@media (max-width: 700px) {
   .post-toc {
-    position: sticky;
-    top: calc(var(--blog-nav-h) + 1.75rem);
-    margin-bottom: 0;
-    padding: 0 0.5rem 0 0;
-    max-height: calc(100vh - var(--blog-nav-h) - 3.5rem);
-    overflow-y: auto;
-    background: none;
-    border: 0;
-    border-radius: 0;
-    font-size: 0.875rem;
+    margin-left: calc(-1 * var(--blog-pad));
+    margin-right: calc(-1 * var(--blog-pad));
+    padding: 0.85rem var(--blog-pad) 0.95rem;
+    border-top: 0;
+    border-left: 0;
+    border-right: 0;
   }
-  .post-toc ol { border-left: 1px solid var(--border); }
+  .post-toc ol {
+    display: flex;
+    gap: 0.5rem;
+    margin: 0 calc(-1 * var(--blog-pad));
+    padding: 0.1rem var(--blog-pad) 0.25rem;
+    overflow-x: auto;
+    scroll-snap-type: x proximity;
+    scroll-padding-inline: var(--blog-pad);
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .post-toc ol::-webkit-scrollbar { display: none; }
+  .post-toc li { flex: none; scroll-snap-align: start; }
   .post-toc a {
-    margin-left: -1px;
-    padding: 0.45rem 0 0.45rem 1rem;
-    border-left: 2px solid transparent;
-  }
-  .post-toc a:hover {
-    text-decoration: none;
-    border-left-color: var(--or);
+    padding: 0.5rem 0.95rem;
+    border: 1px solid var(--stone);
+    border-radius: 50px;
+    background: var(--white);
+    white-space: nowrap;
+    color: var(--text);
   }
 }
 
@@ -283,20 +280,28 @@
 .post-body {
   min-width: 0;
   font-family: var(--font-sans);
-  font-size: clamp(1.0625rem, 1.02rem + 0.2vw, 1.125rem);
+  font-size: clamp(1.15rem, 1.07rem + 0.35vw, 1.3rem);  /* 20,7 px mobile → 23,4 px (18 px de base) ou 24,7 px (19 px de base) */
   font-weight: 400;
-  line-height: 1.8;
+  line-height: 1.62;
   color: var(--text);
   overflow-wrap: break-word;
   hyphens: manual;
 }
 .post-body > :first-child { margin-top: 0; }
 
+/* Tout enfant direct est centré dans la colonne de lecture.
+   (Les blocs « larges » ci-dessous relèvent leur max-width.) */
+.post-body > * {
+  max-width: var(--blog-text-w);
+  margin-left: auto;
+  margin-right: auto;
+}
+
 .post-body p,
 .post-body ul,
 .post-body ol,
 .post-body dl {
-  margin-bottom: 1.3em;
+  margin-bottom: 1.1em;
 }
 
 .post-body strong { font-weight: 700; color: var(--text); }
@@ -304,22 +309,23 @@
 
 /* Chapô */
 .post-lead {
-  margin-bottom: 2.25rem;
+  margin-bottom: clamp(2rem, 4vw, 3rem);
   font-family: var(--font-serif);
-  font-size: clamp(1.3rem, 1.12rem + 0.75vw, 1.65rem);
+  font-size: clamp(1.4rem, 1.15rem + 0.7vw, 1.7rem);
   font-weight: 500;
-  line-height: 1.5;
+  line-height: 1.42;
   font-variant-numeric: lining-nums;
   color: var(--text);
 }
 
-/* Intertitres */
+/* Intertitres (margin-block uniquement : ne pas toucher aux marges latérales automatiques) */
 .post-body h2 {
-  margin: clamp(2.75rem, 5vw, 3.75rem) 0 1.1rem;
+  margin-block: clamp(3.25rem, 7vw, 5rem) 1.2rem;
   font-family: var(--font-serif);
-  font-size: clamp(1.7rem, 1.35rem + 1.4vw, 2.3rem);
+  font-size: clamp(2rem, 1.45rem + 1.9vw, 2.9rem);
   font-weight: 400;
-  line-height: 1.2;
+  line-height: 1.14;
+  letter-spacing: -0.005em;
   font-variant-numeric: lining-nums;
   color: var(--text);
   text-wrap: balance;
@@ -327,24 +333,24 @@
 .post-body h2::before {
   content: "";
   display: block;
-  width: 2.5rem;
+  width: 2.25rem;
   height: 2px;
-  margin-bottom: 1rem;
+  margin-bottom: 1.1rem;
   background: var(--or);
 }
 .post-body h3 {
-  margin: 2.25rem 0 0.7rem;
+  margin-block: 2.5rem 0.8rem;
   font-family: var(--font-serif);
-  font-size: clamp(1.3rem, 1.15rem + 0.6vw, 1.55rem);
+  font-size: clamp(1.5rem, 1.25rem + 0.85vw, 1.9rem);
   font-weight: 600;
-  line-height: 1.3;
+  line-height: 1.25;
   font-variant-numeric: lining-nums;
   color: var(--text);
   text-wrap: balance;
 }
 .post-body h4 {
-  margin: 1.75rem 0 0.5rem;
-  font-size: 0.8rem;
+  margin-block: 2rem 0.6rem;
+  font-size: 0.85rem;
   font-weight: 700;
   letter-spacing: 0.14em;
   text-transform: uppercase;
@@ -356,7 +362,7 @@
   color: var(--blog-gold-text);
   text-decoration: underline;
   text-decoration-thickness: 1px;
-  text-decoration-color: rgba(122, 95, 31, 0.5);
+  text-decoration-color: rgba(127, 100, 34, 0.5);
   text-underline-offset: 0.2em;
   transition: color var(--transition-fast), text-decoration-color var(--transition-fast);
 }
@@ -373,10 +379,10 @@
 
 /* Listes (style.css remet list-style: none sur ul/ol) */
 .post-body ul,
-.post-body ol { padding-left: 1.5em; }
+.post-body ol { padding-left: 1.4em; }
 .post-body ul { list-style: disc outside; }
 .post-body ol { list-style: decimal outside; }
-.post-body li { margin-bottom: 0.55em; padding-left: 0.3em; }
+.post-body li { margin-bottom: 0.5em; padding-left: 0.3em; }
 .post-body li:last-child { margin-bottom: 0; }
 .post-body ul li::marker { color: var(--or); }
 .post-body ol li::marker {
@@ -395,15 +401,15 @@
 }
 .post-body ul.post-checklist li {
   position: relative;
-  padding-left: 2rem;
+  padding-left: 2.1rem;
 }
 .post-body ul.post-checklist li::before {
   content: "";
   position: absolute;
   left: 0.15rem;
-  top: 0.5em;
-  width: 0.9rem;
-  height: 0.5rem;
+  top: 0.45em;
+  width: 0.95rem;
+  height: 0.55rem;
   border-left: 2px solid var(--blog-gold-text);
   border-bottom: 2px solid var(--blog-gold-text);
   transform: rotate(-45deg);
@@ -412,7 +418,7 @@
 /* Définitions */
 .post-body dt {
   font-family: var(--font-serif);
-  font-size: 1.2rem;
+  font-size: 1.35rem;
   font-weight: 600;
   line-height: 1.35;
 }
@@ -420,13 +426,13 @@
 
 /* Citation */
 .post-body blockquote {
-  margin: 2rem 0;
+  margin-block: 2.5rem;
   padding: 0.25rem 0 0.25rem 1.5rem;
   border-left: 3px solid var(--or);
   font-family: var(--font-serif);
-  font-size: 1.3rem;
+  font-size: 1.55rem;
   font-style: italic;
-  line-height: 1.55;
+  line-height: 1.45;
   color: var(--text);
 }
 .post-body blockquote p { margin-bottom: 0.6em; }
@@ -435,13 +441,13 @@
   display: block;
   margin-top: 0.5rem;
   font-family: var(--font-sans);
-  font-size: 0.82rem;
+  font-size: 0.9rem;
   font-style: normal;
   color: var(--text-mid);
 }
 
 .post-body hr {
-  margin: 3rem 0;
+  margin-block: 3.5rem;
   border: 0;
   border-top: 1px solid var(--border);
 }
@@ -449,59 +455,79 @@
 
 /* ─── 5. Figures, tableaux, encarts, FAQ, mentions ─────────── */
 
-/* Figure + légende */
-.post-figure {
-  margin: 2.25rem 0;
+/* Figure : plus large que le texte (1100 px max), pleine largeur d'écran sur mobile.
+   Les figures sont des enfants directs de .post-body. */
+.post-body > .post-figure {
+  max-width: var(--blog-wide-w);
+  margin-block: clamp(2.5rem, 6vw, 4rem);
 }
 .post-figure img {
   width: 100%;
   height: auto;
-  border-radius: var(--radius-md);
   background: var(--stone-light);
-  box-shadow: var(--shadow-sm);
 }
 .post-caption {
-  margin-top: 0.7rem;
-  font-size: 0.8125rem;
-  line-height: 1.55;
-  color: var(--text-mid);
+  margin-top: 0.65rem;
+  font-family: var(--font-sans);
+  font-size: 0.82rem;
+  font-style: italic;
+  line-height: 1.5;
+  letter-spacing: 0.01em;
+  color: var(--text-light);
+}
+@media (min-width: 1172px) {
+  .post-figure img { border-radius: var(--radius); }
+}
+/* En dessous de la largeur « large », la figure déborde sur les marges et prend toute la largeur de l'écran */
+@media (max-width: 1171px) {
+  .post-body > .post-figure {
+    max-width: none;
+    margin-left: calc(-1 * var(--blog-pad));
+    margin-right: calc(-1 * var(--blog-pad));
+  }
+  .post-figure .post-caption {
+    max-width: var(--blog-text-w);
+    margin-left: auto;
+    margin-right: auto;
+    padding-inline: var(--blog-pad);
+  }
 }
 
 /* Tableau de données (utiliser <caption>, <thead>, <th scope>) */
 .post-table {
   width: 100%;
-  margin: 2.25rem 0;
+  margin-block: 2.5rem;
   border-collapse: separate;
   border-spacing: 0;
   border: 1px solid var(--stone-light);
   border-radius: var(--radius-md);
   overflow: hidden;
   background: var(--white);
-  font-size: 0.9375rem;
-  line-height: 1.55;
+  font-size: 1rem;
+  line-height: 1.5;
   font-variant-numeric: tabular-nums;
 }
 .post-table caption {
   caption-side: top;
-  padding: 0 0 0.8rem;
+  padding: 0 0 0.9rem;
   font-family: var(--font-serif);
-  font-size: 1.15rem;
+  font-size: 1.4rem;
   font-weight: 500;
-  line-height: 1.35;
+  line-height: 1.3;
   text-align: left;
   font-variant-numeric: lining-nums;
   color: var(--text);
 }
 .post-table th,
 .post-table td {
-  padding: 0.85rem 1rem;
+  padding: 0.85rem 1.1rem;
   text-align: left;
   vertical-align: top;
   border-bottom: 1px solid var(--stone-light);
 }
 .post-table thead th {
   background: var(--beige);
-  font-size: 0.72rem;
+  font-size: 0.78rem;
   font-weight: 700;
   letter-spacing: 0.1em;
   text-transform: uppercase;
@@ -516,9 +542,15 @@
 .post-table tbody tr:last-child td { border-bottom: 0; }
 .post-table tbody tr:nth-child(even) { background: rgba(245, 240, 232, 0.45); }
 
+/* Les tableaux sont un peu plus larges que la colonne de texte */
+.post-body > .post-table,
+.post-body > .post-table-wrap {
+  max-width: var(--blog-table-w);
+}
+
 /* Enveloppe optionnelle : <div class="post-table-wrap" tabindex="0" role="region" aria-label="…"> */
 .post-table-wrap {
-  margin: 2.25rem 0;
+  margin-block: 2.5rem;
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
 }
@@ -528,33 +560,60 @@
   outline-offset: 3px;
 }
 
-@media (max-width: 640px) {
-  .post-table {
+/* Mobile : le tableau déborde sur les marges et défile horizontalement.
+   Tableau nu : display:block (la boîte de table anonyme garde thead et tbody alignés) ; largeur mini par cellule.
+   Tableau en enveloppe .post-table-wrap : l'enveloppe défile, le tableau garde une largeur mini. */
+@media (max-width: 700px) {
+  .post-body > .post-table,
+  .post-body > .post-table-wrap {
+    max-width: none;
+    margin-left: calc(-1 * var(--blog-pad));
+    margin-right: calc(-1 * var(--blog-pad));
+    padding-inline: var(--blog-pad);
+  }
+  .post-body > .post-table {
     display: block;
+    width: auto;
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
-    font-size: 0.875rem;
+    border: 0;
+    border-radius: 0;
+    background: none;
+  }
+  .post-body > .post-table > caption {
+    display: block;
+    position: sticky;
+    left: 0;
+  }
+  .post-body > .post-table th,
+  .post-body > .post-table td { min-width: 8.5rem; }
+  .post-body > .post-table thead th { border-top: 1px solid var(--stone); }
+  .post-table caption {
+    width: calc(100vw - 2 * var(--blog-pad));
+    font-size: 1.25rem;
   }
   .post-table th,
-  .post-table td { padding: 0.7rem 0.8rem; }
+  .post-table td { padding: 0.7rem 0.85rem; font-size: 0.95rem; }
+  .post-table thead th { font-size: 0.74rem; }
 }
 
 /* Encart (général) */
 .post-callout {
-  margin: 2.5rem 0;
+  margin-block: 2.75rem;
   padding: 1.5rem 1.75rem;
   background: var(--beige);
   border: 1px solid var(--border);
   border-left: 3px solid var(--or);
   border-radius: var(--radius-md);
-  font-size: 0.975rem;
-  line-height: 1.75;
+  font-size: 1.05rem;
+  line-height: 1.65;
 }
 .post-callout > :last-child { margin-bottom: 0; }
+.post-callout p { margin-bottom: 0.9em; }
 .post-callout .post-callout-title {
   margin: 0 0 0.7rem;
   font-family: var(--font-serif);
-  font-size: clamp(1.35rem, 1.2rem + 0.5vw, 1.55rem);
+  font-size: clamp(1.45rem, 1.3rem + 0.5vw, 1.7rem);
   font-weight: 500;
   line-height: 1.25;
   font-variant-numeric: lining-nums;
@@ -563,14 +622,35 @@
 .post-callout .post-callout-title::before { display: none; }
 .post-callout .btn { margin-top: 0.35rem; }
 
-/* Encart « Le programme 59 Cézanne » : sobre, clairement délimité */
-.post-callout--programme {
-  padding: 1.75rem 2rem 1.9rem;
-  background: var(--white);
-  border: 1px solid var(--border);
-  border-top: 3px solid var(--or);
-  box-shadow: var(--shadow-sm);
+/* Encart « Le programme 59 Cézanne » : sobre, sans cadre ni ombre, texte réduit.
+   Un filet haut et bas, un petit intitulé, la suite en gris moyen. */
+.post-body > .post-callout--programme {
+  margin-block: clamp(3rem, 6vw, 4.5rem) 0;
+  padding: 1.35rem 0 1.5rem;
+  background: none;
+  border: 0;
+  border-top: 1px solid var(--stone);
+  border-bottom: 1px solid var(--stone);
+  border-radius: 0;
+  box-shadow: none;
+  font-size: 1rem;
+  line-height: 1.6;
+  color: var(--text-mid);
 }
+.post-callout--programme .post-callout-title {
+  margin-bottom: 0.7rem;
+  font-family: var(--font-sans);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  line-height: 1.4;
+  text-transform: uppercase;
+  color: var(--blog-gold-text);
+}
+.post-callout--programme p { margin-bottom: 0.75em; }
+.post-callout--programme p:last-child { margin-bottom: 0; }
+.post-callout--programme strong { color: var(--text); }
+.post-callout--programme .btn { margin-top: 0.5rem; }
 
 /* Boutons « outline » sur fond clair : survol lisible (le doré pâle ne l'est pas) */
 .post-callout .btn-outline-dark:hover,
@@ -580,12 +660,14 @@
   color: var(--blog-gold-hover);
 }
 
-/* FAQ en details/summary */
-.post-faq {
-  margin: clamp(2.75rem, 5vw, 3.75rem) 0 0;
+/* FAQ en details/summary : compacte (intertitre plus petit, questions et réponses resserrées) */
+.post-body > .post-faq {
+  margin-block: clamp(3rem, 6vw, 4.25rem) 0;
 }
-.post-faq h2 {
+.post-body .post-faq h2,
+.post-body .post-sources h2 {
   margin-top: 0;
+  font-size: clamp(1.6rem, 1.3rem + 0.9vw, 2.05rem);
 }
 .post-faq details {
   border-bottom: 1px solid var(--border);
@@ -598,11 +680,11 @@
   align-items: center;
   justify-content: space-between;
   gap: 1.25rem;
-  padding: 1.15rem 0;
+  padding: 0.75rem 0;
   font-family: var(--font-serif);
-  font-size: clamp(1.15rem, 1.05rem + 0.4vw, 1.3rem);
+  font-size: clamp(1.1rem, 1.05rem + 0.25vw, 1.22rem);
   font-weight: 600;
-  line-height: 1.35;
+  line-height: 1.3;
   font-variant-numeric: lining-nums;
   color: var(--text);
   cursor: pointer;
@@ -621,23 +703,27 @@
 .post-faq summary::after {
   content: "";
   flex: none;
-  width: 1.75rem;
-  height: 1.75rem;
+  width: 1.5rem;
+  height: 1.5rem;
   border: 1px solid var(--blog-gold-text);
   border-radius: 50%;
   background:
-    linear-gradient(var(--blog-gold-text), var(--blog-gold-text)) center / 0.7rem 1.5px no-repeat,
-    linear-gradient(var(--blog-gold-text), var(--blog-gold-text)) center / 1.5px 0.7rem no-repeat;
+    linear-gradient(var(--blog-gold-text), var(--blog-gold-text)) center / 0.6rem 1.5px no-repeat,
+    linear-gradient(var(--blog-gold-text), var(--blog-gold-text)) center / 1.5px 0.6rem no-repeat;
   transition: background-size var(--transition-fast), background-color var(--transition-fast);
 }
 .post-faq details[open] summary::after {
-  background-size: 0.7rem 1.5px, 1.5px 0;
+  background-size: 0.6rem 1.5px, 1.5px 0;
 }
 .post-faq summary:hover::after { background-color: rgba(201, 169, 110, 0.14); }
 .post-faq details > :not(summary) {
-  padding-right: 2.75rem;
+  padding-right: 2.25rem;
+  font-size: 1rem;
+  line-height: 1.6;
+  color: var(--text-mid);
 }
-.post-faq details > p:last-child { margin-bottom: 1.35rem; }
+.post-faq details > p { margin-bottom: 0.8rem; }
+.post-faq details > p:last-child { margin-bottom: 1.1rem; }
 
 @media (prefers-reduced-motion: no-preference) {
   .post-faq details[open] > :not(summary) {
@@ -650,22 +736,21 @@
 }
 
 /* Avertissement (information générale) */
-.post-disclaimer {
-  margin: 2.5rem 0 0;
-  padding: 1rem 1.25rem;
+.post-body > .post-disclaimer {
+  margin-block: 2.25rem 0;
+  padding: 0.85rem 1.1rem;
   background: rgba(245, 240, 232, 0.6);
   border-left: 2px solid var(--stone);
   border-radius: 0 var(--radius) var(--radius) 0;
-  font-size: 0.875rem;
-  line-height: 1.65;
+  font-size: 0.9rem;
+  line-height: 1.55;
   color: var(--text-mid);
 }
 
-/* Sources */
-.post-sources {
-  margin-top: clamp(2.75rem, 5vw, 3.5rem);
+/* Sources : liste compacte */
+.post-body > .post-sources {
+  margin-block: clamp(2.5rem, 5vw, 3.5rem) 0;
 }
-.post-sources h2 { margin-top: 0; }
 .post-sources ul {
   margin: 0;
   padding: 0;
@@ -673,10 +758,10 @@
 }
 .post-sources li {
   margin: 0;
-  padding: 0.7rem 0;
+  padding: 0.45rem 0;
   border-bottom: 1px solid var(--stone-light);
   font-size: 0.9rem;
-  line-height: 1.6;
+  line-height: 1.45;
   color: var(--text-mid);
   overflow-wrap: anywhere;
 }
@@ -709,12 +794,12 @@
   transform: translateX(-50%);
 }
 .post-cta h2 {
-  max-width: 28ch;
-  margin: 0 auto 1rem;
+  max-width: 24ch;
+  margin: 0 auto 1.1rem;
   font-family: var(--font-serif);
-  font-size: clamp(1.8rem, 1.3rem + 2vw, 2.8rem);
+  font-size: clamp(2.1rem, 1.5rem + 2.4vw, 3.4rem);
   font-weight: 300;
-  line-height: 1.2;
+  line-height: 1.15;
   font-variant-numeric: lining-nums;
   color: var(--white);
   text-wrap: balance;
@@ -722,8 +807,8 @@
 .post-cta p {
   max-width: 38rem;
   margin: 0 auto 1.25rem;
-  font-size: 1rem;
-  line-height: 1.75;
+  font-size: 1.05rem;
+  line-height: 1.65;
   color: rgba(255, 255, 255, 0.8);
 }
 .post-cta .container > p:last-child {
@@ -749,7 +834,7 @@
 }
 
 
-/* ─── 7. « À lire aussi » + cartes (réutilisables hors blog) ── */
+/* ─── 7. « À lire aussi » + cartes ─────────────────────────── */
 .post-related {
   padding: clamp(3rem, 7vw, 5rem) 0;
   background: var(--beige);
@@ -757,7 +842,7 @@
 .post-related h2 {
   margin: 0 0 clamp(1.75rem, 4vw, 2.5rem);
   font-family: var(--font-serif);
-  font-size: clamp(1.7rem, 1.35rem + 1.4vw, 2.3rem);
+  font-size: clamp(1.9rem, 1.4rem + 1.8vw, 2.6rem);
   font-weight: 400;
   line-height: 1.2;
   font-variant-numeric: lining-nums;
@@ -803,7 +888,7 @@
   content: "\2192" / "";
   margin-top: auto;
   padding-top: 0.4rem;
-  font-size: 1.15rem;
+  font-size: 1.25rem;
   line-height: 1;
   color: var(--blog-gold-text);
   transition: transform var(--transition-fast);
@@ -817,9 +902,9 @@
 .post-card-pillar {
   display: block;
   font-family: var(--font-sans);
-  font-size: 0.68rem;
+  font-size: 0.74rem;
   font-weight: 700;
-  letter-spacing: 0.2em;
+  letter-spacing: 0.18em;
   line-height: 1.5;
   text-transform: uppercase;
   color: var(--blog-gold-text);
@@ -827,9 +912,9 @@
 .post-card-title {
   display: block;
   font-family: var(--font-serif);
-  font-size: clamp(1.25rem, 1.15rem + 0.4vw, 1.45rem);
+  font-size: clamp(1.35rem, 1.2rem + 0.5vw, 1.55rem);
   font-weight: 500;
-  line-height: 1.3;
+  line-height: 1.25;
   font-variant-numeric: lining-nums;
   color: var(--text);
   text-wrap: balance;
@@ -837,7 +922,7 @@
 }
 .post-card:hover .post-card-title { color: var(--blog-gold-hover); }
 
-/* Forme « lien étendu » : titre <h3> avec <a> dont la zone couvre toute la carte */
+/* Forme « lien étendu » : titre <h2>/<h3> avec <a> dont la zone couvre toute la carte */
 .post-card-title > a {
   color: inherit;
   text-decoration: none;
@@ -857,6 +942,7 @@
 
 
 /* ─── 8. Hub /blog ─────────────────────────────────────────── */
+/* Budget de texte : un titre, une phrase, 14 cartes (pilier + titre), une question. */
 
 /* Héros photographique */
 .blog-hero {
@@ -864,7 +950,7 @@
   isolation: isolate;
   display: flex;
   align-items: flex-end;
-  min-height: clamp(24rem, 58vh, 34rem);
+  min-height: clamp(25rem, 62vh, 38rem);
   overflow: hidden;
   background: var(--dark);
   color: var(--white);
@@ -887,23 +973,23 @@
   z-index: -1;
   background: linear-gradient(
     to top,
-    rgba(15, 12, 8, 0.9) 0%,
-    rgba(15, 12, 8, 0.72) 50%,
-    rgba(15, 12, 8, 0.64) 100%
+    rgba(15, 12, 8, 0.88) 0%,
+    rgba(15, 12, 8, 0.62) 50%,
+    rgba(15, 12, 8, 0.5) 100%
   );
 }
 /* Grand écran : le texte est à gauche, l'image respire à droite */
 @media (min-width: 900px) {
   .blog-hero::after {
     background:
-      linear-gradient(90deg, rgba(15, 12, 8, 0.88) 0%, rgba(15, 12, 8, 0.72) 42%, rgba(15, 12, 8, 0.3) 78%, rgba(15, 12, 8, 0.18) 100%),
-      linear-gradient(to top, rgba(15, 12, 8, 0.45) 0%, rgba(15, 12, 8, 0) 45%);
+      linear-gradient(90deg, rgba(15, 12, 8, 0.86) 0%, rgba(15, 12, 8, 0.66) 45%, rgba(15, 12, 8, 0.2) 80%, rgba(15, 12, 8, 0.1) 100%),
+      linear-gradient(to top, rgba(15, 12, 8, 0.5) 0%, rgba(15, 12, 8, 0) 45%);
   }
 }
 .blog-hero-inner {
   width: 100%;
   padding-top: clamp(1.5rem, 3vw, 2.25rem);
-  padding-bottom: clamp(2.25rem, 5vw, 3.75rem);
+  padding-bottom: clamp(2.25rem, 5vw, 4rem);
 }
 .blog-hero .post-breadcrumb,
 .blog-hero .post-breadcrumb li,
@@ -916,268 +1002,135 @@
 .blog-hero .post-breadcrumb [aria-current="page"] { color: var(--white); }
 .blog-hero .post-breadcrumb a:focus-visible,
 .blog-hero a:focus-visible { outline-color: var(--or); }
-.blog-hero .post-pillar { color: var(--or-light); }
 .blog-hero-title {
-  max-width: 18em;
+  max-width: 14em;
   font-family: var(--font-serif);
-  font-size: clamp(2.1rem, 1.3rem + 3.4vw, 3.9rem);
+  font-size: clamp(2.8rem, 1.2rem + 5.6vw, 5.6rem);
   font-weight: 300;
-  line-height: 1.12;
+  line-height: 1.06;
+  letter-spacing: -0.01em;
   font-variant-numeric: lining-nums;
   color: var(--white);
   text-wrap: balance;
 }
 .blog-hero-sub {
-  max-width: 38rem;
-  margin-top: 1.2rem;
-  font-size: clamp(1rem, 0.95rem + 0.3vw, 1.15rem);
-  line-height: 1.75;
+  max-width: 34rem;
+  margin-top: 1.25rem;
+  font-size: clamp(1.2rem, 1.1rem + 0.5vw, 1.5rem);
+  font-weight: 300;
+  line-height: 1.5;
+  letter-spacing: 0.01em;
   color: rgba(255, 255, 255, 0.9);
 }
+/* Légende « Illustration non contractuelle » : petite et discrète */
 .blog-hero-note {
-  display: inline-block;
   margin-top: 1.5rem;
-  padding: 0.2rem 0.75rem;
-  border: 1px solid rgba(255, 255, 255, 0.4);
-  border-radius: 50px;
-  font-size: 0.72rem;
-  letter-spacing: 0.06em;
-  color: rgba(255, 255, 255, 0.88);
+  font-size: 0.75rem;
+  letter-spacing: 0.04em;
+  color: rgba(255, 255, 255, 0.7);
 }
 
-/* Chapô du hub */
-.blog-intro {
-  padding: clamp(2.5rem, 6vw, 4rem) 0 0;
-}
-.blog-intro-text {
-  max-width: 46rem;
-  font-family: var(--font-serif);
-  font-size: clamp(1.2rem, 1.08rem + 0.6vw, 1.5rem);
-  font-weight: 500;
-  line-height: 1.55;
-  font-variant-numeric: lining-nums;
-  color: var(--text);
-}
-.blog-intro-text a {
-  color: var(--blog-gold-text);
-  text-decoration: underline;
-  text-decoration-thickness: 1px;
-  text-underline-offset: 0.2em;
-}
-.blog-intro-text a:hover { color: var(--blog-gold-hover); }
-
-/* Navigation par thème */
-.blog-topics {
-  margin-top: 2rem;
-}
-.blog-topics-title {
-  margin-bottom: 0.75rem;
-  font-size: 0.68rem;
-  font-weight: 700;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  color: var(--text-mid);
-}
-.blog-topics ul {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.6rem;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-.blog-topics a {
-  display: inline-block;
-  padding: 0.5rem 1rem;
-  border: 1px solid var(--stone);
-  border-radius: 50px;
-  background: var(--white);
-  font-size: 0.82rem;
-  line-height: 1.3;
-  color: var(--text);
-  transition: border-color var(--transition-fast), background var(--transition-fast), color var(--transition-fast);
-}
-.blog-topics a:hover {
-  border-color: var(--blog-gold-text);
-  background: var(--beige);
-  color: var(--blog-gold-hover);
-}
-.blog-topics a:focus-visible {
-  outline: 2px solid var(--blog-focus);
-  outline-offset: 3px;
-}
-
-/* « Commencer ici » */
-.blog-start {
-  margin-top: clamp(2.5rem, 6vw, 4rem);
-  padding: clamp(2.5rem, 6vw, 3.75rem) 0;
-  background: var(--beige);
-  border-top: 1px solid var(--border);
-  border-bottom: 1px solid var(--border);
-}
-.blog-start-title,
-.blog-section-title {
-  font-family: var(--font-serif);
-  font-size: clamp(1.8rem, 1.4rem + 1.5vw, 2.4rem);
-  font-weight: 400;
-  line-height: 1.15;
-  font-variant-numeric: lining-nums;
-  color: var(--text);
-  text-wrap: balance;
-}
-.blog-start-lead,
-.blog-section-lead {
-  margin-top: 0.8rem;
-  max-width: 34rem;
-  font-size: 0.95rem;
-  line-height: 1.7;
-  color: var(--text-mid);
-}
-.blog-start-list {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 17rem), 1fr));
-  gap: 1.5rem;
-  margin: clamp(1.5rem, 4vw, 2.25rem) 0 0;
-  padding: 0;
-  list-style: none;
-  counter-reset: blog-start;
-}
-.blog-start-item {
-  display: flex;
-  flex-direction: column;
-  gap: 0.55rem;
-  padding: 1.5rem 1.75rem 1.6rem;
-  counter-increment: blog-start;
-}
-.blog-start-item::before {
-  content: counter(blog-start, decimal-leading-zero);
-  font-family: var(--font-serif);
-  font-size: 2.4rem;
-  font-weight: 300;
-  line-height: 1;
-  font-variant-numeric: lining-nums;
-  color: var(--blog-gold-text);
-}
-.blog-start-hint {
-  font-size: 0.92rem;
-  line-height: 1.65;
-  color: var(--text-mid);
-}
-
-/* Sections par pilier */
-.blog-section {
-  padding: clamp(2.75rem, 6vw, 4.5rem) 0;
-  border-top: 1px solid var(--border);
-}
-.blog-start + .blog-section,
-.blog-start + .blog-sections > .blog-section:first-child { border-top: 0; }
-.blog-section-inner {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  gap: 1.75rem;
-}
-.blog-section-title::before {
-  content: "";
-  display: block;
-  width: 2.5rem;
-  height: 2px;
-  margin-bottom: 1rem;
-  background: var(--or);
+/* Grille unique de 14 grandes cartes : 2 colonnes sur bureau, 1 sur mobile */
+.blog-grid {
+  padding-top: clamp(2.5rem, 6vw, 5rem);
+  padding-bottom: clamp(3.5rem, 8vw, 6.5rem);
 }
 .blog-list {
   display: grid;
-  gap: 1.5rem;
+  grid-template-columns: minmax(0, 1fr);
+  gap: clamp(2.25rem, 6vw, 3rem) clamp(1.5rem, 3vw, 2.5rem);
   margin: 0;
   padding: 0;
   list-style: none;
 }
-
-@media (min-width: 960px) {
-  .blog-section-inner {
-    grid-template-columns: minmax(0, 17rem) minmax(0, 1fr);
-    gap: clamp(2.5rem, 5vw, 4.5rem);
-    align-items: start;
-  }
-  .blog-section-head {
-    position: sticky;
-    top: calc(var(--blog-nav-h) + 2rem);
+@media (min-width: 800px) {
+  .blog-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    row-gap: clamp(3rem, 5vw, 4.25rem);
   }
 }
 
-/* Empêche la coupure d'un nom propre composé (Aix-en-Provence) dans un titre de carte */
+/* Empêche la coupure d'un nom propre composé (Aix-en-Provence) dans un titre */
 .blog-nowrap { white-space: nowrap; }
 
-/* Carte d'article du hub : image, pilier, titre, chapô, date */
+/* Carte du hub : grande image, étiquette de pilier, titre. Sans cadre, sans extrait, sans date. */
 .blog-card {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  background: none;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+}
+.blog-card:hover {
+  transform: none;
+  box-shadow: none;
+  border-color: transparent;
 }
 .blog-card-media {
   position: relative;
   margin: 0;
   overflow: hidden;
   aspect-ratio: 3 / 2;
+  border-radius: var(--radius);
   background: var(--stone-light);
 }
 .blog-card-media img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform 0.8s ease;
+  transition: transform 0.9s ease;
 }
-.blog-card:hover .blog-card-media img { transform: scale(1.04); }
+.blog-card:hover .blog-card-media img { transform: scale(1.035); }
 .blog-card-note {
   position: absolute;
-  left: 0.6rem;
-  bottom: 0.6rem;
-  max-width: calc(100% - 1.2rem);
-  padding: 0.18rem 0.6rem;
+  left: 0.75rem;
+  bottom: 0.75rem;
+  max-width: calc(100% - 1.5rem);
+  padding: 0.15rem 0.65rem;
   border-radius: 50px;
-  background: rgba(26, 23, 20, 0.82);
-  font-size: 0.68rem;
+  background: rgba(26, 23, 20, 0.68);
+  font-size: 0.72rem;
   letter-spacing: 0.04em;
   line-height: 1.5;
-  color: var(--white);
+  color: rgba(255, 255, 255, 0.92);
 }
 .blog-card-body {
   display: flex;
   flex-direction: column;
-  gap: 0.55rem;
-  padding: 1.4rem 1.6rem 1.35rem;
+  gap: 0.6rem;
+  padding: 0 0.15rem;
 }
-.blog-card-body .post-card-title { font-size: clamp(1.25rem, 1.12rem + 0.5vw, 1.5rem); }
+.blog-card-body .post-card-pillar {
+  font-size: 0.78rem;
+}
+.blog-card-body .post-card-title {
+  font-size: clamp(1.65rem, 1.25rem + 1.15vw, 2.2rem);
+  font-weight: 500;
+  line-height: 1.16;
+}
 .blog-card-lang {
   display: inline-block;
   margin-left: 0.6rem;
-  padding: 0.05rem 0.55rem;
+  padding: 0.05rem 0.65rem;
   border: 1px solid var(--blog-gold-text);
   border-radius: 50px;
-  font-size: 0.64rem;
+  font-size: 0.72rem;
   letter-spacing: 0.1em;
   color: var(--blog-gold-text);
   vertical-align: 0.05em;
 }
-.blog-card-excerpt {
-  font-size: 0.94rem;
-  line-height: 1.7;
-  color: var(--text-mid);
-}
-.blog-card-date {
-  margin-top: auto;
-  padding-top: 0.35rem;
-  font-size: 0.78rem;
-  line-height: 1.5;
-  color: var(--text-mid);
-}
+.blog-card .post-card-title > a::after { border-radius: var(--radius); }
 
-@media (min-width: 640px) {
-  .blog-card { grid-template-columns: minmax(0, 36%) minmax(0, 1fr); }
+/* Mobile : l'image de chaque carte prend toute la largeur de l'écran ; le texte reste aligné sur la marge */
+@media (max-width: 700px) {
   .blog-card-media {
-    aspect-ratio: auto;
-    min-height: 13rem;
+    margin-left: calc(-1 * var(--blog-pad));
+    margin-right: calc(-1 * var(--blog-pad));
+    border-radius: 0;
   }
-  .blog-card-body { padding: 1.5rem 1.85rem 1.4rem; }
+  .blog-card-body { padding: 0; }
 }
 
 
@@ -1202,8 +1155,6 @@
   .blog-page .post-toc,
   .blog-page .post-cta,
   .blog-page .post-related,
-  .blog-page .blog-topics,
-  .blog-page .blog-start,
   .blog-page .post-breadcrumb {
     display: none !important;
   }
@@ -1239,6 +1190,7 @@
     line-height: 1.55;
     color: #000;
   }
+  .post-body > * { max-width: none; margin-left: 0; margin-right: 0; }
   .post-body h2 { font-size: 16pt; margin-top: 1.5rem; break-after: avoid; }
   .post-body h2::before { display: none; }
   .post-body h3 { font-size: 13pt; break-after: avoid; }
@@ -1252,16 +1204,19 @@
     text-decoration: none;
   }
 
+  .post-body > .post-figure { margin-left: 0; margin-right: 0; max-width: none; }
+  .post-figure .post-caption { padding-inline: 0; }
   .post-figure,
   .post-table,
   .post-callout,
   .post-faq details,
   .post-sources li,
   .blog-card { break-inside: avoid; }
-  .post-figure img { box-shadow: none; }
   .post-callout,
   .post-callout--programme { background: none; box-shadow: none; }
   .post-callout .btn { display: none; }
+  .post-faq details > :not(summary),
+  .post-faq summary { color: #000; }
 
   /* Réponses de la FAQ toujours imprimées, même repliées (Chrome récent) */
   .post-faq details::details-content {
@@ -1271,7 +1226,7 @@
   .post-faq summary::after { display: none; }
 
   /* Hub */
-  .blog-section-inner { display: block; }
-  .blog-section-head { position: static; }
-  .blog-card { grid-template-columns: 30% 1fr; box-shadow: none; }
+  .blog-list { display: block; }
+  .blog-card { margin-bottom: 1rem; }
+  .blog-card-media { max-width: 40%; }
 }

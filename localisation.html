@@ -14,7 +14,7 @@
   <meta property="og:site_name" content="59 Cézanne" />
   <meta property="og:locale" content="fr_FR" />
   <meta property="og:title" content="Appartement neuf avenue Paul Cézanne, Aix-en-Provence | 59 Cézanne" />
-  <meta property="og:description" content="59 avenue Paul Cézanne, dans le quartier des Lauves : centre-ville à environ 4 min en voiture, A51 à 3 min, gare TGV à 15 min (selon la plaquette)." />
+  <meta property="og:description" content="59 avenue Paul Cézanne, Aix-en-Provence : centre-ville à environ 4 min en voiture, A51 à 3 min, gare TGV à 15 min (selon la plaquette)." />
   <meta property="og:url" content="https://59-cezanne.com/localisation" />
   <meta property="og:image" content="https://59-cezanne.com/og/og-localisation.jpg" />
   <meta property="og:image:width" content="1200" />
@@ -30,150 +30,75 @@
   <link rel="stylesheet" href="/style.css" />
   <style>
     /* ── Page /localisation : styles locaux (style.css n'est pas modifié) ── */
-    .page-hero .hero-title { max-width: 900px; font-size: clamp(1.9rem, 4.2vw, 3.4rem); }
-    .page-hero .hero-subtitle { max-width: 640px; color: rgba(255,255,255,.92); }
+    .page-hero { height: 100vh; min-height: 560px; }
+    .page-hero .hero-title { max-width: 1100px; }
     .page-hero .hero-overlay { background: linear-gradient(to top, rgba(15,12,8,.88) 0%, rgba(15,12,8,.62) 45%, rgba(15,12,8,.28) 100%); }
-    .page-hero .hero-title, .page-hero .hero-subtitle { text-shadow: 0 1px 14px rgba(0,0,0,.5); }
+    .page-hero .hero-title { text-shadow: 0 1px 14px rgba(0,0,0,.5); }
     .hero-credit {
       position: absolute; right: 1.25rem; bottom: 1rem; z-index: 2; margin: 0;
       padding: .25rem .65rem; border-radius: 3px; background: rgba(15,12,8,.6);
-      color: rgba(255,255,255,.92); font-size: .72rem; letter-spacing: .03em;
+      color: rgba(255,255,255,.92); font-size: .8rem; letter-spacing: .03em;
     }
-    .loc-lead { font-size: .95rem; color: var(--text-mid); line-height: 1.9; }
-    .address-block {
-      display: flex; gap: 1rem; padding: 1.4rem 1.5rem; margin: 1.6rem 0 1.8rem;
-      background: var(--beige); border-radius: var(--radius-md);
-    }
-    .address-block svg { flex-shrink: 0; color: var(--or-texte); }
-    .address-block strong {
-      display: block; font-family: var(--font-serif); font-size: 1.3rem; font-weight: 400; color: var(--text);
-    }
-    .address-block span { font-size: .9rem; color: var(--text-mid); }
-    .loc-h3 { font-family: var(--font-serif); font-size: 1.35rem; font-weight: 400; color: var(--text); margin: 0 0 .6rem; }
-    .loc-landmarks li {
-      display: flex; justify-content: space-between; align-items: baseline; gap: 1rem;
-      padding: .7rem 0; border-bottom: 1px solid rgba(0,0,0,.08); font-size: .92rem; color: var(--text);
-    }
-    .loc-landmarks b { font-weight: 700; color: var(--or-texte); white-space: nowrap; }
-    .loc-note { font-size: .8rem; color: var(--text-mid); line-height: 1.7; margin-top: .9rem; }
-    .loc-link { color: var(--or-texte); font-weight: 700; text-decoration: underline; text-underline-offset: 3px; }
+    .loc-link { color: var(--or-texte); font-weight: 700; text-decoration: underline; text-underline-offset: 4px; }
     .loc-link:hover { text-decoration-thickness: 2px; }
+    .section-dark .loc-link { color: var(--or-light); }
 
-    /* Carte en deux temps : aucune ressource tierce avant le clic */
+    .page-hero + .section .section-header, .loc-sector .section-header, #carte .section-header { max-width: 1000px; }
+
+    /* Scène 1 : temps de trajet en grands chiffres (le libellé précède le chiffre dans le DOM pour les lecteurs d'écran) */
+    .loc-times { display: grid; grid-template-columns: repeat(6, 1fr); gap: 3.5rem 1.5rem; text-align: center; }
+    .loc-times li { grid-column: span 2; display: flex; flex-direction: column-reverse; justify-content: flex-end; align-items: center; gap: .8rem; padding-top: 1.6rem; border-top: 1px solid var(--border); }
+    .loc-times li:nth-child(n+4) { grid-column: span 3; }
+    .loc-num { font-family: var(--font-serif); font-size: clamp(3.8rem, 6.4vw, 5rem); font-weight: 300; line-height: 1; color: var(--or-texte); font-variant-numeric: lining-nums; }
+    .loc-num small { margin-left: .5rem; font-family: var(--font-sans); font-size: 1.1rem; font-weight: 400; letter-spacing: .15em; text-transform: uppercase; color: var(--text-mid); }
+    .loc-lab { font-family: var(--font-serif); font-size: 1.55rem; line-height: 1.25; color: var(--text); }
+
+    /* Scène 2 : secteur (titre + phrase + grande image pleine largeur) */
+    .loc-sector { padding-bottom: 0; }
+    .loc-sector .section-header { margin-bottom: 3.5rem; }
+    .loc-sector .section-lead { color: rgba(255,255,255,.85); }
+    .loc-figure { margin: 0; }
+    .loc-figure img { display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; max-height: 88vh; object-fit: cover; object-position: center 15%; }
+    .loc-figure figcaption { padding: 1rem 2rem .3rem; text-align: center; font-size: .85rem; line-height: 1.6; color: rgba(255,255,255,.72); }
+    .loc-note { margin: 0; padding: 0 2rem 1.6rem; text-align: center; font-size: .85rem; line-height: 1.6; color: rgba(255,255,255,.72); }
+
+    /* Scène 3 : carte en deux temps, aucune ressource tierce avant le clic */
     .map-box [hidden], #mapLoad[hidden] { display: none !important; }
-    .map-box { position: relative; background: var(--beige); border-radius: var(--radius-md); overflow: hidden; box-shadow: var(--shadow); }
-    .map-box iframe { display: block; width: 100%; height: 450px; border: 0; }
+    .map-box { position: relative; background: var(--creme); border-radius: var(--radius-md); overflow: hidden; box-shadow: var(--shadow); }
+    .map-box iframe { display: block; width: 100%; height: clamp(380px, 62vh, 580px); border: 0; }
     .map-consent {
-      display: flex; flex-direction: column; align-items: center; justify-content: center; gap: .9rem;
-      min-height: 450px; padding: 2rem 1.5rem; text-align: center;
+      display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1.4rem;
+      min-height: clamp(380px, 62vh, 580px); padding: 2.5rem 1.5rem; text-align: center;
     }
     .map-consent svg { color: var(--or-texte); }
-    .map-consent-addr { font-family: var(--font-serif); font-size: 1.4rem; line-height: 1.3; color: var(--text); }
-    .map-consent-note { max-width: 420px; font-size: .82rem; line-height: 1.7; color: var(--text-mid); }
-    .map-links { display: flex; flex-wrap: wrap; justify-content: center; gap: .6rem 1.4rem; margin-top: 1rem; font-size: .88rem; }
+    .map-consent-note { max-width: 520px; font-size: 1rem; line-height: 1.7; color: var(--text-mid); }
+    .map-box .btn, .loc-cta .btn { font-size: .9rem; padding: 1.2rem 2.8rem; }
+    .map-links { margin-top: 1.8rem; text-align: center; font-size: 1.15rem; }
 
-    /* Temps de trajet */
-    .big-distance-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.2rem; }
-    .big-dist-item {
-      background: var(--white); border: 1px solid var(--border); border-radius: var(--radius-md);
-      padding: 1.8rem 1.5rem; text-align: center;
-    }
-    .bdi-icon {
-      display: flex; align-items: center; justify-content: center; width: 52px; height: 52px;
-      margin: 0 auto .8rem; border-radius: 50%; background: rgba(201,169,110,.12); color: var(--or-texte);
-    }
-    .bdi-name { font-family: var(--font-serif); font-size: 1.2rem; font-weight: 400; color: var(--text); margin-bottom: .6rem; }
-    .bdi-row { display: flex; flex-direction: column; gap: .1rem; margin-top: .5rem; }
-    .bdi-val { font-size: 1rem; font-weight: 700; color: var(--or-texte); }
-    .bdi-val-label { font-size: .8rem; color: var(--text-mid); }
+    /* Scène 4 : appels à l'action + ligne « Nos guides » */
+    .loc-cta .btn-row { display: flex; flex-wrap: wrap; justify-content: center; gap: 1.2rem; }
+    .loc-guides { display: flex; flex-wrap: wrap; justify-content: center; align-items: baseline; gap: .5rem 1.8rem; margin-top: 3.5rem; font-size: 1rem; color: var(--text-mid); }
 
-    /* Tableaux commerces / écoles */
-    .loc-tables { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; align-items: start; }
-    .loc-table-wrap { overflow-x: auto; background: var(--white); border: 1px solid var(--border); border-radius: var(--radius-md); }
-    .loc-table { width: 100%; border-collapse: collapse; font-size: .9rem; }
-    .loc-table caption {
-      text-align: left; padding: 1.1rem 1rem .5rem; font-family: var(--font-serif); font-size: 1.3rem; color: var(--text);
+    @media (min-width: 1100px) {
+      .loc-times { grid-template-columns: repeat(5, 1fr); }
+      .loc-times li, .loc-times li:nth-child(n+4) { grid-column: auto; }
     }
-    .loc-table th, .loc-table td { padding: .75rem .8rem; border-top: 1px solid rgba(0,0,0,.07); text-align: center; }
-    .loc-table thead th {
-      font-size: .68rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase;
-      color: var(--text-mid); background: var(--beige);
+    @media (max-width: 768px) {
+      .page-hero { height: 88vh; min-height: 480px; }
+      .loc-figure img { aspect-ratio: 4 / 3; max-height: none; }
     }
-    .loc-table tbody th { text-align: left; font-weight: 400; color: var(--text); }
-    .loc-table thead th:first-child { text-align: left; }
-    .loc-table td { font-weight: 700; color: var(--or-texte); white-space: nowrap; }
-
-    /* Transports */
-    .transport-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.5rem; }
-    .transport-card {
-      padding: 1.8rem; border: 1px solid var(--border); border-radius: var(--radius-md);
-      background: var(--white); text-align: center;
-    }
-    .transport-card-icon {
-      display: flex; align-items: center; justify-content: center; width: 52px; height: 52px;
-      margin: 0 auto 1.1rem; border-radius: 50%; background: rgba(201,169,110,.12); color: var(--or-texte);
-    }
-    .transport-card h3 { font-family: var(--font-serif); font-size: 1.25rem; font-weight: 400; color: var(--text); margin-bottom: .6rem; }
-    .transport-card p { font-size: .88rem; color: var(--text-mid); line-height: 1.75; }
-    .dist-badge {
-      display: inline-block; margin-top: 1rem; padding: 3px 12px; border-radius: 50px;
-      background: rgba(201,169,110,.14); color: var(--or-texte); font-size: .75rem; font-weight: 700;
-    }
-
-    /* Secteur (fond sombre) */
-    .loc-sector p { font-size: .95rem; line-height: 1.9; color: rgba(255,255,255,.78); margin-bottom: 1.2rem; max-width: 640px; }
-    .loc-sector .loc-link { color: var(--or-light); }
-    .loc-sector .loc-note { color: rgba(255,255,255,.7); }
-    .loc-figure img { width: 100%; height: auto; border-radius: var(--radius-md); }
-    .loc-figure figcaption { margin-top: .7rem; font-size: .8rem; line-height: 1.6; color: rgba(255,255,255,.72); }
-
-    /* FAQ (details/summary) */
-    .loc-faq { max-width: 860px; margin: 0 auto; }
-    .loc-faq details { border-bottom: 1px solid var(--border); }
-    .loc-faq details:first-child { border-top: 1px solid var(--border); }
-    .loc-faq summary {
-      position: relative; cursor: pointer; list-style: none; padding: 1.2rem 2.6rem 1.2rem 0;
-      font-family: var(--font-serif); font-size: 1.25rem; line-height: 1.35; color: var(--text);
-    }
-    .loc-faq summary::-webkit-details-marker { display: none; }
-    .loc-faq summary::after {
-      content: "+"; position: absolute; right: .4rem; top: 50%; transform: translateY(-50%);
-      font-family: var(--font-sans); font-size: 1.6rem; line-height: 1; color: var(--or-texte);
-    }
-    .loc-faq details[open] summary::after { content: "\2212"; }
-    .loc-faq summary:hover { color: var(--or-texte); }
-    .loc-faq-a { padding: 0 2.6rem 1.4rem 0; font-size: .95rem; line-height: 1.85; color: var(--text-mid); }
-
-    /* Pour aller plus loin */
-    .loc-guides { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
-    .loc-guide {
-      position: relative; display: flex; flex-direction: column; gap: .6rem; padding: 1.8rem;
-      background: var(--white); border: 1px solid var(--border); border-radius: var(--radius-md);
-      transition: box-shadow var(--transition), transform var(--transition);
-    }
-    .loc-guide:hover, .loc-guide:focus-within { box-shadow: var(--shadow); transform: translateY(-3px); }
-    .loc-guide .loc-guide-kicker { font-size: .68rem; font-weight: 700; letter-spacing: .2em; line-height: 1.4; text-transform: uppercase; color: var(--or-texte); }
-    .loc-guide h3 { font-family: var(--font-serif); font-size: 1.3rem; line-height: 1.3; font-weight: 400; color: var(--text); }
-    .loc-guide h3 a::after { content: ""; position: absolute; inset: 0; border-radius: var(--radius-md); }
-    .loc-guide h3 a:focus-visible { outline: none; }
-    .loc-guide:focus-within { outline: 2px solid var(--focus-ring); outline-offset: 3px; }
-    .loc-guide p { font-size: .88rem; line-height: 1.75; color: var(--text-mid); }
-    .loc-guide-more { margin-top: auto; padding-top: .4rem; font-size: .8rem; font-weight: 700; color: var(--or-texte); }
-
-    /* Liens contextuels + CTA */
-    .loc-cta-links { display: flex; flex-wrap: wrap; justify-content: center; gap: .6rem 1.8rem; margin-top: 2rem; font-size: .92rem; }
-
-    @media (max-width: 1024px) {
-      .big-distance-grid { grid-template-columns: repeat(2, 1fr); }
-      .loc-tables { grid-template-columns: 1fr; }
-      .loc-guides { grid-template-columns: 1fr; }
-    }
-    @media (max-width: 480px) {
-      .big-distance-grid { grid-template-columns: 1fr; }
-      .loc-faq summary { font-size: 1.12rem; }
-      .loc-faq-a { padding-right: 0; }
-      .map-consent, .map-box iframe { min-height: 380px; height: 380px; }
-      .loc-landmarks li { flex-direction: column; gap: .1rem; }
+    @media (max-width: 599px) {
+      .loc-times { grid-template-columns: 1fr; gap: 0; text-align: left; }
+      .loc-times li, .loc-times li:nth-child(n+4) {
+        grid-column: auto; display: grid; grid-template-columns: 7.6rem 1fr; align-items: baseline;
+        gap: 0 .8rem; padding: 1.3rem 0; border-top: 0; border-bottom: 1px solid var(--border);
+      }
+      .loc-times li:first-child { border-top: 1px solid var(--border); }
+      .loc-times .loc-num { order: -1; }
+      .loc-num small { margin-left: .35rem; font-size: 1rem; letter-spacing: .1em; }
+      .loc-guides > span { flex: 0 0 100%; text-align: center; }
+      .loc-lab { font-size: 1.4rem; }
+      .map-box .btn, .loc-cta .btn { padding: 1.1rem 1.8rem; }
     }
   </style>
 
@@ -206,7 +131,7 @@
       "@id": "https://59-cezanne.com/localisation#webpage",
       "url": "https://59-cezanne.com/localisation",
       "name": "Appartement neuf avenue Paul Cézanne, Aix | 59 Cézanne",
-      "description": "Appartements neufs avenue Paul Cézanne, dans le quartier des Lauves, Aix-en-Provence : centre-ville à environ 4 min en voiture, A51 à 3 min.",
+      "description": "Appartements neufs avenue Paul Cézanne, Aix-en-Provence : centre-ville à environ 4 min en voiture, A51 à 3 min.",
       "inLanguage": "fr-FR",
       "isPartOf": {
         "@type": "WebSite",
@@ -240,60 +165,6 @@
         "longitude": 5.4451
       },
       "hasMap": "https://www.openstreetmap.org/?mlat=43.5465&mlon=5.4451#map=17/43.5465/5.4451"
-    },
-    {
-      "@type": "FAQPage",
-      "@id": "https://59-cezanne.com/localisation#faq",
-      "mainEntity": [
-        {
-          "@type": "Question",
-          "name": "Où se trouve le 59 Cézanne à Aix-en-Provence ?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Le programme se situe au 59 avenue Paul Cézanne, 13100 Aix-en-Provence, dans le quartier des Lauves. L'Atelier des Lauves, dernier atelier de Cézanne, est au 13 de la même avenue, à environ 850 m à pied (calcul OpenStreetMap, indicatif)."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "À combien de minutes du centre-ville d'Aix est la résidence ?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Selon la plaquette du programme, le centre-ville est à environ 4 minutes en voiture, environ 8 minutes en bus (lignes 5 et 12) et environ 20 minutes à pied. Ces durées sont indicatives et varient selon l'heure et le point d'arrivée."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "Quels bus desservent l'avenue Paul Cézanne ?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Les lignes 5 et 12 du réseau de bus d'Aix-en-Provence, qui desservent le centre-ville selon la plaquette. Le site de l'Atelier des Lauves cite les mêmes lignes pour l'avenue Paul Cézanne. Pour les horaires et les arrêts à jour, consultez le réseau Aix-en-Bus."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "Combien de temps pour rejoindre la gare TGV et l'aéroport ?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Selon la plaquette : environ 15 minutes en voiture jusqu'à la gare TGV d'Aix-en-Provence (Paris en environ 3 heures) et environ 22 minutes jusqu'à l'aéroport Marseille Provence. Marseille est à environ 26 minutes en voiture."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "Y a-t-il des commerces et des écoles à proximité ?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "La plaquette cite une supérette Vival à environ 2 minutes en voiture (14 minutes à pied), une boulangerie-tabac à environ 3 minutes en voiture, l'école maternelle des Lauves à environ 11 minutes à pied, le collège Nina Simone et le lycée Cézanne à environ 3 minutes en voiture. Picard et Intermarché, avec parking, sont à environ 4 et 5 minutes en voiture."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "La résidence est-elle dans le quartier des Lauves ?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Oui. La résidence est située avenue Paul Cézanne, dans le quartier des Lauves, où se trouve l'Atelier des Lauves de Cézanne, au 13 de la même avenue. Les limites d'un quartier n'étant pas toujours définies de façon précise, le repère le plus fiable reste l'adresse exacte : 59 avenue Paul Cézanne, 13100 Aix-en-Provence."
-          }
-        }
-      ]
     }
   ]
 }
@@ -357,316 +228,74 @@
   </div>
   <div class="hero-overlay"></div>
   <div class="hero-content">
-    <p class="hero-eyebrow" data-lang-fr="Localisation" data-lang-en="Location">Localisation</p>
     <h1 class="hero-title" id="page-title" data-lang-fr="Appartements neufs avenue Paul Cézanne, <em>dans le quartier des Lauves</em>" data-lang-en="New apartments on avenue Paul Cézanne, <em>in the Lauves district</em>">Appartements neufs avenue Paul Cézanne, <em>dans le quartier des Lauves</em></h1>
-    <p class="hero-subtitle" data-lang-fr="59 avenue Paul Cézanne, 13100 Aix-en-Provence · centre-ville à environ 4 min en voiture (selon la plaquette)" data-lang-en="59 avenue Paul Cézanne, 13100 Aix-en-Provence · city centre about 4 min by car (per the brochure)">59 avenue Paul Cézanne, 13100 Aix-en-Provence · centre-ville à environ 4 min en voiture (selon la plaquette)</p>
   </div>
   <p class="hero-credit" data-lang-fr="Rendu 3D — illustration non contractuelle" data-lang-en="3D render — non-contractual illustration">Rendu 3D — illustration non contractuelle</p>
 </section>
 
-<section class="section" id="adresse">
+<section class="section" id="temps-de-trajet" aria-labelledby="t-trajets">
   <div class="container">
     <div class="section-header reveal">
-      <p class="eyebrow" data-lang-fr="L'adresse" data-lang-en="The address">L'adresse</p>
-      <h2 class="section-title" data-lang-fr="59 avenue Paul Cézanne, <em style='white-space:nowrap'>Aix-en-Provence</em>" data-lang-en="59 avenue Paul Cézanne, <em style='white-space:nowrap'>Aix-en-Provence</em>">59 avenue Paul Cézanne, <em style='white-space:nowrap'>Aix-en-Provence</em></h2>
+      <h2 class="section-title" id="t-trajets" data-lang-fr="Les temps de trajet <em>depuis l'adresse</em>" data-lang-en="Travel times <em>from the address</em>">Les temps de trajet <em>depuis l'adresse</em></h2>
+      <p class="section-lead" data-lang-fr="Durées approximatives en voiture, selon la plaquette." data-lang-en="Approximate times by car, according to the brochure.">Durées approximatives en voiture, selon la plaquette.</p>
     </div>
-    <div class="two-col">
-      <div class="reveal">
-        <p class="loc-lead" data-lang-fr="Le programme 59 Cézanne, huit appartements neufs, se situe au 59 avenue Paul Cézanne, dans le quartier des Lauves. Selon la plaquette du programme, le centre-ville d'Aix-en-Provence est à environ 4 minutes en voiture et l'autoroute A51 à environ 3 minutes." data-lang-en="The 59 Cézanne programme, eight new apartments, is located at 59 avenue Paul Cézanne in Aix-en-Provence, in the Lauves district. According to the programme brochure, the city centre is about 4 minutes away by car and the A51 motorway about 3 minutes.">Le programme 59 Cézanne, huit appartements neufs, se situe au 59 avenue Paul Cézanne, dans le quartier des Lauves. Selon la plaquette du programme, le centre-ville d'Aix-en-Provence est à environ 4 minutes en voiture et l'autoroute A51 à environ 3 minutes.</p>
-        <div class="address-block">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="28" height="28" aria-hidden="true" focusable="false"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
-          <div>
-            <strong>59 avenue Paul Cézanne</strong>
-            <span>13100 Aix-en-Provence</span>
-          </div>
-        </div>
-        <h3 class="loc-h3" data-lang-fr="Repères à pied" data-lang-en="Within walking distance">Repères à pied</h3>
-        <ul class="loc-landmarks">
-          <li><span data-lang-fr="Arrêts de bus des lignes 5 et 12" data-lang-en="Bus stops for lines 5 and 12">Arrêts de bus des lignes 5 et 12</span><b data-lang-fr="moins de 200 m" data-lang-en="under 200 m">moins de 200 m</b></li>
-          <li><span data-lang-fr="Jardin des Peintres (ancien Terrain des Peintres)" data-lang-en="Jardin des Peintres (formerly Terrain des Peintres)">Jardin des Peintres (ancien Terrain des Peintres)</span><b data-lang-fr="environ 300 m · 4 min" data-lang-en="about 300 m · 4 min">environ 300 m · 4 min</b></li>
-          <li><span data-lang-fr="Atelier des Lauves, 13 avenue Paul Cézanne" data-lang-en="Atelier des Lauves, 13 avenue Paul Cézanne">Atelier des Lauves, 13 avenue Paul Cézanne</span><b data-lang-fr="environ 850 m · 11 min" data-lang-en="about 850 m · 11 min">environ 850 m · 11 min</b></li>
-        </ul>
-        <p class="loc-note" data-lang-fr="Itinéraires piétons calculés sur données © <a class='loc-link' href='https://www.openstreetmap.org/copyright' target='_blank' rel='noopener noreferrer'>contributeurs OpenStreetMap</a> (moteur OSRM), depuis le point d'adresse du 59 avenue Paul Cézanne de la Base Adresse Nationale ; consultés le 6 octobre 2026. Valeurs indicatives et arrondies." data-lang-en="Walking routes computed from © <a class='loc-link' href='https://www.openstreetmap.org/copyright' target='_blank' rel='noopener noreferrer'>OpenStreetMap contributors</a> data (OSRM engine), from the 59 avenue Paul Cézanne address point in the French National Address Base; accessed 6 October 2026. Indicative, rounded values.">Itinéraires piétons calculés sur données © <a class='loc-link' href='https://www.openstreetmap.org/copyright' target='_blank' rel='noopener noreferrer'>contributeurs OpenStreetMap</a> (moteur OSRM), depuis le point d'adresse du 59 avenue Paul Cézanne de la Base Adresse Nationale ; consultés le 6 octobre 2026. Valeurs indicatives et arrondies.</p>
-      </div>
-      <div class="reveal">
-        <div class="map-box" id="mapBox">
-          <div class="map-consent" id="mapPlaceholder">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="40" height="40" aria-hidden="true" focusable="false"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
-            <p class="map-consent-addr" data-lang-fr="59 avenue Paul Cézanne, 13100 Aix-en-Provence" data-lang-en="59 avenue Paul Cézanne, 13100 Aix-en-Provence">59 avenue Paul Cézanne, 13100 Aix-en-Provence</p>
-            <p class="map-consent-note" data-lang-fr="La carte est fournie par Google Maps. En l'affichant, vous acceptez que Google reçoive votre adresse IP et puisse déposer des cookies. Rien n'est chargé tant que vous ne cliquez pas." data-lang-en="The map is provided by Google Maps. By displaying it, you agree that Google receives your IP address and may set cookies. Nothing is loaded until you click.">La carte est fournie par Google Maps. En l'affichant, vous acceptez que Google reçoive votre adresse IP et puisse déposer des cookies. Rien n'est chargé tant que vous ne cliquez pas.</p>
-            <button type="button" class="btn btn-primary" id="mapLoad" hidden aria-controls="mapBox" data-src="https://maps.google.com/maps?q=43.5465,5.4451&amp;z=16&amp;output=embed" data-title-fr="Carte Google Maps : 59 avenue Paul Cézanne, Aix-en-Provence" data-title-en="Google Maps: 59 avenue Paul Cézanne, Aix-en-Provence" data-lang-fr="Afficher la carte" data-lang-en="Show the map">Afficher la carte</button>
-          </div>
-        </div>
-        <p class="map-links">
-          <a class="loc-link" href="https://www.google.com/maps/dir/?api=1&amp;destination=43.5465,5.4451" target="_blank" rel="noopener noreferrer"><span data-lang-fr="Itinéraire (Google Maps)" data-lang-en="Directions (Google Maps)">Itinéraire (Google Maps)</span><span class="sr-only" data-lang-fr=" (nouvel onglet)" data-lang-en=" (opens in a new tab)"> (nouvel onglet)</span></a>
-          <a class="loc-link" href="https://www.openstreetmap.org/?mlat=43.5465&amp;mlon=5.4451#map=17/43.5465/5.4451" target="_blank" rel="noopener noreferrer"><span data-lang-fr="Voir sur OpenStreetMap" data-lang-en="View on OpenStreetMap">Voir sur OpenStreetMap</span><span class="sr-only" data-lang-fr=" (nouvel onglet)" data-lang-en=" (opens in a new tab)"> (nouvel onglet)</span></a>
-        </p>
-        <p class="sr-only" role="status" id="mapStatus"></p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section class="section section-alt" id="temps-de-trajet">
-  <div class="container">
-    <div class="section-header reveal">
-      <p class="eyebrow" data-lang-fr="Temps de trajet" data-lang-en="Travel times">Temps de trajet</p>
-      <h2 class="section-title" data-lang-fr="Les temps de trajet <em>depuis l'adresse</em>" data-lang-en="Travel times <em>from the address</em>">Les temps de trajet <em>depuis l'adresse</em></h2>
-      <p class="section-lead mt-2" data-lang-fr="Durées annoncées par la plaquette du programme (février 2025, page 11). Elles sont indicatives : elles varient selon l'heure, la circulation et le point d'arrivée choisi." data-lang-en="Times stated in the programme brochure (February 2025, page 11). They are indicative: they vary with the time of day, traffic and the chosen destination.">Durées annoncées par la plaquette du programme (février 2025, page 11). Elles sont indicatives : elles varient selon l'heure, la circulation et le point d'arrivée choisi.</p>
-    </div>
-    <ul class="big-distance-grid">
-      <li class="big-dist-item reveal">
-        <div class="bdi-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="26" height="26" aria-hidden="true" focusable="false"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg></div>
-        <h3 class="bdi-name" data-lang-fr="Centre-ville d'Aix" data-lang-en="Aix city centre">Centre-ville d'Aix</h3>
-        <p class="bdi-row"><strong class="bdi-val" data-lang-fr="environ 4 min" data-lang-en="about 4 min">environ 4 min</strong><span class="bdi-val-label" data-lang-fr="en voiture" data-lang-en="by car">en voiture</span></p>
-        <p class="bdi-row"><strong class="bdi-val" data-lang-fr="environ 8 min" data-lang-en="about 8 min">environ 8 min</strong><span class="bdi-val-label" data-lang-fr="en bus (lignes 5 et 12)" data-lang-en="by bus (lines 5 and 12)">en bus (lignes 5 et 12)</span></p>
-        <p class="bdi-row"><strong class="bdi-val" data-lang-fr="environ 20 min" data-lang-en="about 20 min">environ 20 min</strong><span class="bdi-val-label" data-lang-fr="à pied" data-lang-en="on foot">à pied</span></p>
-      </li>
-      <li class="big-dist-item reveal">
-        <div class="bdi-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="26" height="26" aria-hidden="true" focusable="false"><rect x="2" y="8" width="20" height="10" rx="2"/><path d="M8 8V6a2 2 0 114 0v2M16 8V6a2 2 0 114 0v2"/><circle cx="8" cy="15" r="1" fill="currentColor"/><circle cx="16" cy="15" r="1" fill="currentColor"/></svg></div>
-        <h3 class="bdi-name" data-lang-fr="Autoroute A51" data-lang-en="A51 motorway">Autoroute A51</h3>
-        <p class="bdi-row"><strong class="bdi-val" data-lang-fr="environ 3 min" data-lang-en="about 3 min">environ 3 min</strong><span class="bdi-val-label" data-lang-fr="en voiture" data-lang-en="by car">en voiture</span></p>
-      </li>
-      <li class="big-dist-item reveal">
-        <div class="bdi-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="26" height="26" aria-hidden="true" focusable="false"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M12 8v8M8 12h8"/></svg></div>
-        <h3 class="bdi-name" data-lang-fr="Hôpital" data-lang-en="Hospital">Hôpital</h3>
-        <p class="bdi-row"><strong class="bdi-val" data-lang-fr="environ 7 min" data-lang-en="about 7 min">environ 7 min</strong><span class="bdi-val-label" data-lang-fr="en voiture" data-lang-en="by car">en voiture</span></p>
-      </li>
-      <li class="big-dist-item reveal">
-        <div class="bdi-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="26" height="26" aria-hidden="true" focusable="false"><path d="M3 17l3-9h12l3 9H3z"/><path d="M4 17h16M7 17v2M17 17v2"/><path d="M4 13h16"/><path d="M7 9v4M12 9v4M17 9v4"/></svg></div>
-        <h3 class="bdi-name" data-lang-fr="Gare TGV" data-lang-en="TGV station">Gare TGV</h3>
-        <p class="bdi-row"><strong class="bdi-val" data-lang-fr="environ 15 min" data-lang-en="about 15 min">environ 15 min</strong><span class="bdi-val-label" data-lang-fr="en voiture" data-lang-en="by car">en voiture</span></p>
-        <p class="bdi-row"><strong class="bdi-val" data-lang-fr="environ 3 h" data-lang-en="about 3 h">environ 3 h</strong><span class="bdi-val-label" data-lang-fr="jusqu'à Paris, en TGV" data-lang-en="to Paris, by TGV">jusqu'à Paris, en TGV</span></p>
-      </li>
-      <li class="big-dist-item reveal">
-        <div class="bdi-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="26" height="26" aria-hidden="true" focusable="false"><path d="M22 16.5H2l2-5h1.5L7 8h10l1.5 3.5H20l2 5z"/><path d="M12 3v5M8 19h8"/></svg></div>
-        <h3 class="bdi-name" data-lang-fr="Aéroport Marseille Provence" data-lang-en="Marseille Provence Airport">Aéroport Marseille Provence</h3>
-        <p class="bdi-row"><strong class="bdi-val" data-lang-fr="environ 22 min" data-lang-en="about 22 min">environ 22 min</strong><span class="bdi-val-label" data-lang-fr="en voiture" data-lang-en="by car">en voiture</span></p>
-      </li>
-      <li class="big-dist-item reveal">
-        <div class="bdi-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="26" height="26" aria-hidden="true" focusable="false"><path d="M3 21h18M5 21V7l7-4 7 4v14"/><path d="M9 21v-6h6v6"/></svg></div>
-        <h3 class="bdi-name" data-lang-fr="Marseille" data-lang-en="Marseille">Marseille</h3>
-        <p class="bdi-row"><strong class="bdi-val" data-lang-fr="environ 26 min" data-lang-en="about 26 min">environ 26 min</strong><span class="bdi-val-label" data-lang-fr="en voiture" data-lang-en="by car">en voiture</span></p>
-      </li>
+    <ul class="loc-times">
+      <li class="reveal"><span class="loc-lab" data-lang-fr="Centre-ville d'Aix" data-lang-en="Aix city centre">Centre-ville d'Aix</span><span class="loc-num">4<small>min</small></span></li>
+      <li class="reveal"><span class="loc-lab" data-lang-fr="Autoroute A51" data-lang-en="A51 motorway">Autoroute A51</span><span class="loc-num">3<small>min</small></span></li>
+      <li class="reveal"><span class="loc-lab" data-lang-fr="Gare TGV" data-lang-en="TGV station">Gare TGV</span><span class="loc-num">15<small>min</small></span></li>
+      <li class="reveal"><span class="loc-lab" data-lang-fr="Aéroport Marseille Provence" data-lang-en="Marseille Provence Airport">Aéroport Marseille Provence</span><span class="loc-num">22<small>min</small></span></li>
+      <li class="reveal"><span class="loc-lab" data-lang-fr="Marseille" data-lang-en="Marseille">Marseille</span><span class="loc-num">26<small>min</small></span></li>
     </ul>
   </div>
 </section>
 
-<section class="section" id="quotidien">
+<section class="section section-dark loc-sector" id="secteur" aria-labelledby="t-secteur">
   <div class="container">
     <div class="section-header reveal">
-      <p class="eyebrow" data-lang-fr="Vie quotidienne" data-lang-en="Daily life">Vie quotidienne</p>
-      <h2 class="section-title" data-lang-fr="Commerces et écoles <em>à proximité</em>" data-lang-en="Shops and schools <em>nearby</em>">Commerces et écoles <em>à proximité</em></h2>
-      <p class="section-lead mt-2" data-lang-fr="Temps annoncés par la plaquette du programme (page 11), selon le mode de déplacement. Pour l'inscription et l'affectation scolaires, renseignez-vous auprès de la Ville d'Aix-en-Provence et de l'établissement concerné." data-lang-en="Times stated in the programme brochure (page 11), by mode of travel. For school enrolment and catchment areas, please check with the City of Aix-en-Provence and the school concerned.">Temps annoncés par la plaquette du programme (page 11), selon le mode de déplacement. Pour l'inscription et l'affectation scolaires, renseignez-vous auprès de la Ville d'Aix-en-Provence et de l'établissement concerné.</p>
-    </div>
-    <div class="loc-tables">
-<div class="loc-table-wrap reveal">
-<table class="loc-table">
-  <caption data-lang-fr="Commerces de proximité" data-lang-en="Local shops">Commerces de proximité</caption>
-  <thead><tr>
-    <th scope="col" data-lang-fr="Lieu" data-lang-en="Place">Lieu</th>
-    <th scope="col" data-lang-fr="À pied" data-lang-en="On foot">À pied</th>
-    <th scope="col" data-lang-fr="En bus" data-lang-en="By bus">En bus</th>
-    <th scope="col" data-lang-fr="En voiture" data-lang-en="By car">En voiture</th>
-  </tr></thead>
-  <tbody>
-    <tr>
-      <th scope="row" data-lang-fr="Vival Supérette" data-lang-en="Vival convenience store">Vival Supérette</th>
-      <td>14 min</td>
-      <td>7 min</td>
-      <td>2 min</td>
-    </tr>
-    <tr>
-      <th scope="row" data-lang-fr="Boulangerie et tabac" data-lang-en="Bakery and tobacconist">Boulangerie et tabac</th>
-      <td>15 min</td>
-      <td>10 min</td>
-      <td>3 min</td>
-    </tr>
-    <tr>
-      <th scope="row" data-lang-fr="Picard, avec parking" data-lang-en="Picard, with car park">Picard, avec parking</th>
-      <td><span aria-hidden="true">–</span><span class="sr-only" data-lang-fr="non communiqué" data-lang-en="not provided">non communiqué</span></td>
-      <td><span aria-hidden="true">–</span><span class="sr-only" data-lang-fr="non communiqué" data-lang-en="not provided">non communiqué</span></td>
-      <td>4 min</td>
-    </tr>
-    <tr>
-      <th scope="row" data-lang-fr="Intermarché, avec parking" data-lang-en="Intermarché, with car park">Intermarché, avec parking</th>
-      <td><span aria-hidden="true">–</span><span class="sr-only" data-lang-fr="non communiqué" data-lang-en="not provided">non communiqué</span></td>
-      <td><span aria-hidden="true">–</span><span class="sr-only" data-lang-fr="non communiqué" data-lang-en="not provided">non communiqué</span></td>
-      <td>5 min</td>
-    </tr>
-  </tbody>
-</table>
-</div>
-<div class="loc-table-wrap reveal">
-<table class="loc-table">
-  <caption data-lang-fr="Écoles" data-lang-en="Schools">Écoles</caption>
-  <thead><tr>
-    <th scope="col" data-lang-fr="Lieu" data-lang-en="Place">Lieu</th>
-    <th scope="col" data-lang-fr="À pied" data-lang-en="On foot">À pied</th>
-    <th scope="col" data-lang-fr="En bus" data-lang-en="By bus">En bus</th>
-    <th scope="col" data-lang-fr="En voiture" data-lang-en="By car">En voiture</th>
-  </tr></thead>
-  <tbody>
-    <tr>
-      <th scope="row" data-lang-fr="École maternelle des Lauves" data-lang-en="Lauves nursery school (École maternelle des Lauves)">École maternelle des Lauves</th>
-      <td>11 min</td>
-      <td>5 min</td>
-      <td>2 min</td>
-    </tr>
-    <tr>
-      <th scope="row" data-lang-fr="Collège Nina Simone" data-lang-en="Collège Nina Simone (middle school)">Collège Nina Simone</th>
-      <td>17 min</td>
-      <td>10 min</td>
-      <td>3 min</td>
-    </tr>
-    <tr>
-      <th scope="row" data-lang-fr="Lycée Cézanne" data-lang-en="Lycée Cézanne (high school)">Lycée Cézanne</th>
-      <td>28 min</td>
-      <td>17 min</td>
-      <td>3 min</td>
-    </tr>
-  </tbody>
-</table>
-</div>
+      <h2 class="section-title" id="t-secteur" data-lang-fr="Un secteur lié à <em>Cézanne</em>" data-lang-en="An area tied to <em>Cézanne</em>">Un secteur lié à <em>Cézanne</em></h2>
+      <p class="section-lead" data-lang-fr="L'Atelier des Lauves, dernier atelier de Cézanne, est au 13 de l'avenue, à environ 850 m à pied." data-lang-en="The Atelier des Lauves, Cézanne's last studio, is at number 13 on the avenue, about 850 m on foot.">L'Atelier des Lauves, dernier atelier de Cézanne, est au 13 de l'avenue, à environ 850 m à pied.</p>
     </div>
   </div>
+  <figure class="loc-figure reveal">
+    <img src="/Photo%2059%20C%C3%A9zanne/3D%20Groove%20Architecture/Edited/insertion-ouest-1200w.webp"
+         srcset="/Photo%2059%20C%C3%A9zanne/3D%20Groove%20Architecture/Edited/insertion-ouest-800w.webp 800w, /Photo%2059%20C%C3%A9zanne/3D%20Groove%20Architecture/Edited/insertion-ouest-1200w.webp 1200w"
+         sizes="100vw" width="1200" height="900" loading="lazy" decoding="async"
+         alt="Vue aérienne d'un secteur résidentiel arboré d'Aix-en-Provence, avec la montagne Sainte-Victoire à l'horizon" />
+    <figcaption data-lang-fr="Vue aérienne du secteur : la résidence n'y figure pas. Illustration non contractuelle." data-lang-en="Aerial view of the area: the residence does not appear in it. Non-contractual illustration.">Vue aérienne du secteur : la résidence n'y figure pas. Illustration non contractuelle.</figcaption>
+  </figure>
+  <p class="loc-note" data-lang-fr="Atelier : <a class='loc-link' href='https://www.cezanne-en-provence.com/L-Atelier-des-Lauves' target='_blank' rel='noopener noreferrer'>cezanne-en-provence.com<span class='sr-only'> (nouvel onglet)</span></a>. Distance à pied : calcul sur données © <a class='loc-link' href='https://www.openstreetmap.org/copyright' target='_blank' rel='noopener noreferrer'>contributeurs OpenStreetMap<span class='sr-only'> (nouvel onglet)</span></a>, indicatif, consultées le 6 octobre 2026." data-lang-en="Studio: <a class='loc-link' href='https://www.cezanne-en-provence.com/L-Atelier-des-Lauves' target='_blank' rel='noopener noreferrer'>cezanne-en-provence.com<span class='sr-only'> (opens in a new tab)</span></a>. Walking distance: computed from © <a class='loc-link' href='https://www.openstreetmap.org/copyright' target='_blank' rel='noopener noreferrer'>OpenStreetMap contributors<span class='sr-only'> (opens in a new tab)</span></a> data, indicative, accessed 6 October 2026.">Atelier : <a class='loc-link' href='https://www.cezanne-en-provence.com/L-Atelier-des-Lauves' target='_blank' rel='noopener noreferrer'>cezanne-en-provence.com<span class='sr-only'> (nouvel onglet)</span></a>. Distance à pied : calcul sur données © <a class='loc-link' href='https://www.openstreetmap.org/copyright' target='_blank' rel='noopener noreferrer'>contributeurs OpenStreetMap<span class='sr-only'> (nouvel onglet)</span></a>, indicatif, consultées le 6 octobre 2026.</p>
 </section>
 
-<section class="section section-alt" id="transports">
+<section class="section section-alt" id="carte" aria-labelledby="t-carte">
   <div class="container">
     <div class="section-header reveal">
-      <p class="eyebrow" data-lang-fr="Mobilité" data-lang-en="Getting around">Mobilité</p>
-      <h2 class="section-title" data-lang-fr="Transports et <em>accès</em>" data-lang-en="Transport and <em>access</em>">Transports et <em>accès</em></h2>
+      <h2 class="section-title" id="t-carte" data-lang-fr="59 avenue Paul Cézanne, <em style='white-space:nowrap'>Aix-en-Provence</em>" data-lang-en="59 avenue Paul Cézanne, <em style='white-space:nowrap'>Aix-en-Provence</em>">59 avenue Paul Cézanne, <em style='white-space:nowrap'>Aix-en-Provence</em></h2>
     </div>
-    <div class="transport-cards">
-      <div class="transport-card reveal">
-        <div class="transport-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="32" height="32" aria-hidden="true" focusable="false"><rect x="3" y="5" width="18" height="13" rx="2"/><path d="M3 10h18M8 19l-1 2M16 19l1 2M7 15h.01M17 15h.01"/></svg></div>
-        <h3 data-lang-fr="Bus : lignes 5 et 12" data-lang-en="Bus: lines 5 and 12">Bus : lignes 5 et 12</h3>
-        <p data-lang-fr="Selon la plaquette, les lignes 5 et 12 desservent le centre-ville. Le site de l'Atelier des Lauves cite ces mêmes lignes pour l'avenue Paul Cézanne. Horaires et arrêts à jour : réseau Aix-en-Bus." data-lang-en="According to the brochure, lines 5 and 12 serve the city centre. The Atelier des Lauves website lists the same lines for avenue Paul Cézanne. For up-to-date timetables and stops, see the Aix-en-Bus network.">Selon la plaquette, les lignes 5 et 12 desservent le centre-ville. Le site de l'Atelier des Lauves cite ces mêmes lignes pour l'avenue Paul Cézanne. Horaires et arrêts à jour : réseau Aix-en-Bus.</p>
-        <span class="dist-badge" data-lang-fr="Arrêts à moins de 200 m à pied" data-lang-en="Stops under 200 m on foot">Arrêts à moins de 200 m à pied</span>
-      </div>
-      <div class="transport-card reveal">
-        <div class="transport-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="32" height="32" aria-hidden="true" focusable="false"><path d="M3 17l3-9h12l3 9H3z"/><path d="M4 17h16M7 17v2M17 17v2"/><path d="M4 13h16"/><path d="M7 9v4M12 9v4M17 9v4"/></svg></div>
-        <h3 data-lang-fr="Train : gare TGV" data-lang-en="Train: TGV station">Train : gare TGV</h3>
-        <p data-lang-fr="La gare TGV d'Aix-en-Provence est à environ 15 minutes en voiture selon la plaquette, qui indique un trajet vers Paris en environ 3 heures." data-lang-en="According to the brochure, the Aix-en-Provence TGV station is about 15 minutes away by car, with a journey to Paris of about 3 hours.">La gare TGV d'Aix-en-Provence est à environ 15 minutes en voiture selon la plaquette, qui indique un trajet vers Paris en environ 3 heures.</p>
-        <span class="dist-badge" data-lang-fr="Environ 15 min en voiture" data-lang-en="About 15 min by car">Environ 15 min en voiture</span>
-      </div>
-      <div class="transport-card reveal">
-        <div class="transport-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="32" height="32" aria-hidden="true" focusable="false"><path d="M22 16.5H2l2-5h1.5L7 8h10l1.5 3.5H20l2 5z"/><path d="M12 3v5M8 19h8"/></svg></div>
-        <h3 data-lang-fr="Avion : aéroport Marseille Provence" data-lang-en="Air: Marseille Provence Airport">Avion : aéroport Marseille Provence</h3>
-        <p data-lang-fr="L'aéroport international Marseille Provence est à environ 22 minutes en voiture, selon la plaquette du programme." data-lang-en="Marseille Provence international airport is about 22 minutes away by car, according to the programme brochure.">L'aéroport international Marseille Provence est à environ 22 minutes en voiture, selon la plaquette du programme.</p>
-        <span class="dist-badge" data-lang-fr="Environ 22 min en voiture" data-lang-en="About 22 min by car">Environ 22 min en voiture</span>
-      </div>
-      <div class="transport-card reveal">
-        <div class="transport-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="32" height="32" aria-hidden="true" focusable="false"><rect x="2" y="8" width="20" height="10" rx="2"/><path d="M8 8V6a2 2 0 114 0v2M16 8V6a2 2 0 114 0v2"/><circle cx="8" cy="15" r="1" fill="currentColor"/><circle cx="16" cy="15" r="1" fill="currentColor"/></svg></div>
-        <h3 data-lang-fr="Voiture, vélo et recharge" data-lang-en="Car, bike and charging">Voiture, vélo et recharge</h3>
-        <p data-lang-fr="L'A51 est à environ 3 minutes en voiture et Marseille à environ 26 minutes (plaquette). Selon la notice descriptive du 8 avril 2025, le stationnement en sous-sol est accessible de plain-pied depuis l'avenue Paul Cézanne ; sont aussi prévus un local à vélos clos et couvert avec accès par badge et une prise de recharge 32 A destinée à recevoir une borne pour véhicule électrique." data-lang-en="The A51 is about 3 minutes away by car and Marseille about 26 minutes (brochure). According to the descriptive notice of 8 April 2025, the underground car park is accessed at street level from avenue Paul Cézanne; a closed, covered bike room with badge access and a 32 A socket intended to receive an electric-vehicle charging point are also provided for.">L'A51 est à environ 3 minutes en voiture et Marseille à environ 26 minutes (plaquette). Selon la notice descriptive du 8 avril 2025, le stationnement en sous-sol est accessible de plain-pied depuis l'avenue Paul Cézanne ; sont aussi prévus un local à vélos clos et couvert avec accès par badge et une prise de recharge 32 A destinée à recevoir une borne pour véhicule électrique.</p>
-        <span class="dist-badge" data-lang-fr="A51 : environ 3 min" data-lang-en="A51: about 3 min">A51 : environ 3 min</span>
+    <div class="map-box reveal" id="mapBox">
+      <div class="map-consent" id="mapPlaceholder">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="48" height="48" aria-hidden="true" focusable="false"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        <p class="map-consent-note" data-lang-fr="Carte Google Maps : en l'affichant, vous acceptez que Google reçoive votre adresse IP et dépose des cookies." data-lang-en="Google Maps map: by displaying it, you agree that Google receives your IP address and may set cookies.">Carte Google Maps : en l'affichant, vous acceptez que Google reçoive votre adresse IP et dépose des cookies.</p>
+        <button type="button" class="btn btn-primary" id="mapLoad" hidden aria-controls="mapBox" data-src="https://maps.google.com/maps?q=43.5465,5.4451&amp;z=16&amp;output=embed" data-title-fr="Carte Google Maps : 59 avenue Paul Cézanne, Aix-en-Provence" data-title-en="Google Maps: 59 avenue Paul Cézanne, Aix-en-Provence" data-lang-fr="Afficher la carte" data-lang-en="Show the map">Afficher la carte</button>
       </div>
     </div>
+    <p class="map-links reveal">
+      <a class="loc-link" href="https://www.google.com/maps/dir/?api=1&amp;destination=43.5465,5.4451" target="_blank" rel="noopener noreferrer"><span data-lang-fr="Itinéraire (Google Maps)" data-lang-en="Directions (Google Maps)">Itinéraire (Google Maps)</span><span class="sr-only" data-lang-fr=" (nouvel onglet)" data-lang-en=" (opens in a new tab)"> (nouvel onglet)</span></a>
+    </p>
+    <p class="sr-only" role="status" id="mapStatus"></p>
   </div>
 </section>
 
-<section class="section section-dark" id="secteur">
-  <div class="container">
-    <div class="two-col">
-      <div class="loc-sector reveal">
-        <p class="eyebrow" data-lang-fr="Le secteur" data-lang-en="The area">Le secteur</p>
-        <h2 class="section-title" data-lang-fr="Un secteur lié à <em>Cézanne</em>" data-lang-en="An area tied to <em>Cézanne</em>">Un secteur lié à <em>Cézanne</em></h2>
-        <div class="divider"></div>
-        <p data-lang-fr="Le 59 est situé avenue Paul Cézanne, dans le quartier des Lauves. Au 13 de la même avenue se trouve l'Atelier des Lauves, dernier atelier du peintre : un petit pavillon au sommet de la colline des Lauves, qui domine les toits d'Aix. Il est à environ 850 m à pied du 59 (calcul OpenStreetMap)." data-lang-en="Number 59 is on avenue Paul Cézanne, in the Lauves district. At number 13 on the same avenue stands the Atelier des Lauves, the painter's last studio: a small pavilion on top of the Lauves hill, overlooking the rooftops of Aix. It is about 850 m on foot from number 59 (OpenStreetMap route).">Le 59 est situé avenue Paul Cézanne, dans le quartier des Lauves. Au 13 de la même avenue se trouve l'Atelier des Lauves, dernier atelier du peintre : un petit pavillon au sommet de la colline des Lauves, qui domine les toits d'Aix. Il est à environ 850 m à pied du 59 (calcul OpenStreetMap).</p>
-        <p data-lang-fr="Le Jardin des Peintres, ancien Terrain des Peintres, est un petit jardin de 400 m² accessible toute la journée, chemin de la Marguerite. Selon la Ville d'Aix-en-Provence, Cézanne venait régulièrement y peindre la montagne Sainte-Victoire. La plaquette situe 59 Cézanne à quelques mètres du Terrain des Peintres ; le trajet à pied calculé sur OpenStreetMap est d'environ 300 m." data-lang-en="The Jardin des Peintres, formerly the Terrain des Peintres, is a small 400 m² garden open all day, on chemin de la Marguerite. According to the City of Aix-en-Provence, Cézanne regularly came here to paint Mont Sainte-Victoire. The brochure places 59 Cézanne a few metres from the Terrain des Peintres; the walking route computed on OpenStreetMap is about 300 m.">Le Jardin des Peintres, ancien Terrain des Peintres, est un petit jardin de 400 m² accessible toute la journée, chemin de la Marguerite. Selon la Ville d'Aix-en-Provence, Cézanne venait régulièrement y peindre la montagne Sainte-Victoire. La plaquette situe 59 Cézanne à quelques mètres du Terrain des Peintres ; le trajet à pied calculé sur OpenStreetMap est d'environ 300 m.</p>
-        <p data-lang-fr="Pour comprendre le secteur plus en détail (cadre de vie, accès, patrimoine), lisez notre <a class='loc-link' href='/blog/quartier-des-lauves-aix-en-provence'>guide du quartier des Lauves</a>." data-lang-en="For a closer look at the area (lifestyle, access, heritage), read our <a class='loc-link' href='/blog/quartier-des-lauves-aix-en-provence'>guide to the Lauves district</a> (in French).">Pour comprendre le secteur plus en détail (cadre de vie, accès, patrimoine), lisez notre <a class='loc-link' href='/blog/quartier-des-lauves-aix-en-provence'>guide du quartier des Lauves</a>.</p>
-        <p class="loc-note" data-lang-fr="Sources : <a class='loc-link' href='https://www.cezanne-en-provence.com/L-Atelier-des-Lauves' target='_blank' rel='noopener noreferrer'>cezanne-en-provence.com</a> (Atelier des Lauves) et <a class='loc-link' href='https://www.aixenprovence.fr/Jardin-des-peintres' target='_blank' rel='noopener noreferrer'>aixenprovence.fr</a> (Jardin des Peintres), consultés le 6 octobre 2026." data-lang-en="Sources: <a class='loc-link' href='https://www.cezanne-en-provence.com/L-Atelier-des-Lauves' target='_blank' rel='noopener noreferrer'>cezanne-en-provence.com</a> (Atelier des Lauves) and <a class='loc-link' href='https://www.aixenprovence.fr/Jardin-des-peintres' target='_blank' rel='noopener noreferrer'>aixenprovence.fr</a> (Jardin des Peintres), accessed 6 October 2026.">Sources : <a class='loc-link' href='https://www.cezanne-en-provence.com/L-Atelier-des-Lauves' target='_blank' rel='noopener noreferrer'>cezanne-en-provence.com</a> (Atelier des Lauves) et <a class='loc-link' href='https://www.aixenprovence.fr/Jardin-des-peintres' target='_blank' rel='noopener noreferrer'>aixenprovence.fr</a> (Jardin des Peintres), consultés le 6 octobre 2026.</p>
-      </div>
-      <figure class="loc-figure reveal">
-        <img src="/Photo%2059%20C%C3%A9zanne/3D%20Groove%20Architecture/Edited/insertion-ouest-1200w.webp"
-             srcset="/Photo%2059%20C%C3%A9zanne/3D%20Groove%20Architecture/Edited/insertion-ouest-800w.webp 800w, /Photo%2059%20C%C3%A9zanne/3D%20Groove%20Architecture/Edited/insertion-ouest-1200w.webp 1200w"
-             sizes="(max-width: 1024px) 100vw, 50vw" width="1200" height="900" loading="lazy" decoding="async"
-             alt="Vue aérienne d'un secteur résidentiel arboré d'Aix-en-Provence, avec la montagne Sainte-Victoire à l'horizon" />
-        <figcaption data-lang-fr="Vue aérienne du secteur résidentiel autour du programme, avec la Sainte-Victoire à l'horizon. La résidence n'y figure pas. Illustration non contractuelle." data-lang-en="Aerial view of the residential area around the programme, with Mont Sainte-Victoire on the horizon. The residence does not appear in it. Non-contractual illustration.">Vue aérienne du secteur résidentiel autour du programme, avec la Sainte-Victoire à l'horizon. La résidence n'y figure pas. Illustration non contractuelle.</figcaption>
-      </figure>
+<section class="section loc-cta" id="contact-cta" aria-label="Appartements et contact" data-aria-label-fr="Appartements et contact" data-aria-label-en="Apartments and contact">
+  <div class="container text-center">
+    <div class="btn-row reveal">
+      <a class="btn btn-primary" href="/logements" data-lang-fr="Voir les appartements" data-lang-en="See the apartments">Voir les appartements</a>
+      <a class="btn btn-outline-dark" href="/contact" data-lang-fr="Nous contacter" data-lang-en="Contact us">Nous contacter</a>
     </div>
-  </div>
-</section>
-
-<section class="section" id="faq">
-  <div class="container">
-    <div class="section-header reveal">
-      <p class="eyebrow" data-lang-fr="Questions fréquentes" data-lang-en="FAQ">Questions fréquentes</p>
-      <h2 class="section-title" data-lang-fr="Situation et accès : <em>vos questions</em>" data-lang-en="Location and access: <em>your questions</em>">Situation et accès : <em>vos questions</em></h2>
-    </div>
-    <div class="loc-faq">
-      <details>
-        <summary data-lang-fr="Où se trouve le 59 Cézanne à Aix-en-Provence ?" data-lang-en="Where is 59 Cézanne in Aix-en-Provence?">Où se trouve le 59 Cézanne à Aix-en-Provence ?</summary>
-        <div class="loc-faq-a" data-lang-fr="Le programme se situe au 59 avenue Paul Cézanne, 13100 Aix-en-Provence, dans le quartier des Lauves. L'Atelier des Lauves, dernier atelier de Cézanne, est au 13 de la même avenue, à environ 850 m à pied (calcul OpenStreetMap, indicatif)." data-lang-en="The programme is at 59 avenue Paul Cézanne, 13100 Aix-en-Provence, in the Lauves district. Cézanne's last studio, the Atelier des Lauves, is at number 13 on the same avenue, about 850 m away on foot (OpenStreetMap route, indicative).">Le programme se situe au 59 avenue Paul Cézanne, 13100 Aix-en-Provence, dans le quartier des Lauves. L'Atelier des Lauves, dernier atelier de Cézanne, est au 13 de la même avenue, à environ 850 m à pied (calcul OpenStreetMap, indicatif).</div>
-      </details>
-      <details>
-        <summary data-lang-fr="À combien de minutes du centre-ville d'Aix est la résidence ?" data-lang-en="How far is the residence from Aix city centre?">À combien de minutes du centre-ville d'Aix est la résidence ?</summary>
-        <div class="loc-faq-a" data-lang-fr="Selon la plaquette du programme, le centre-ville est à environ 4 minutes en voiture, environ 8 minutes en bus (lignes 5 et 12) et environ 20 minutes à pied. Ces durées sont indicatives et varient selon l'heure et le point d'arrivée." data-lang-en="According to the programme brochure, the city centre is about 4 minutes away by car, about 8 minutes by bus (lines 5 and 12) and about 20 minutes on foot. These times are indicative and vary with the time of day and the destination.">Selon la plaquette du programme, le centre-ville est à environ 4 minutes en voiture, environ 8 minutes en bus (lignes 5 et 12) et environ 20 minutes à pied. Ces durées sont indicatives et varient selon l'heure et le point d'arrivée.</div>
-      </details>
-      <details>
-        <summary data-lang-fr="Quels bus desservent l'avenue Paul Cézanne ?" data-lang-en="Which buses serve avenue Paul Cézanne?">Quels bus desservent l'avenue Paul Cézanne ?</summary>
-        <div class="loc-faq-a" data-lang-fr="Les lignes 5 et 12 du réseau de bus d'Aix-en-Provence, qui desservent le centre-ville selon la plaquette. Le site de l'Atelier des Lauves cite les mêmes lignes pour l'avenue Paul Cézanne. Pour les horaires et les arrêts à jour, consultez le réseau Aix-en-Bus." data-lang-en="Lines 5 and 12 of the Aix-en-Provence bus network, which the brochure says serve the city centre. The Atelier des Lauves website lists the same lines for avenue Paul Cézanne. For up-to-date timetables and stops, check the Aix-en-Bus network.">Les lignes 5 et 12 du réseau de bus d'Aix-en-Provence, qui desservent le centre-ville selon la plaquette. Le site de l'Atelier des Lauves cite les mêmes lignes pour l'avenue Paul Cézanne. Pour les horaires et les arrêts à jour, consultez le réseau Aix-en-Bus.</div>
-      </details>
-      <details>
-        <summary data-lang-fr="Combien de temps pour rejoindre la gare TGV et l'aéroport ?" data-lang-en="How long to reach the TGV station and the airport?">Combien de temps pour rejoindre la gare TGV et l'aéroport ?</summary>
-        <div class="loc-faq-a" data-lang-fr="Selon la plaquette : environ 15 minutes en voiture jusqu'à la gare TGV d'Aix-en-Provence (Paris en environ 3 heures) et environ 22 minutes jusqu'à l'aéroport Marseille Provence. Marseille est à environ 26 minutes en voiture." data-lang-en="According to the brochure: about 15 minutes by car to the Aix-en-Provence TGV station (Paris in about 3 hours) and about 22 minutes to Marseille Provence Airport. Marseille is about 26 minutes away by car.">Selon la plaquette : environ 15 minutes en voiture jusqu'à la gare TGV d'Aix-en-Provence (Paris en environ 3 heures) et environ 22 minutes jusqu'à l'aéroport Marseille Provence. Marseille est à environ 26 minutes en voiture.</div>
-      </details>
-      <details>
-        <summary data-lang-fr="Y a-t-il des commerces et des écoles à proximité ?" data-lang-en="Are there shops and schools nearby?">Y a-t-il des commerces et des écoles à proximité ?</summary>
-        <div class="loc-faq-a" data-lang-fr="La plaquette cite une supérette Vival à environ 2 minutes en voiture (14 minutes à pied), une boulangerie-tabac à environ 3 minutes en voiture, l'école maternelle des Lauves à environ 11 minutes à pied, le collège Nina Simone et le lycée Cézanne à environ 3 minutes en voiture. Picard et Intermarché, avec parking, sont à environ 4 et 5 minutes en voiture." data-lang-en="The brochure lists a Vival convenience store about 2 minutes away by car (14 minutes on foot), a bakery-tobacconist about 3 minutes by car, the Lauves nursery school about 11 minutes on foot, and the Nina Simone middle school and Cézanne high school about 3 minutes by car. Picard and Intermarché, with car parks, are about 4 and 5 minutes away by car.">La plaquette cite une supérette Vival à environ 2 minutes en voiture (14 minutes à pied), une boulangerie-tabac à environ 3 minutes en voiture, l'école maternelle des Lauves à environ 11 minutes à pied, le collège Nina Simone et le lycée Cézanne à environ 3 minutes en voiture. Picard et Intermarché, avec parking, sont à environ 4 et 5 minutes en voiture.</div>
-      </details>
-      <details>
-        <summary data-lang-fr="La résidence est-elle dans le quartier des Lauves ?" data-lang-en="Is the residence in the Lauves district?">La résidence est-elle dans le quartier des Lauves ?</summary>
-        <div class="loc-faq-a" data-lang-fr="Oui. La résidence est située avenue Paul Cézanne, dans le quartier des Lauves, où se trouve l'Atelier des Lauves de Cézanne, au 13 de la même avenue. Les limites d'un quartier n'étant pas toujours définies de façon précise, le repère le plus fiable reste l'adresse exacte : 59 avenue Paul Cézanne, 13100 Aix-en-Provence." data-lang-en="Yes. The residence is on avenue Paul Cézanne, in the Lauves district, where Cézanne's Atelier des Lauves stands, at number 13 of the same avenue. As the boundaries of a district are not always precisely defined, the most reliable reference is the exact address: 59 avenue Paul Cézanne, 13100 Aix-en-Provence.">Oui. La résidence est située avenue Paul Cézanne, dans le quartier des Lauves, où se trouve l'Atelier des Lauves de Cézanne, au 13 de la même avenue. Les limites d'un quartier n'étant pas toujours définies de façon précise, le repère le plus fiable reste l'adresse exacte : 59 avenue Paul Cézanne, 13100 Aix-en-Provence.</div>
-      </details>
-    </div>
-  </div>
-</section>
-
-<section class="section section-alt" id="aller-plus-loin">
-  <div class="container">
-    <div class="section-header reveal">
-      <p class="eyebrow" data-lang-fr="Pour aller plus loin" data-lang-en="Further reading">Pour aller plus loin</p>
-      <h2 class="section-title" data-lang-fr="Nos guides sur <em>le secteur</em>" data-lang-en="Our guides to <em>the area</em>">Nos guides sur <em>le secteur</em></h2>
-    </div>
-    <div class="loc-guides">
-      <article class="loc-guide reveal">
-        <p class="loc-guide-kicker" data-lang-fr="Guide du quartier" data-lang-en="Neighbourhood guide">Guide du quartier</p>
-        <h3><a href="/blog/quartier-des-lauves-aix-en-provence" data-lang-fr="Le quartier des Lauves à Aix-en-Provence : cadre de vie, accès et patrimoine cézannien" data-lang-en="The Lauves district in Aix-en-Provence: lifestyle, access and Cézanne heritage (in French)">Le quartier des Lauves à Aix-en-Provence : cadre de vie, accès et patrimoine cézannien</a></h3>
-        <p data-lang-fr="Accès, commerces, écoles et patrimoine cézannien : ce qu'il faut savoir sur le secteur avant d'y acheter ou de s'y installer." data-lang-en="Access, shops, schools and Cézanne heritage: what to know about the area before buying or moving in.">Accès, commerces, écoles et patrimoine cézannien : ce qu'il faut savoir sur le secteur avant d'y acheter ou de s'y installer.</p>
-        <span class="loc-guide-more" aria-hidden="true" data-lang-fr="Lire le guide" data-lang-en="Read the guide">Lire le guide</span>
-      </article>
-      <article class="loc-guide reveal">
-        <p class="loc-guide-kicker" data-lang-fr="Patrimoine" data-lang-en="Heritage">Patrimoine</p>
-        <h3><a href="/blog/cezanne-lauves-atelier-terrain-des-peintres" data-lang-fr="Cézanne aux Lauves : l'atelier, le Terrain des Peintres, la Sainte-Victoire" data-lang-en="Cézanne in the Lauves: the studio, the Terrain des Peintres, Mont Sainte-Victoire (in French)">Cézanne aux Lauves : l'atelier, le Terrain des Peintres, la Sainte-Victoire</a></h3>
-        <p data-lang-fr="Sur les pas du peintre : l'atelier des Lauves, le Terrain des Peintres et la montagne Sainte-Victoire." data-lang-en="In the painter's footsteps: the Atelier des Lauves, the Terrain des Peintres and Mont Sainte-Victoire.">Sur les pas du peintre : l'atelier des Lauves, le Terrain des Peintres et la montagne Sainte-Victoire.</p>
-        <span class="loc-guide-more" aria-hidden="true" data-lang-fr="Lire le guide" data-lang-en="Read the guide">Lire le guide</span>
-      </article>
-      <article class="loc-guide reveal">
-        <p class="loc-guide-kicker" data-lang-fr="S'installer à Aix" data-lang-en="Moving to Aix">S'installer à Aix</p>
-        <h3><a href="/blog/quitter-paris-pour-aix-en-provence" data-lang-fr="Quitter Paris pour Aix-en-Provence : ce qui change et comment choisir son quartier" data-lang-en="Leaving Paris for Aix-en-Provence: what changes and how to choose a neighbourhood (in French)">Quitter Paris pour Aix-en-Provence : ce qui change et comment choisir son quartier</a></h3>
-        <p data-lang-fr="TGV, télétravail, écoles, climat, quartiers : les questions concrètes à se poser avant de quitter Paris." data-lang-en="TGV, remote working, schools, climate, neighbourhoods: the practical questions to ask before leaving Paris.">TGV, télétravail, écoles, climat, quartiers : les questions concrètes à se poser avant de quitter Paris.</p>
-        <span class="loc-guide-more" aria-hidden="true" data-lang-fr="Lire le guide" data-lang-en="Read the guide">Lire le guide</span>
-      </article>
-    </div>
-  </div>
-</section>
-
-<section class="section" id="contact-cta">
-  <div class="container text-center reveal">
-    <p class="eyebrow" style="justify-content:center;" data-lang-fr="Découvrir l'adresse" data-lang-en="Discover the address">Découvrir l'adresse</p>
-    <h2 class="section-title" data-lang-fr="Une question sur la situation <em>du programme ?</em>" data-lang-en="A question about the programme's <em>location?</em>">Une question sur la situation <em>du programme ?</em></h2>
-    <p class="section-lead mt-2 mb-4" data-lang-fr="Pour situer le programme sur place, obtenir la plaquette ou poser une question sur les appartements, contactez notre équipe." data-lang-en="To see the location in person, request the brochure or ask about the apartments, get in touch with our team.">Pour situer le programme sur place, obtenir la plaquette ou poser une question sur les appartements, contactez notre équipe.</p>
-    <div class="d-flex gap-3 align-center flex-wrap" style="justify-content:center;">
-      <a class="btn btn-primary" href="/contact" data-lang-fr="Nous contacter" data-lang-en="Contact us">Nous contacter</a>
-      <a href="tel:+33609204590" class="btn btn-outline-dark">06 09 20 45 90</a>
-    </div>
-    <p class="loc-cta-links">
-      <a class="loc-link" href="/logements" data-lang-fr="Découvrir les appartements du programme" data-lang-en="See the programme's apartments">Découvrir les appartements du programme</a>
-      <a class="loc-link" href="/exterieurs" data-lang-fr="Piscine, jardins et espaces communs" data-lang-en="Pool, gardens and common areas">Piscine, jardins et espaces communs</a>
-      <a class="loc-link" href="/presentation" data-lang-fr="L'histoire de l'adresse et de la résidence" data-lang-en="The story of the address and the residence">L'histoire de l'adresse et de la résidence</a>
+    <p class="loc-guides reveal">
+      <span data-lang-fr="Nos guides :" data-lang-en="Our guides (in French):">Nos guides :</span>
+      <a class="loc-link" href="/blog/quartier-des-lauves-aix-en-provence" data-lang-fr="Le quartier des Lauves" data-lang-en="The Lauves district">Le quartier des Lauves</a>
+      <a class="loc-link" href="/blog/cezanne-lauves-atelier-terrain-des-peintres" data-lang-fr="Cézanne aux Lauves" data-lang-en="Cézanne in the Lauves">Cézanne aux Lauves</a>
+      <a class="loc-link" href="/blog/quitter-paris-pour-aix-en-provence" data-lang-fr="Quitter Paris pour Aix" data-lang-en="Leaving Paris for Aix">Quitter Paris pour Aix</a>
     </p>
   </div>
 </section>

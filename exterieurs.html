@@ -31,131 +31,57 @@
   <link rel="preload" as="image" href="/Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_PISCINE_NUIT_Panorama_St-Victoire%202-1200w.webp" imagesrcset="/Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_PISCINE_NUIT_Panorama_St-Victoire%202-800w.webp 800w, /Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_PISCINE_NUIT_Panorama_St-Victoire%202-1200w.webp 1200w, /Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_PISCINE_NUIT_Panorama_St-Victoire%202.webp 1600w" imagesizes="100vw" fetchpriority="high" />
 
   <style>
-    /* ── Page « Espaces communs » : styles locaux ─────────────────── */
-    /* Hero */
-    .ext-hero { min-height: 480px; }
-    .ext-hero .hero-title { max-width: 900px; font-size: clamp(1.9rem, 3.8vw, 3.2rem); }
-    .ext-hero .hero-subtitle { max-width: 640px; }
-    .hero-note { position: absolute; right: 1.5rem; bottom: 1rem; z-index: 2; margin: 0; font-size: .68rem; letter-spacing: .08em;
+    /* ── Page « Espaces communs » : styles locaux (simplification du 07/10/2026) ──
+       Quelques grandes scènes : un titre court, une phrase, une très grande image.
+       Les tailles de texte viennent de style.css (.section-title, .section-lead, .hero-title). */
+
+    /* Hero plein écran */
+    .ext-hero { height: 100vh; height: 100svh; min-height: 560px; }
+    .ext-hero .hero-title { max-width: 1180px; }
+    .ext-hero .hero-subtitle { max-width: 760px; }
+    .ext-hero .hero-eyebrow { font-size: .9rem; color: #fff; text-shadow: 0 1px 14px rgba(0,0,0,.65); }
+    .ext-hero .hero-eyebrow::before { background: #fff; }
+    .hero-note { position: absolute; right: 1.5rem; bottom: 1rem; z-index: 2; margin: 0; font-size: .78rem; letter-spacing: .06em;
       background: rgba(15,12,8,.72); color: #fff; padding: .25rem .6rem; border-radius: 3px; }
 
-    /* Textes */
-    .txt { font-size: .95rem; color: var(--text-mid); line-height: 1.85; margin-bottom: 1.2rem; max-width: 62ch; }
-    .lead2 { margin-top: 1rem; }
-    .section-lead a, .txt a, .link-list a, .fact-list a { color: var(--or-texte, #7F6422); text-decoration: underline; text-underline-offset: 3px; }
-    .section-lead a:hover, .txt a:hover, .link-list a:hover, .fact-list a:hover { color: var(--text); }
-    .txt-note { font-size: .84rem; }
-    .sub-title { font-family: var(--font-serif); font-size: 1.5rem; font-weight: 400; color: var(--text); margin: 0 0 1rem; line-height: 1.3; }
-    .sub-title:not(:first-child) { margin-top: 2.2rem; }
-    .link-list { display: grid; gap: .6rem; margin-top: .5rem; font-size: .92rem; }
+    /* Scènes : titre + phrase, puis image pleine largeur */
+    .scene { padding-bottom: 0; }
+    .scene .section-header { max-width: 1000px; margin-bottom: 3.5rem; }
+    .scene .section-title, .scene .section-lead { text-wrap: balance; }
+    .scene .section-lead { max-width: 760px; }
+    .nb { white-space: nowrap; }
+    .scene-fig { margin: 0; }
+    .scene-zoom { position: relative; display: block; width: 100%; padding: 0; border: 0; background: var(--stone-light); cursor: zoom-in; }
+    .scene-zoom img { display: block; width: 100%; height: auto; }
+    .scene-zoom:focus-visible { outline: 3px solid var(--or-texte, #7F6422); outline-offset: -3px; }
+    .scene-zoom-icon { position: absolute; right: 1.25rem; top: 1.25rem; display: flex; align-items: center; justify-content: center;
+      width: 48px; height: 48px; border-radius: 50%; background: rgba(15,12,8,.6); color: #fff; pointer-events: none; }
+    .scene-cap { max-width: var(--container); margin: 0 auto; padding: .9rem 2rem 1.4rem; font-size: .88rem; line-height: 1.6; color: var(--text-mid); }
 
-    /* Chiffres */
-    .facts { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin: 0 0 2.5rem; }
-    .fact { background: var(--white); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 1.6rem 1.2rem; text-align: center; display: flex; flex-direction: column; gap: .5rem; }
-    .fact-val { font-family: var(--font-serif); font-weight: 400; font-size: clamp(1.7rem, 2.6vw, 2.3rem); color: var(--text); line-height: 1.15; }
-    .fact-lab { font-size: .82rem; color: var(--text-mid); line-height: 1.55; }
-    .toc { display: flex; flex-wrap: wrap; gap: .2rem 1.6rem; justify-content: center; }
-    .toc a { display: inline-block; padding: .75rem .2rem; font-size: .72rem; letter-spacing: .15em; text-transform: uppercase; color: var(--or-texte, #7F6422); border-bottom: 1px solid transparent; }
-    .toc a:hover { border-bottom-color: currentColor; }
+    /* « Nos guides » : une ligne discrète */
+    .guides-band { padding: 2.2rem 0; }
+    .guides { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: .2rem 2rem; }
+    .guides-label { font-size: .8rem; letter-spacing: .25em; text-transform: uppercase; color: var(--text-mid); }
+    .guides a { display: inline-block; padding: .7rem 0; font-size: 1.05rem; color: var(--or-texte, #7F6422); text-decoration: underline; text-underline-offset: 4px; }
+    .guides a:hover { color: var(--text); }
 
-    /* Piscine : pastilles */
-    .feat-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; margin-top: 1.8rem; }
-    .feat { background: var(--white); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 1.4rem 1.1rem; text-align: center; }
-    .feat-icon { display: flex; align-items: center; justify-content: center; width: 48px; height: 48px; margin: 0 auto .7rem; border-radius: 50%; background: rgba(201,169,110,.14); color: var(--or-texte, #7F6422); }
-    .feat h3 { font-family: var(--font-serif); font-size: 1.05rem; font-weight: 400; color: var(--text); margin-bottom: .35rem; }
-    .feat p { font-size: .8rem; color: var(--text-mid); line-height: 1.6; }
-
-    /* Figures */
-    .fig { margin: 0; }
-    .fig .two-col-img { position: relative; }
-    .fig figcaption { margin-top: 1rem; font-size: .8rem; line-height: 1.6; color: var(--text-mid); }
-    .ill-badge { position: absolute; left: .7rem; bottom: .7rem; z-index: 2; pointer-events: none; font-size: .66rem; letter-spacing: .08em; line-height: 1.3;
-      background: rgba(15,12,8,.74); color: #fff; padding: .25rem .55rem; border-radius: 3px; }
-
-    /* Plantations */
-    .plant-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: .9rem; margin: 1.4rem 0; }
-    .plant { padding: 1rem 1.15rem; background: var(--white); border: 1px solid rgba(85,102,58,.28); border-radius: var(--radius-md); }
-    .plant h4 { font-family: var(--font-serif); font-size: 1.05rem; font-weight: 500; color: var(--text); margin-bottom: .25rem; }
-    .plant p { font-size: .8rem; line-height: 1.6; color: var(--text-mid); }
-
-    /* Stationnement */
-    .fact-list { display: grid; gap: 1.15rem; font-size: .94rem; color: var(--text-mid); line-height: 1.75; margin-bottom: 1.6rem; }
-    .fact-list .lead { display: block; font-family: var(--font-serif); font-size: 1.2rem; font-weight: 500; color: var(--text); margin-bottom: .1rem; }
-
-    /* Tableaux */
-    .spec-wrap { overflow-x: auto; border: 1px solid var(--border); border-radius: var(--radius-md); background: var(--white); }
-    .spec { width: 100%; border-collapse: collapse; font-size: .92rem; }
-    .spec th, .spec td { padding: 1rem 1.25rem; text-align: left; vertical-align: top; border-bottom: 1px solid var(--border); }
-    .spec thead th { font-size: .7rem; letter-spacing: .16em; text-transform: uppercase; font-weight: 600; color: var(--or-texte, #7F6422); background: var(--beige); }
-    .spec tbody th { width: 26%; font-family: var(--font-serif); font-weight: 500; font-size: 1.08rem; color: var(--text); }
-    .spec td { color: var(--text-mid); line-height: 1.75; }
-    .spec tbody tr:last-child th, .spec tbody tr:last-child td { border-bottom: 0; }
-    .spec .ref { display: block; margin-top: .4rem; font-size: .74rem; letter-spacing: .06em; color: var(--text-mid); }
-    .spec-note { margin-top: 1.1rem; max-width: 90ch; }
-    .plan-title { margin-top: 3.2rem; margin-bottom: 1.2rem; }
-
-    /* Galerie */
-    button.gallery-item { background: var(--stone-light); border-radius: var(--radius); }
-    .ext-gallery { grid-auto-rows: clamp(200px, 21vw, 300px); }
-    .ext-gallery .gallery-item { aspect-ratio: auto; height: 100%; }
-    .ext-gallery .gallery-item.wide { grid-column: span 2; grid-row: span 2; aspect-ratio: auto; }
-    .ext-gallery .gallery-item img { width: 100%; height: 100%; object-fit: cover; }
-    .gallery-item:focus-visible .gallery-overlay { opacity: 1; }
-    .gal-note { margin-top: 1.4rem; }
-
-    /* FAQ */
-    .faq { max-width: 860px; margin: 0 auto; border-top: 1px solid var(--border); }
-    .faq details { border-bottom: 1px solid var(--border); }
-    .faq summary { list-style: none; cursor: pointer; display: flex; justify-content: space-between; align-items: center; gap: 1rem; min-height: 44px;
-      padding: 1.25rem 0; font-family: var(--font-serif); font-size: 1.25rem; line-height: 1.35; color: var(--text); }
-    .faq summary::-webkit-details-marker { display: none; }
-    .faq summary::after { content: '+'; flex: none; font-size: 1.6rem; line-height: 1; color: var(--or-texte, #7F6422); }
-    .faq details[open] summary::after { content: '\2212'; }
-    .faq .ans { padding: 0 2rem 1.5rem 0; font-size: .95rem; line-height: 1.85; color: var(--text-mid); }
-
-    /* Pour aller plus loin */
-    .more-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
-    .more-card { position: relative; display: flex; flex-direction: column; background: var(--white); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 1.8rem;
-      transition: transform var(--transition), box-shadow var(--transition); }
-    .more-card:hover { transform: translateY(-3px); box-shadow: var(--shadow); }
-    .more-card:focus-within { outline: 2px solid var(--or-texte, #7F6422); outline-offset: 3px; }
-    .more-meta { font-size: .68rem; letter-spacing: .22em; text-transform: uppercase; color: var(--or-texte, #7F6422); margin-bottom: .8rem; }
-    .more-card h3 { font-family: var(--font-serif); font-size: 1.3rem; font-weight: 400; line-height: 1.35; color: var(--text); }
-    .more-card h3 a::after { content: ''; position: absolute; inset: 0; }
-    .more-card h3 a:hover { color: var(--or-texte, #7F6422); }
-    .more-card h3 a:focus-visible { outline: none; }
-    .more-card p:last-child { margin-top: .8rem; font-size: .88rem; line-height: 1.7; color: var(--text-mid); }
-
-    /* CTA */
-    .cta-eyebrow { justify-content: center; }
-    .cta-title { max-width: 640px; margin: 0 auto 1rem; }
-    .cta-text { color: rgba(255,255,255,.72); font-size: .95rem; max-width: 520px; margin: 0 auto 2.2rem; line-height: 1.85; }
+    /* Appel à l'action */
+    .cta-band { padding: 5rem 0; }
     .cta-btns { display: flex; flex-wrap: wrap; gap: 1rem; justify-content: center; }
+    .cta-btns .btn { justify-content: center; font-size: 1rem; padding: 1.2rem 2.8rem; }
 
-    @media (max-width: 1024px) {
-      .facts { grid-template-columns: repeat(2, 1fr); }
-      .more-grid { grid-template-columns: 1fr; }
-      .ext-gallery { grid-auto-rows: auto; }
-      .ext-gallery .gallery-item { aspect-ratio: 4/3; height: auto; }
-      .ext-gallery .gallery-item.wide { grid-column: span 2; grid-row: auto; aspect-ratio: 16/9; }
-      .ext-gallery .gallery-item:last-child { grid-column: span 2; aspect-ratio: 16/9; }
-    }
     @media (max-width: 768px) {
-      .ext-hero { min-height: 440px; }
       .hero-note { right: 1rem; bottom: .8rem; }
-      .spec th, .spec td { padding: .85rem .9rem; }
-      .spec tbody th { width: 34%; font-size: 1rem; }
-      .faq summary { font-size: 1.12rem; }
-      .faq .ans { padding-right: 0; }
-    }
-    @media (max-width: 560px) {
-      .feat-grid, .plant-grid { grid-template-columns: 1fr; }
-    }
-    @media (max-width: 359px) { .facts { grid-template-columns: 1fr; } }
-    @media (max-width: 480px) {
-      .ext-gallery .gallery-item.wide, .ext-gallery .gallery-item:last-child { grid-column: span 1; aspect-ratio: 4/3; }
+      .scene .section-header { margin-bottom: 2.5rem; }
+      .scene-cap { padding: .8rem 1.5rem 1.2rem; }
+      .scene-zoom img { aspect-ratio: 4 / 5; object-fit: cover; }
+      .scene-zoom-icon { right: .9rem; top: .9rem; }
+      .guides { gap: .1rem 1.4rem; }
+      .cta-btns { flex-direction: column; align-items: stretch; max-width: 340px; margin: 0 auto; }
+      .cta-btns .btn { padding: 1.2rem 1rem; letter-spacing: .1em; }
     }
   </style>
+  <noscript><style>.reveal, .reveal-left, .reveal-right { opacity: 1 !important; transform: none !important; }</style></noscript>
 
   <script type="application/ld+json">
 {
@@ -186,7 +112,7 @@
   "name": "Résidence avec piscine chauffée à Aix | 59 Cézanne",
   "description": "Piscine chauffée, jardins paysagers, parking en sous-sol et ascenseur : les espaces communs de 59 Cézanne, 8 appartements neufs à Aix-en-Provence.",
   "inLanguage": "fr-FR",
-  "dateModified": "2026-10-06",
+  "dateModified": "2026-10-07",
   "isPartOf": {
     "@type": "WebSite",
     "name": "59 Cézanne",
@@ -243,62 +169,6 @@
   }
 }
   </script>
-  <script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "FAQPage",
-  "mainEntity": [
-    {
-      "@type": "Question",
-      "name": "La piscine de 59 Cézanne est-elle chauffée ?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "La notice descriptive du 8 avril 2025 prévoit une piscine commune chauffée, équipée d'un système de nage à contre-courant. Elle ne précise ni le mode de chauffage ni la période d'ouverture : ces points se confirment auprès du promoteur."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "Quelles sont les dimensions de la piscine, et qui y a accès ?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "Le plan de masse paysagé du permis de construire dessine une piscine enterrée de 6 × 12,3 m. L'accès « piscine et jardin commun » est prévu par badge VIGIK et digicode. Les règles d'usage, comme les horaires ou l'accueil d'invités, relèvent du règlement de copropriété."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "Combien de places de stationnement la résidence compte-t-elle ?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "Selon la notice, un niveau de parking enterré compte 16 places privatives et 16 emplacements deux-roues privatifs, auxquels s'ajoutent 4 places extérieures dont une pour les personnes à mobilité réduite. L'attribution des places aux appartements et la configuration définitive des emplacements sont à demander au promoteur."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "Peut-on recharger un véhicule électrique au parking ?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "La notice prévoit, pour chacun des huit box, une prise 32 A reliée directement à un logement et destinée à recevoir une borne de recharge. Elle ne précise pas que la borne elle-même est fournie."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "La résidence a-t-elle un ascenseur accessible aux personnes à mobilité réduite ?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "Oui, la notice prévoit un ascenseur accessible aux personnes à mobilité réduite, qui dessert les différents niveaux. L'accès piéton au parking se fait depuis le hall, par l'escalier ou l'ascenseur. Une place de stationnement extérieure est réservée aux personnes à mobilité réduite."
-      }
-    },
-    {
-      "@type": "Question",
-      "name": "Les images de cette page sont-elles contractuelles ?",
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": "Non. Les rendus 3D, insertions et plans présentés sur cette page sont des illustrations non contractuelles. Les caractéristiques définitives sont précisées dans la notice descriptive contractuelle, qui peut être complétée avant la signature de l'acte authentique et prévoit le remplacement possible de certains matériaux par des équivalents."
-      }
-    }
-  ]
-}
-  </script>
 </head>
 <body>
 
@@ -349,7 +219,7 @@
 
 <main id="contenu">
 
-  <!-- ─── Hero ─────────────────────────────────────────────────── -->
+  <!-- ─── Hero : la piscine de nuit ────────────────────────────── -->
   <section class="page-hero ext-hero" aria-labelledby="titre-page">
     <div class="hero-bg">
       <img src="/Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_PISCINE_NUIT_Panorama_St-Victoire%202-1200w.webp" srcset="/Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_PISCINE_NUIT_Panorama_St-Victoire%202-800w.webp 800w, /Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_PISCINE_NUIT_Panorama_St-Victoire%202-1200w.webp 1200w, /Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_PISCINE_NUIT_Panorama_St-Victoire%202.webp 1600w" sizes="100vw" width="1600" height="960"
@@ -359,298 +229,80 @@
     <div class="hero-content">
       <p class="hero-eyebrow" data-lang-fr="Espaces communs" data-lang-en="Common areas">Espaces communs</p>
       <h1 id="titre-page" class="hero-title ext-h1" data-lang-fr="Résidence avec <em>piscine chauffée</em> et jardins paysagers à Aix-en-Provence" data-lang-en="Residence with a <em>heated pool</em> and landscaped gardens in Aix-en-Provence">Résidence avec <em>piscine chauffée</em> et jardins paysagers à Aix-en-Provence</h1>
-      <p class="hero-subtitle" data-lang-fr="Piscine commune, jardins paysagers, stationnement en sous-sol et ascenseur : les parties communes de 59 Cézanne, avenue Paul Cézanne." data-lang-en="Shared pool, landscaped gardens, underground parking and a lift: the common areas of 59 Cézanne, on avenue Paul Cézanne.">Piscine commune, jardins paysagers, stationnement en sous-sol et ascenseur : les parties communes de 59 Cézanne, avenue Paul Cézanne.</p>
+      <p class="hero-subtitle" data-lang-fr="Au 59 avenue Paul Cézanne." data-lang-en="At 59 avenue Paul Cézanne.">Au 59 avenue Paul Cézanne.</p>
     </div>
     <p class="hero-note" data-lang-fr="Illustration non contractuelle" data-lang-en="Non-contractual illustration">Illustration non contractuelle</p>
   </section>
 
-  <!-- ─── En bref ──────────────────────────────────────────────── -->
-  <section class="section" id="en-bref">
+  <!-- ─── Scène 1 : la piscine ─────────────────────────────────── -->
+  <section class="section scene" id="piscine" aria-labelledby="titre-piscine">
     <div class="container">
       <div class="section-header reveal">
-        <p class="eyebrow" data-lang-fr="En bref" data-lang-en="At a glance">En bref</p>
-        <h2 class="section-title" data-lang-fr="Ce que comprennent les espaces communs" data-lang-en="What the common areas include">Ce que comprennent les espaces communs</h2>
-        <p class="section-lead" data-lang-fr="59 Cézanne est une résidence de huit appartements neufs, au 59 avenue Paul Cézanne à Aix-en-Provence. Selon la notice descriptive du 8 avril 2025, ses espaces communs comprennent une piscine commune chauffée, des espaces verts paysagers, un parking en sous-sol, un local vélos et un ascenseur accessible aux personnes à mobilité réduite." data-lang-en="59 Cézanne is a residence of eight new apartments at 59 avenue Paul Cézanne, Aix-en-Provence. According to the descriptive notice of 8 April 2025, its common areas include a shared heated pool, landscaped green spaces, underground parking, a bicycle room and a lift accessible to people with reduced mobility.">59 Cézanne est une résidence de huit appartements neufs, au 59 avenue Paul Cézanne à Aix-en-Provence. Selon la notice descriptive du 8 avril 2025, ses espaces communs comprennent une piscine commune chauffée, des espaces verts paysagers, un parking en sous-sol, un local vélos et un ascenseur accessible aux personnes à mobilité réduite.</p>
-        <p class="section-lead lead2" data-lang-fr="Pour l'adresse, l'architecture et l'esprit du projet, voir la <a href=&quot;/presentation&quot;>présentation de la résidence</a> ; pour les appartements et leurs jardins, la page <a href=&quot;/logements&quot;>Logements</a>." data-lang-en="For the address, architecture and spirit of the project, see the <a href=&quot;/presentation&quot;>presentation of the residence</a>; for the apartments and their gardens, the <a href=&quot;/logements&quot;>Apartments</a> page.">Pour l'adresse, l'architecture et l'esprit du projet, voir la <a href="/presentation">présentation de la résidence</a> ; pour les appartements et leurs jardins, la page <a href="/logements">Logements</a>.</p>
-      </div>
-      <ul class="facts">
-        <li class="fact"><strong class="fact-val" data-lang-fr="8" data-lang-en="8">8</strong><span class="fact-lab" data-lang-fr="appartements dans la résidence" data-lang-en="apartments in the residence">appartements dans la résidence</span></li>
-        <li class="fact"><strong class="fact-val" data-lang-fr="6 × 12,3 m" data-lang-en="6 × 12.3 m">6 × 12,3 m</strong><span class="fact-lab" data-lang-fr="bassin de la piscine, d'après le plan de masse paysagé" data-lang-en="pool basin, from the landscaped site plan">bassin de la piscine, d'après le plan de masse paysagé</span></li>
-        <li class="fact"><strong class="fact-val" data-lang-fr="453 m²" data-lang-en="453 m²">453 m²</strong><span class="fact-lab" data-lang-fr="d'espace commun paysagé, d'après les plans de masse" data-lang-en="of landscaped common space, from the site plans">d'espace commun paysagé, d'après les plans de masse</span></li>
-        <li class="fact"><strong class="fact-val" data-lang-fr="16 + 4" data-lang-en="16 + 4">16 + 4</strong><span class="fact-lab" data-lang-fr="places de stationnement : 16 en sous-sol, 4 en extérieur (notice)" data-lang-en="parking spaces: 16 underground, 4 outdoor (notice)">places de stationnement : 16 en sous-sol, 4 en extérieur (notice)</span></li>
-      </ul>
-      <nav class="toc-nav" aria-label="Sur cette page" data-aria-label-fr="Sur cette page" data-aria-label-en="On this page">
-        <ul class="toc">
-        <li><a href="#piscine" data-lang-fr="La piscine" data-lang-en="The pool">La piscine</a></li>
-        <li><a href="#jardins" data-lang-fr="Jardins et paysage" data-lang-en="Gardens and landscape">Jardins et paysage</a></li>
-        <li><a href="#stationnement" data-lang-fr="Stationnement et locaux" data-lang-en="Parking and utility rooms">Stationnement et locaux</a></li>
-        <li><a href="#notice" data-lang-fr="Ce que prévoit la notice" data-lang-en="What the notice provides">Ce que prévoit la notice</a></li>
-        <li><a href="#galerie" data-lang-fr="Galerie" data-lang-en="Gallery">Galerie</a></li>
-        <li><a href="#faq" data-lang-fr="Questions fréquentes" data-lang-en="FAQ">Questions fréquentes</a></li>
-        </ul>
-      </nav>
-    </div>
-  </section>
-
-  <!-- ─── Piscine ──────────────────────────────────────────────── -->
-  <section class="section section-alt" id="piscine">
-    <div class="container">
-      <div class="two-col">
-        <div class="reveal-left">
-          <p class="eyebrow" data-lang-fr="La piscine" data-lang-en="The pool">La piscine</p>
-          <h2 class="section-title" data-lang-fr="Une piscine commune chauffée, avec nage à contre-courant" data-lang-en="A shared heated pool with counter-current swimming">Une piscine commune chauffée, avec nage à contre-courant</h2>
-          <div class="divider"></div>
-          <p class="txt" data-lang-fr="Les huit appartements de la résidence disposent d'une piscine commune. La notice descriptive du 8 avril 2025 la prévoit en béton armé, avec un carrelage de finition dans des teintes sable, équipée d'un système de nage à contre-courant et chauffée. Le plan de masse paysagé du permis de construire la dessine enterrée, sur 6 × 12,3 m." data-lang-en="The eight apartments in the residence have a shared pool. The descriptive notice of 8 April 2025 provides for it to be reinforced concrete with a sand-toned tile finish, fitted with a counter-current swimming system and heated. The landscaped site plan in the building permit shows it in-ground, measuring 6 × 12.3 m.">Les huit appartements de la résidence disposent d'une piscine commune. La notice descriptive du 8 avril 2025 la prévoit en béton armé, avec un carrelage de finition dans des teintes sable, équipée d'un système de nage à contre-courant et chauffée. Le plan de masse paysagé du permis de construire la dessine enterrée, sur 6 × 12,3 m.</p>
-          <p class="txt" data-lang-fr="Autour du bassin, les margelles et la plage sont prévues en dallage de béton armé revêtu d'un carrelage extérieur antidérapant au format 60 × 60. La plaquette du programme évoque un solarium aménagé avec des transats ; la notice ne liste pas de mobilier, et les transats des rendus sont donc des illustrations." data-lang-en="Around the pool, the coping and the pool deck are planned as reinforced-concrete paving covered with non-slip outdoor tiles in 60 × 60 format. The programme brochure mentions a solarium fitted out with sun loungers; the notice lists no furniture, so the loungers in the renderings are illustrations.">Autour du bassin, les margelles et la plage sont prévues en dallage de béton armé revêtu d'un carrelage extérieur antidérapant au format 60 × 60. La plaquette du programme évoque un solarium aménagé avec des transats ; la notice ne liste pas de mobilier, et les transats des rendus sont donc des illustrations.</p>
-          <p class="txt" data-lang-fr="La notice ne précise ni le mode de chauffage de l'eau ni la période d'ouverture de la baignade. La plaquette du programme met en avant une vue sur la montagne Sainte-Victoire depuis la piscine ; cette vue ne figure ni dans la notice ni sur les plans. Pour ces points, le plus sûr est de <a href=&quot;/contact&quot;>poser la question au promoteur</a>." data-lang-en="The notice does not state how the water is heated or when the pool is open. The programme brochure highlights a view of the Sainte-Victoire mountain from the pool; this view appears neither in the notice nor on the plans. For these points, the safest course is to <a href=&quot;/contact&quot;>ask the developer</a>.">La notice ne précise ni le mode de chauffage de l'eau ni la période d'ouverture de la baignade. La plaquette du programme met en avant une vue sur la montagne Sainte-Victoire depuis la piscine ; cette vue ne figure ni dans la notice ni sur les plans. Pour ces points, le plus sûr est de <a href="/contact">poser la question au promoteur</a>.</p>
-          <ul class="feat-grid">
-          <li class="feat"><span class="feat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="26" height="26" aria-hidden="true" focusable="false"><path d="M12 2.69l5.66 5.66a8 8 0 11-11.31 0z"/></svg></span><h3 data-lang-fr="Eau chauffée" data-lang-en="Heated water">Eau chauffée</h3><p data-lang-fr="Prévue chauffée selon la notice ; mode de chauffage non précisé" data-lang-en="Planned as heated per the notice; heating method not specified">Prévue chauffée selon la notice ; mode de chauffage non précisé</p></li>
-          <li class="feat"><span class="feat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="26" height="26" aria-hidden="true" focusable="false"><path d="M2 8c2-2 4-2 6 0s4 2 6 0 4-2 6 0M2 13c2-2 4-2 6 0s4 2 6 0 4-2 6 0M2 18c2-2 4-2 6 0s4 2 6 0 4-2 6 0"/></svg></span><h3 data-lang-fr="Nage à contre-courant" data-lang-en="Counter-current swimming">Nage à contre-courant</h3><p data-lang-fr="Système prévu selon la notice" data-lang-en="System planned per the notice">Système prévu selon la notice</p></li>
-          <li class="feat"><span class="feat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="26" height="26" aria-hidden="true" focusable="false"><rect x="3" y="3" width="8" height="8"/><rect x="13" y="3" width="8" height="8"/><rect x="3" y="13" width="8" height="8"/><rect x="13" y="13" width="8" height="8"/></svg></span><h3 data-lang-fr="Plage antidérapante" data-lang-en="Non-slip pool deck">Plage antidérapante</h3><p data-lang-fr="Carrelage extérieur 60 × 60, selon la notice" data-lang-en="60 × 60 outdoor tiles, per the notice">Carrelage extérieur 60 × 60, selon la notice</p></li>
-          <li class="feat"><span class="feat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="26" height="26" aria-hidden="true" focusable="false"><rect x="5" y="11" width="14" height="10" rx="1"/><path d="M8 11V8a4 4 0 018 0v3"/></svg></span><h3 data-lang-fr="Accès par badge" data-lang-en="Badge access">Accès par badge</h3><p data-lang-fr="Badge VIGIK et digicode, selon la notice" data-lang-en="VIGIK badge and keypad, per the notice">Badge VIGIK et digicode, selon la notice</p></li>
-          </ul>
-        </div>
-        <figure class="fig reveal-right">
-          <div class="two-col-img">
-            <img src="/Photo%2059%20C%C3%A9zanne/3D%20Groove%20Architecture/Edited/PISCINE-enhanced-1200w.webp" srcset="/Photo%2059%20C%C3%A9zanne/3D%20Groove%20Architecture/Edited/PISCINE-enhanced-800w.webp 800w, /Photo%2059%20C%C3%A9zanne/3D%20Groove%20Architecture/Edited/PISCINE-enhanced-1200w.webp 1200w, /Photo%2059%20C%C3%A9zanne/3D%20Groove%20Architecture/Edited/PISCINE-enhanced.webp 1600w" sizes="(min-width: 1025px) 600px, 92vw" width="1600" height="900" alt="Rendu 3D de jour : la piscine, sa plage avec transats et la pelouse devant la façade de la résidence" loading="lazy" decoding="async" />
-            <span class="ill-badge" data-lang-fr="Illustration non contractuelle" data-lang-en="Non-contractual illustration">Illustration non contractuelle</span>
-          </div>
-          <figcaption data-lang-fr="Piscine, plage et façade. Illustration non contractuelle. Rendu daté de mars 2023, susceptible de différer du projet actuel." data-lang-en="Pool, deck and facade. Non-contractual illustration. Rendering dated March 2023, which may differ from the current design.">Piscine, plage et façade. Illustration non contractuelle. Rendu daté de mars 2023, susceptible de différer du projet actuel.</figcaption>
-        </figure>
+        <h2 class="section-title" id="titre-piscine" data-lang-fr="Piscine chauffée, nage à <span class='nb'>contre-courant</span>" data-lang-en="Heated pool, <span class='nb'>counter-current</span> swimming">Piscine chauffée, nage à <span class="nb">contre-courant</span></h2>
+        <p class="section-lead" data-lang-fr="Piscine commune «&nbsp;chauffée avec alarme&nbsp;», selon la notice descriptive du 8 avril 2025." data-lang-en="Shared pool “heated, with an alarm”, according to the descriptive notice of 8 April 2025.">Piscine commune «&nbsp;chauffée avec alarme&nbsp;», selon la notice descriptive du 8 avril 2025.</p>
       </div>
     </div>
+    <figure class="scene-fig">
+      <button type="button" class="scene-zoom" data-src="/Photo%2059%20C%C3%A9zanne/3D%20Groove%20Architecture/Edited/PISCINE-enhanced.webp" data-caption="Rendu 3D de jour : la piscine et sa plage — illustration non contractuelle, rendu daté de mars 2023, susceptible de différer du projet actuel" aria-label="Agrandir : rendu 3D de jour de la piscine (illustration non contractuelle)" data-aria-label-fr="Agrandir : rendu 3D de jour de la piscine (illustration non contractuelle)" data-aria-label-en="Enlarge: daytime 3D rendering of the pool (non-contractual illustration)" onclick="openLightbox(this,0)">
+        <img src="/Photo%2059%20C%C3%A9zanne/3D%20Groove%20Architecture/Edited/PISCINE-enhanced-1200w.webp" srcset="/Photo%2059%20C%C3%A9zanne/3D%20Groove%20Architecture/Edited/PISCINE-enhanced-800w.webp 800w, /Photo%2059%20C%C3%A9zanne/3D%20Groove%20Architecture/Edited/PISCINE-enhanced-1200w.webp 1200w, /Photo%2059%20C%C3%A9zanne/3D%20Groove%20Architecture/Edited/PISCINE-enhanced.webp 1600w" sizes="100vw" width="1600" height="900" alt="Rendu 3D de jour : la piscine, sa plage avec transats et la pelouse devant la façade de la résidence" loading="lazy" decoding="async" />
+        <span class="scene-zoom-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.5" focusable="false"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg></span>
+      </button>
+      <figcaption class="scene-cap" data-lang-fr="Illustration non contractuelle. Rendu de jour daté de mars 2023, susceptible de différer du projet actuel." data-lang-en="Non-contractual illustration. Daytime rendering dated March 2023, which may differ from the current design.">Illustration non contractuelle. Rendu de jour daté de mars 2023, susceptible de différer du projet actuel.</figcaption>
+    </figure>
   </section>
 
-  <!-- ─── Jardins ──────────────────────────────────────────────── -->
-  <section class="section" id="jardins">
+  <!-- ─── Scène 2 : les jardins ────────────────────────────────── -->
+  <section class="section section-alt scene" id="jardins" aria-labelledby="titre-jardins">
     <div class="container">
       <div class="section-header reveal">
-        <p class="eyebrow" data-lang-fr="Jardins et paysage" data-lang-en="Gardens and landscape">Jardins et paysage</p>
-        <h2 class="section-title" data-lang-fr="Jardins paysagers et espaces verts communs" data-lang-en="Landscaped gardens and shared green spaces">Jardins paysagers et espaces verts communs</h2>
-        <p class="section-lead" data-lang-fr="Le plan de masse du permis de construire indique 453 m² d'espace commun paysagé. La notice en décrit l'aménagement, et le plan paysager détaille les plantations." data-lang-en="The site plan in the building permit shows 453 m² of landscaped common space. The notice describes how it is laid out, and the landscape plan details the planting.">Le plan de masse du permis de construire indique 453 m² d'espace commun paysagé. La notice en décrit l'aménagement, et le plan paysager détaille les plantations.</p>
-      </div>
-      <div class="two-col">
-        <figure class="fig reveal-left">
-          <div class="two-col-img">
-            <img src="/Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_JARDIN_LOGEMENT-04_Panorama_St-Victoire-1200w.webp" srcset="/Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_JARDIN_LOGEMENT-04_Panorama_St-Victoire-800w.webp 800w, /Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_JARDIN_LOGEMENT-04_Panorama_St-Victoire-1200w.webp 1200w, /Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_JARDIN_LOGEMENT-04_Panorama_St-Victoire.webp 1600w" sizes="(min-width: 1025px) 600px, 92vw" width="1600" height="1024" alt="Rendu 3D de la terrasse et du jardin privatif du lot 4, un T4 : salon d'extérieur, bains de soleil et haie fleurie" loading="lazy" decoding="async" />
-            <span class="ill-badge" data-lang-fr="Illustration non contractuelle" data-lang-en="Non-contractual illustration">Illustration non contractuelle</span>
-          </div>
-          <figcaption data-lang-fr="Illustration non contractuelle : terrasse et jardin privatif du lot 4 (T4)." data-lang-en="Non-contractual illustration: terrace and private garden of unit 4 (4-room apartment).">Illustration non contractuelle : terrasse et jardin privatif du lot 4 (T4).</figcaption>
-        </figure>
-        <div class="reveal-right">
-          <h3 class="sub-title" data-lang-fr="Ce que prévoit le plan paysager" data-lang-en="What the landscape plan provides">Ce que prévoit le plan paysager</h3>
-          <p class="txt" data-lang-fr="Le plan paysager recense 21 sujets existants, dont 4 à supprimer, et prévoit 15 sujets à planter. Les espaces verts communs sont engazonnés ; l'arrosage est automatique, raccordé sur un compteur « vert » indépendant ; l'éclairage se fait par bornes ou candélabres commandés par horloge et détecteur de présence ; un robinet de puisage est prévu par logement." data-lang-en="The landscape plan lists 21 existing trees and shrubs, 4 of which are to be removed, and provides for 15 to be planted. The shared green spaces are turfed; watering is automatic, on a separate “green” meter; lighting is by bollards or lamp posts controlled by a timer and presence detector; one outdoor tap is provided per apartment.">Le plan paysager recense 21 sujets existants, dont 4 à supprimer, et prévoit 15 sujets à planter. Les espaces verts communs sont engazonnés ; l'arrosage est automatique, raccordé sur un compteur « vert » indépendant ; l'éclairage se fait par bornes ou candélabres commandés par horloge et détecteur de présence ; un robinet de puisage est prévu par logement.</p>
-          <ul class="plant-grid">
-          <li class="plant"><h4 data-lang-fr="Arbres" data-lang-en="Trees">Arbres</h4><p data-lang-fr="Oliviers, amandiers, pins, cyprès et arbres feuillus" data-lang-en="Olive, almond, pine and cypress trees, and broadleaf trees">Oliviers, amandiers, pins, cyprès et arbres feuillus</p></li>
-          <li class="plant"><h4 data-lang-fr="Massifs" data-lang-en="Planting beds">Massifs</h4><p data-lang-fr="Lavande, romarin rampant, sauge arbustive, myrte, perovskia et armoise" data-lang-en="Lavender, creeping rosemary, shrubby sage, myrtle, perovskia and mugwort">Lavande, romarin rampant, sauge arbustive, myrte, perovskia et armoise</p></li>
-          <li class="plant"><h4 data-lang-fr="Haies" data-lang-en="Hedges">Haies</h4><p data-lang-fr="Alaterne, laurier-cerise et laurier-tin, d'après le plan paysager" data-lang-en="Mediterranean buckthorn, cherry laurel and laurustinus, from the landscape plan">Alaterne, laurier-cerise et laurier-tin, d'après le plan paysager</p></li>
-          <li class="plant"><h4 data-lang-fr="Pelouses" data-lang-en="Lawns">Pelouses</h4><p data-lang-fr="Espaces communs et jardins privatifs engazonnés, selon la notice" data-lang-en="Shared spaces and private gardens turfed, per the notice">Espaces communs et jardins privatifs engazonnés, selon la notice</p></li>
-          </ul>
-          <p class="txt txt-note" data-lang-fr="Le choix définitif des essences reste à confirmer : pour la haie séparative entre jardins, la notice cite des photinias et le plan paysager d'autres essences." data-lang-en="The final choice of species remains to be confirmed: for the hedge between gardens, the notice mentions photinia and the landscape plan other species.">Le choix définitif des essences reste à confirmer : pour la haie séparative entre jardins, la notice cite des photinias et le plan paysager d'autres essences.</p>
-          <h3 class="sub-title" data-lang-fr="Et le jardin privatif ?" data-lang-en="And the private garden?">Et le jardin privatif ?</h3>
-          <p class="txt" data-lang-fr="Chacun des huit appartements dispose d'un jardin privatif, d'environ 28 à 312 m² selon le lot. La notice les prévoit engazonnés et arrosés automatiquement par des asperseurs intégrés, séparés par une haie d'un côté et par une clôture à maille rigide de l'autre. Elle indique aussi que la pompe à chaleur extérieure de chaque logement est positionnée dans les jardins privatifs." data-lang-en="Each of the eight apartments has a private garden of roughly 28 to 312 m² depending on the unit. The notice provides for them to be turfed and watered automatically by built-in sprinklers, separated by a hedge on one side and rigid-mesh fencing on the other. It also states that each apartment's outdoor heat pump is positioned in the private gardens.">Chacun des huit appartements dispose d'un jardin privatif, d'environ 28 à 312 m² selon le lot. La notice les prévoit engazonnés et arrosés automatiquement par des asperseurs intégrés, séparés par une haie d'un côté et par une clôture à maille rigide de l'autre. Elle indique aussi que la pompe à chaleur extérieure de chaque logement est positionnée dans les jardins privatifs.</p>
-          <ul class="link-list">
-            <li data-lang-fr="<a href=&quot;/logements&quot;>Voir les appartements et leurs jardins</a>" data-lang-en="<a href=&quot;/logements&quot;>See the apartments and their gardens</a>"><a href="/logements">Voir les appartements et leurs jardins</a></li>
-            <li data-lang-fr="<a href=&quot;/blog/appartement-jardin-prive-aix-en-provence&quot;>Guide : les points à vérifier avant d'acheter un appartement avec jardin privatif</a>" data-lang-en="<a href=&quot;/blog/appartement-jardin-prive-aix-en-provence&quot;>Guide (in French): what to check before buying an apartment with a private garden</a>"><a href="/blog/appartement-jardin-prive-aix-en-provence">Guide : les points à vérifier avant d'acheter un appartement avec jardin privatif</a></li>
-          </ul>
-        </div>
+        <h2 class="section-title" id="titre-jardins" data-lang-fr="Jardins paysagers, espaces verts communs" data-lang-en="Landscaped gardens, shared green spaces">Jardins paysagers, espaces verts communs</h2>
+        <p class="section-lead" data-lang-fr="453&nbsp;m² d'espace commun paysagé d'après les plans, avec arrosage automatique prévu selon la notice." data-lang-en="453&nbsp;m² of landscaped common space according to the plans, with automatic watering planned per the notice.">453&nbsp;m² d'espace commun paysagé d'après les plans, avec arrosage automatique prévu selon la notice.</p>
       </div>
     </div>
+    <figure class="scene-fig">
+      <button type="button" class="scene-zoom" data-src="/Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_JARDIN_LOGEMENT-04_Panorama_St-Victoire.webp" data-caption="Rendu 3D : terrasse et jardin privatif du lot 4 (T4) — illustration non contractuelle" aria-label="Agrandir : rendu 3D du jardin privatif du lot 4 (illustration non contractuelle)" data-aria-label-fr="Agrandir : rendu 3D du jardin privatif du lot 4 (illustration non contractuelle)" data-aria-label-en="Enlarge: 3D rendering of the private garden of unit 4 (non-contractual illustration)" onclick="openLightbox(this,1)">
+        <img src="/Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_JARDIN_LOGEMENT-04_Panorama_St-Victoire-1200w.webp" srcset="/Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_JARDIN_LOGEMENT-04_Panorama_St-Victoire-800w.webp 800w, /Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_JARDIN_LOGEMENT-04_Panorama_St-Victoire-1200w.webp 1200w, /Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_JARDIN_LOGEMENT-04_Panorama_St-Victoire.webp 1600w" sizes="100vw" width="1600" height="1024" alt="Rendu 3D de la terrasse et du jardin privatif du lot 4, un T4 : salon d'extérieur, bains de soleil et haie fleurie" loading="lazy" decoding="async" />
+        <span class="scene-zoom-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.5" focusable="false"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg></span>
+      </button>
+      <figcaption class="scene-cap" data-lang-fr="Illustration non contractuelle : terrasse et jardin privatif du lot 4 (T4)." data-lang-en="Non-contractual illustration: terrace and private garden of unit 4 (4-room apartment).">Illustration non contractuelle : terrasse et jardin privatif du lot 4 (T4).</figcaption>
+    </figure>
   </section>
 
-  <!-- ─── Stationnement et locaux annexes ──────────────────────── -->
-  <section class="section section-alt" id="stationnement">
+  <!-- ─── Scène 3 : stationnement et accès ─────────────────────── -->
+  <section class="section scene" id="stationnement" aria-labelledby="titre-stationnement">
     <div class="container">
       <div class="section-header reveal">
-        <p class="eyebrow" data-lang-fr="Stationnement et locaux" data-lang-en="Parking and utility rooms">Stationnement et locaux</p>
-        <h2 class="section-title" data-lang-fr="Stationnement en sous-sol, local vélos et ascenseur" data-lang-en="Underground parking, bicycle room and lift">Stationnement en sous-sol, local vélos et ascenseur</h2>
-        <p class="section-lead" data-lang-fr="Un niveau de parking enterré, accessible de plain-pied depuis l'avenue Paul Cézanne, un local vélos clos et couvert et un ascenseur : ce que la notice descriptive et les plans du permis de construire indiquent." data-lang-en="One underground car-park level reached at street level from avenue Paul Cézanne, a covered, enclosed bicycle room and a lift: what the descriptive notice and the building-permit plans show.">Un niveau de parking enterré, accessible de plain-pied depuis l'avenue Paul Cézanne, un local vélos clos et couvert et un ascenseur : ce que la notice descriptive et les plans du permis de construire indiquent.</p>
-      </div>
-      <div class="two-col">
-        <div class="reveal-left">
-          <ul class="fact-list">
-            <li><strong class="lead" data-lang-fr="Parking en sous-sol" data-lang-en="Underground parking">Parking en sous-sol</strong> <span data-lang-fr="16 places privatives et 16 emplacements deux-roues privatifs, selon la notice. Le plan de stationnement les répartit en huit emplacements doubles, de deux places voiture et deux places deux-roues chacun. Les documents du programme les décrivent tantôt comme « non boxés », tantôt comme huit « box » : la configuration définitive est à confirmer auprès du promoteur." data-lang-en="16 private car spaces and 16 private two-wheeler spaces, per the notice. The parking plan arranges them as eight double bays, each with two car spaces and two two-wheeler spaces. The programme documents describe them sometimes as open bays and sometimes as eight enclosed boxes: the final layout should be confirmed with the developer.">16 places privatives et 16 emplacements deux-roues privatifs, selon la notice. Le plan de stationnement les répartit en huit emplacements doubles, de deux places voiture et deux places deux-roues chacun. Les documents du programme les décrivent tantôt comme « non boxés », tantôt comme huit « box » : la configuration définitive est à confirmer auprès du promoteur.</span></li>
-            <li><strong class="lead" data-lang-fr="Places extérieures" data-lang-en="Outdoor spaces">Places extérieures</strong> <span data-lang-fr="Quatre places, dont une pour les personnes à mobilité réduite." data-lang-en="Four spaces, one of them for people with reduced mobility.">Quatre places, dont une pour les personnes à mobilité réduite.</span></li>
-            <li><strong class="lead" data-lang-fr="Recharge électrique" data-lang-en="Electric charging">Recharge électrique</strong> <span data-lang-fr="Prise 32 A prévue pour chacun des huit box, reliée directement à un logement et destinée à recevoir une borne de recharge ; la notice ne précise pas que la borne est fournie." data-lang-en="A 32 A socket is planned for each of the eight bays, wired directly to an apartment and intended to receive a charging point; the notice does not state that the charging point is supplied.">Prise 32 A prévue pour chacun des huit box, reliée directement à un logement et destinée à recevoir une borne de recharge ; la notice ne précise pas que la borne est fournie.</span></li>
-            <li><strong class="lead" data-lang-fr="Accès" data-lang-en="Access">Accès</strong> <span data-lang-fr="Portail principal à télécommande, portail basculant à manœuvre électrique pour le parking ; accès piéton au parking depuis le hall, par l'escalier ou l'ascenseur." data-lang-en="Main gate with remote control, motorised tilting gate for the car park; pedestrian access to the car park from the entrance hall, by stairs or lift.">Portail principal à télécommande, portail basculant à manœuvre électrique pour le parking ; accès piéton au parking depuis le hall, par l'escalier ou l'ascenseur.</span></li>
-            <li><strong class="lead" data-lang-fr="Ascenseur" data-lang-en="Lift">Ascenseur</strong> <span data-lang-fr="Ascenseur accessible aux personnes à mobilité réduite, desservant les différents niveaux." data-lang-en="Lift accessible to people with reduced mobility, serving the different levels.">Ascenseur accessible aux personnes à mobilité réduite, desservant les différents niveaux.</span></li>
-            <li><strong class="lead" data-lang-fr="Local vélos" data-lang-en="Bicycle room">Local vélos</strong> <span data-lang-fr="Local clos et couvert d'environ 22 m² d'après le plan, accès par badge, racks de rangement en acier." data-lang-en="Enclosed, covered room of about 22 m² according to the plan, badge access, steel storage racks.">Local clos et couvert d'environ 22 m² d'après le plan, accès par badge, racks de rangement en acier.</span></li>
-            <li><strong class="lead" data-lang-fr="Autres locaux" data-lang-en="Other rooms">Autres locaux</strong> <span data-lang-fr="Local ordures ménagères (environ 9 m²), local technique de la piscine (environ 9 m²) et local technique (environ 10 m²), d'après le plan." data-lang-en="Waste room (about 9 m²), pool plant room (about 9 m²) and technical room (about 10 m²), according to the plan.">Local ordures ménagères (environ 9 m²), local technique de la piscine (environ 9 m²) et local technique (environ 10 m²), d'après le plan.</span></li>
-          </ul>
-          <p class="txt"><span data-lang-fr="<a href=&quot;/localisation&quot;>Localisation : adresse, accès et temps de trajet</a>" data-lang-en="<a href=&quot;/localisation&quot;>Location: address, access and travel times</a>"><a href="/localisation">Localisation : adresse, accès et temps de trajet</a></span></p>
-        </div>
-        <figure class="fig reveal-right">
-          <div class="two-col-img">
-            <img src="/Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_EXT_Panorama_St-Victoire-1200w.webp" srcset="/Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_EXT_Panorama_St-Victoire-800w.webp 800w, /Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_EXT_Panorama_St-Victoire-1200w.webp 1200w, /Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_EXT_Panorama_St-Victoire.webp 1600w" sizes="(min-width: 1025px) 600px, 92vw" width="1600" height="960" alt="Rendu 3D de la résidence vue depuis la rue : portail et mur de pierre sèche au premier plan, façade à toit de tuiles, piscine à l'arrière-plan" loading="lazy" decoding="async" />
-            <span class="ill-badge" data-lang-fr="Illustration non contractuelle" data-lang-en="Non-contractual illustration">Illustration non contractuelle</span>
-          </div>
-          <figcaption data-lang-fr="Illustration non contractuelle : la résidence vue depuis la rue, avec le portail, le mur de pierre et la piscine." data-lang-en="Non-contractual illustration: the residence seen from the street, with the gate, stone wall and pool.">Illustration non contractuelle : la résidence vue depuis la rue, avec le portail, le mur de pierre et la piscine.</figcaption>
-        </figure>
+        <h2 class="section-title" id="titre-stationnement" data-lang-fr="Stationnement et accès de <span class='nb'>plain-pied</span>" data-lang-en="Parking and <span class='nb'>street-level</span> access">Stationnement et accès de <span class="nb">plain-pied</span></h2>
+        <p class="section-lead" data-lang-fr="16&nbsp;places privatives en sous-sol, 4&nbsp;places extérieures, un local vélos et un ascenseur, selon la notice." data-lang-en="16 private underground spaces, 4&nbsp;outdoor spaces, a bicycle room and a lift, per the notice.">16&nbsp;places privatives en sous-sol, 4&nbsp;places extérieures, un local vélos et un ascenseur, selon la notice.</p>
       </div>
     </div>
+    <figure class="scene-fig">
+      <button type="button" class="scene-zoom" data-src="/Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_EXT_Panorama_St-Victoire.webp" data-caption="Rendu 3D : la résidence vue depuis la rue, avec le portail, le mur de pierre et la piscine — illustration non contractuelle" aria-label="Agrandir : rendu 3D de la résidence vue depuis la rue (illustration non contractuelle)" data-aria-label-fr="Agrandir : rendu 3D de la résidence vue depuis la rue (illustration non contractuelle)" data-aria-label-en="Enlarge: 3D rendering of the residence seen from the street (non-contractual illustration)" onclick="openLightbox(this,2)">
+        <img src="/Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_EXT_Panorama_St-Victoire-1200w.webp" srcset="/Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_EXT_Panorama_St-Victoire-800w.webp 800w, /Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_EXT_Panorama_St-Victoire-1200w.webp 1200w, /Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_EXT_Panorama_St-Victoire.webp 1600w" sizes="100vw" width="1600" height="960" alt="Rendu 3D de la résidence vue depuis la rue : portail et mur de pierre sèche au premier plan, façade à toit de tuiles, piscine à l'arrière-plan" loading="lazy" decoding="async" />
+        <span class="scene-zoom-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.5" focusable="false"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg></span>
+      </button>
+      <figcaption class="scene-cap" data-lang-fr="Illustration non contractuelle : la résidence vue depuis la rue, avec le portail, le mur de pierre et la piscine." data-lang-en="Non-contractual illustration: the residence seen from the street, with the gate, stone wall and pool.">Illustration non contractuelle : la résidence vue depuis la rue, avec le portail, le mur de pierre et la piscine.</figcaption>
+    </figure>
   </section>
 
-  <!-- ─── Notice descriptive ───────────────────────────────────── -->
-  <section class="section" id="notice">
+  <!-- ─── Nos guides (une ligne) ───────────────────────────────── -->
+  <section class="section section-alt guides-band" aria-label="Nos guides" data-aria-label-fr="Nos guides" data-aria-label-en="Our guides">
     <div class="container">
-      <div class="section-header reveal">
-        <p class="eyebrow" data-lang-fr="La notice" data-lang-en="The notice">La notice</p>
-        <h2 class="section-title" data-lang-fr="Ce que prévoit la notice descriptive" data-lang-en="What the descriptive notice provides">Ce que prévoit la notice descriptive</h2>
-        <p class="section-lead" data-lang-fr="Les prestations des espaces communs, telles qu'elles figurent dans la notice descriptive de vente du 8 avril 2025." data-lang-en="The common-area specifications as they appear in the sales descriptive notice of 8 April 2025.">Les prestations des espaces communs, telles qu'elles figurent dans la notice descriptive de vente du 8 avril 2025.</p>
-      </div>
-      <div class="spec-wrap" role="region" aria-label="Tableau : ce que prévoit la notice descriptive du 8 avril 2025" data-aria-label-fr="Tableau : ce que prévoit la notice descriptive du 8 avril 2025" data-aria-label-en="Table: what the descriptive notice of 8 April 2025 provides" tabindex="0">
-        <table class="spec">
-          <caption class="visually-hidden">Ce que prévoit la notice descriptive du 8 avril 2025 pour les espaces communs</caption>
-          <thead>
-            <tr><th scope="col" data-lang-fr="Élément" data-lang-en="Item">Élément</th><th scope="col" data-lang-fr="Prévu selon la notice descriptive du 8 avril 2025" data-lang-en="Planned according to the descriptive notice of 8 April 2025">Prévu selon la notice descriptive du 8 avril 2025</th></tr>
-          </thead>
-          <tbody>
-            <tr><th scope="row" data-lang-fr="Piscine" data-lang-en="Pool">Piscine</th><td><span data-lang-fr="Piscine commune en béton armé, avec étanchéité et carrelage de finition dans des teintes sable ; système de nage à contre-courant ; formulation de la notice : « chauffée avec alarme ». Le mode de chauffage et le type d'alarme ne sont pas précisés." data-lang-en="Shared reinforced-concrete pool with waterproofing and a sand-toned tile finish; counter-current swimming system; the notice's wording is “heated, with an alarm”. The heating method and the type of alarm are not specified.">Piscine commune en béton armé, avec étanchéité et carrelage de finition dans des teintes sable ; système de nage à contre-courant ; formulation de la notice : « chauffée avec alarme ». Le mode de chauffage et le type d'alarme ne sont pas précisés.</span><span class="ref" data-lang-fr="Notice § 4.7" data-lang-en="Notice § 4.7">Notice § 4.7</span></td></tr>
-            <tr><th scope="row" data-lang-fr="Plage et margelles" data-lang-en="Pool deck and coping">Plage et margelles</th><td><span data-lang-fr="Dallage en béton armé revêtu d'un carrelage extérieur antidérapant au format 60 × 60." data-lang-en="Reinforced-concrete paving covered with non-slip outdoor tiles in 60 × 60 format.">Dallage en béton armé revêtu d'un carrelage extérieur antidérapant au format 60 × 60.</span><span class="ref" data-lang-fr="Notice § 4.7" data-lang-en="Notice § 4.7">Notice § 4.7</span></td></tr>
-            <tr><th scope="row" data-lang-fr="Accès piscine et jardin commun" data-lang-en="Pool and shared garden access">Accès piscine et jardin commun</th><td><span data-lang-fr="Contrôle d'accès par badge VIGIK et digicode." data-lang-en="Access control by VIGIK badge and keypad.">Contrôle d'accès par badge VIGIK et digicode.</span><span class="ref" data-lang-fr="Notice § 3.12.5" data-lang-en="Notice § 3.12.5">Notice § 3.12.5</span></td></tr>
-            <tr><th scope="row" data-lang-fr="Espaces verts communs" data-lang-en="Shared green spaces">Espaces verts communs</th><td><span data-lang-fr="Engazonnés et plantés suivant le plan paysager de l'architecte et le permis de construire ; arrosage automatique sur compteur « vert » indépendant ; éclairage par bornes ou candélabres (horloge et détecteur de présence) ; un robinet de puisage par logement." data-lang-en="Turfed and planted according to the architect's landscape plan and the building permit; automatic watering on a separate “green” meter; lighting by bollards or lamp posts (timer and presence detector); one outdoor tap per apartment.">Engazonnés et plantés suivant le plan paysager de l'architecte et le permis de construire ; arrosage automatique sur compteur « vert » indépendant ; éclairage par bornes ou candélabres (horloge et détecteur de présence) ; un robinet de puisage par logement.</span><span class="ref" data-lang-fr="Notice § 4.6" data-lang-en="Notice § 4.6">Notice § 4.6</span></td></tr>
-            <tr><th scope="row" data-lang-fr="Jardins privatifs" data-lang-en="Private gardens">Jardins privatifs</th><td><span data-lang-fr="Engazonnés et arrosés automatiquement par asperseurs intégrés ; haie séparative entre jardins (photinias d'un côté, clôture à maille rigide de l'autre)." data-lang-en="Turfed and watered automatically by built-in sprinklers; hedge between gardens (photinia on one side, rigid-mesh fencing on the other).">Engazonnés et arrosés automatiquement par asperseurs intégrés ; haie séparative entre jardins (photinias d'un côté, clôture à maille rigide de l'autre).</span><span class="ref" data-lang-fr="Notice § 4.6" data-lang-en="Notice § 4.6">Notice § 4.6</span></td></tr>
-            <tr><th scope="row" data-lang-fr="Voirie et portails" data-lang-en="Driveway and gates">Voirie et portails</th><td><span data-lang-fr="Voirie en béton désactivé, bornes lumineuses à LED ; portail principal à deux vantaux commandé par télécommande ; portillon piéton avec platine de rue et visiophone." data-lang-en="Exposed-aggregate concrete driveway, LED bollards; two-leaf main gate with remote control; pedestrian gate with street panel and video entry phone.">Voirie en béton désactivé, bornes lumineuses à LED ; portail principal à deux vantaux commandé par télécommande ; portillon piéton avec platine de rue et visiophone.</span><span class="ref" data-lang-fr="Notice § 3.12.5, 4.1" data-lang-en="Notice § 3.12.5, 4.1">Notice § 3.12.5, 4.1</span></td></tr>
-            <tr><th scope="row" data-lang-fr="Parking en sous-sol" data-lang-en="Underground parking">Parking en sous-sol</th><td><span data-lang-fr="Un niveau de parking enterré accessible de plain-pied depuis l'avenue Paul Cézanne : 16 places privatives et 16 emplacements deux-roues privatifs. Sol en béton brut lissé, éclairage LED à détecteurs de présence, portail basculant métallique à manœuvre électrique." data-lang-en="One underground car-park level reached at street level from avenue Paul Cézanne: 16 private car spaces and 16 private two-wheeler spaces. Smoothed raw-concrete floor, LED lighting with presence detectors, metal tilting gate with electric operation.">Un niveau de parking enterré accessible de plain-pied depuis l'avenue Paul Cézanne : 16 places privatives et 16 emplacements deux-roues privatifs. Sol en béton brut lissé, éclairage LED à détecteurs de présence, portail basculant métallique à manœuvre électrique.</span><span class="ref" data-lang-fr="Notice § 1, 4.2" data-lang-en="Notice § 1, 4.2">Notice § 1, 4.2</span></td></tr>
-            <tr><th scope="row" data-lang-fr="Parking extérieur" data-lang-en="Outdoor parking">Parking extérieur</th><td><span data-lang-fr="Quatre places, dont une pour les personnes à mobilité réduite." data-lang-en="Four spaces, one of them for people with reduced mobility.">Quatre places, dont une pour les personnes à mobilité réduite.</span><span class="ref" data-lang-fr="Notice § 1" data-lang-en="Notice § 1">Notice § 1</span></td></tr>
-            <tr><th scope="row" data-lang-fr="Recharge de véhicule électrique" data-lang-en="Electric vehicle charging">Recharge de véhicule électrique</th><td><span data-lang-fr="Une prise 32 A pour chacun des huit box, reliée directement à un logement et destinée à recevoir une borne de recharge. La fourniture de la borne n'est pas précisée." data-lang-en="A 32 A socket for each of the eight bays, wired directly to an apartment and intended to receive a charging point. Supply of the charging point is not specified.">Une prise 32 A pour chacun des huit box, reliée directement à un logement et destinée à recevoir une borne de recharge. La fourniture de la borne n'est pas précisée.</span><span class="ref" data-lang-fr="Notice § 4.2" data-lang-en="Notice § 4.2">Notice § 4.2</span></td></tr>
-            <tr><th scope="row" data-lang-fr="Local vélos" data-lang-en="Bicycle room">Local vélos</th><td><span data-lang-fr="Local clos et couvert, accès par badge de type VIGIK ou équivalent, racks de rangement en acier fixés au sol ou au mur, éclairage LED à détecteur de présence." data-lang-en="Enclosed, covered room, access by VIGIK-type badge or equivalent, steel storage racks fixed to the floor or wall, LED lighting with presence detector.">Local clos et couvert, accès par badge de type VIGIK ou équivalent, racks de rangement en acier fixés au sol ou au mur, éclairage LED à détecteur de présence.</span><span class="ref" data-lang-fr="Notice § 3.12.5, 4.4" data-lang-en="Notice § 3.12.5, 4.4">Notice § 3.12.5, 4.4</span></td></tr>
-            <tr><th scope="row" data-lang-fr="Autres locaux" data-lang-en="Other rooms">Autres locaux</th><td><span data-lang-fr="Local ordures ménagères carrelé en grès cérame, local technique et local technique de la piscine." data-lang-en="Waste room tiled in porcelain stoneware, technical room and pool plant room.">Local ordures ménagères carrelé en grès cérame, local technique et local technique de la piscine.</span><span class="ref" data-lang-fr="Notice § 1, 4.3, 4.5" data-lang-en="Notice § 1, 4.3, 4.5">Notice § 1, 4.3, 4.5</span></td></tr>
-            <tr><th scope="row" data-lang-fr="Hall d'entrée" data-lang-en="Entrance hall">Hall d'entrée</th><td><span data-lang-fr="Hall : carrelage en grès cérame (format minimum 80 × 80), décoration murale en staff, spots LED à détecteurs de présence, boîtes aux lettres. Circulations et escaliers : sols en grès cérame." data-lang-en="Hall: porcelain stoneware tiles (minimum 80 × 80 format), decorative plaster wall finish, LED spotlights with presence detectors, mailboxes. Circulation areas and stairs: porcelain stoneware flooring.">Hall : carrelage en grès cérame (format minimum 80 × 80), décoration murale en staff, spots LED à détecteurs de présence, boîtes aux lettres. Circulations et escaliers : sols en grès cérame.</span><span class="ref" data-lang-fr="Notice § 4.8 à 4.10" data-lang-en="Notice § 4.8 à 4.10">Notice § 4.8 à 4.10</span></td></tr>
-            <tr><th scope="row" data-lang-fr="Ascenseur" data-lang-en="Lift">Ascenseur</th><td><span data-lang-fr="Ascenseur accessible aux personnes à mobilité réduite, desservant les différents niveaux." data-lang-en="Lift accessible to people with reduced mobility, serving the different levels.">Ascenseur accessible aux personnes à mobilité réduite, desservant les différents niveaux.</span><span class="ref" data-lang-fr="Notice § 4.11" data-lang-en="Notice § 4.11">Notice § 4.11</span></td></tr>
-          </tbody>
-        </table>
-      </div>
-      <p class="txt txt-note spec-note" data-lang-fr="Les caractéristiques définitives des biens sont précisées dans la notice descriptive contractuelle ; en cas de différence avec la plaquette commerciale, c'est la notice qui compte. La notice de vente du 8 avril 2025 annonce une notice conforme à l'arrêté du 10 mai 1968, adressée avant la signature de l'acte authentique. Elle prévoit que le maître d'ouvrage peut remplacer des matériaux ou équipements par d'autres de qualité au moins équivalente lorsque leur fourniture ou leur mise en œuvre s'avère impossible ou difficile, et que les cotes et surfaces des plans sont données sous réserve des tolérances de construction." data-lang-en="The final specifications are set out in the contractual descriptive notice; where the sales brochure differs, the notice prevails. The sales notice of 8 April 2025 announces a notice complying with the order of 10 May 1968, sent before the notarial deed is signed. It provides that the developer may replace materials or equipment with others of at least equivalent quality where supply or installation proves impossible or difficult, and that dimensions and areas on the plans are given subject to construction tolerances.">Les caractéristiques définitives des biens sont précisées dans la notice descriptive contractuelle ; en cas de différence avec la plaquette commerciale, c'est la notice qui compte. La notice de vente du 8 avril 2025 annonce une notice conforme à l'arrêté du 10 mai 1968, adressée avant la signature de l'acte authentique. Elle prévoit que le maître d'ouvrage peut remplacer des matériaux ou équipements par d'autres de qualité au moins équivalente lorsque leur fourniture ou leur mise en œuvre s'avère impossible ou difficile, et que les cotes et surfaces des plans sont données sous réserve des tolérances de construction.</p>
-
-      <h3 class="sub-title plan-title" data-lang-fr="Repères chiffrés relevés sur les plans" data-lang-en="Figures taken from the plans">Repères chiffrés relevés sur les plans</h3>
-      <div class="spec-wrap" role="region" aria-label="Tableau : repères chiffrés relevés sur les plans" data-aria-label-fr="Tableau : repères chiffrés relevés sur les plans" data-aria-label-en="Table: figures taken from the plans" tabindex="0">
-        <table class="spec">
-          <caption class="visually-hidden">Repères chiffrés relevés sur les plans du permis de construire</caption>
-          <thead>
-            <tr><th scope="col" data-lang-fr="Repère" data-lang-en="Item">Repère</th><th scope="col" data-lang-fr="Valeur relevée et plan d'origine" data-lang-en="Value and source plan">Valeur relevée et plan d'origine</th></tr>
-          </thead>
-          <tbody>
-            <tr><th scope="row" data-lang-fr="Terrain" data-lang-en="Plot">Terrain</th><td><span data-lang-fr="2 426 m² (parcelles cadastrales DE 217 et DE 219)" data-lang-en="2,426 m² (cadastral parcels DE 217 and DE 219)">2 426 m² (parcelles cadastrales DE 217 et DE 219)</span><span class="ref" data-lang-fr="Plan de masse général" data-lang-en="General site plan">Plan de masse général</span></td></tr>
-            <tr><th scope="row" data-lang-fr="Espaces libres" data-lang-en="Open space">Espaces libres</th><td><span data-lang-fr="1 586 m²" data-lang-en="1,586 m²">1 586 m²</span><span class="ref" data-lang-fr="Plan de masse général" data-lang-en="General site plan">Plan de masse général</span></td></tr>
-            <tr><th scope="row" data-lang-fr="Espace commun paysagé" data-lang-en="Landscaped common space">Espace commun paysagé</th><td><span data-lang-fr="453 m²" data-lang-en="453 m²">453 m²</span><span class="ref" data-lang-fr="Plans de masse" data-lang-en="Site plans">Plans de masse</span></td></tr>
-            <tr><th scope="row" data-lang-fr="Piscine enterrée" data-lang-en="In-ground pool">Piscine enterrée</th><td><span data-lang-fr="6 × 12,3 m (profondeur non communiquée)" data-lang-en="6 × 12.3 m (depth not provided)">6 × 12,3 m (profondeur non communiquée)</span><span class="ref" data-lang-fr="Plan de masse paysagé" data-lang-en="Landscaped site plan">Plan de masse paysagé</span></td></tr>
-            <tr><th scope="row" data-lang-fr="Local vélos" data-lang-en="Bicycle room">Local vélos</th><td><span data-lang-fr="22,2 m²" data-lang-en="22.2 m²">22,2 m²</span><span class="ref" data-lang-fr="Plan de stationnement" data-lang-en="Parking plan">Plan de stationnement</span></td></tr>
-            <tr><th scope="row" data-lang-fr="Local ordures ménagères" data-lang-en="Waste room">Local ordures ménagères</th><td><span data-lang-fr="9,3 m²" data-lang-en="9.3 m²">9,3 m²</span><span class="ref" data-lang-fr="Plan de stationnement" data-lang-en="Parking plan">Plan de stationnement</span></td></tr>
-            <tr><th scope="row" data-lang-fr="Local technique de la piscine" data-lang-en="Pool plant room">Local technique de la piscine</th><td><span data-lang-fr="9,2 m²" data-lang-en="9.2 m²">9,2 m²</span><span class="ref" data-lang-fr="Plan de stationnement" data-lang-en="Parking plan">Plan de stationnement</span></td></tr>
-            <tr><th scope="row" data-lang-fr="Local technique" data-lang-en="Technical room">Local technique</th><td><span data-lang-fr="10,4 m²" data-lang-en="10.4 m²">10,4 m²</span><span class="ref" data-lang-fr="Plan de stationnement" data-lang-en="Parking plan">Plan de stationnement</span></td></tr>
-            <tr><th scope="row" data-lang-fr="Hall d'entrée" data-lang-en="Entrance hall">Hall d'entrée</th><td><span data-lang-fr="15,1 m²" data-lang-en="15.1 m²">15,1 m²</span><span class="ref" data-lang-fr="Plan de stationnement" data-lang-en="Parking plan">Plan de stationnement</span></td></tr>
-          </tbody>
-        </table>
-      </div>
-      <p class="txt txt-note spec-note" data-lang-fr="Plans de la phase permis de construire (2023 et 2024) : les cotes sont indicatives et peuvent évoluer. Les rendus 3D, insertions et plans de cette page sont des illustrations non contractuelles." data-lang-en="Plans from the building-permit stage (2023 and 2024): dimensions are indicative and may change. The 3D renderings, photomontages and plans on this page are non-contractual illustrations.">Plans de la phase permis de construire (2023 et 2024) : les cotes sont indicatives et peuvent évoluer. Les rendus 3D, insertions et plans de cette page sont des illustrations non contractuelles.</p>
+      <p class="guides">
+        <span class="guides-label" data-lang-fr="Nos guides" data-lang-en="Our guides">Nos guides</span>
+        <a href="/blog/appartement-jardin-prive-aix-en-provence" title="Appartement avec jardin privatif à Aix-en-Provence : les points à vérifier avant d'acheter" data-lang-fr="Jardin privatif" data-lang-en="Private garden (in French)">Jardin privatif</a>
+        <a href="/blog/appartement-vue-sainte-victoire-aix-en-provence" title="Un appartement avec vue sur la Sainte-Victoire à Aix-en-Provence" data-lang-fr="Vue Sainte-Victoire" data-lang-en="Sainte-Victoire view (in French)">Vue Sainte-Victoire</a>
+        <a href="/blog/appartement-de-luxe-aix-en-provence-criteres" title="Appartement de luxe à Aix-en-Provence : huit critères pour distinguer le haut de gamme" data-lang-fr="Appartement de luxe" data-lang-en="Luxury apartment (in French)">Appartement de luxe</a>
+      </p>
     </div>
   </section>
 
-  <!-- ─── Galerie ──────────────────────────────────────────────── -->
-  <section class="section section-stone" id="galerie">
-    <div class="container">
-      <div class="section-header reveal">
-        <p class="eyebrow" data-lang-fr="La résidence en images" data-lang-en="The residence in pictures">La résidence en images</p>
-        <h2 class="section-title" data-lang-fr="Galerie des espaces extérieurs" data-lang-en="Gallery of the outdoor spaces">Galerie des espaces extérieurs</h2>
-        <p class="section-lead" data-lang-fr="Rendus 3D et photomontage : illustrations non contractuelles, à titre indicatif." data-lang-en="3D renderings and photomontage: non-contractual illustrations, for guidance only.">Rendus 3D et photomontage : illustrations non contractuelles, à titre indicatif.</p>
-      </div>
-      <div class="gallery-grid ext-gallery">
-        <button type="button" class="gallery-item wide" data-src="/Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_EXT_Panorama_St-Victoire.webp" data-caption="Rendu 3D : la résidence vue depuis la rue — illustration non contractuelle" aria-label="Agrandir : rendu 3D de la résidence vue depuis la rue (illustration non contractuelle)" onclick="openLightbox(this,0)">
-          <img src="/Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_EXT_Panorama_St-Victoire-1200w.webp" srcset="/Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_EXT_Panorama_St-Victoire-800w.webp 800w, /Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_EXT_Panorama_St-Victoire-1200w.webp 1200w, /Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_EXT_Panorama_St-Victoire.webp 1600w" sizes="(min-width: 1025px) 66vw, (min-width: 481px) 50vw, 100vw" width="1600" height="960" alt="Rendu 3D de la résidence vue depuis la rue : portail, mur de pierre sèche, façade à toit de tuiles et piscine à l'arrière-plan" loading="lazy" decoding="async" />
-          <span class="ill-badge">Illustration non contractuelle</span>
-          <span class="gallery-overlay" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg></span>
-        </button>
-        <button type="button" class="gallery-item" data-src="/Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_PISCINE_NUIT_Panorama_St-Victoire%202.webp" data-caption="Rendu 3D : la piscine de nuit — illustration non contractuelle" aria-label="Agrandir : rendu 3D de la piscine de nuit (illustration non contractuelle)" onclick="openLightbox(this,1)">
-          <img src="/Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_PISCINE_NUIT_Panorama_St-Victoire%202-1200w.webp" srcset="/Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_PISCINE_NUIT_Panorama_St-Victoire%202-800w.webp 800w, /Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_PISCINE_NUIT_Panorama_St-Victoire%202-1200w.webp 1200w, /Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_PISCINE_NUIT_Panorama_St-Victoire%202.webp 1600w" sizes="(min-width: 1025px) 33vw, (min-width: 481px) 50vw, 100vw" width="1600" height="960" alt="Rendu 3D de la piscine éclairée de nuit, avec transats, parasols et façade de la résidence" loading="lazy" decoding="async" />
-          <span class="ill-badge">Illustration non contractuelle</span>
-          <span class="gallery-overlay" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg></span>
-        </button>
-        <button type="button" class="gallery-item" data-src="/Photo%2059%20C%C3%A9zanne/3D%20Groove%20Architecture/Edited/PISCINE-enhanced.webp" data-caption="Rendu 3D de jour : la piscine et la plage (rendu daté de mars 2023, susceptible de différer du projet actuel) — illustration non contractuelle" aria-label="Agrandir : rendu 3D de jour de la piscine (illustration non contractuelle, rendu de mars 2023)" onclick="openLightbox(this,2)">
-          <img src="/Photo%2059%20C%C3%A9zanne/3D%20Groove%20Architecture/Edited/PISCINE-enhanced-1200w.webp" srcset="/Photo%2059%20C%C3%A9zanne/3D%20Groove%20Architecture/Edited/PISCINE-enhanced-800w.webp 800w, /Photo%2059%20C%C3%A9zanne/3D%20Groove%20Architecture/Edited/PISCINE-enhanced-1200w.webp 1200w, /Photo%2059%20C%C3%A9zanne/3D%20Groove%20Architecture/Edited/PISCINE-enhanced.webp 1600w" sizes="(min-width: 1025px) 33vw, (min-width: 481px) 50vw, 100vw" width="1600" height="900" alt="Rendu 3D de jour : la piscine, sa plage avec transats et la pelouse devant la façade de la résidence" loading="lazy" decoding="async" />
-          <span class="ill-badge">Illustration non contractuelle</span>
-          <span class="gallery-overlay" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg></span>
-        </button>
-        <button type="button" class="gallery-item" data-src="/Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_JARDIN_LOGEMENT-04_Panorama_St-Victoire.webp" data-caption="Rendu 3D : terrasse et jardin privatif du lot 4 (T4) — illustration non contractuelle" aria-label="Agrandir : rendu 3D du jardin privatif du lot 4 (illustration non contractuelle)" onclick="openLightbox(this,3)">
-          <img src="/Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_JARDIN_LOGEMENT-04_Panorama_St-Victoire-1200w.webp" srcset="/Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_JARDIN_LOGEMENT-04_Panorama_St-Victoire-800w.webp 800w, /Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_JARDIN_LOGEMENT-04_Panorama_St-Victoire-1200w.webp 1200w, /Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_JARDIN_LOGEMENT-04_Panorama_St-Victoire.webp 1600w" sizes="(min-width: 1025px) 33vw, (min-width: 481px) 50vw, 100vw" width="1600" height="1024" alt="Rendu 3D de la terrasse et du jardin privatif du lot 4, un T4 : salon d'extérieur, bains de soleil et haie fleurie" loading="lazy" decoding="async" />
-          <span class="ill-badge">Illustration non contractuelle</span>
-          <span class="gallery-overlay" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg></span>
-        </button>
-        <button type="button" class="gallery-item" data-src="/Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_JARDIN_V2_LOGEMENT-04_Panorama_St-Victoire.webp" data-caption="Rendu 3D : variante du jardin privatif du lot 4 (T4) — illustration non contractuelle" aria-label="Agrandir : rendu 3D, variante du jardin du lot 4 (illustration non contractuelle)" onclick="openLightbox(this,4)">
-          <img src="/Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_JARDIN_V2_LOGEMENT-04_Panorama_St-Victoire-1200w.webp" srcset="/Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_JARDIN_V2_LOGEMENT-04_Panorama_St-Victoire-800w.webp 800w, /Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_JARDIN_V2_LOGEMENT-04_Panorama_St-Victoire-1200w.webp 1200w, /Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_JARDIN_V2_LOGEMENT-04_Panorama_St-Victoire.webp 1600w" sizes="(min-width: 1025px) 33vw, (min-width: 481px) 50vw, 100vw" width="1600" height="1024" alt="Rendu 3D, variante du jardin du lot 4, un T4 : baie coulissante ouverte sur le séjour et salon d'extérieur" loading="lazy" decoding="async" />
-          <span class="ill-badge">Illustration non contractuelle</span>
-          <span class="gallery-overlay" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg></span>
-        </button>
-        <button type="button" class="gallery-item" data-src="/Photo%2059%20C%C3%A9zanne/3D%20Groove%20Architecture/Edited/050-APC-230309-INSERTION-enhanced.webp" data-caption="Insertion (photomontage) : l'immeuble vu depuis la rue (rendu daté de mars 2023, susceptible de différer du projet actuel) — illustration non contractuelle" aria-label="Agrandir : photomontage d'insertion de l'immeuble (illustration non contractuelle, mars 2023)" onclick="openLightbox(this,5)">
-          <img src="/Photo%2059%20C%C3%A9zanne/3D%20Groove%20Architecture/Edited/050-APC-230309-INSERTION-enhanced-1200w.webp" srcset="/Photo%2059%20C%C3%A9zanne/3D%20Groove%20Architecture/Edited/050-APC-230309-INSERTION-enhanced-800w.webp 800w, /Photo%2059%20C%C3%A9zanne/3D%20Groove%20Architecture/Edited/050-APC-230309-INSERTION-enhanced-1200w.webp 1200w, /Photo%2059%20C%C3%A9zanne/3D%20Groove%20Architecture/Edited/050-APC-230309-INSERTION-enhanced.webp 1600w" sizes="(min-width: 1025px) 33vw, (min-width: 481px) 50vw, 100vw" width="1600" height="1081" alt="Photomontage d'insertion : l'immeuble vu depuis la rue, derrière un mur de pierre et la végétation" loading="lazy" decoding="async" />
-          <span class="ill-badge">Illustration non contractuelle</span>
-          <span class="gallery-overlay" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg></span>
-        </button>
-      </div>
-      <p class="txt txt-note gal-note" data-lang-fr="Le rendu de la piscine de jour et le photomontage d'insertion, datés de mars 2023, précèdent la délivrance du permis de construire et peuvent différer du projet actuel." data-lang-en="The daytime pool rendering and the insertion photomontage, both dated March 2023, predate the issue of the building permit and may differ from the current design.">Le rendu de la piscine de jour et le photomontage d'insertion, datés de mars 2023, précèdent la délivrance du permis de construire et peuvent différer du projet actuel.</p>
-    </div>
-  </section>
-
-  <!-- ─── FAQ ──────────────────────────────────────────────────── -->
-  <section class="section" id="faq">
-    <div class="container">
-      <div class="section-header reveal">
-        <p class="eyebrow" data-lang-fr="Questions fréquentes" data-lang-en="Frequently asked questions">Questions fréquentes</p>
-        <h2 class="section-title" data-lang-fr="Questions fréquentes sur les espaces communs" data-lang-en="Frequently asked questions about the common areas">Questions fréquentes sur les espaces communs</h2>
-      </div>
-      <div class="faq">
-        <details>
-          <summary><span data-lang-fr="La piscine de 59 Cézanne est-elle chauffée ?" data-lang-en="Is the pool at 59 Cézanne heated?">La piscine de 59 Cézanne est-elle chauffée ?</span></summary>
-          <p class="ans" data-lang-fr="La notice descriptive du 8 avril 2025 prévoit une piscine commune chauffée, équipée d'un système de nage à contre-courant. Elle ne précise ni le mode de chauffage ni la période d'ouverture : ces points se confirment auprès du promoteur." data-lang-en="The descriptive notice of 8 April 2025 provides for a shared heated pool fitted with a counter-current swimming system. It does not state the heating method or the opening period: these points are best confirmed with the developer.">La notice descriptive du 8 avril 2025 prévoit une piscine commune chauffée, équipée d'un système de nage à contre-courant. Elle ne précise ni le mode de chauffage ni la période d'ouverture : ces points se confirment auprès du promoteur.</p>
-        </details>
-        <details>
-          <summary><span data-lang-fr="Quelles sont les dimensions de la piscine, et qui y a accès ?" data-lang-en="How big is the pool, and who can use it?">Quelles sont les dimensions de la piscine, et qui y a accès ?</span></summary>
-          <p class="ans" data-lang-fr="Le plan de masse paysagé du permis de construire dessine une piscine enterrée de 6 × 12,3 m. L'accès « piscine et jardin commun » est prévu par badge VIGIK et digicode. Les règles d'usage, comme les horaires ou l'accueil d'invités, relèvent du règlement de copropriété." data-lang-en="The landscaped site plan in the building permit shows an in-ground pool of 6 × 12.3 m. Access to the pool and shared garden is planned by VIGIK badge and keypad. Rules of use, such as opening hours or guests, are set by the co-ownership regulations.">Le plan de masse paysagé du permis de construire dessine une piscine enterrée de 6 × 12,3 m. L'accès « piscine et jardin commun » est prévu par badge VIGIK et digicode. Les règles d'usage, comme les horaires ou l'accueil d'invités, relèvent du règlement de copropriété.</p>
-        </details>
-        <details>
-          <summary><span data-lang-fr="Combien de places de stationnement la résidence compte-t-elle ?" data-lang-en="How many parking spaces does the residence have?">Combien de places de stationnement la résidence compte-t-elle ?</span></summary>
-          <p class="ans" data-lang-fr="Selon la notice, un niveau de parking enterré compte 16 places privatives et 16 emplacements deux-roues privatifs, auxquels s'ajoutent 4 places extérieures dont une pour les personnes à mobilité réduite. L'attribution des places aux appartements et la configuration définitive des emplacements sont à demander au promoteur." data-lang-en="According to the notice, one underground level has 16 private car spaces and 16 private two-wheeler spaces, plus 4 outdoor spaces, one of them for people with reduced mobility. How spaces are allocated to apartments, and the final layout of the bays, should be confirmed with the developer.">Selon la notice, un niveau de parking enterré compte 16 places privatives et 16 emplacements deux-roues privatifs, auxquels s'ajoutent 4 places extérieures dont une pour les personnes à mobilité réduite. L'attribution des places aux appartements et la configuration définitive des emplacements sont à demander au promoteur.</p>
-        </details>
-        <details>
-          <summary><span data-lang-fr="Peut-on recharger un véhicule électrique au parking ?" data-lang-en="Can an electric vehicle be charged in the car park?">Peut-on recharger un véhicule électrique au parking ?</span></summary>
-          <p class="ans" data-lang-fr="La notice prévoit, pour chacun des huit box, une prise 32 A reliée directement à un logement et destinée à recevoir une borne de recharge. Elle ne précise pas que la borne elle-même est fournie." data-lang-en="The notice provides, for each of the eight bays, a 32 A socket wired directly to an apartment and intended to receive a charging point. It does not state that the charging point itself is supplied.">La notice prévoit, pour chacun des huit box, une prise 32 A reliée directement à un logement et destinée à recevoir une borne de recharge. Elle ne précise pas que la borne elle-même est fournie.</p>
-        </details>
-        <details>
-          <summary><span data-lang-fr="La résidence a-t-elle un ascenseur accessible aux personnes à mobilité réduite ?" data-lang-en="Does the residence have a lift accessible to people with reduced mobility?">La résidence a-t-elle un ascenseur accessible aux personnes à mobilité réduite ?</span></summary>
-          <p class="ans" data-lang-fr="Oui, la notice prévoit un ascenseur accessible aux personnes à mobilité réduite, qui dessert les différents niveaux. L'accès piéton au parking se fait depuis le hall, par l'escalier ou l'ascenseur. Une place de stationnement extérieure est réservée aux personnes à mobilité réduite." data-lang-en="Yes, the notice provides for a lift accessible to people with reduced mobility, serving the different levels. Pedestrian access to the car park is from the entrance hall, by stairs or lift. One outdoor parking space is reserved for people with reduced mobility.">Oui, la notice prévoit un ascenseur accessible aux personnes à mobilité réduite, qui dessert les différents niveaux. L'accès piéton au parking se fait depuis le hall, par l'escalier ou l'ascenseur. Une place de stationnement extérieure est réservée aux personnes à mobilité réduite.</p>
-        </details>
-        <details>
-          <summary><span data-lang-fr="Les images de cette page sont-elles contractuelles ?" data-lang-en="Are the images on this page contractual?">Les images de cette page sont-elles contractuelles ?</span></summary>
-          <p class="ans" data-lang-fr="Non. Les rendus 3D, insertions et plans présentés sur cette page sont des illustrations non contractuelles. Les caractéristiques définitives sont précisées dans la notice descriptive contractuelle, qui peut être complétée avant la signature de l'acte authentique et prévoit le remplacement possible de certains matériaux par des équivalents." data-lang-en="No. The 3D renderings, photomontages and plans shown on this page are non-contractual illustrations. The final specifications are set out in the contractual descriptive notice, which may be supplemented before the notarial deed is signed and allows some materials to be replaced by equivalents.">Non. Les rendus 3D, insertions et plans présentés sur cette page sont des illustrations non contractuelles. Les caractéristiques définitives sont précisées dans la notice descriptive contractuelle, qui peut être complétée avant la signature de l'acte authentique et prévoit le remplacement possible de certains matériaux par des équivalents.</p>
-        </details>
-      </div>
-    </div>
-  </section>
-
-  <!-- ─── Pour aller plus loin ─────────────────────────────────── -->
-  <section class="section section-alt" id="aller-plus-loin">
-    <div class="container">
-      <div class="section-header reveal">
-        <p class="eyebrow" data-lang-fr="Pour aller plus loin" data-lang-en="Further reading">Pour aller plus loin</p>
-        <h2 class="section-title" data-lang-fr="Guides pour préparer votre choix" data-lang-en="Guides to help you decide">Guides pour préparer votre choix</h2>
-      </div>
-      <ul class="more-grid">
-        <li class="more-card"><p class="more-meta" data-lang-fr="Guide" data-lang-en="Guide">Guide</p><h3><a href="/blog/appartement-de-luxe-aix-en-provence-criteres" data-lang-fr="Appartement de luxe à Aix-en-Provence : huit critères pour distinguer le haut de gamme" data-lang-en="Luxury apartment in Aix-en-Provence: eight criteria to tell high-end from standard (article in French)">Appartement de luxe à Aix-en-Provence : huit critères pour distinguer le haut de gamme</a></h3><p data-lang-fr="Adresse, vue, extérieur privatif, matériaux, intimité : une grille de lecture pour comparer des résidences." data-lang-en="Address, view, private outdoor space, materials, privacy: a framework for comparing residences.">Adresse, vue, extérieur privatif, matériaux, intimité : une grille de lecture pour comparer des résidences.</p></li>
-        <li class="more-card"><p class="more-meta" data-lang-fr="Guide" data-lang-en="Guide">Guide</p><h3><a href="/blog/appartement-jardin-prive-aix-en-provence" data-lang-fr="Appartement avec jardin privatif à Aix-en-Provence : les points à vérifier avant d'acheter" data-lang-en="Apartment with a private garden in Aix-en-Provence: what to check before buying (article in French)">Appartement avec jardin privatif à Aix-en-Provence : les points à vérifier avant d'acheter</a></h3><p data-lang-fr="Rez-de-jardin, duplex, surface, exposition, entretien : les questions à poser avant de signer." data-lang-en="Garden-level, duplex, size, aspect, upkeep: the questions to ask before signing.">Rez-de-jardin, duplex, surface, exposition, entretien : les questions à poser avant de signer.</p></li>
-        <li class="more-card"><p class="more-meta" data-lang-fr="Guide" data-lang-en="Guide">Guide</p><h3><a href="/blog/appartement-vue-sainte-victoire-aix-en-provence" data-lang-fr="Un appartement avec vue sur la Sainte-Victoire à Aix-en-Provence" data-lang-en="An apartment with a view of Sainte-Victoire in Aix-en-Provence (article in French)">Un appartement avec vue sur la Sainte-Victoire à Aix-en-Provence</a></h3><p data-lang-fr="Orientation, hauteur, vis-à-vis : comment juger une vue avant d'acheter." data-lang-en="Orientation, height, overlooking: how to judge a view before buying.">Orientation, hauteur, vis-à-vis : comment juger une vue avant d'acheter.</p></li>
-      </ul>
-    </div>
-  </section>
-
-  <!-- ─── CTA ──────────────────────────────────────────────────── -->
-  <section class="section section-dark" id="contact-cta">
+  <!-- ─── Appel à l'action ─────────────────────────────────────── -->
+  <section class="section section-dark cta-band" id="contact-cta" aria-label="Contact" data-aria-label-fr="Contact" data-aria-label-en="Contact">
     <div class="container text-center">
-      <p class="eyebrow cta-eyebrow" data-lang-fr="Une question ?" data-lang-en="A question?">Une question ?</p>
-      <h2 class="section-title cta-title" data-lang-fr="Parlons des espaces communs de 59 Cézanne" data-lang-en="Let's talk about the common areas of 59 Cézanne">Parlons des espaces communs de 59 Cézanne</h2>
-      <p class="cta-text" data-lang-fr="Pour obtenir la notice descriptive, les plans des espaces communs ou le calendrier de livraison, contactez-nous." data-lang-en="To get the descriptive notice, the common-area plans or the delivery schedule, contact us.">Pour obtenir la notice descriptive, les plans des espaces communs ou le calendrier de livraison, contactez-nous.</p>
       <div class="cta-btns">
-        <a href="/contact" class="btn btn-primary" data-lang-fr="Nous contacter" data-lang-en="Contact us">Nous contacter</a>
-        <a href="/logements" class="btn btn-outline" data-lang-fr="Voir les appartements" data-lang-en="View the apartments">Voir les appartements</a>
+        <a href="/logements" class="btn btn-primary" data-lang-fr="Voir les appartements" data-lang-en="View the apartments">Voir les appartements</a>
+        <a href="/contact" class="btn btn-outline" data-lang-fr="Nous contacter" data-lang-en="Contact us">Nous contacter</a>
       </div>
     </div>
   </section>

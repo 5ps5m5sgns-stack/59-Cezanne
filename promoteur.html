@@ -33,150 +33,68 @@
   <link rel="preload" as="image" href="/Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_EXT_Panorama_St-Victoire-1200w.webp" imagesrcset="/Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_EXT_Panorama_St-Victoire-800w.webp 800w, /Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_EXT_Panorama_St-Victoire-1200w.webp 1200w, /Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_EXT_Panorama_St-Victoire.webp 1600w" imagesizes="100vw" fetchpriority="high" />
 
   <style>
-    /* ── Page « Le promoteur » : styles locaux (préfixe pdh-) ──
-       Doré pour le TEXTE sur fond clair : #7a5f26 (≥ 4,9:1 sur crème, blanc, beige et pierre claire).
-       Le doré d'origine (--or) n'est conservé que sur fond sombre (≈ 8:1). */
-    #contenu { --pdh-or-text: #7a5f26; }
-    #contenu .eyebrow { color: var(--pdh-or-text); }
-    #contenu .eyebrow::before { background: var(--pdh-or-text); }
-    #contenu .section-dark .eyebrow, #contenu .pdh-dark .eyebrow { color: var(--or); }
-    #contenu .section-dark .eyebrow::before, #contenu .pdh-dark .eyebrow::before { background: var(--or); }
-    #contenu .section-title em { color: var(--pdh-or-text); }
-    #contenu .section-dark .section-title em, #contenu .pdh-dark .section-title em { color: var(--or); }
-    #contenu :focus-visible { outline: 2px solid var(--pdh-or-text); outline-offset: 3px; }
-    #contenu .pdh-dark :focus-visible, #contenu .section-dark :focus-visible, #contenu .page-hero :focus-visible { outline-color: var(--or-light); }
+    /* ── Page « Le promoteur » : quelques grandes scènes (préfixe pdh-) ──
+       Texte doré sur fond clair : var(--or-texte) (≥ 4,9:1) ; doré d'origine seulement sur fond sombre. */
 
-    /* Hero : taille du H1 propre à cette page (titre long) */
-    #contenu .page-hero .hero-title { font-size: clamp(1.9rem, 4vw, 3.3rem); max-width: 900px; text-wrap: balance; }
-    #contenu .page-hero .hero-subtitle { max-width: 640px; color: rgba(255,255,255,0.9); }
-    #contenu .page-hero .hero-eyebrow { color: var(--or-light); }
-    #contenu .page-hero .hero-eyebrow::before { background: var(--or-light); }
-    #contenu .page-hero .hero-overlay { background: linear-gradient(to top, rgba(15,12,8,0.88) 0%, rgba(15,12,8,0.6) 55%, rgba(15,12,8,0.38) 100%); }
-    .pdh-hero-caption {
-      position: absolute; right: 1.5rem; bottom: 1rem; z-index: 3; margin: 0;
-      font-size: 0.7rem; letter-spacing: 0.04em; color: #fff;
+    /* Scène 1 : bandeau plein écran */
+    .pdh-hero { height: 100vh; height: 100svh; min-height: 560px; }
+    .pdh-hero .hero-overlay { background: linear-gradient(to top, rgba(15,12,8,0.84) 0%, rgba(15,12,8,0.5) 45%, rgba(15,12,8,0.12) 100%); }
+    .pdh-hero .hero-content { padding-bottom: clamp(3rem, 9vh, 6rem); }
+    .pdh-hero .hero-title { font-size: clamp(2.5rem, 6vw, 5.4rem); max-width: 1100px; text-wrap: balance; }
+    .pdh-hero .hero-subtitle { max-width: 1000px; color: rgba(255,255,255,0.94); text-wrap: balance; }
+    /* Légende discrète en bas à gauche (les boutons flottants occupent le bas à droite) */
+    .pdh-caption {
+      position: absolute; left: calc(max(0px, (100vw - 1396px) / 2) + 2rem); bottom: 0.9rem; z-index: 3; margin: 0;
+      font-size: 0.8rem; letter-spacing: 0.04em; color: #fff;
       background: rgba(15,12,8,0.6); padding: 0.25rem 0.7rem; border-radius: 3px;
     }
 
-    .pdh-breadcrumb { margin-bottom: 2.5rem; font-size: 0.8rem; color: var(--text-mid); }
-    .pdh-breadcrumb ol { display: flex; flex-wrap: wrap; gap: 0.4rem; }
-    .pdh-breadcrumb li + li::before { content: "›"; margin-right: 0.4rem; color: var(--text-mid); }
-    .pdh-breadcrumb a { color: var(--pdh-or-text); text-decoration: underline; text-underline-offset: 3px; }
-
-    /* Présentation */
-    .pdh-hero-block { display: grid; grid-template-columns: 1fr 1.5fr; gap: 5rem; align-items: center; }
-    .pdh-identity-card {
-      background: linear-gradient(160deg, #1a1810 0%, #13110c 100%);
-      border-radius: var(--radius-md); border: 1px solid rgba(201,169,110,0.18);
-      display: flex; flex-direction: column; align-items: center; justify-content: center;
-      gap: 2rem; padding: 3rem 2rem; position: relative; overflow: hidden;
+    /* Scène 2 : qui est PDH, chiffres communiqués par la société */
+    .pdh-who { text-align: center; }
+    .pdh-who .section-title { max-width: 900px; margin: 0 auto; text-wrap: balance; }
+    .pdh-logo {
+      width: min(100%, 300px); aspect-ratio: 2 / 1; margin: 0 auto 2.5rem; overflow: hidden;
+      background: #fff; border: 1px solid var(--border); border-radius: var(--radius-md); box-shadow: var(--shadow-sm);
     }
-    .pdh-identity-card::before {
-      content: ''; position: absolute; inset: 0; pointer-events: none;
-      background: radial-gradient(ellipse at 50% 30%, rgba(201,169,110,0.08) 0%, transparent 65%);
-    }
-    .pdh-logo-wrap {
-      position: relative; z-index: 1; width: min(100%, 300px); aspect-ratio: 16 / 9; overflow: hidden;
-      background: #fff; border-radius: 10px; box-shadow: 0 4px 24px rgba(0,0,0,0.35);
-    }
-    .pdh-logo-wrap img { width: 100%; height: 100%; object-fit: cover; transform: scale(1.35); }
-    .pdh-identity-divider { width: 40px; height: 1px; background: rgba(201,169,110,0.5); position: relative; z-index: 1; }
-    .pdh-identity-meta { position: relative; z-index: 1; text-align: center; display: flex; flex-direction: column; gap: 0.5rem; }
-    .pdh-identity-meta strong { font-family: var(--font-serif); font-size: 1.15rem; font-weight: 400; color: rgba(255,255,255,0.95); letter-spacing: 0.03em; }
-    .pdh-identity-meta span { font-size: 0.72rem; font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase; color: var(--or); }
-    .pdh-identity-badges { position: relative; z-index: 1; display: flex; flex-direction: column; width: 100%; }
-    .pdh-identity-badges li {
-      display: flex; align-items: flex-start; gap: 0.75rem; font-size: 0.8rem; color: rgba(255,255,255,0.8);
-      letter-spacing: 0.02em; padding: 0.5rem 0; border-bottom: 1px solid rgba(255,255,255,0.08);
-    }
-    .pdh-identity-badges li:last-child { border-bottom: none; }
-    .pdh-identity-badges li::before { content: ''; width: 6px; height: 6px; margin-top: 0.55em; border-radius: 50%; background: var(--or); flex-shrink: 0; }
-    .pdh-prose p { font-size: 0.95rem; color: var(--text-mid); line-height: 1.9; margin-bottom: 1.4rem; max-width: 62ch; }
-    .pdh-prose p strong { color: var(--text); font-weight: 700; }
-    .pdh-prose a, .pdh-note a, .pdh-faq a, .pdh-sources a {
-      color: var(--pdh-or-text); text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 1px;
-    }
-    .pdh-prose a:hover, .pdh-note a:hover, .pdh-faq a:hover, .pdh-sources a:hover { text-decoration-thickness: 2px; }
+    .pdh-logo img { width: 100%; height: 100%; object-fit: cover; transform: scale(1.3); }
+    .pdh-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; max-width: 1040px; margin: 3.5rem auto 0; }
+    .pdh-stat .num { display: block; font-family: var(--font-serif); font-weight: 300; font-size: clamp(3.6rem, 7.5vw, 5.4rem); line-height: 1; color: var(--or-texte); }
+    .pdh-stat .label { display: block; margin-top: 0.9rem; font-size: 1rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-mid); }
+    .pdh-stats-note { margin-top: 2.5rem; font-size: 1.05rem; color: var(--text-mid); }
 
-    /* Chiffres de la société */
-    .pdh-stats-band { background: var(--dark); padding: 3rem 0 2.2rem; }
-    .pdh-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; text-align: center; }
-    .pdh-stat .num { font-family: var(--font-serif); font-size: 3rem; font-weight: 300; color: var(--or); display: block; line-height: 1; }
-    .pdh-stat .label { font-size: 0.72rem; letter-spacing: 0.15em; text-transform: uppercase; color: rgba(255,255,255,0.75); margin-top: 0.6rem; display: block; }
-    .pdh-stats-note { text-align: center; margin-top: 1.8rem; font-size: 0.78rem; color: rgba(255,255,255,0.7); }
+    /* Scène 3 : le programme, une grande image pleine largeur */
+    .pdh-prog { padding: var(--section-py) 0 0; text-align: center; }
+    .pdh-prog .section-title { max-width: 900px; margin: 0 auto 2rem; text-wrap: balance; }
+    .pdh-fig .pdh-caption { left: 1.5rem; }
+    .pdh-prog .btn { margin-bottom: clamp(3rem, 6vw, 5rem); }
+    .pdh-fig { position: relative; margin: 0; }
+    .pdh-fig img { width: 100%; height: auto; display: block; }
 
-    /* Deux activités */
-    .pdh-dark { background: linear-gradient(160deg, var(--dark) 0%, #1c1a15 100%); color: var(--white); }
-    .pdh-dark .section-title { color: var(--white); }
-    .pdh-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; }
-    .pdh-cols h3 { line-height: 1.3; font-family: var(--font-serif); font-size: 1.7rem; font-weight: 400; color: var(--white); margin-bottom: 1rem; }
-    .pdh-cols p { font-size: 0.92rem; color: rgba(255,255,255,0.85); line-height: 1.85; margin-bottom: 1.4rem; }
-    .pdh-cols a { color: var(--or-light); text-decoration: underline; text-underline-offset: 3px; }
-    .pdh-cols a:hover { color: #fff; }
-    .pdh-list { display: flex; flex-direction: column; gap: 0.3rem; margin-bottom: 1.6rem; }
-    .pdh-list li { display: flex; gap: 0.8rem; font-size: 0.88rem; color: #fff; padding: 0.55rem 0; border-bottom: 1px solid rgba(255,255,255,0.12); }
-    .pdh-list li::before { content: '—'; color: var(--or); flex-shrink: 0; }
-    .pdh-links { display: flex; flex-wrap: wrap; gap: 0.4rem 1.4rem; font-size: 0.88rem; }
-    .pdh-quote { margin: 0 0 1.8rem; padding: 0.3rem 0 0.3rem 1.5rem; border-left: 2px solid var(--or); }
-    .pdh-cols .pdh-quote p { font-family: var(--font-serif); font-style: italic; font-size: 1.55rem; line-height: 1.45; color: #fff; margin-bottom: 0.8rem; }
-    .pdh-quote figcaption { font-size: 0.78rem; letter-spacing: 0.08em; text-transform: uppercase; color: rgba(255,255,255,0.75); }
+    /* Scène 4 : protections légales de la VEFA, une ligne + le guide */
+    .pdh-vefa { text-align: center; }
+    .pdh-vefa .section-header { max-width: 900px; margin-bottom: 2.5rem; }
+    .pdh-vefa .section-title { text-wrap: balance; }
+    .pdh-vefa .section-lead { max-width: 760px; }
+    .pdh-guides { margin-top: 4rem; font-size: 1.05rem; color: var(--text-mid); }
+    .pdh-guides ul { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.4rem 1.8rem; margin-top: 0.6rem; }
+    .pdh-guides a { color: var(--or-texte); text-decoration: underline; text-underline-offset: 3px; }
+    .pdh-guides a:hover { color: var(--text); }
 
-    /* Protections en VEFA */
-    .pdh-note { max-width: 860px; margin: 0 auto 3.5rem; padding: 1.2rem 1.5rem; background: #fff; border: 1px solid var(--border); border-left: 3px solid var(--pdh-or-text); border-radius: var(--radius); font-size: 0.9rem; color: var(--text-mid); line-height: 1.8; }
-    .pdh-note strong { color: var(--text); }
-    .pdh-law-group { margin-bottom: 3rem; }
-    .pdh-law-group > h3 { line-height: 1.3; font-family: var(--font-serif); font-size: 1.5rem; font-weight: 400; color: var(--text); margin-bottom: 1.2rem; padding-bottom: 0.6rem; border-bottom: 1px solid var(--border); }
-    .pdh-law-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.5rem; }
-    .pdh-law { background: #fff; border: 1px solid var(--border); border-radius: var(--radius-md); padding: 1.8rem 1.6rem; transition: border-color var(--transition-fast); }
-    .pdh-law:hover { border-color: var(--pdh-or-text); }
-    .pdh-law .pdh-law-figure { font-family: var(--font-serif); font-size: 2rem; font-weight: 400; color: var(--pdh-or-text); line-height: 1.1; margin-bottom: 0.7rem; letter-spacing: 0; font-variant-numeric: lining-nums; }
-    .pdh-law h4 { line-height: 1.35; font-family: var(--font-serif); font-size: 1.2rem; font-weight: 600; color: var(--text); margin-bottom: 0.6rem; }
-    .pdh-law p { font-size: 0.86rem; color: var(--text-mid); line-height: 1.75; }
-    .pdh-check { background: #fff; border: 1px solid var(--border); border-radius: var(--radius-md); padding: 2rem 2rem 1.4rem; margin-bottom: 2.5rem; }
-    .pdh-check h3 { line-height: 1.3; font-family: var(--font-serif); font-size: 1.5rem; font-weight: 400; color: var(--text); margin-bottom: 1rem; }
-    .pdh-check ul { display: flex; flex-direction: column; gap: 0.2rem; }
-    .pdh-check li { display: flex; gap: 0.8rem; font-size: 0.92rem; color: var(--text-mid); line-height: 1.7; padding: 0.55rem 0; border-bottom: 1px solid var(--stone-light); }
-    .pdh-check li:last-child { border-bottom: none; }
-    .pdh-check li::before { content: '✓'; color: var(--pdh-or-text); font-weight: 700; flex-shrink: 0; }
-    .pdh-programme { font-size: 0.95rem; color: var(--text-mid); line-height: 1.85; max-width: 860px; margin: 0 auto 1.4rem; }
-    .pdh-programme strong { color: var(--text); }
-    .pdh-programme a { color: var(--pdh-or-text); text-decoration: underline; text-underline-offset: 3px; }
-    .pdh-sources { max-width: 860px; margin: 2.5rem auto 0; font-size: 0.82rem; color: var(--text-mid); line-height: 1.7; }
-    .pdh-sources h3 { font-family: var(--font-sans); font-size: 0.78rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text); margin-bottom: 0.7rem; }
-    .pdh-sources ol { list-style: decimal; padding-left: 1.3rem; display: flex; flex-direction: column; gap: 0.35rem; }
+    /* Scène 5 : contact */
+    .pdh-cta .section-title { margin-bottom: 2.2rem; }
 
-    /* FAQ */
-    .pdh-faq { max-width: 860px; margin: 0 auto; }
-    .pdh-faq details { border-bottom: 1px solid var(--border); }
-    .pdh-faq summary { list-style: none; cursor: pointer; display: flex; justify-content: space-between; align-items: center; gap: 1.5rem; padding: 1.3rem 0; font-family: var(--font-serif); font-size: 1.3rem; line-height: 1.35; color: var(--text); }
-    .pdh-faq summary::-webkit-details-marker { display: none; }
-    .pdh-faq summary::after { content: '+'; font-family: var(--font-sans); font-size: 1.5rem; color: var(--pdh-or-text); flex-shrink: 0; }
-    .pdh-faq details[open] summary::after { content: '−'; }
-    .pdh-faq details p { padding: 0 0 1.4rem; font-size: 0.93rem; color: var(--text-mid); line-height: 1.85; max-width: 70ch; }
+    /* Boutons un peu plus lisibles sur cette page */
+    #contenu .btn { font-size: 0.85rem; padding: 1.1rem 2.4rem; }
+    #contenu :focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 3px; }
+    #contenu .pdh-hero :focus-visible, #contenu .section-dark :focus-visible { outline-color: var(--or-light); }
 
-    /* Pour aller plus loin */
-    .pdh-posts { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
-    .pdh-post { position: relative; background: #fff; border: 1px solid var(--border); border-radius: var(--radius-md); padding: 1.8rem 1.6rem; display: flex; flex-direction: column; gap: 0.7rem; transition: border-color var(--transition-fast), box-shadow var(--transition-fast); }
-    .pdh-post:hover, .pdh-post:focus-within { border-color: var(--pdh-or-text); box-shadow: var(--shadow-sm); }
-    .pdh-post-tag { font-size: 0.68rem; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: var(--pdh-or-text); }
-    .pdh-post h3 { font-family: var(--font-serif); font-size: 1.3rem; font-weight: 600; line-height: 1.3; color: var(--text); }
-    .pdh-post h3 a::after { content: ''; position: absolute; inset: 0; }
-    .pdh-post h3 a:hover { color: var(--pdh-or-text); }
-    .pdh-post p { font-size: 0.86rem; color: var(--text-mid); line-height: 1.75; }
-
-    /* CTA */
-    .pdh-cta p.pdh-cta-text { color: rgba(255,255,255,0.8); font-size: 0.95rem; max-width: 540px; margin: 0 auto 2.5rem; line-height: 1.85; }
-
-    @media (max-width: 1024px) {
-      .pdh-hero-block { grid-template-columns: 1fr; gap: 3rem; }
-      .pdh-cols { grid-template-columns: 1fr; gap: 3rem; }
-      .pdh-posts { grid-template-columns: 1fr; }
-    }
     @media (max-width: 640px) {
-      .pdh-stats { grid-template-columns: 1fr; gap: 1.6rem; }
-      .pdh-hero-caption { right: 1rem; bottom: 0.7rem; }
-      .pdh-check { padding: 1.5rem 1.2rem 1rem; }
-      .pdh-faq summary { font-size: 1.15rem; }
+      #contenu .btn { padding: 1.05rem 1.3rem; font-size: 0.8rem; letter-spacing: 0.1em; }
+      .pdh-hero .hero-subtitle { padding-right: 4.2rem; } /* laisse la place aux boutons flottants */
+      .pdh-stats { grid-template-columns: 1fr; gap: 2.2rem; margin-top: 2.5rem; }
+      .pdh-caption { left: 1.5rem; bottom: 0.7rem; }
+      .pdh-fig .pdh-caption { left: 1rem; }
+      .pdh-guides ul { flex-direction: column; align-items: center; gap: 0.6rem; }
     }
     @media (prefers-reduced-motion: reduce) {
       #contenu *, #contenu *::before, #contenu *::after { transition: none !important; animation: none !important; }
@@ -287,8 +205,8 @@
 
 <main id="contenu">
 
-  <!-- ─── Hero ─────────────────────────────────────────────────── -->
-  <section class="page-hero" aria-labelledby="promoteur-titre">
+  <!-- ─── Scène 1 : bandeau plein écran ─────────────────────────── -->
+  <section class="page-hero pdh-hero" aria-labelledby="promoteur-titre">
     <div class="hero-bg">
       <img src="/Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_EXT_Panorama_St-Victoire-1200w.webp"
            srcset="/Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_EXT_Panorama_St-Victoire-800w.webp 800w, /Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_EXT_Panorama_St-Victoire-1200w.webp 1200w, /Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_EXT_Panorama_St-Victoire.webp 1600w"
@@ -297,54 +215,20 @@
     </div>
     <div class="hero-overlay"></div>
     <div class="hero-content">
-      <p class="hero-eyebrow" data-lang-fr="Le promoteur" data-lang-en="The developer">Le promoteur</p>
       <h1 class="hero-title" id="promoteur-titre" data-lang-fr="Ponthieu Développement Holding, promoteur immobilier à Aix-en-Provence" data-lang-en="Ponthieu Développement Holding, property developer in Aix-en-Provence">Ponthieu Développement Holding, promoteur immobilier à Aix-en-Provence</h1>
-      <p class="hero-subtitle" data-lang-fr="Promotion immobilière neuve et restauration de bâtiments anciens, depuis 2001" data-lang-en="New-build property development and restoration of older buildings, since 2001">Promotion immobilière neuve et restauration de bâtiments anciens, depuis 2001</p>
+      <p class="hero-subtitle" data-lang-fr="Promotion immobilière neuve et restauration de bâtiments anciens." data-lang-en="New-build property development and restoration of older buildings.">Promotion immobilière neuve et restauration de bâtiments anciens.</p>
     </div>
-    <p class="pdh-hero-caption" data-lang-fr="Illustration non contractuelle" data-lang-en="Non-contractual illustration">Illustration non contractuelle</p>
+    <p class="pdh-caption" data-lang-fr="Illustration non contractuelle" data-lang-en="Non-contractual illustration">Illustration non contractuelle</p>
   </section>
 
-  <!-- ─── La société ───────────────────────────────────────────── -->
-  <section class="section" id="societe" aria-labelledby="societe-titre">
+  <!-- ─── Scène 2 : la société et ses chiffres ──────────────────── -->
+  <section class="section section-alt pdh-who" id="societe" aria-labelledby="societe-titre">
     <div class="container">
-      <nav class="pdh-breadcrumb" aria-label="Fil d'Ariane">
-        <ol>
-          <li><a href="/" data-lang-fr="Accueil" data-lang-en="Home">Accueil</a></li>
-          <li aria-current="page"><span data-lang-fr="Le promoteur" data-lang-en="The developer">Le promoteur</span></li>
-        </ol>
-      </nav>
-      <div class="pdh-hero-block">
-        <div class="pdh-identity-card">
-          <div class="pdh-logo-wrap">
-            <img src="/Photo%2059%20C%C3%A9zanne/Logo%20PONTHIEU/Logo%20Ponthieu-800w.webp" srcset="/Photo%2059%20C%C3%A9zanne/Logo%20PONTHIEU/Logo%20Ponthieu-800w.webp 800w, /Photo%2059%20C%C3%A9zanne/Logo%20PONTHIEU/Logo%20Ponthieu-1200w.webp 1200w" sizes="300px"
-                 width="1600" height="1132" loading="lazy" decoding="async" alt="Logo Ponthieu" />
-          </div>
-          <div class="pdh-identity-divider" aria-hidden="true"></div>
-          <div class="pdh-identity-meta">
-            <strong>Ponthieu Développement Holding</strong>
-            <span data-lang-fr="Créée en 2001 · Aix-en-Provence" data-lang-en="Founded in 2001 · Aix-en-Provence">Créée en 2001 · Aix-en-Provence</span>
-          </div>
-          <ul class="pdh-identity-badges">
-            <li data-lang-fr="Promotion immobilière neuve" data-lang-en="New-build property development">Promotion immobilière neuve</li>
-            <li data-lang-fr="Restauration de bâtiments anciens" data-lang-en="Restoration of older buildings">Restauration de bâtiments anciens</li>
-            <li data-lang-fr="Siège : 418 Ancienne Route des Alpes, 13100 Aix-en-Provence" data-lang-en="Head office: 418 Ancienne Route des Alpes, 13100 Aix-en-Provence">Siège : 418 Ancienne Route des Alpes, 13100 Aix-en-Provence</li>
-          </ul>
-        </div>
-        <div class="pdh-prose">
-          <p class="eyebrow" data-lang-fr="Créée en 2001" data-lang-en="Founded in 2001">Créée en 2001</p>
-          <h2 class="section-title" id="societe-titre" data-lang-fr="Un promoteur créé en 2001 par Stéphane Ponthieu" data-lang-en="A developer founded in 2001 by Stéphane Ponthieu">Un promoteur créé en 2001 par Stéphane Ponthieu</h2>
-          <div class="divider"></div>
-          <p data-lang-fr="Ponthieu Développement Holding (PDH) a été créée en 2001 par &lt;strong&gt;Stéphane Ponthieu&lt;/strong&gt;. La société, dont le siège est au 418 Ancienne Route des Alpes à Aix-en-Provence, exerce dans la promotion immobilière et dans la restauration de bâtiments anciens." data-lang-en="Ponthieu Développement Holding (PDH) was founded in 2001 by &lt;strong&gt;Stéphane Ponthieu&lt;/strong&gt;. The company, headquartered at 418 Ancienne Route des Alpes in Aix-en-Provence, works in property development and in the restoration of older buildings.">Ponthieu Développement Holding (PDH) a été créée en 2001 par <strong>Stéphane Ponthieu</strong>. La société, dont le siège est au 418 Ancienne Route des Alpes à Aix-en-Provence, exerce dans la promotion immobilière et dans la restauration de bâtiments anciens.</p>
-          <p data-lang-fr="Elle indique s'adresser aussi bien aux particuliers qu'aux investisseurs et aux institutions, avec pour principe que la qualité et le respect du patrimoine sont au cœur de chaque réalisation." data-lang-en="It states that it works for private buyers as well as investors and institutions, on the principle that quality and respect for heritage are at the heart of every project.">Elle indique s'adresser aussi bien aux particuliers qu'aux investisseurs et aux institutions, avec pour principe que la qualité et le respect du patrimoine sont au cœur de chaque réalisation.</p>
-          <p data-lang-fr="Ce site présente un seul programme : la résidence &lt;a href=&quot;/presentation&quot;&gt;59 Cézanne&lt;/a&gt;, huit appartements neufs situés avenue Paul Cézanne, à Aix-en-Provence." data-lang-en="This site presents a single programme: &lt;a href=&quot;/presentation&quot;&gt;Résidence 59 Cézanne&lt;/a&gt;, eight new apartments on avenue Paul Cézanne in Aix-en-Provence.">Ce site présente un seul programme : la résidence <a href="/presentation">59 Cézanne</a>, huit appartements neufs situés avenue Paul Cézanne, à Aix-en-Provence.</p>
-        </div>
+      <div class="pdh-logo">
+        <img src="/Photo%2059%20C%C3%A9zanne/Logo%20PONTHIEU/Logo%20Ponthieu-800w.webp" srcset="/Photo%2059%20C%C3%A9zanne/Logo%20PONTHIEU/Logo%20Ponthieu-800w.webp 800w, /Photo%2059%20C%C3%A9zanne/Logo%20PONTHIEU/Logo%20Ponthieu-1200w.webp 1200w" sizes="300px"
+             width="1600" height="1132" loading="lazy" decoding="async" alt="Logo Ponthieu" />
       </div>
-    </div>
-  </section>
-
-  <!-- ─── Chiffres communiqués par la société ──────────────────── -->
-  <section class="pdh-stats-band" aria-label="Chiffres communiqués par la société">
-    <div class="container">
+      <h2 class="section-title" id="societe-titre" data-lang-fr="Créée en 2001 par Stéphane Ponthieu" data-lang-en="Founded in 2001 by Stéphane Ponthieu">Créée en 2001 par Stéphane Ponthieu</h2>
       <ul class="pdh-stats">
         <li class="pdh-stat"><span class="num">84</span><span class="label" data-lang-fr="Projets réalisés" data-lang-en="Projects completed">Projets réalisés</span></li>
         <li class="pdh-stat"><span class="num">420</span><span class="label" data-lang-fr="Logements livrés" data-lang-en="Homes delivered">Logements livrés</span></li>
@@ -354,195 +238,46 @@
     </div>
   </section>
 
-  <!-- ─── Deux activités ───────────────────────────────────────── -->
-  <section class="section pdh-dark" id="activites" aria-labelledby="activites-titre">
+  <!-- ─── Scène 3 : le programme, une grande image ──────────────── -->
+  <section class="pdh-prog" aria-labelledby="programme-titre">
     <div class="container">
-      <div class="section-header">
-        <p class="eyebrow" data-lang-fr="Ce que fait PDH" data-lang-en="What PDH does">Ce que fait PDH</p>
-        <h2 class="section-title" id="activites-titre" data-lang-fr="Deux activités : le neuf et l'ancien" data-lang-en="Two activities: new-build and older buildings">Deux activités : le neuf et l'ancien</h2>
-      </div>
-      <div class="pdh-cols">
-        <div>
-          <h3 data-lang-fr="Promotion immobilière neuve" data-lang-en="New-build property development">Promotion immobilière neuve</h3>
-          <p data-lang-fr="Programme présenté sur ce site, d'après les documents de commercialisation : la résidence 59 Cézanne, avenue Paul Cézanne à Aix-en-Provence." data-lang-en="Programme presented on this site, according to the sales documents: Résidence 59 Cézanne, on avenue Paul Cézanne in Aix-en-Provence.">Programme présenté sur ce site, d'après les documents de commercialisation : la résidence 59 Cézanne, avenue Paul Cézanne à Aix-en-Provence.</p>
-          <ul class="pdh-list">
-            <li data-lang-fr="8 appartements : 2 T2, 2 T3 duplex et 4 T4" data-lang-en="8 apartments: 2 T2, 2 T3 duplex and 4 T4 units">8 appartements : 2 T2, 2 T3 duplex et 4 T4</li>
-            <li data-lang-fr="Un jardin privatif pour chaque appartement, jusqu’à 312 m²" data-lang-en="A private garden for each apartment, up to 312 m²">Un jardin privatif pour chaque appartement, jusqu’à 312 m²</li>
-            <li data-lang-fr="Piscine commune et espace commun paysagé" data-lang-en="Shared swimming pool and landscaped common area">Piscine commune et espace commun paysagé</li>
-            <li data-lang-fr="Prestations prévues selon la notice descriptive du 8 avril 2025" data-lang-en="Specification as set out in the descriptive notice of 8 April 2025">Prestations prévues selon la notice descriptive du 8 avril 2025</li>
-            <li data-lang-fr="Calendrier de livraison : nous contacter" data-lang-en="Delivery schedule: please contact us">Calendrier de livraison : nous contacter</li>
-          </ul>
-          <p class="pdh-links"><a href="/logements" data-lang-fr="Les appartements" data-lang-en="The apartments">Les appartements</a><a href="/exterieurs" data-lang-fr="Les espaces communs" data-lang-en="The common areas">Les espaces communs</a><a href="/presentation" data-lang-fr="Présentation de la résidence" data-lang-en="About the residence">Présentation de la résidence</a></p>
-        </div>
-        <div>
-          <h3 data-lang-fr="Restauration de bâtiments anciens" data-lang-en="Restoration of older buildings">Restauration de bâtiments anciens</h3>
-          <p data-lang-fr="PDH indique intervenir aussi dans la restauration de bâtiments anciens. Dans sa présentation, la société écrit offrir :" data-lang-en="PDH says it also works on restoring older buildings. In its own presentation, the company states that it offers:">PDH indique intervenir aussi dans la restauration de bâtiments anciens. Dans sa présentation, la société écrit offrir :</p>
-          <figure class="pdh-quote">
-            <blockquote><p data-lang-fr="« des solutions immobilières qui honorent le passé tout en construisant un avenir durable »" data-lang-en="“property solutions that honour the past while building a sustainable future”">« des solutions immobilières qui honorent le passé tout en construisant un avenir durable »</p></blockquote>
-            <figcaption data-lang-fr="Présentation de la société" data-lang-en="The company's own presentation">Présentation de la société</figcaption>
-          </figure>
-          <p data-lang-fr="Ce site ne présente que le programme 59 Cézanne. Pour toute question sur les autres réalisations de la société, &lt;a href=&quot;/contact&quot;&gt;contactez-nous&lt;/a&gt;." data-lang-en="This site only presents the 59 Cézanne programme. For any question about the company's other projects, &lt;a href=&quot;/contact&quot;&gt;please contact us&lt;/a&gt;.">Ce site ne présente que le programme 59 Cézanne. Pour toute question sur les autres réalisations de la société, <a href="/contact">contactez-nous</a>.</p>
-        </div>
-      </div>
+      <h2 class="section-title" id="programme-titre" data-lang-fr="59 Cézanne, huit appartements neufs" data-lang-en="59 Cézanne, eight new apartments">59 Cézanne, huit appartements neufs</h2>
+      <a class="btn btn-outline-dark" href="/presentation" data-lang-fr="Découvrir la résidence" data-lang-en="Discover the residence">Découvrir la résidence</a>
     </div>
+    <figure class="pdh-fig">
+      <img src="/Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_JARDIN_V2_LOGEMENT-04_Panorama_St-Victoire.webp"
+           srcset="/Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_JARDIN_V2_LOGEMENT-04_Panorama_St-Victoire-800w.webp 800w, /Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_JARDIN_V2_LOGEMENT-04_Panorama_St-Victoire-1200w.webp 1200w, /Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_JARDIN_V2_LOGEMENT-04_Panorama_St-Victoire.webp 1600w"
+           sizes="100vw" width="1600" height="1024" loading="lazy" decoding="async"
+           alt="Rendu 3D d'un appartement en rez-de-jardin de la résidence 59 Cézanne : baie ouverte sur le séjour, jardin et relief à l'horizon (illustration non contractuelle)" />
+      <figcaption class="pdh-caption" data-lang-fr="Illustration non contractuelle" data-lang-en="Non-contractual illustration">Illustration non contractuelle</figcaption>
+    </figure>
   </section>
 
-  <!-- ─── Vos protections dans un achat en VEFA ────────────────── -->
-  <section class="section section-alt" id="garanties" aria-labelledby="garanties-titre">
+  <!-- ─── Scène 4 : protections légales de la VEFA (information générale) ─── -->
+  <section class="section section-alt pdh-vefa" id="garanties" aria-labelledby="garanties-titre">
     <div class="container">
       <div class="section-header">
-        <p class="eyebrow" data-lang-fr="Sécurité juridique" data-lang-en="Legal protection">Sécurité juridique</p>
-        <h2 class="section-title" id="garanties-titre" data-lang-fr="Vos protections dans un achat en &lt;em&gt;VEFA&lt;/em&gt;" data-lang-en="Your protections when buying &lt;em&gt;off plan&lt;/em&gt; (VEFA)">Vos protections dans un achat en <em>VEFA</em></h2>
-        <p class="section-lead mt-2" data-lang-fr="Cette section décrit ce que la loi prévoit pour tout achat en VEFA, c'est-à-dire en vente en l'état futur d'achèvement, aussi appelée vente sur plan." data-lang-en="This section describes what French law provides for any purchase off plan (VEFA, &lt;em&gt;vente en l'état futur d'achèvement&lt;/em&gt;).">Cette section décrit ce que la loi prévoit pour tout achat en VEFA, c'est-à-dire en vente en l'état futur d'achèvement, aussi appelée vente sur plan.</p>
+        <p class="eyebrow" data-lang-fr="Information générale, octobre 2026" data-lang-en="General information, October 2026">Information générale, octobre 2026</p>
+        <h2 class="section-title" id="garanties-titre" data-lang-fr="Ce que la loi prévoit en &lt;em&gt;VEFA&lt;/em&gt;" data-lang-en="What the law provides for &lt;em&gt;VEFA&lt;/em&gt; (off plan)">Ce que la loi prévoit en <em>VEFA</em></h2>
+        <p class="section-lead" data-lang-fr="Dépôt de garantie plafonné, droit de rétractation, garantie financière, garanties après réception." data-lang-en="Capped reservation deposit, right of withdrawal, financial guarantee, guarantees after acceptance of the works.">Dépôt de garantie plafonné, droit de rétractation, garantie financière, garanties après réception.</p>
       </div>
-      <p class="pdh-note" data-lang-fr="&lt;strong&gt;Information générale, à la date de rédaction (octobre 2026).&lt;/strong&gt; Ce qui suit décrit le cadre légal d'une VEFA ; cela n'affirme pas que le programme 59 Cézanne dispose de telle ou telle attestation ou garantie. Les justificatifs applicables à un achat précis figurent dans les documents remis avant la signature ; le notaire chargé de la vente reste votre interlocuteur pour les vérifier. Ce n'est pas un conseil juridique." data-lang-en="&lt;strong&gt;General information, as at the date of writing (October 2026).&lt;/strong&gt; What follows describes the legal framework of a VEFA purchase; it does not state that the 59 Cézanne programme holds any particular certificate or guarantee. The documents relevant to a specific purchase are those provided before signing, and the notary handling the sale remains your contact to check them. This is not legal advice."><strong>Information générale, à la date de rédaction (octobre 2026).</strong> Ce qui suit décrit le cadre légal d'une VEFA ; cela n'affirme pas que le programme 59 Cézanne dispose de telle ou telle attestation ou garantie. Les justificatifs applicables à un achat précis figurent dans les documents remis avant la signature ; le notaire chargé de la vente reste votre interlocuteur pour les vérifier. Ce n'est pas un conseil juridique.</p>
+      <a class="btn btn-primary" href="/blog/vefa-achat-sur-plan-etapes-garanties" data-lang-fr="Lire le guide VEFA" data-lang-en="Read the VEFA guide (in French)">Lire le guide VEFA</a>
 
-      <div class="pdh-law-group">
-        <h3 data-lang-fr="Avant l'acte de vente : le contrat de réservation" data-lang-en="Before the sale deed: the reservation contract">Avant l'acte de vente : le contrat de réservation</h3>
-        <div class="pdh-law-grid">
-          <article class="pdh-law">
-            <p class="pdh-law-figure" data-lang-fr="5 % · 2 %" data-lang-en="5% · 2%">5 % · 2 %</p>
-            <h4 data-lang-fr="Un dépôt de garantie plafonné" data-lang-en="A capped reservation deposit">Un dépôt de garantie plafonné</h4>
-            <p data-lang-fr="Si le contrat de réservation prévoit un dépôt de garantie, il est plafonné à 5 % du prix lorsque l'acte de vente est signé dans l'année, et à 2 % lorsqu'il l'est entre un et deux ans. Au-delà de deux ans, aucun dépôt n'est possible." data-lang-en="If the reservation contract provides for a deposit, it is capped at 5% of the price when the sale deed is signed within a year, and at 2% when it is signed between one and two years. Beyond two years, no deposit is possible.">Si le contrat de réservation prévoit un dépôt de garantie, il est plafonné à 5 % du prix lorsque l'acte de vente est signé dans l'année, et à 2 % lorsqu'il l'est entre un et deux ans. Au-delà de deux ans, aucun dépôt n'est possible.</p>
-          </article>
-          <article class="pdh-law">
-            <p class="pdh-law-figure" data-lang-fr="10 jours" data-lang-en="10 days">10 jours</p>
-            <h4 data-lang-fr="Un droit de rétractation" data-lang-en="A right of withdrawal">Un droit de rétractation</h4>
-            <p data-lang-fr="L'acheteur dispose de 10 jours calendaires pour se rétracter, à compter du lendemain de la première présentation de la lettre recommandée qui lui notifie le contrat, ou de sa remise en main propre." data-lang-en="The buyer has 10 calendar days to withdraw, counted from the day after the first presentation of the registered letter notifying the contract, or after it is handed over in person.">L'acheteur dispose de 10 jours calendaires pour se rétracter, à compter du lendemain de la première présentation de la lettre recommandée qui lui notifie le contrat, ou de sa remise en main propre.</p>
-          </article>
-        </div>
-      </div>
-
-      <div class="pdh-law-group">
-        <h3 data-lang-fr="Pendant la construction" data-lang-en="During construction">Pendant la construction</h3>
-        <div class="pdh-law-grid">
-          <article class="pdh-law">
-            <p class="pdh-law-figure" data-lang-fr="GFA · GFR" data-lang-en="GFA · GFR">GFA · GFR</p>
-            <h4 data-lang-fr="Une garantie financière mentionnée dans l'acte" data-lang-en="A financial guarantee referred to in the deed">Une garantie financière mentionnée dans l'acte</h4>
-            <p data-lang-fr="L'acte de vente doit mentionner le justificatif d'une garantie financière d'achèvement des travaux (GFA) ou de remboursement (GFR). Selon les notaires, la GFA assure l'achèvement et la livraison du logement ; la garantie de remboursement permet de récupérer les sommes versées si le logement ne peut pas être livré. Elles sont données par une banque, un établissement financier habilité, une entreprise d'assurance agréée ou une société de caution mutuelle (article R261-17 du code de la construction et de l'habitation)." data-lang-en="The sale deed must refer to proof of a financial completion guarantee (GFA) or a refund guarantee (GFR). According to notaries, the GFA ensures the home is completed and delivered; the refund guarantee allows the buyer to recover the sums paid if the home cannot be delivered. They are issued by a bank, an authorised financial institution, an approved insurance company or a mutual guarantee society (article R261-17 of the French building and housing code).">L'acte de vente doit mentionner le justificatif d'une garantie financière d'achèvement des travaux (GFA) ou de remboursement (GFR). Selon les notaires, la GFA assure l'achèvement et la livraison du logement ; la garantie de remboursement permet de récupérer les sommes versées si le logement ne peut pas être livré. Elles sont données par une banque, un établissement financier habilité, une entreprise d'assurance agréée ou une société de caution mutuelle (article R261-17 du code de la construction et de l'habitation).</p>
-          </article>
-          <article class="pdh-law">
-            <p class="pdh-law-figure" data-lang-fr="35 · 70 · 95 %" data-lang-en="35 · 70 · 95%">35 · 70 · 95 %</p>
-            <h4 data-lang-fr="Des versements plafonnés selon l'avancement" data-lang-en="Payments capped according to progress">Des versements plafonnés selon l'avancement</h4>
-            <p data-lang-fr="Les paiements ne peuvent pas dépasser, au total, 35 % du prix à l'achèvement des fondations, 70 % à la mise hors d'eau et 95 % à l'achèvement de l'immeuble ; le solde est payable à la mise du local à disposition de l'acquéreur (article R261-14 du même code)." data-lang-en="Payments may not exceed, in total, 35% of the price on completion of the foundations, 70% once the building is weatherproof and 95% on completion of the building; the balance is payable when the property is made available to the buyer (article R261-14 of the same code).">Les paiements ne peuvent pas dépasser, au total, 35 % du prix à l'achèvement des fondations, 70 % à la mise hors d'eau et 95 % à l'achèvement de l'immeuble ; le solde est payable à la mise du local à disposition de l'acquéreur (article R261-14 du même code).</p>
-          </article>
-        </div>
-      </div>
-
-      <div class="pdh-law-group">
-        <h3 data-lang-fr="Après la réception des travaux" data-lang-en="After acceptance of the works">Après la réception des travaux</h3>
-        <div class="pdh-law-grid">
-          <article class="pdh-law">
-            <p class="pdh-law-figure" data-lang-fr="1 an" data-lang-en="1 year">1 an</p>
-            <h4 data-lang-fr="Garantie de parfait achèvement" data-lang-en="Completion guarantee (parfait achèvement)">Garantie de parfait achèvement</h4>
-            <p data-lang-fr="Le constructeur doit réparer les désordres mentionnés dans le procès-verbal de réception, ainsi que ceux qui apparaissent pendant l'année qui suit la réception des travaux." data-lang-en="The builder must repair the defects listed in the handover report, as well as those that appear during the year following acceptance of the works.">Le constructeur doit réparer les désordres mentionnés dans le procès-verbal de réception, ainsi que ceux qui apparaissent pendant l'année qui suit la réception des travaux.</p>
-          </article>
-          <article class="pdh-law">
-            <p class="pdh-law-figure" data-lang-fr="2 ans" data-lang-en="2 years">2 ans</p>
-            <h4 data-lang-fr="Garantie de bon fonctionnement" data-lang-en="Good-working-order guarantee (biennale)">Garantie de bon fonctionnement</h4>
-            <p data-lang-fr="Elle porte sur les éléments d'équipement dissociables du bâtiment qui cessent de fonctionner après la réception des travaux (garantie dite biennale)." data-lang-en="It covers the separable fittings and equipment of the building that stop working after acceptance of the works (known as the two-year guarantee).">Elle porte sur les éléments d'équipement dissociables du bâtiment qui cessent de fonctionner après la réception des travaux (garantie dite biennale).</p>
-          </article>
-          <article class="pdh-law">
-            <p class="pdh-law-figure" data-lang-fr="10 ans" data-lang-en="10 years">10 ans</p>
-            <h4 data-lang-fr="Garantie décennale" data-lang-en="Ten-year structural guarantee (décennale)">Garantie décennale</h4>
-            <p data-lang-fr="Pendant 10 ans après la réception, le constructeur doit réparer les dommages qui n'étaient pas décelables à la réception et qui compromettent la solidité de l'ouvrage ou le rendent impropre à sa destination." data-lang-en="For 10 years after acceptance, the builder must repair damage that could not be detected at acceptance and that compromises the solidity of the building or makes it unfit for its purpose.">Pendant 10 ans après la réception, le constructeur doit réparer les dommages qui n'étaient pas décelables à la réception et qui compromettent la solidité de l'ouvrage ou le rendent impropre à sa destination.</p>
-          </article>
-        </div>
-      </div>
-
-      <div class="pdh-check">
-        <h3 data-lang-fr="À vérifier avant de signer" data-lang-en="To check before signing">À vérifier avant de signer</h3>
+      <nav class="pdh-guides" aria-label="Nos guides">
+        <span data-lang-fr="Nos guides&nbsp;:" data-lang-en="Our guides:">Nos guides&nbsp;:</span>
         <ul>
-            <li data-lang-fr="le montant du dépôt de garantie et ses conditions de restitution ;" data-lang-en="the amount of the reservation deposit and the conditions for its refund;">le montant du dépôt de garantie et ses conditions de restitution ;</li>
-            <li data-lang-fr="le justificatif de la garantie financière (GFA ou GFR) mentionné dans l'acte ;" data-lang-en="the proof of the financial guarantee (GFA or GFR) referred to in the deed;">le justificatif de la garantie financière (GFA ou GFR) mentionné dans l'acte ;</li>
-            <li data-lang-fr="le délai de livraison et l'éventuelle pénalité de retard ;" data-lang-en="the delivery deadline and any late-delivery penalty;">le délai de livraison et l'éventuelle pénalité de retard ;</li>
-            <li data-lang-fr="les annexes : plans, notice descriptive des travaux, des matériaux et des équipements, règlement de copropriété ;" data-lang-en="the annexes: plans, descriptive notice of the works, materials and equipment, co-ownership rules;">les annexes : plans, notice descriptive des travaux, des matériaux et des équipements, règlement de copropriété ;</li>
-            <li data-lang-fr="les coordonnées des assureurs et les références des contrats d'assurance dommages-ouvrage et de responsabilité décennale, dont la mention dans l'acte est conseillée." data-lang-en="the insurers' details and the references of the dommages-ouvrage (structural damage) and ten-year liability insurance policies, which it is advisable to mention in the deed.">les coordonnées des assureurs et les références des contrats d'assurance dommages-ouvrage et de responsabilité décennale, dont la mention dans l'acte est conseillée.</li>
+          <li><a href="/blog/acheter-appartement-neuf-aix-en-provence" lang="fr">Acheter un appartement neuf à Aix</a></li>
+          <li><a href="/blog/frais-de-notaire-neuf-tva-taxe-fonciere" lang="fr">Frais de notaire dans le neuf</a></li>
+          <li><a href="/blog/vefa-achat-sur-plan-etapes-garanties" lang="fr">VEFA : étapes et garanties</a></li>
         </ul>
-      </div>
-
-      <p class="pdh-programme" data-lang-fr="&lt;strong&gt;Pour le programme 59 Cézanne&lt;/strong&gt;, la vente est prévue en VEFA. Les justificatifs correspondant à votre achat sont à demander et à vérifier avant toute signature ; pour toute question sur les documents du programme, &lt;a href=&quot;/contact&quot;&gt;écrivez-nous&lt;/a&gt;." data-lang-en="&lt;strong&gt;For the 59 Cézanne programme&lt;/strong&gt;, the sale is planned as a VEFA. The documents relevant to your purchase should be requested and checked before signing anything; for any question about the programme's documents, &lt;a href=&quot;/contact&quot;&gt;write to us&lt;/a&gt;."><strong>Pour le programme 59 Cézanne</strong>, la vente est prévue en VEFA. Les justificatifs correspondant à votre achat sont à demander et à vérifier avant toute signature ; pour toute question sur les documents du programme, <a href="/contact">écrivez-nous</a>.</p>
-      <p class="pdh-programme" data-lang-fr="Les étapes, de la réservation aux clés, et le détail de ces garanties sont expliqués dans notre guide &lt;a href=&quot;/blog/vefa-achat-sur-plan-etapes-garanties&quot;&gt;VEFA : les étapes d'un achat sur plan et les garanties&lt;/a&gt;." data-lang-en="The steps, from reservation to handover, and the detail of these guarantees are explained in our guide &lt;a href=&quot;/blog/vefa-achat-sur-plan-etapes-garanties&quot;&gt;VEFA : les étapes d'un achat sur plan et les garanties&lt;/a&gt; (in French).">Les étapes, de la réservation aux clés, et le détail de ces garanties sont expliqués dans notre guide <a href="/blog/vefa-achat-sur-plan-etapes-garanties">VEFA : les étapes d'un achat sur plan et les garanties</a>.</p>
-
-      <div class="pdh-sources">
-        <h3 data-lang-fr="Sources, consultées le 6 octobre 2026" data-lang-en="Sources, consulted on 6 October 2026">Sources, consultées le 6 octobre 2026</h3>
-        <ol>
-          <li data-lang-fr="&lt;a href=&quot;https://www.service-public.gouv.fr/particuliers/vosdroits/F2961&quot; rel=&quot;noopener&quot;&gt;Service-public.gouv.fr, « Acte de vente d'un logement en l'état futur d'achèvement (Vefa) »&lt;/a&gt;, page vérifiée le 18 septembre 2026." data-lang-en="&lt;a href=&quot;https://www.service-public.gouv.fr/particuliers/vosdroits/F2961&quot; rel=&quot;noopener&quot;&gt;Service-public.gouv.fr, “Acte de vente d'un logement en l'état futur d'achèvement (Vefa)”&lt;/a&gt;, page checked on 18 September 2026."><a href="https://www.service-public.gouv.fr/particuliers/vosdroits/F2961" rel="noopener">Service-public.gouv.fr, « Acte de vente d'un logement en l'état futur d'achèvement (Vefa) »</a>, page vérifiée le 18 septembre 2026.</li>
-          <li data-lang-fr="&lt;a href=&quot;https://www.service-public.gouv.fr/particuliers/vosdroits/F2963&quot; rel=&quot;noopener&quot;&gt;Service-public.gouv.fr, « Contrat de réservation d'un logement en vente en l'état futur d'achèvement (Vefa) »&lt;/a&gt;, page vérifiée le 18 septembre 2026." data-lang-en="&lt;a href=&quot;https://www.service-public.gouv.fr/particuliers/vosdroits/F2963&quot; rel=&quot;noopener&quot;&gt;Service-public.gouv.fr, “Contrat de réservation d'un logement en vente en l'état futur d'achèvement (Vefa)”&lt;/a&gt;, page checked on 18 September 2026."><a href="https://www.service-public.gouv.fr/particuliers/vosdroits/F2963" rel="noopener">Service-public.gouv.fr, « Contrat de réservation d'un logement en vente en l'état futur d'achèvement (Vefa) »</a>, page vérifiée le 18 septembre 2026.</li>
-          <li data-lang-fr="&lt;a href=&quot;https://www.service-public.gouv.fr/particuliers/vosdroits/F2958&quot; rel=&quot;noopener&quot;&gt;Service-public.gouv.fr, « Garanties après la réception des travaux »&lt;/a&gt;, page vérifiée le 25 septembre 2026." data-lang-en="&lt;a href=&quot;https://www.service-public.gouv.fr/particuliers/vosdroits/F2958&quot; rel=&quot;noopener&quot;&gt;Service-public.gouv.fr, “Garanties après la réception des travaux”&lt;/a&gt;, page checked on 25 September 2026."><a href="https://www.service-public.gouv.fr/particuliers/vosdroits/F2958" rel="noopener">Service-public.gouv.fr, « Garanties après la réception des travaux »</a>, page vérifiée le 25 septembre 2026.</li>
-          <li data-lang-fr="&lt;a href=&quot;https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000039041606/&quot; rel=&quot;noopener&quot;&gt;Légifrance, code de la construction et de l'habitation, article R261-14&lt;/a&gt; (version en vigueur depuis le 1er septembre 2019)." data-lang-en="&lt;a href=&quot;https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000039041606/&quot; rel=&quot;noopener&quot;&gt;Légifrance, code de la construction et de l'habitation, article R261-14&lt;/a&gt; (version in force since 1 September 2019)."><a href="https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000039041606/" rel="noopener">Légifrance, code de la construction et de l'habitation, article R261-14</a> (version en vigueur depuis le 1er septembre 2019).</li>
-          <li data-lang-fr="&lt;a href=&quot;https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000039041592&quot; rel=&quot;noopener&quot;&gt;Légifrance, code de la construction et de l'habitation, article R261-17&lt;/a&gt; (version en vigueur depuis le 1er septembre 2019)." data-lang-en="&lt;a href=&quot;https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000039041592&quot; rel=&quot;noopener&quot;&gt;Légifrance, code de la construction et de l'habitation, article R261-17&lt;/a&gt; (version in force since 1 September 2019)."><a href="https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000039041592" rel="noopener">Légifrance, code de la construction et de l'habitation, article R261-17</a> (version en vigueur depuis le 1er septembre 2019).</li>
-          <li data-lang-fr="&lt;a href=&quot;https://fourez.notaires.fr/informations-et-conseils/7-garanties-legales-qui-protegent-un-achat-sur-plan/1007&quot; rel=&quot;noopener&quot;&gt;Notaires.fr (office notarial), « 7 garanties légales des achats en VEFA »&lt;/a&gt;, publié le 1er juillet 2024." data-lang-en="&lt;a href=&quot;https://fourez.notaires.fr/informations-et-conseils/7-garanties-legales-qui-protegent-un-achat-sur-plan/1007&quot; rel=&quot;noopener&quot;&gt;Notaires.fr (notarial office), “7 garanties légales des achats en VEFA”&lt;/a&gt;, published 1 July 2024."><a href="https://fourez.notaires.fr/informations-et-conseils/7-garanties-legales-qui-protegent-un-achat-sur-plan/1007" rel="noopener">Notaires.fr (office notarial), « 7 garanties légales des achats en VEFA »</a>, publié le 1er juillet 2024.</li>
-        </ol>
-      </div>
+      </nav>
     </div>
   </section>
 
-  <!-- ─── FAQ ──────────────────────────────────────────────────── -->
-  <section class="section" id="faq" aria-labelledby="faq-titre">
-    <div class="container">
-      <div class="section-header">
-        <p class="eyebrow" data-lang-fr="Questions fréquentes" data-lang-en="Frequently asked questions">Questions fréquentes</p>
-        <h2 class="section-title" id="faq-titre" data-lang-fr="Questions sur le promoteur et sur la VEFA" data-lang-en="Questions about the developer and about VEFA">Questions sur le promoteur et sur la VEFA</h2>
-      </div>
-      <div class="pdh-faq">
-        <details>
-          <summary data-lang-fr="Qui est Ponthieu Développement Holding ?" data-lang-en="Who is Ponthieu Développement Holding?">Qui est Ponthieu Développement Holding ?</summary>
-          <p data-lang-fr="Ponthieu Développement Holding (PDH) est une société créée en 2001 par Stéphane Ponthieu, dont le siège est à Aix-en-Provence. Elle exerce dans la promotion immobilière et dans la restauration de bâtiments anciens, et indique 84 projets réalisés et 420 logements livrés (chiffres communiqués par la société). Ce site présente son programme &lt;a href=&quot;/presentation&quot;&gt;59 Cézanne&lt;/a&gt;." data-lang-en="Ponthieu Développement Holding (PDH) is a company founded in 2001 by Stéphane Ponthieu and headquartered in Aix-en-Provence. It works in property development and in the restoration of older buildings, and reports 84 completed projects and 420 homes delivered (figures provided by the company). This site presents its &lt;a href=&quot;/presentation&quot;&gt;59 Cézanne&lt;/a&gt; programme.">Ponthieu Développement Holding (PDH) est une société créée en 2001 par Stéphane Ponthieu, dont le siège est à Aix-en-Provence. Elle exerce dans la promotion immobilière et dans la restauration de bâtiments anciens, et indique 84 projets réalisés et 420 logements livrés (chiffres communiqués par la société). Ce site présente son programme <a href="/presentation">59 Cézanne</a>.</p>
-        </details>
-        <details>
-          <summary data-lang-fr="Quelles protections la loi prévoit-elle pour un acheteur en VEFA ?" data-lang-en="What protections does the law provide for a VEFA buyer?">Quelles protections la loi prévoit-elle pour un acheteur en VEFA ?</summary>
-          <p data-lang-fr="La loi prévoit notamment un dépôt de garantie plafonné et un délai de rétractation de 10 jours à la réservation, une garantie financière d'achèvement ou de remboursement mentionnée dans l'acte, des versements plafonnés pendant les travaux, puis, après la réception, les garanties de parfait achèvement (1 an), de bon fonctionnement (2 ans) et décennale (10 ans). Le détail et les sources sont dans &lt;a href=&quot;#garanties&quot;&gt;la section ci-dessus&lt;/a&gt; et dans notre guide &lt;a href=&quot;/blog/vefa-achat-sur-plan-etapes-garanties&quot;&gt;VEFA : les étapes et les garanties&lt;/a&gt;." data-lang-en="The law provides in particular for a capped deposit and a 10-day withdrawal period at reservation, a financial completion or refund guarantee referred to in the deed, capped payments during construction and, after acceptance, the completion (1 year), good-working-order (2 years) and ten-year structural guarantees. Details and sources are in &lt;a href=&quot;#garanties&quot;&gt;the section above&lt;/a&gt; and in our guide &lt;a href=&quot;/blog/vefa-achat-sur-plan-etapes-garanties&quot;&gt;VEFA : les étapes et les garanties&lt;/a&gt; (in French).">La loi prévoit notamment un dépôt de garantie plafonné et un délai de rétractation de 10 jours à la réservation, une garantie financière d'achèvement ou de remboursement mentionnée dans l'acte, des versements plafonnés pendant les travaux, puis, après la réception, les garanties de parfait achèvement (1 an), de bon fonctionnement (2 ans) et décennale (10 ans). Le détail et les sources sont dans <a href="#garanties">la section ci-dessus</a> et dans notre guide <a href="/blog/vefa-achat-sur-plan-etapes-garanties">VEFA : les étapes et les garanties</a>.</p>
-        </details>
-        <details>
-          <summary data-lang-fr="Qu'est-ce que la garantie financière d'achèvement ?" data-lang-en="What is the financial completion guarantee?">Qu'est-ce que la garantie financière d'achèvement ?</summary>
-          <p data-lang-fr="Selon les notaires, la garantie financière d'achèvement (GFA) assure à l'acheteur l'achèvement et la livraison de son logement. Elle est donnée par une banque, un établissement financier habilité, une entreprise d'assurance agréée ou une société de caution mutuelle. L'acte de vente doit mentionner le justificatif de cette garantie, ou celui d'une garantie de remboursement : demandez-le avant de signer." data-lang-en="According to notaries, the financial completion guarantee (GFA) ensures that the buyer's home is completed and delivered. It is issued by a bank, an authorised financial institution, an approved insurance company or a mutual guarantee society. The sale deed must refer to proof of this guarantee, or of a refund guarantee: ask for it before signing.">Selon les notaires, la garantie financière d'achèvement (GFA) assure à l'acheteur l'achèvement et la livraison de son logement. Elle est donnée par une banque, un établissement financier habilité, une entreprise d'assurance agréée ou une société de caution mutuelle. L'acte de vente doit mentionner le justificatif de cette garantie, ou celui d'une garantie de remboursement : demandez-le avant de signer.</p>
-        </details>
-        <details>
-          <summary data-lang-fr="Que vérifier avant de réserver un appartement sur plan ?" data-lang-en="What should I check before reserving an apartment off plan?">Que vérifier avant de réserver un appartement sur plan ?</summary>
-          <p data-lang-fr="Avant de signer, vérifiez le montant du dépôt de garantie et ses conditions de restitution, le délai de livraison et l'éventuelle pénalité de retard, le justificatif de garantie financière, ainsi que les annexes de l'acte : plans, notice descriptive, règlement de copropriété. Le guide &lt;a href=&quot;/blog/acheter-appartement-neuf-aix-en-provence&quot;&gt;Acheter un appartement neuf à Aix-en-Provence&lt;/a&gt; détaille ces points." data-lang-en="Before signing, check the amount of the deposit and the conditions for its refund, the delivery deadline and any late-delivery penalty, the proof of financial guarantee, and the annexes to the deed: plans, descriptive notice and co-ownership rules. Our guide &lt;a href=&quot;/blog/acheter-appartement-neuf-aix-en-provence&quot;&gt;Acheter un appartement neuf à Aix-en-Provence&lt;/a&gt; (in French) covers these points.">Avant de signer, vérifiez le montant du dépôt de garantie et ses conditions de restitution, le délai de livraison et l'éventuelle pénalité de retard, le justificatif de garantie financière, ainsi que les annexes de l'acte : plans, notice descriptive, règlement de copropriété. Le guide <a href="/blog/acheter-appartement-neuf-aix-en-provence">Acheter un appartement neuf à Aix-en-Provence</a> détaille ces points.</p>
-        </details>
-        <details>
-          <summary data-lang-fr="Quel est le calendrier de livraison du programme 59 Cézanne ?" data-lang-en="What is the delivery schedule for the 59 Cézanne programme?">Quel est le calendrier de livraison du programme 59 Cézanne ?</summary>
-          <p data-lang-fr="Le calendrier de livraison n'est pas publié sur ce site. Pour le connaître, &lt;a href=&quot;/contact&quot;&gt;contactez-nous&lt;/a&gt;." data-lang-en="The delivery schedule is not published on this site. To find out, &lt;a href=&quot;/contact&quot;&gt;please contact us&lt;/a&gt;.">Le calendrier de livraison n'est pas publié sur ce site. Pour le connaître, <a href="/contact">contactez-nous</a>.</p>
-        </details>
-      </div>
-    </div>
-  </section>
-
-  <!-- ─── Pour aller plus loin ─────────────────────────────────── -->
-  <section class="section section-alt" id="pour-aller-plus-loin" aria-labelledby="loin-titre">
-    <div class="container">
-      <div class="section-header">
-        <p class="eyebrow" data-lang-fr="Guides" data-lang-en="Guides">Guides</p>
-        <h2 class="section-title" id="loin-titre" data-lang-fr="Pour aller plus loin" data-lang-en="Further reading">Pour aller plus loin</h2>
-      </div>
-      <div class="pdh-posts">
-        <article class="pdh-post">
-          <p class="pdh-post-tag" data-lang-fr="Guide VEFA" data-lang-en="VEFA guide">Guide VEFA</p>
-          <h3><a href="/blog/vefa-achat-sur-plan-etapes-garanties" data-lang-fr="VEFA : les étapes d'un achat sur plan et les garanties" data-lang-en="VEFA : les étapes d'un achat sur plan et les garanties (in French)">VEFA : les étapes d'un achat sur plan et les garanties</a></h3>
-          <p data-lang-fr="De la réservation à la remise des clés : dépôt de garantie, appels de fonds, garantie financière d'achèvement et garanties après livraison." data-lang-en="From reservation to handover: deposit, staged payments, financial completion guarantee and guarantees after delivery.">De la réservation à la remise des clés : dépôt de garantie, appels de fonds, garantie financière d'achèvement et garanties après livraison.</p>
-        </article>
-        <article class="pdh-post">
-          <p class="pdh-post-tag" data-lang-fr="Frais et fiscalité" data-lang-en="Costs and taxes">Frais et fiscalité</p>
-          <h3><a href="/blog/frais-de-notaire-neuf-tva-taxe-fonciere" data-lang-fr="Frais de notaire dans le neuf : ce qu'il faut savoir" data-lang-en="Frais de notaire dans le neuf : ce qu'il faut savoir (in French)">Frais de notaire dans le neuf : ce qu'il faut savoir</a></h3>
-          <p data-lang-fr="Frais de notaire réduits, TVA, taxe foncière : ce que coûte l'achat d'un appartement neuf en VEFA, d'après les sources officielles." data-lang-en="Reduced notary fees, VAT, property tax: what buying a new apartment off plan costs, based on official sources.">Frais de notaire réduits, TVA, taxe foncière : ce que coûte l'achat d'un appartement neuf en VEFA, d'après les sources officielles.</p>
-        </article>
-        <article class="pdh-post">
-          <p class="pdh-post-tag" data-lang-fr="Guide d'achat" data-lang-en="Buying guide">Guide d'achat</p>
-          <h3><a href="/blog/acheter-appartement-neuf-aix-en-provence" data-lang-fr="Acheter un appartement neuf à Aix-en-Provence : le guide" data-lang-en="Acheter un appartement neuf à Aix-en-Provence : le guide (in French)">Acheter un appartement neuf à Aix-en-Provence : le guide</a></h3>
-          <p data-lang-fr="Étapes, garanties, frais et aides pour acheter un appartement neuf à Aix-en-Provence : un guide appuyé sur des sources officielles et daté." data-lang-en="Steps, guarantees, costs and aid for buying a new apartment in Aix-en-Provence: a dated guide based on official sources.">Étapes, garanties, frais et aides pour acheter un appartement neuf à Aix-en-Provence : un guide appuyé sur des sources officielles et daté.</p>
-        </article>
-      </div>
-    </div>
-  </section>
-
-  <!-- ─── CTA ──────────────────────────────────────────────────── -->
+  <!-- ─── Scène 5 : contact ─────────────────────────────────────── -->
   <section class="section section-dark pdh-cta" id="contact-promoteur" aria-labelledby="cta-titre">
     <div class="container text-center">
-      <p class="eyebrow" style="justify-content:center;" data-lang-fr="Une question ?" data-lang-en="A question?">Une question ?</p>
-      <h2 class="section-title" id="cta-titre" style="max-width:560px;margin:0 auto 1rem;" data-lang-fr="Parlons de votre &lt;em&gt;projet&lt;/em&gt;" data-lang-en="Let’s talk about your &lt;em&gt;project&lt;/em&gt;">Parlons de votre <em>projet</em></h2>
-      <p class="pdh-cta-text" data-lang-fr="Stéphane Ponthieu et son équipe se tiennent à votre disposition pour répondre à vos questions sur la résidence 59 Cézanne." data-lang-en="Stéphane Ponthieu and his team are available to answer your questions about Résidence 59 Cézanne.">Stéphane Ponthieu et son équipe se tiennent à votre disposition pour répondre à vos questions sur la résidence 59 Cézanne.</p>
+      <h2 class="section-title" id="cta-titre" data-lang-fr="Une question&nbsp;?" data-lang-en="A question?">Une question&nbsp;?</h2>
       <div class="d-flex gap-3 align-center flex-wrap" style="justify-content:center;">
         <a class="btn btn-primary" href="/contact" data-lang-fr="Nous contacter" data-lang-en="Contact us">Nous contacter</a>
         <a href="tel:+33609204590" class="btn btn-outline">06 09 20 45 90</a>
@@ -551,6 +286,7 @@
   </section>
 
 </main>
+
 
 <!-- ─── Footer ────────────────────────────────────────────────── -->
 <footer class="site-footer">

@@ -1,42 +1,44 @@
 /* ============================================================
    59 CÉZANNE — contact.css
-   Styles propres à /contact : bandeau, formulaire, coordonnées, carte au clic, guides, FAQ.
+   Styles propres à /contact : bandeau, grand formulaire, carte téléphone, FAQ de 3 questions.
    S'appuie sur les jetons de style.css (--or-texte, --erreur, --focus-ring, --tap…) avec
    des valeurs de repli ; aucune règle ne sort des classes .ct-* (sauf .page-hero.ct-hero).
+   Simplification du 07/10/2026 : un formulaire grand et clair, le téléphone, trois questions.
    ============================================================ */
 
 /* ─── Bandeau d'en-tête ─────────────────────────────────────── */
 .page-hero.ct-hero {
   height: auto;
-  min-height: clamp(340px, 46vh, 480px);
+  min-height: clamp(400px, 58vh, 580px);
 }
 
 .ct-hero .hero-content {
   padding-top: calc(var(--nav-height) + 2rem);
-  padding-bottom: 3rem;
+  padding-bottom: 3.5rem;
 }
 
 .ct-hero .hero-title {
-  font-size: clamp(2rem, 4.2vw, 3.4rem);
-  max-width: 780px;
+  max-width: 1000px;
+  text-wrap: balance;
 }
 
 .ct-hero .hero-subtitle {
-  max-width: 600px;
-  color: rgba(255, 255, 255, 0.88);
+  max-width: 900px;
+  color: rgba(255, 255, 255, 0.92);
+  text-wrap: balance;
 }
 
 .ct-credit {
   position: absolute;
-  right: 1rem;
-  bottom: 0.8rem;
+  left: calc(max(0px, (100vw - 1396px) / 2) + 2rem);
+  bottom: 0.9rem;
   z-index: 2;
   margin: 0;
-  padding: 0.2rem 0.65rem;
+  padding: 0.2rem 0.7rem;
   border-radius: 3px;
   background: rgba(0, 0, 0, 0.55);
   color: #fff;
-  font-size: 0.72rem;
+  font-size: 0.8rem;
   letter-spacing: 0.04em;
 }
 
@@ -47,39 +49,32 @@
 
 .ct-grid {
   display: grid;
-  grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
-  gap: 4rem;
+  grid-template-columns: minmax(0, 1.75fr) minmax(0, 1fr);
+  gap: 3rem;
   align-items: start;
 }
 
 .ct-card {
   background: var(--white);
   border-radius: var(--radius-md);
-  padding: 2.75rem;
+  padding: 3.25rem;
   box-shadow: var(--shadow);
 }
 
 .ct-card h2 {
   font-family: var(--font-serif);
-  font-size: 1.9rem;
-  font-weight: 400;
-  line-height: 1.2;
+  font-size: clamp(2.3rem, 3.8vw, 3.2rem);
+  font-weight: 300;
+  line-height: 1.1;
   color: var(--text);
   margin-bottom: 0.6rem;
 }
 
-.ct-intro {
-  font-size: 0.95rem;
-  line-height: 1.75;
-  color: var(--text-mid);
-  margin-bottom: 0.5rem;
-}
-
 .ct-required-note {
-  font-size: 0.82rem;
+  font-size: 1rem;
   line-height: 1.5;
   color: var(--text-mid);
-  margin-bottom: 1.75rem;
+  margin-bottom: 2rem;
 }
 
 .ct-noscript {
@@ -88,8 +83,8 @@
   border: 1px solid var(--stone);
   border-radius: var(--radius);
   background: var(--beige);
-  font-size: 0.88rem;
-  line-height: 1.65;
+  font-size: 1rem;
+  line-height: 1.6;
   color: var(--text);
 }
 
@@ -106,12 +101,17 @@
 /* ─── Formulaire ────────────────────────────────────────────── */
 .ct-form .form-grid {
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 1.35rem 1.2rem;
+  gap: 1.6rem 1.4rem;
 }
 
+.ct-form .form-group { gap: 0.5rem; }
+
 .ct-form .form-label {
-  font-size: 0.74rem;
-  color: var(--text-mid);
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--text);
 }
 
 .ct-req {
@@ -121,18 +121,20 @@
 
 .ct-opt {
   font-weight: 400;
-  letter-spacing: 0.04em;
-  text-transform: none;
   color: var(--text-mid);
 }
 
-/* 16 px : évite le zoom automatique sur iOS ; cible tactile ≥ 44 px */
+/* Champs grands : ≥ 16 px (pas de zoom automatique sur iOS), cible tactile confortable */
 .ct-form .form-input,
 .ct-form .form-select,
 .ct-form .form-textarea {
-  font-size: 1rem;
-  min-height: var(--tap, 44px);
+  font-size: 1.1rem;
+  min-height: 3.6rem;
+  padding: 0.85rem 1.2rem;
+  border-width: 1.5px;
 }
+
+.ct-form .form-textarea { min-height: 9.5rem; line-height: 1.55; }
 
 .ct-form .form-input::placeholder,
 .ct-form .form-textarea::placeholder {
@@ -140,15 +142,9 @@
   opacity: 1;
 }
 
-.ct-hint {
-  font-size: 0.8rem;
-  line-height: 1.5;
-  color: var(--text-mid);
-}
-
 .ct-form .form-error {
   display: none;
-  font-size: 0.84rem;
+  font-size: 1rem;
   line-height: 1.45;
   color: var(--erreur, #b3261e);
 }
@@ -184,7 +180,7 @@
   border-radius: var(--radius);
   background: #fdf3f2;
   color: #7a1b15;
-  font-size: 0.92rem;
+  font-size: 1.05rem;
   line-height: 1.6;
 }
 
@@ -204,28 +200,28 @@
 .ct-consent {
   display: flex;
   align-items: flex-start;
-  gap: 0.85rem;
+  gap: 0.95rem;
 }
 
 .ct-consent input[type="checkbox"] {
-  flex: 0 0 22px;
-  width: 22px;
-  height: 22px;
-  margin-top: 0.15rem;
+  flex: 0 0 26px;
+  width: 26px;
+  height: 26px;
+  margin-top: 0.1rem;
   accent-color: var(--or-texte, #7f6422);
   cursor: pointer;
 }
 
 .ct-consent label {
-  font-size: 0.88rem;
-  line-height: 1.65;
+  font-size: 1rem;
+  line-height: 1.6;
   color: var(--text-mid);
   cursor: pointer;
 }
 
 .ct-consent-link {
-  margin: 0.55rem 0 0 calc(22px + 0.85rem);
-  font-size: 0.88rem;
+  margin: 0.6rem 0 0 calc(26px + 0.95rem);
+  font-size: 1rem;
 }
 
 /* Champ piège (anti-spam) : hors écran, jamais display:none */
@@ -238,20 +234,20 @@
   overflow: hidden;
 }
 
-/* Bouton d'envoi */
+/* Bouton d'envoi : grand, pleine largeur */
 .ct-submit {
   width: 100%;
-  min-height: 3.4rem;
+  min-height: 4.2rem;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0.7rem;
-  margin-top: 1.6rem;
-  padding: 1.05rem;
+  gap: 0.8rem;
+  margin-top: 2rem;
+  padding: 1.2rem;
   background: var(--dark);
   color: var(--white);
   font-family: var(--font-sans);
-  font-size: 0.8rem;
+  font-size: 1rem;
   font-weight: 600;
   letter-spacing: 0.15em;
   text-transform: uppercase;
@@ -261,12 +257,12 @@
 }
 
 .ct-submit:hover { background: var(--or); color: var(--dark); }
-.ct-submit svg { width: 18px; height: 18px; flex-shrink: 0; }
+.ct-submit svg { width: 20px; height: 20px; flex-shrink: 0; }
 .ct-submit[aria-disabled="true"] { opacity: 0.7; cursor: progress; }
 
 /* Messages d'état (zones vivantes toujours présentes ; invisibles tant qu'elles sont vides) */
 .ct-status {
-  font-size: 0.92rem;
+  font-size: 1.05rem;
   line-height: 1.6;
 }
 
@@ -291,203 +287,82 @@
   border-color: rgba(179, 38, 30, 0.5);
 }
 
-/* ─── Coordonnées ───────────────────────────────────────────── */
+/* ─── Téléphone : une carte sombre, le numéro en grand ──────── */
 .ct-aside {
   position: sticky;
   top: calc(var(--nav-height) + 2rem);
+  padding: 3rem 2.5rem;
+  background: var(--dark);
+  color: var(--white);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow);
+  text-align: center;
 }
 
 .ct-aside h2 {
   font-family: var(--font-serif);
-  font-size: 1.9rem;
+  font-size: clamp(2.1rem, 3vw, 2.6rem);
   font-weight: 300;
-  line-height: 1.2;
-  color: var(--text);
-  margin: 0;
+  line-height: 1.15;
+  color: var(--white);
+  margin-bottom: 1.2rem;
 }
 
-.ct-aside h2 em { font-style: italic; color: var(--or-texte, #7f6422); }
-
-.ct-info {
-  display: flex;
-  flex-direction: column;
-  gap: 0.9rem;
-  margin: 0 0 1.5rem;
-}
-
-.ct-info li {
-  display: flex;
-  align-items: flex-start;
-  gap: 1rem;
-  padding: 1.1rem 1.25rem;
-  background: var(--white);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-md);
-}
-
-.ct-ico {
-  flex: 0 0 44px;
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: rgba(201, 169, 110, 0.16);
-  color: var(--or-texte, #7f6422);
-}
-
-.ct-info strong {
+.ct-phone {
   display: block;
   font-family: var(--font-serif);
-  font-size: 1.05rem;
-  font-weight: 500;
-  color: var(--text);
-  margin-bottom: 0.1rem;
+  font-size: clamp(2.3rem, 3.4vw, 3.1rem);
+  font-weight: 400;
+  line-height: 1.1;
+  letter-spacing: 0.01em;
+  color: var(--or);
+  white-space: nowrap;
 }
 
-.ct-info span,
-.ct-info a {
-  font-size: 0.92rem;
-  line-height: 1.65;
-  color: var(--text-mid);
-}
+.ct-phone:hover { color: var(--or-light); }
 
-.ct-info a {
-  display: inline-block;
-  padding: 0.1rem 0;
+.ct-mail { margin-top: 1.6rem; }
+
+.ct-mail a {
+  font-size: 1.1rem;
+  color: var(--white);
   text-decoration: underline;
-  text-underline-offset: 3px;
+  text-underline-offset: 4px;
   overflow-wrap: anywhere;
 }
 
-.ct-info a:hover { color: var(--text); }
+.ct-mail a:hover { color: var(--or-light); }
 
-.ct-doc {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  margin-bottom: 0.9rem;
-  padding: 1rem 1.2rem;
-  background: var(--white);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  color: var(--text);
-  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+.btn.ct-doc {
+  width: 100%;
+  justify-content: center;
+  margin-top: 2.2rem;
+  font-size: 0.85rem;
+  padding: 1.1rem 1.4rem;
 }
 
-.ct-doc:hover { border-color: var(--or-texte, #7f6422); box-shadow: var(--shadow-sm); }
-
-.ct-doc strong {
-  display: block;
-  font-family: var(--font-serif);
-  font-size: 1.02rem;
-  font-weight: 500;
-}
-
-.ct-doc small { font-size: 0.82rem; line-height: 1.5; color: var(--text-mid); }
-
-.btn.ct-call { width: 100%; justify-content: center; }
-
-/* Carte chargée au clic */
-.ct-map { margin-top: 2rem; }
-
-.ct-map h3 {
-  font-family: var(--font-serif);
-  font-size: 1.2rem;
-  font-weight: 400;
-  color: var(--text);
-  margin-bottom: 0.75rem;
-}
-
-.ct-map-box {
-  min-height: 280px;
-  display: flex;
-  background: var(--beige);
-  border-radius: var(--radius-md);
-  overflow: hidden;
-  box-shadow: var(--shadow);
-}
-
-.ct-map-ph {
-  margin: auto;
-  max-width: 340px;
-  padding: 1.5rem;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.9rem;
-  text-align: center;
-}
-
-.ct-map-ph p { font-size: 0.88rem; line-height: 1.6; color: var(--text-mid); }
-.ct-map-box iframe { display: block; width: 100%; height: 280px; border: 0; }
-.ct-map-addr { margin-top: 0.7rem; font-size: 0.82rem; color: var(--text-mid); text-align: center; }
-
-/* ─── Guides (maillage) ─────────────────────────────────────── */
-.ct-guides {
-  padding: 5rem 0;
+/* ─── FAQ (<details>), trois questions ──────────────────────── */
+.ct-faq {
+  padding: 5rem 0 5rem;
   background: var(--beige);
 }
 
-.ct-guide-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: 1.5rem;
-}
-
-.ct-guide {
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  gap: 0.6rem;
-  padding: 1.75rem;
-  background: var(--white);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-md);
-  transition: box-shadow var(--transition-fast), border-color var(--transition-fast);
-}
-
-.ct-guide:hover { border-color: var(--or-texte, #7f6422); box-shadow: var(--shadow); }
-.ct-guide:focus-within { outline: 2px solid var(--focus-ring, #7f6422); outline-offset: 3px; }
-
-.ct-guide-tag {
-  font-size: 0.68rem;
-  letter-spacing: 0.25em;
-  text-transform: uppercase;
-  color: var(--or-texte, #7f6422);
-}
-
-.ct-guide h3 {
-  font-family: var(--font-serif);
-  font-size: 1.3rem;
-  font-weight: 400;
-  line-height: 1.3;
-  color: var(--text);
-}
-
-.ct-guide h3 a::after { content: ""; position: absolute; inset: 0; }
-.ct-guide h3 a:focus-visible { outline: none; }
-.ct-guide p { font-size: 0.92rem; line-height: 1.7; color: var(--text-mid); }
-.ct-guides-more { margin-top: 2rem; text-align: center; }
-
-/* ─── FAQ (<details>) ───────────────────────────────────────── */
-.ct-faq { padding: 5rem 0 6rem; }
-.ct-faq-list { max-width: 820px; margin: 0 auto; }
+.ct-faq-list { max-width: 900px; margin: 0 auto; }
 .ct-faq details { border-bottom: 1px solid var(--border); }
+.ct-faq details:first-child { border-top: 1px solid var(--border); }
 
 .ct-faq summary {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 1rem;
+  gap: 1.2rem;
   min-height: var(--tap, 44px);
-  padding: 1.25rem 0;
+  padding: 1.5rem 0;
   list-style: none;
   cursor: pointer;
   font-family: var(--font-serif);
-  font-size: 1.18rem;
-  line-height: 1.4;
+  font-size: clamp(1.45rem, 2.4vw, 1.9rem);
+  line-height: 1.3;
   color: var(--text);
 }
 
@@ -496,16 +371,16 @@
 
 .ct-faq summary::after {
   content: "+";
-  flex: 0 0 30px;
-  width: 30px;
-  height: 30px;
+  flex: 0 0 38px;
+  width: 38px;
+  height: 38px;
   display: flex;
   align-items: center;
   justify-content: center;
   border: 1px solid var(--or-texte, #7f6422);
   border-radius: 50%;
   color: var(--or-texte, #7f6422);
-  font: 400 1.25rem/1 var(--font-sans);
+  font: 400 1.5rem/1 var(--font-sans);
   transition: transform var(--transition-fast), background var(--transition-fast);
 }
 
@@ -517,33 +392,57 @@
 }
 
 .ct-faq-a {
-  padding: 0 2.6rem 1.5rem 0;
-  font-size: 0.97rem;
-  line-height: 1.8;
+  padding: 0 3.5rem 1.8rem 0;
+  font-size: 1.2rem;
+  line-height: 1.65;
   color: var(--text-mid);
 }
 
+/* « Nos guides » : une ligne discrète */
+.ct-guides {
+  margin-top: 3.5rem;
+  text-align: center;
+  font-size: 1.05rem;
+  color: var(--text-mid);
+}
+
+.ct-guides ul {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.4rem 1.8rem;
+  margin-top: 0.6rem;
+}
+
+.ct-guides a {
+  color: var(--or-texte, #7f6422);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.ct-guides a:hover { color: var(--text); }
+
 /* ─── Responsive ────────────────────────────────────────────── */
 @media (max-width: 1024px) {
-  .ct-grid { grid-template-columns: 1fr; gap: 3rem; }
+  .ct-grid { grid-template-columns: 1fr; gap: 2.5rem; }
   .ct-aside { position: static; }
 }
 
 @media (max-width: 640px) {
   .ct-main { padding: 3rem 0 4rem; }
-  .ct-card { padding: 1.75rem 1.25rem; }
-  .ct-card h2 { font-size: 1.65rem; }
+  .ct-card { padding: 2rem 1.25rem; }
   .ct-form .form-grid { grid-template-columns: 1fr; }
-  .ct-guides, .ct-faq { padding: 3.5rem 0; }
-  .ct-faq summary { font-size: 1.08rem; }
+  .ct-aside { padding: 2.2rem 1.25rem; }
+  .ct-submit { padding: 1.2rem 0.8rem; letter-spacing: 0.08em; }
+  .ct-faq { padding: 3.5rem 0; }
   .ct-faq-a { padding-right: 0; }
-  .ct-credit { right: 0.6rem; font-size: 0.68rem; }
+  .ct-credit { left: 1.5rem; bottom: 0.7rem; }
+  .ct-hero .hero-subtitle { padding-right: 4.2rem; } /* laisse la place aux boutons flottants */
+  .ct-guides ul { flex-direction: column; align-items: center; gap: 0.6rem; }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .ct-faq summary::after,
-  .ct-doc,
-  .ct-guide,
   .ct-submit { transition: none; }
 }
 

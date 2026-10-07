@@ -146,7 +146,7 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 html {
-  font-size: 16px;
+  font-size: 18px; /* texte plus grand (demande du 07/10/2026) : toutes les tailles en rem suivent */
   /* Ancres sous la barre fixe (remplace l'ancien défilement en JS) */
   scroll-padding-top: calc(var(--nav-height) + 20px);
 }
@@ -160,7 +160,7 @@ body {
   font-family: var(--font-sans);
   color: var(--text);
   background-color: var(--creme);
-  line-height: 1.7;
+  line-height: 1.6;
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -578,11 +578,11 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
 
 .hero-title {
   font-family: var(--font-serif);
-  font-size: clamp(2.8rem, 6vw, 5.5rem);
+  font-size: clamp(3.2rem, 7.5vw, 6.8rem);
   font-weight: 300;
-  line-height: 1.1;
+  line-height: 1.05;
   color: var(--white);
-  max-width: 720px;
+  max-width: 900px;
   animation: heroFadeUp 0.9s ease 0.2s both;
 }
 
@@ -593,11 +593,11 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
 
 .hero-subtitle {
   font-family: var(--font-sans);
-  font-size: clamp(0.9rem, 1.5vw, 1rem);
+  font-size: clamp(1.15rem, 2vw, 1.5rem);
   font-weight: 300;
-  letter-spacing: 0.05em;
-  color: rgba(255,255,255,0.72);
-  max-width: 520px;
+  letter-spacing: 0.02em;
+  color: rgba(255,255,255,0.8);
+  max-width: 640px;
   margin-top: 1.2rem;
   line-height: 1.8;
   animation: heroFadeUp 0.7s ease 0.35s both;
@@ -749,11 +749,11 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
 
 .section-title {
   font-family: var(--font-serif);
-  font-size: clamp(2rem, 4vw, 3.2rem);
+  font-size: clamp(2.6rem, 5.2vw, 4.6rem);
   font-weight: 300;
-  line-height: 1.2;
+  line-height: 1.1;
   color: var(--text);
-  margin-bottom: 1rem;
+  margin-bottom: 1.25rem;
 }
 
 .section-title em { font-style: italic; color: var(--or-texte); }
@@ -761,11 +761,11 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
 .section-dark .section-title { color: var(--white); }
 
 .section-lead {
-  font-size: clamp(1rem, 1.5vw, 1.05rem);
+  font-size: clamp(1.2rem, 2vw, 1.45rem);
   font-weight: 300;
   color: var(--text-mid);
-  line-height: 1.85;
-  max-width: 600px;
+  line-height: 1.6;
+  max-width: 640px;
   margin: 0 auto;
 }
 
@@ -2397,3 +2397,24 @@ html[data-lang-lock] .lang-btn { display: none !important; }
 
   #loader { display: none !important; }
 }
+
+/* ─── Simplification (07/10/2026) : texte plus grand, grandes illustrations ─────────── */
+@media (min-width: 1280px) {
+  html { font-size: 19px; }
+}
+/* Texte plus grand => la barre de navigation passe au menu burger plus tôt (8 liens + langues). */
+/* Barre de navigation : tailles FIXES en px (indépendantes de l'agrandissement du texte du site). */
+.nav-inner { padding: 0 28px; }
+.nav-logo .logo-main { font-size: 26px; white-space: nowrap; }
+.nav-logo .logo-sub { font-size: 9.5px; white-space: nowrap; }
+.nav-links { gap: 24px; }
+.nav-links a { font-size: 11.5px; letter-spacing: 0.1em; white-space: nowrap; }
+.lang-btn { font-size: 12px; }
+@media (max-width: 1300px) {
+  .nav-links,
+  .lang-toggle { display: none; }
+  .nav-burger { display: flex; }
+}
+/* Illustrations : jamais plus petites que la largeur de leur colonne, coins francs, légendes discrètes. */
+.img-xl { width: 100%; height: auto; display: block; }
+.img-bleed { width: 100vw; max-width: none; margin-left: calc(50% - 50vw); height: auto; display: block; }
