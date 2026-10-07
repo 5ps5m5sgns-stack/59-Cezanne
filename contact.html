@@ -73,17 +73,17 @@
       {
         "@type": "Question",
         "name": "Les prix sont-ils publiés ?",
-        "acceptedAnswer": { "@type": "Answer", "text": "Non, pas sur ce site. Notre équipe vous transmet la grille tarifaire à jour sur demande." }
+        "acceptedAnswer": { "@type": "Answer", "text": "Non. La grille tarifaire à jour est transmise sur demande." }
       },
       {
         "@type": "Question",
         "name": "Quel est le calendrier de livraison ?",
-        "acceptedAnswer": { "@type": "Answer", "text": "Aucune date n'est publiée ici : demandez le calendrier à jour par message ou téléphone." }
+        "acceptedAnswer": { "@type": "Answer", "text": "Aucune date n'est publiée ici : demandez-le par message ou téléphone." }
       },
       {
         "@type": "Question",
         "name": "Comment organiser une visite ?",
-        "acceptedAnswer": { "@type": "Answer", "text": "Sur rendez-vous : indiquez vos disponibilités dans le formulaire ou appelez-nous." }
+        "acceptedAnswer": { "@type": "Answer", "text": "Sur rendez-vous : indiquez vos disponibilités ou appelez-nous." }
       }
     ]
   }
@@ -155,12 +155,12 @@
     <div class="hero-overlay"></div>
     <div class="hero-content">
       <h1 class="hero-title" id="ct-h1" data-lang-fr="Nous contacter pour visiter <em>59 Cézanne</em>" data-lang-en="Contact us to visit <em>59 Cézanne</em>">Nous contacter pour visiter <em>59 Cézanne</em></h1>
-      <p class="hero-subtitle" data-lang-fr="Décrivez-nous votre projet&nbsp;: nous vous recontactons." data-lang-en="Tell us about your project: we will get back to you.">Décrivez-nous votre projet&nbsp;: nous vous recontactons.</p>
+      <p class="hero-subtitle" data-lang-fr="Vivez l'exception au cœur de la Provence. &lt;span style=&quot;white-space:nowrap&quot;&gt;Décrivez-nous&lt;/span&gt; votre projet&nbsp;: nous vous recontactons." data-lang-en="Live the exceptional in the heart of Provence. Tell us about your project: we will get back to you.">Vivez l'exception au cœur de la Provence. <span style="white-space:nowrap">Décrivez-nous</span> votre projet&nbsp;: nous vous recontactons.</p>
     </div>
     <p class="ct-credit" data-lang-fr="Illustration non contractuelle" data-lang-en="Non-contractual illustration">Illustration non contractuelle</p>
   </section>
 
-  <!-- ─── Formulaire + téléphone ───────────────────────────────── -->
+  <!-- ─── Formulaire + téléphone + une image ───────────────────── -->
   <section class="ct-main" id="formulaire" aria-labelledby="ct-form-title">
     <div class="container">
       <div class="ct-grid">
@@ -168,6 +168,8 @@
         <!-- Formulaire -->
         <div class="ct-card">
           <h2 id="ct-form-title" data-lang-fr="Votre demande" data-lang-en="Your enquiry">Votre demande</h2>
+          <p class="ct-intro" data-lang-fr="Résidence principale, secondaire ou investissement&nbsp;: dites-nous ce que vous recherchez et posez-nous vos questions." data-lang-en="Main residence, second home or investment: tell us what you are looking for and ask us your questions.">Résidence principale, secondaire ou investissement&nbsp;: dites-nous ce que vous recherchez et posez-nous vos questions.</p>
+          <p class="ct-intro" data-lang-fr="Nous vous recontactons, vous transmettons la plaquette et convenons d'une visite sur rendez-vous." data-lang-en="We will get back to you, send you the brochure and arrange a visit by appointment.">Nous vous recontactons, vous transmettons la plaquette et convenons d'une visite sur rendez-vous.</p>
           <p class="ct-required-note" data-lang-fr="* Champs obligatoires" data-lang-en="* Required fields">* Champs obligatoires</p>
 
           <noscript>
@@ -267,37 +269,55 @@
           <div id="formFail" class="ct-status" role="alert" aria-atomic="true"></div>
         </div>
 
-        <!-- Téléphone -->
-        <aside class="ct-aside" aria-labelledby="ct-coord-title">
-          <h2 id="ct-coord-title" data-lang-fr="Appelez-nous" data-lang-en="Call us">Appelez-nous</h2>
-          <a class="ct-phone" href="tel:+33609204590">06 09 20 45 90</a>
-          <p class="ct-mail"><a href="mailto:jessica@ownimmobilier.fr">jessica@ownimmobilier.fr</a></p>
-          <a class="btn btn-outline ct-doc" href="/Dossier%20de%20commercialisation%2059%20C%C3%A9zanne/Plaquette%2059%20C%C3%A9zanne%20Version%20Email.pdf" download data-lang-fr="Télécharger la plaquette (PDF)" data-lang-en="Download the brochure (PDF)">Télécharger la plaquette (PDF)</a>
-        </aside>
+        <!-- Colonne de droite : téléphone, puis une image moyenne -->
+        <div class="ct-side">
+          <aside class="ct-aside" aria-labelledby="ct-coord-title">
+            <h2 id="ct-coord-title" data-lang-fr="Appelez-nous" data-lang-en="Call us">Appelez-nous</h2>
+            <a class="ct-phone" href="tel:+33609204590">06 09 20 45 90</a>
+            <p class="ct-hours" data-lang-fr="Du lundi au vendredi, de 9h à 18h&nbsp;; le samedi sur rendez-vous." data-lang-en="Monday to Friday, 9am to 6pm; Saturday by appointment.">Du lundi au vendredi, de 9h à 18h&nbsp;; le samedi sur rendez-vous.</p>
+            <p class="ct-hours" data-lang-fr="Plaquette, plans, précisions sur un appartement&nbsp;: un appel suffit." data-lang-en="Brochure, floor plans, details on an apartment: one call is enough.">Plaquette, plans, précisions sur un appartement&nbsp;: un appel suffit.</p>
+            <p class="ct-mail"><a href="mailto:jessica@ownimmobilier.fr">jessica@ownimmobilier.fr</a></p>
+            <a class="btn btn-outline ct-doc" href="/Dossier%20de%20commercialisation%2059%20C%C3%A9zanne/Plaquette%2059%20C%C3%A9zanne%20Version%20Email.pdf" download data-lang-fr="Télécharger la plaquette (PDF)" data-lang-en="Download the brochure (PDF)">Télécharger la plaquette (PDF)</a>
+          </aside>
+
+          <section class="ct-showcase" aria-labelledby="ct-show-title">
+            <figure class="ct-fig">
+              <img src="/Photo%2059%20C%C3%A9zanne/3D%20interieur/LOGEMENT_2_02-1200w.webp"
+                   srcset="/Photo%2059%20C%C3%A9zanne/3D%20interieur/LOGEMENT_2_02-800w.webp 800w, /Photo%2059%20C%C3%A9zanne/3D%20interieur/LOGEMENT_2_02-1200w.webp 1200w, /Photo%2059%20C%C3%A9zanne/3D%20interieur/LOGEMENT_2_02.webp 1600w"
+                   sizes="(min-width: 1025px) 34vw, 82vw" width="1600" height="960" loading="lazy" decoding="async"
+                   alt="Rendu 3D du séjour et de la salle à manger d'un appartement de la résidence 59 Cézanne, grandes baies ouvertes sur un relief (illustration non contractuelle)" />
+              <span class="img-tag" data-lang-fr="Illustration non contractuelle" data-lang-en="Non-contractual illustration">Illustration non contractuelle</span>
+            </figure>
+            <h2 class="ct-show-title" id="ct-show-title" data-lang-fr="L'harmonie parfaite entre prestige, nature et confort" data-lang-en="The perfect harmony of prestige, nature and comfort">L'harmonie parfaite entre prestige, nature et confort</h2>
+            <p data-lang-fr="Un jardin privatif pour chaque appartement, une piscine commune, une vue Sainte-Victoire pour plusieurs d'entre eux." data-lang-en="A private garden for each apartment, a shared swimming pool, a Sainte-Victoire view for several of them.">Un jardin privatif pour chaque appartement, une piscine commune, une vue Sainte-Victoire pour plusieurs d'entre eux.</p>
+            <p data-lang-fr="Avec seulement huit unités, la résidence privilégie l'intimité." data-lang-en="With only eight units, the residence puts privacy first.">Avec seulement huit unités, la résidence privilégie l'intimité.</p>
+            <a class="scene-link" href="/presentation"><span data-lang-fr="Découvrir la résidence" data-lang-en="Discover the residence">Découvrir la résidence</span><svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" focusable="false"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+          </section>
+        </div>
 
       </div>
     </div>
   </section>
 
-  <!-- ─── FAQ : trois questions ────────────────────────────────── -->
+  <!-- ─── FAQ : trois questions courtes ────────────────────────── -->
   <section class="ct-faq" id="faq" aria-labelledby="ct-faq-title">
     <div class="container">
-      <h2 class="sr-only" id="ct-faq-title" data-lang-fr="Questions fréquentes" data-lang-en="Frequently asked questions">Questions fréquentes</h2>
+      <h2 class="ct-faq-title" id="ct-faq-title" data-lang-fr="Vos questions" data-lang-en="Your questions">Vos questions</h2>
       <div class="ct-faq-list">
 
         <details>
           <summary><span data-lang-fr="Les prix sont-ils publiés ?" data-lang-en="Are prices published?">Les prix sont-ils publiés ?</span></summary>
-          <div class="ct-faq-a"><p data-lang-fr="Non, pas sur ce site. Notre équipe vous transmet la grille tarifaire à jour sur demande." data-lang-en="Not on this website. Our team will send you the up-to-date price list on request.">Non, pas sur ce site. Notre équipe vous transmet la grille tarifaire à jour sur demande.</p></div>
+          <div class="ct-faq-a"><p data-lang-fr="Non. La grille tarifaire à jour est transmise sur demande." data-lang-en="No. The up-to-date price list is sent on request.">Non. La grille tarifaire à jour est transmise sur demande.</p></div>
         </details>
 
         <details>
           <summary><span data-lang-fr="Quel est le calendrier de livraison ?" data-lang-en="What is the delivery schedule?">Quel est le calendrier de livraison ?</span></summary>
-          <div class="ct-faq-a"><p data-lang-fr="Aucune date n'est publiée ici : demandez le calendrier à jour par message ou téléphone." data-lang-en="No date is published here: ask for the up-to-date schedule by message or phone.">Aucune date n'est publiée ici : demandez le calendrier à jour par message ou téléphone.</p></div>
+          <div class="ct-faq-a"><p data-lang-fr="Aucune date n'est publiée ici : demandez-le par message ou téléphone." data-lang-en="No date is published here: ask for it by message or phone.">Aucune date n'est publiée ici : demandez-le par message ou téléphone.</p></div>
         </details>
 
         <details>
           <summary><span data-lang-fr="Comment organiser une visite ?" data-lang-en="How do I arrange a visit?">Comment organiser une visite ?</span></summary>
-          <div class="ct-faq-a"><p data-lang-fr="Sur rendez-vous : indiquez vos disponibilités dans le formulaire ou appelez-nous." data-lang-en="By appointment: give us your availability in the form or call us.">Sur rendez-vous : indiquez vos disponibilités dans le formulaire ou appelez-nous.</p></div>
+          <div class="ct-faq-a"><p data-lang-fr="Sur rendez-vous : indiquez vos disponibilités ou appelez-nous." data-lang-en="By appointment: give us your availability or call us.">Sur rendez-vous : indiquez vos disponibilités ou appelez-nous.</p></div>
         </details>
 
       </div>
@@ -305,9 +325,9 @@
       <nav class="ct-guides" aria-label="Nos guides">
         <span data-lang-fr="Nos guides&nbsp;:" data-lang-en="Our guides:">Nos guides&nbsp;:</span>
         <ul>
-          <li><a href="/blog/acheter-appartement-neuf-aix-en-provence" lang="fr">Acheter un appartement neuf</a></li>
-          <li><a href="/blog/frais-de-notaire-neuf-tva-taxe-fonciere" lang="fr">Frais de notaire</a></li>
-          <li><a href="/blog/vefa-achat-sur-plan-etapes-garanties" lang="fr">VEFA et garanties</a></li>
+          <li><a href="/blog/acheter-appartement-neuf-aix-en-provence" lang="fr">Acheter un appartement neuf à Aix</a></li>
+          <li><a href="/blog/frais-de-notaire-neuf-tva-taxe-fonciere" lang="fr">Frais de notaire dans le neuf</a></li>
+          <li><a href="/blog/vefa-achat-sur-plan-etapes-garanties" lang="fr">VEFA : étapes et garanties</a></li>
         </ul>
       </nav>
     </div>

@@ -17,9 +17,10 @@
    Mise en page des articles (refonte « lecture confortable »)
    - Colonne de lecture étroite et centrée (≈ 62 caractères par ligne,
      texte ≈ 1,3 rem, interligne 1,62).
-   - Les figures sortent de la colonne : jusqu'à 1100 px sur grand écran,
-     pleine largeur d'écran sur mobile. Les tableaux sont un peu plus larges
+   - Les figures sortent de la colonne et varient par rang (immense, moyenne,
+     petite décalée, grande : voir §5). Les tableaux sont un peu plus larges
      que le texte. Rien n'est modifié dans le HTML des articles.
+   - Hub /blog : grille asymétrique de cartes de tailles variées (§8).
    ============================================================ */
 
 
@@ -36,8 +37,10 @@
   --blog-text-w: 39.5rem;                       /* colonne de lecture : ≈ 65 caractères par ligne (30 em de large) */
   --blog-table-w: 52rem;                        /* tableaux : plus larges que le texte, moins que les figures */
   --blog-wide-w: 1100px;                        /* figures et en-tête sur grand écran */
-  --blog-pad: 2rem;                             /* marge latérale de .container (style.css) */
 }
+/* Marge latérale de .container. Déclarée sur .blog-page seulement : les cartes (.post-card) l'héritent ainsi du
+   bon réglage (1,25 rem sous 420 px) au lieu de la redéfinir à 2 rem et de déborder sur mobile. */
+.blog-page { --blog-pad: 2rem; }
 @media (max-width: 420px) {
   .blog-page { --blog-pad: 1.25rem; }
 }
@@ -455,8 +458,16 @@
 
 /* ─── 5. Figures, tableaux, encarts, FAQ, mentions ─────────── */
 
-/* Figure : plus large que le texte (1100 px max), pleine largeur d'écran sur mobile.
-   Les figures sont des enfants directs de .post-body. */
+/* Figures : RYTHME par rang (nth-of-type parmi les <figure> enfants de .post-body, le HTML ne change pas).
+     1re · immense  : pleine largeur d'écran, recadrée en bandeau
+     2e  · moyenne  : à la largeur du texte (≈ 760 px), centrée
+     3e  · petite   : ≈ 480 px, décalée à DROITE, légende à gauche de l'image
+     4e  · grande   : ≈ 1100 px (format par défaut)
+     5e  · petite   : ≈ 480 px, décalée à GAUCHE, légende à droite
+     6e  · moyenne ; au-delà : grande.
+   Les images 2 et 3 gardent leur format d'origine (les axonométries ne sont jamais recadrées).
+   Mobile (≤ 700 px) : immense et grande débordent jusqu'aux bords de l'écran, la moyenne prend la colonne,
+   la petite fait 64 % de la largeur, alignée à droite ou à gauche. */
 .post-body > .post-figure {
   max-width: var(--blog-wide-w);
   margin-block: clamp(2.5rem, 6vw, 4rem);
@@ -478,7 +489,7 @@
 @media (min-width: 1172px) {
   .post-figure img { border-radius: var(--radius); }
 }
-/* En dessous de la largeur « large », la figure déborde sur les marges et prend toute la largeur de l'écran */
+/* En dessous de la largeur « large », la figure grande déborde sur les marges et prend toute la largeur de l'écran */
 @media (max-width: 1171px) {
   .post-body > .post-figure {
     max-width: none;
@@ -486,11 +497,89 @@
     margin-right: calc(-1 * var(--blog-pad));
   }
   .post-figure .post-caption {
-    max-width: var(--blog-text-w);
+    box-sizing: border-box;
+    max-width: calc(var(--blog-text-w) + 2 * var(--blog-pad));
     margin-left: auto;
     margin-right: auto;
     padding-inline: var(--blog-pad);
   }
+}
+
+/* 1 · immense : pleine largeur d'écran (le .container est centré, 50 % − 50 vw ramène au bord de l'écran) */
+.post-body > .post-figure:nth-of-type(1) {
+  max-width: none;
+  margin-left: calc(50% - 50vw);
+  margin-right: calc(50% - 50vw);
+  margin-block: clamp(2.5rem, 6vw, 4.5rem);
+}
+.post-figure:nth-of-type(1) img {
+  aspect-ratio: 2 / 1;
+  max-height: min(80vh, 820px);
+  object-fit: cover;
+  object-position: center 45%;
+  border-radius: 0;
+}
+.post-figure:nth-of-type(1) .post-caption {
+  box-sizing: border-box;
+  max-width: calc(var(--blog-text-w) + 2 * var(--blog-pad));
+  margin-left: auto;
+  margin-right: auto;
+  padding-inline: var(--blog-pad);
+}
+@media (max-width: 1171px) { .post-figure:nth-of-type(1) img { aspect-ratio: 16 / 9; } }
+@media (max-width: 700px)  { .post-figure:nth-of-type(1) img { aspect-ratio: 4 / 3; } }
+
+/* 2 et 6 · moyenne : à la largeur du texte, centrée */
+.post-body > .post-figure:nth-of-type(2),
+.post-body > .post-figure:nth-of-type(6) {
+  max-width: var(--blog-text-w);
+  margin-left: auto;
+  margin-right: auto;
+}
+.post-figure:nth-of-type(2) img,
+.post-figure:nth-of-type(6) img { border-radius: var(--radius); }
+.post-figure:nth-of-type(2) .post-caption,
+.post-figure:nth-of-type(6) .post-caption {
+  max-width: none;
+  padding-inline: 0;
+}
+
+/* 3 (à droite) et 5 (à gauche) · petite : ≈ 480 px, légende à côté */
+.post-body > .post-figure:nth-of-type(3),
+.post-body > .post-figure:nth-of-type(5) {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) min(480px, 62%);
+  column-gap: clamp(1.25rem, 3vw, 2.5rem);
+  align-items: end;
+  max-width: var(--blog-wide-w);
+  margin-left: auto;
+  margin-right: auto;
+}
+.post-body > .post-figure:nth-of-type(5) { grid-template-columns: min(480px, 62%) minmax(0, 1fr); }
+.post-figure:nth-of-type(3) img,
+.post-figure:nth-of-type(5) img { grid-row: 1; border-radius: var(--radius); }
+.post-figure:nth-of-type(3) img { grid-column: 2; }
+.post-figure:nth-of-type(5) img { grid-column: 1; }
+.post-figure:nth-of-type(3) .post-caption,
+.post-figure:nth-of-type(5) .post-caption {
+  grid-row: 1;
+  max-width: 17rem;
+  margin: 0;
+  padding: 0;
+}
+.post-figure:nth-of-type(3) .post-caption { grid-column: 1; justify-self: end; text-align: right; }
+.post-figure:nth-of-type(5) .post-caption { grid-column: 2; justify-self: start; text-align: left; }
+
+@media (max-width: 700px) {
+  .post-body > .post-figure:nth-of-type(2),
+  .post-body > .post-figure:nth-of-type(6) { max-width: none; }
+  .post-body > .post-figure:nth-of-type(3),
+  .post-body > .post-figure:nth-of-type(5) { display: block; }
+  .post-figure:nth-of-type(3) img,
+  .post-figure:nth-of-type(5) img { width: 64%; }
+  .post-figure:nth-of-type(3) img { margin-left: auto; }
+  .post-figure:nth-of-type(3) .post-caption,
+  .post-figure:nth-of-type(5) .post-caption { max-width: none; margin-top: 0.65rem; }
 }
 
 /* Tableau de données (utiliser <caption>, <thead>, <th scope>) */
@@ -1030,7 +1119,10 @@
   color: rgba(255, 255, 255, 0.7);
 }
 
-/* Grille unique de 14 grandes cartes : 2 colonnes sur bureau, 1 sur mobile */
+/* Grille unique de cartes de TAILLES VARIÉES.
+   Bureau (≥ 900 px) : 12 colonnes, motif de 14 cartes (nth-child 14n+k, il se répète si l'on ajoute des guides) :
+   grande carte haute, petites décalées, carte large, « immense » (texte sur l'image), portraits, panoramas.
+   Mobile : une colonne, mais largeur et format d'image changent d'une carte à l'autre (cycle de 4). */
 .blog-grid {
   padding-top: clamp(2.5rem, 6vw, 5rem);
   padding-bottom: clamp(3.5rem, 8vw, 6.5rem);
@@ -1038,26 +1130,23 @@
 .blog-list {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
-  gap: clamp(2.25rem, 6vw, 3rem) clamp(1.5rem, 3vw, 2.5rem);
+  gap: clamp(2.5rem, 8vw, 3.75rem) 0;
   margin: 0;
   padding: 0;
   list-style: none;
-}
-@media (min-width: 800px) {
-  .blog-list {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    row-gap: clamp(3rem, 5vw, 4.25rem);
-  }
 }
 
 /* Empêche la coupure d'un nom propre composé (Aix-en-Provence) dans un titre */
 .blog-nowrap { white-space: nowrap; }
 
-/* Carte du hub : grande image, étiquette de pilier, titre. Sans cadre, sans extrait, sans date. */
+/* Carte : image, étiquette de pilier, titre, un court extrait. Sans cadre ni date. */
 .blog-card {
+  --ts-l: clamp(2.1rem, 1.3rem + 1.8vw, 2.9rem);
+  --ts-m: clamp(1.75rem, 1.15rem + 1.2vw, 2.2rem);
+  --ts-s: clamp(1.55rem, 1.1rem + 0.9vw, 1.8rem);
   display: flex;
   flex-direction: column;
-  gap: 1.25rem;
+  gap: 1.1rem;
   background: none;
   border: 0;
   border-radius: 0;
@@ -1070,9 +1159,10 @@
 }
 .blog-card-media {
   position: relative;
-  margin: 0;
+  width: var(--mw, 100%);
+  margin: 0 0 0 var(--ml, 0);
   overflow: hidden;
-  aspect-ratio: 3 / 2;
+  aspect-ratio: var(--r, 3 / 2);
   border-radius: var(--radius);
   background: var(--stone-light);
 }
@@ -1080,6 +1170,7 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: var(--op, center);
   transition: transform 0.9s ease;
 }
 .blog-card:hover .blog-card-media img { transform: scale(1.035); }
@@ -1099,16 +1190,20 @@
 .blog-card-body {
   display: flex;
   flex-direction: column;
-  gap: 0.6rem;
-  padding: 0 0.15rem;
+  gap: 0.55rem;
+  padding: 0 0.1rem;
 }
-.blog-card-body .post-card-pillar {
-  font-size: 0.78rem;
-}
+.blog-card-body .post-card-pillar { font-size: 0.78rem; }
 .blog-card-body .post-card-title {
-  font-size: clamp(1.65rem, 1.25rem + 1.15vw, 2.2rem);
+  font-size: var(--ts, var(--ts-m));
   font-weight: 500;
-  line-height: 1.16;
+  line-height: 1.15;
+}
+.blog-card-excerpt {
+  max-width: 34rem;
+  font-size: 1rem;
+  line-height: 1.55;
+  color: var(--text-mid);
 }
 .blog-card-lang {
   display: inline-block;
@@ -1123,14 +1218,101 @@
 }
 .blog-card .post-card-title > a::after { border-radius: var(--radius); }
 
-/* Mobile : l'image de chaque carte prend toute la largeur de l'écran ; le texte reste aligné sur la marge */
-@media (max-width: 700px) {
-  .blog-card-media {
+/* Mobile et tablette (< 900 px) : cycle de 4 cartes — pleine largeur d'écran / portrait à droite / pleine colonne / petit carré à gauche */
+@media (max-width: 899px) {
+  .blog-card:nth-child(4n+1) { --ts: var(--ts-l); }
+  .blog-card:nth-child(4n+1) .blog-card-media {
+    --r: 4 / 3;
+    width: auto;
     margin-left: calc(-1 * var(--blog-pad));
     margin-right: calc(-1 * var(--blog-pad));
     border-radius: 0;
   }
-  .blog-card-body { padding: 0; }
+  .blog-card:nth-child(4n+2) { --ts: var(--ts-m); }
+  .blog-card:nth-child(4n+2) .blog-card-media { --r: 4 / 5; --mw: 80%; --ml: auto; }
+  .blog-card:nth-child(4n+3) { --ts: var(--ts-m); }
+  .blog-card:nth-child(4n+3) .blog-card-media { --r: 3 / 2; }
+  .blog-card:nth-child(4n+4) { --ts: var(--ts-s); }
+  .blog-card:nth-child(4n+4) .blog-card-media { --r: 1 / 1; --mw: 66%; }
+}
+
+/* Bureau (≥ 900 px) : 12 colonnes asymétriques */
+@media (min-width: 900px) {
+  .blog-list {
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    column-gap: clamp(1.25rem, 2.4vw, 2.25rem);
+    row-gap: clamp(3rem, 6vw, 5.5rem);
+    align-items: start;
+  }
+  .blog-card {
+    grid-column: var(--c, span 6);
+    align-self: var(--self, start);
+    margin-top: var(--mt, 0);
+  }
+
+  /* 1 · grande carte large et haute */
+  .blog-card:nth-child(14n+1)  { --c: 1 / span 8;  --ts: var(--ts-l); }
+  .blog-card:nth-child(14n+1)  .blog-card-media { --r: 4 / 3; }
+  /* 2 · petit portrait, posé en bas de la rangée */
+  .blog-card:nth-child(14n+2)  { --c: 9 / span 4;  --ts: var(--ts-s); --self: end; }
+  .blog-card:nth-child(14n+2)  .blog-card-media { --r: 4 / 5; --op: 62% center; }
+  /* 3 · moyenne carrée */
+  .blog-card:nth-child(14n+3)  { --c: 1 / span 5;  --ts: var(--ts-m); }
+  .blog-card:nth-child(14n+3)  .blog-card-media { --r: 1 / 1; }
+  /* 4 · moyenne large, décalée vers le bas */
+  .blog-card:nth-child(14n+4)  { --c: 6 / span 7;  --ts: var(--ts-m); --mt: 5rem; }
+  .blog-card:nth-child(14n+4)  .blog-card-media { --r: 16 / 10; }
+  /* 5-7 · trois petites, trois formats, trois hauteurs */
+  .blog-card:nth-child(14n+5)  { --c: 1 / span 4;  --ts: var(--ts-s); }
+  .blog-card:nth-child(14n+5)  .blog-card-media { --r: 3 / 4; }
+  .blog-card:nth-child(14n+6)  { --c: 5 / span 4;  --ts: var(--ts-s); --mt: 6rem; }
+  .blog-card:nth-child(14n+6)  .blog-card-media { --r: 1 / 1; }
+  .blog-card:nth-child(14n+7)  { --c: 9 / span 4;  --ts: var(--ts-s); --mt: 2rem; }
+  .blog-card:nth-child(14n+7)  .blog-card-media { --r: 3 / 2; }
+  /* 8 · immense : toute la largeur, texte sur l'image */
+  .blog-card:nth-child(14n+8)  { --c: 1 / -1; }
+  .blog-card:nth-child(14n+8)  .blog-card-media { --r: 21 / 9; }
+  /* 9 · moyenne large */
+  .blog-card:nth-child(14n+9)  { --c: 1 / span 7;  --ts: var(--ts-m); }
+  .blog-card:nth-child(14n+9)  .blog-card-media { --r: 3 / 2; }
+  /* 10 · portrait moyen, décalé */
+  .blog-card:nth-child(14n+10) { --c: 8 / span 5;  --ts: var(--ts-m); --mt: 4rem; }
+  .blog-card:nth-child(14n+10) .blog-card-media { --r: 4 / 5; }
+  /* 11 · petite, paysage */
+  .blog-card:nth-child(14n+11) { --c: 1 / span 4;  --ts: var(--ts-s); }
+  .blog-card:nth-child(14n+11) .blog-card-media { --r: 4 / 3; }
+  /* 12 · panorama large et bas */
+  .blog-card:nth-child(14n+12) { --c: 5 / span 8;  --ts: var(--ts-l); --mt: 3rem; }
+  .blog-card:nth-child(14n+12) .blog-card-media { --r: 2 / 1; }
+  /* 13-14 · deux moyennes décalées pour finir */
+  .blog-card:nth-child(14n+13) { --c: 2 / span 5;  --ts: var(--ts-m); }
+  .blog-card:nth-child(14n+13) .blog-card-media { --r: 4 / 3; }
+  .blog-card:nth-child(14n+14) { --c: 8 / span 5;  --ts: var(--ts-m); --self: end; }
+  .blog-card:nth-child(14n+14) .blog-card-media { --r: 1 / 1; }
+
+  /* Carte « immense » : le texte se pose sur le bas de l'image (le lien étendu reste au-dessus, donc toute la carte clique) */
+  .blog-card:nth-child(14n+8) .blog-card-media::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(15, 12, 8, 0.93) 0%, rgba(15, 12, 8, 0.74) 38%, rgba(15, 12, 8, 0.34) 72%, rgba(15, 12, 8, 0.12) 100%);
+  }
+  .blog-card:nth-child(14n+8) .blog-card-note { top: 0.9rem; bottom: auto; }
+  .blog-card:nth-child(14n+8) .blog-card-body {
+    position: absolute;
+    left: clamp(1.5rem, 3.5vw, 3.5rem);
+    right: clamp(1.5rem, 3.5vw, 3.5rem);
+    bottom: clamp(1.5rem, 3vw, 2.75rem);
+    display: grid;
+    grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+    column-gap: clamp(2rem, 5vw, 5rem);
+    align-items: end;
+    padding: 0;
+  }
+  .blog-card:nth-child(14n+8) .post-card-pillar { grid-column: 1; color: var(--or-light); }
+  .blog-card:nth-child(14n+8) .post-card-title { grid-column: 1; font-size: clamp(2.2rem, 1.3rem + 2.2vw, 3.2rem); color: var(--white); text-shadow: 0 2px 24px rgba(0, 0, 0, 0.4); }
+  .blog-card:nth-child(14n+8):hover .post-card-title { color: var(--or-light); }
+  .blog-card:nth-child(14n+8) .blog-card-excerpt { grid-column: 2; grid-row: 1 / span 2; color: rgba(255, 255, 255, 0.88); }
 }
 
 

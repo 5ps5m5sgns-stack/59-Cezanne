@@ -2418,3 +2418,91 @@ html[data-lang-lock] .lang-btn { display: none !important; }
 /* Illustrations : jamais plus petites que la largeur de leur colonne, coins francs, légendes discrètes. */
 .img-xl { width: 100%; height: auto; display: block; }
 .img-bleed { width: 100vw; max-width: none; margin-left: calc(50% - 50vw); height: auto; display: block; }
+
+/* ═══ Rythme des images (07/10/2026) ═══════════════════════════════════════════════
+   Demande : ne pas avoir partout la même grande photo. Chaque scène choisit UN format :
+   immense · grande · moyenne (g|d) · petite (g|d) · duo · centre — jamais deux fois le même d'affilée.
+   Balisage (le texte vient AVANT l'image dans le DOM : titre d'abord pour le SEO et la lecture d'écran) :
+     <section class="rg rg--moyenne-g [rg--b]" aria-labelledby="t1">
+       <div class="rg-text"><h2 class="section-title" id="t1">…</h2><p class="section-lead">…</p><a class="scene-link">…</a></div>
+       <figure class="rg-fig"><img …><span class="img-tag">Illustration non contractuelle</span></figure>
+     </section>
+   duo = deux <figure class="rg-fig"> ; axonométries/plans sur fond blanc : <figure class="rg-fig rg-fig--contain">.
+   Les tailles d'écran : bureau = formats ci-dessous ; mobile (≤ 900 px) = une colonne mais les largeurs restent variées. */
+.rg {
+  --rg-gutter: max(clamp(1.25rem, 4vw, 3rem), calc((100% - var(--container)) / 2));
+  position: relative; background: var(--creme);
+  padding: clamp(3.5rem, 8vw, 8rem) var(--rg-gutter);
+}
+.rg--b { background: var(--beige); }
+.rg-fig { position: relative; margin: 0; overflow: hidden; background: #0f0c08; }
+.rg-fig img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.rg-fig--contain { background: var(--stone-light); }
+.rg-fig--contain img { object-fit: contain; }
+.rg-fig .img-tag {
+  position: absolute; left: 1rem; bottom: 1rem; z-index: 2; max-width: calc(100% - 2rem);
+  background: rgba(15,12,8,0.72); color: #fff; font-size: 0.78rem; letter-spacing: 0.03em; line-height: 1.4;
+  padding: 0.3rem 0.7rem; border-radius: 3px;
+}
+.rg-text .section-title { margin-bottom: 1rem; text-wrap: balance; }
+.rg-text .section-lead { margin: 0 0 1.2rem; max-width: 30rem; text-wrap: balance; }
+
+/* Moyenne / petite : image d'un côté, texte de l'autre */
+.rg--moyenne-g, .rg--moyenne-d, .rg--petite-g, .rg--petite-d { display: grid; align-items: center; column-gap: clamp(2rem, 6vw, 6rem); }
+.rg--moyenne-g .rg-fig, .rg--moyenne-d .rg-fig { aspect-ratio: 4 / 3; }
+.rg--petite-g .rg-fig, .rg--petite-d .rg-fig { aspect-ratio: 3 / 4; width: min(100%, 440px); }
+.rg--moyenne-g { grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); grid-template-areas: "fig text"; }
+.rg--moyenne-d { grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); grid-template-areas: "text fig"; }
+.rg--petite-g  { grid-template-columns: minmax(0, 4fr) minmax(0, 8fr); grid-template-areas: "fig text"; }
+.rg--petite-d  { grid-template-columns: minmax(0, 8fr) minmax(0, 4fr); grid-template-areas: "text fig"; }
+.rg--petite-g .rg-fig { justify-self: start; }
+.rg--petite-d .rg-fig { justify-self: end; }
+.rg--moyenne-g .rg-fig, .rg--moyenne-d .rg-fig, .rg--petite-g .rg-fig, .rg--petite-d .rg-fig { grid-area: fig; }
+.rg--moyenne-g .rg-text, .rg--moyenne-d .rg-text, .rg--petite-g .rg-text, .rg--petite-d .rg-text { grid-area: text; }
+.rg--petite-g .rg-text .section-title, .rg--petite-d .rg-text .section-title { font-size: clamp(3rem, 6vw, 5.4rem); }
+
+/* Grande : toute la largeur du conteneur, texte au-dessus */
+.rg--grande { display: grid; row-gap: clamp(1.5rem, 3vw, 3rem); }
+.rg--grande .rg-fig { aspect-ratio: 16 / 8; }
+.rg--grande .rg-text { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); gap: 1rem 4rem; align-items: end; }
+.rg--grande .rg-text .section-title, .rg--grande .rg-text .section-lead { margin-bottom: 0; }
+
+/* Centre : image moyenne centrée, texte centré */
+.rg--centre { display: grid; justify-items: center; text-align: center; row-gap: clamp(1.5rem, 3vw, 3rem); }
+.rg--centre .rg-text { max-width: 44rem; }
+.rg--centre .rg-text .section-lead { margin-inline: auto; }
+.rg--centre .rg-fig { width: min(100%, 820px); aspect-ratio: 1 / 1; }
+
+/* Duo : une image moyenne + une petite décalée en hauteur */
+.rg--duo { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: clamp(1rem, 3vw, 2.5rem); row-gap: clamp(1.5rem, 3vw, 3rem); }
+.rg--duo .rg-text { grid-column: 1 / -1; display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); gap: 1rem 4rem; align-items: end; }
+.rg--duo .rg-text .section-title, .rg--duo .rg-text .section-lead { margin-bottom: 0; }
+.rg--duo .rg-fig:nth-of-type(1) { grid-column: 1 / 8; aspect-ratio: 4 / 3; }
+.rg--duo .rg-fig:nth-of-type(2) { grid-column: 9 / 13; aspect-ratio: 3 / 4; margin-top: clamp(3rem, 9vw, 9rem); }
+
+/* Immense : plein écran, texte superposé en bas */
+.rg--immense { display: grid; padding: 0; min-height: clamp(560px, 100vh, 1000px); background: #0f0c08; color: #fff; }
+.rg--immense > .rg-fig, .rg--immense > .rg-text { grid-area: 1 / 1; }
+.rg--immense .rg-fig { height: 100%; }
+.rg--immense .rg-fig::after { content: ""; position: absolute; inset: 0; background: linear-gradient(to top, rgba(15,12,8,0.86) 0%, rgba(15,12,8,0.35) 45%, rgba(15,12,8,0.08) 100%); }
+.rg--immense .rg-text { position: relative; z-index: 2; align-self: end; padding: 0 var(--rg-gutter) clamp(3rem, 7vw, 6rem); }
+.rg--immense .rg-text .section-title { color: #fff; text-shadow: 0 2px 18px rgba(0,0,0,0.35); }
+.rg--immense .rg-text .section-lead { color: rgba(255,255,255,0.94); }
+.rg--immense .rg-text .scene-link { color: var(--or-light); }
+.rg--immense .rg-fig .img-tag { left: auto; right: 1rem; }
+
+@media (max-width: 900px) {
+  .rg--moyenne-g, .rg--moyenne-d, .rg--petite-g, .rg--petite-d { grid-template-columns: minmax(0, 1fr); grid-template-areas: "text" "fig"; row-gap: 1.75rem; }
+  .rg--petite-g .rg-fig, .rg--petite-d .rg-fig { width: 64%; }
+  .rg--grande .rg-fig { aspect-ratio: 4 / 3; }
+  .rg--grande .rg-text, .rg--duo .rg-text { grid-template-columns: minmax(0, 1fr); }
+  .rg--centre .rg-fig { aspect-ratio: 4 / 5; }
+  .rg--duo .rg-fig:nth-of-type(1) { grid-column: 1 / -1; }
+  .rg--duo .rg-fig:nth-of-type(2) { grid-column: 5 / -1; margin-top: 0; }
+  .rg--immense { min-height: 88vh; }
+}
+
+/* Lien de scène (« Découvrir… → ») : défini ici pour que le système .rg soit autonome ; les pages peuvent le surcharger. */
+.scene-link { display: inline-block; padding: 0.7rem 0; font-size: 1.05rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--or-texte); }
+.scene-link span { text-decoration: underline; text-underline-offset: 6px; text-decoration-thickness: 1px; }
+.scene-link:hover { color: var(--text); }

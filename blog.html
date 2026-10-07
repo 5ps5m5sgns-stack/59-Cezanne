@@ -2,12 +2,15 @@
 <!--
   HUB DU BLOG — servi sur /blog (fichier site/blog.html). Page française seule (data-lang-lock).
   Styles : /blog.css (classes .blog-* et .post-*).
-  Budget de texte visible : ≈ 25 mots hors cartes (H1, une phrase, une question). Une seule grille de cartes :
-  grande image, étiquette de pilier, titre. Pas d'extrait, pas de date, pas d'introduction, pas de rubriques.
+  Hors cartes : H1, une phrase, une question (≈ 21 mots). Une seule grille de cartes de tailles variées
+  (12 colonnes sur bureau, motif de 14 cartes qui se répète, voir blog.css §8) : image, étiquette de pilier, titre,
+  UN court extrait (≤ 14 mots, repris de la meta description de l'article). Pas de date, pas d'introduction, pas de rubriques.
+  La taille d'une carte dépend de sa POSITION dans la liste (nth-child), pas d'une classe : la 8e est la carte
+  « immense » (texte sur l'image), la 1re la grande carte haute.
 
   AJOUTER / MODIFIER UN ARTICLE (2 endroits, tous dans ce fichier) :
     1. Copier un bloc <li class="post-card blog-card"> … </li> dans le <ul class="blog-list">
-       (changer : lien /blog/<slug>, titre, image + alt, étiquette de pilier). Les 3 guides piliers
+       (changer : lien /blog/<slug>, titre, extrait, image + alt, étiquette de pilier ; adapter `sizes` à la position). Les 3 guides piliers
        (achat neuf, VEFA, quartier des Lauves) restent en tête de grille.
        Les ancres #guide-achat, #lauves, #sainte-victoire (anciens liens de actualites.html) sont sur les cartes 1, 3, 4.
     2. Ajouter (ou corriger) l'entrée correspondante dans l'ItemList du JSON-LD ci-dessous (position, url, name)
@@ -250,155 +253,169 @@
           <!-- Guide 1 : acheter-appartement-neuf-aix-en-provence -->
           <li class="post-card blog-card" id="guide-achat">
             <figure class="blog-card-media">
-              <img src="/Photo%2059%20C%C3%A9zanne/3D%20Groove%20Architecture/Edited/Enscape_2023-03-10-15-39-22-enhanced-800w.webp" srcset="/Photo%2059%20C%C3%A9zanne/3D%20Groove%20Architecture/Edited/Enscape_2023-03-10-15-39-22-enhanced-800w.webp 800w, /Photo%2059%20C%C3%A9zanne/3D%20Groove%20Architecture/Edited/Enscape_2023-03-10-15-39-22-enhanced-1200w.webp 1200w" sizes="(min-width: 1320px) 610px, (min-width: 800px) calc(50vw - 3.5rem), calc(100vw - 2.5rem)" alt="Rendu 3D de l'angle de l'immeuble sous des pins, avec un mur de soutènement en pierre et un jardin engazonné" width="800" height="450" loading="lazy" decoding="async" />
+              <img src="/Photo%2059%20C%C3%A9zanne/3D%20Groove%20Architecture/Edited/Enscape_2023-03-10-15-39-22-enhanced-800w.webp" srcset="/Photo%2059%20C%C3%A9zanne/3D%20Groove%20Architecture/Edited/Enscape_2023-03-10-15-39-22-enhanced-800w.webp 800w, /Photo%2059%20C%C3%A9zanne/3D%20Groove%20Architecture/Edited/Enscape_2023-03-10-15-39-22-enhanced-1200w.webp 1200w" sizes="(min-width: 1320px) 825px, (min-width: 900px) 62vw, 100vw" alt="Rendu 3D de l'angle de l'immeuble sous des pins, avec un mur de soutènement en pierre et un jardin engazonné" width="800" height="450" loading="lazy" decoding="async" />
               <figcaption class="blog-card-note">Illustration non contractuelle</figcaption>
             </figure>
             <div class="blog-card-body">
               <p class="post-card-pillar">Acheter dans le neuf</p>
               <h2 class="post-card-title"><a href="/blog/acheter-appartement-neuf-aix-en-provence">Acheter un appartement neuf à <span class="blog-nowrap">Aix-en-Provence</span> : le guide</a></h2>
+              <p class="blog-card-excerpt">Étapes, garanties, frais et aides pour acheter un appartement neuf, selon des sources officielles.</p>
             </div>
           </li>
           <!-- Guide 2 : vefa-achat-sur-plan-etapes-garanties -->
           <li class="post-card blog-card">
             <figure class="blog-card-media">
-              <img src="/Photo%2059%20C%C3%A9zanne/3D%20Groove%20Architecture/Edited/050-APC-230309-INSERTION-enhanced-800w.webp" srcset="/Photo%2059%20C%C3%A9zanne/3D%20Groove%20Architecture/Edited/050-APC-230309-INSERTION-enhanced-800w.webp 800w, /Photo%2059%20C%C3%A9zanne/3D%20Groove%20Architecture/Edited/050-APC-230309-INSERTION-enhanced-1200w.webp 1200w" sizes="(min-width: 1320px) 610px, (min-width: 800px) calc(50vw - 3.5rem), calc(100vw - 2.5rem)" alt="Photomontage de l'immeuble vu depuis la rue, derrière un mur et de la végétation" width="800" height="541" loading="lazy" decoding="async" />
+              <img src="/Photo%2059%20C%C3%A9zanne/3D%20Groove%20Architecture/Edited/050-APC-230309-INSERTION-enhanced-800w.webp" srcset="/Photo%2059%20C%C3%A9zanne/3D%20Groove%20Architecture/Edited/050-APC-230309-INSERTION-enhanced-800w.webp 800w, /Photo%2059%20C%C3%A9zanne/3D%20Groove%20Architecture/Edited/050-APC-230309-INSERTION-enhanced-1200w.webp 1200w" sizes="(min-width: 1320px) 400px, (min-width: 900px) 30vw, 80vw" alt="Photomontage de l'immeuble vu depuis la rue, derrière un mur et de la végétation" width="800" height="541" loading="lazy" decoding="async" />
               <figcaption class="blog-card-note">Illustration non contractuelle</figcaption>
             </figure>
             <div class="blog-card-body">
               <p class="post-card-pillar">Acheter dans le neuf</p>
               <h2 class="post-card-title"><a href="/blog/vefa-achat-sur-plan-etapes-garanties">VEFA : les étapes d'un achat sur plan et les garanties</a></h2>
+              <p class="blog-card-excerpt">De la réservation aux clés : dépôt de garantie, appels de fonds, garanties.</p>
             </div>
           </li>
           <!-- Guide 3 : quartier-des-lauves-aix-en-provence -->
           <li class="post-card blog-card" id="lauves">
             <figure class="blog-card-media">
-              <img src="/Photo%2059%20C%C3%A9zanne/3D%20Groove%20Architecture/Edited/insertion-nord-800w.webp" srcset="/Photo%2059%20C%C3%A9zanne/3D%20Groove%20Architecture/Edited/insertion-nord-800w.webp 800w, /Photo%2059%20C%C3%A9zanne/3D%20Groove%20Architecture/Edited/insertion-nord-1200w.webp 1200w" sizes="(min-width: 1320px) 610px, (min-width: 800px) calc(50vw - 3.5rem), calc(100vw - 2.5rem)" alt="Vue aérienne oblique d'un quartier de villas d'Aix-en-Provence, avec ses jardins et ses routes" width="800" height="600" loading="lazy" decoding="async" />
+              <img src="/Photo%2059%20C%C3%A9zanne/3D%20Groove%20Architecture/Edited/insertion-nord-800w.webp" srcset="/Photo%2059%20C%C3%A9zanne/3D%20Groove%20Architecture/Edited/insertion-nord-800w.webp 800w, /Photo%2059%20C%C3%A9zanne/3D%20Groove%20Architecture/Edited/insertion-nord-1200w.webp 1200w" sizes="(min-width: 1320px) 510px, (min-width: 900px) 38vw, 90vw" alt="Vue aérienne oblique d'un quartier de villas d'Aix-en-Provence, avec ses jardins et ses routes" width="800" height="600" loading="lazy" decoding="async" />
               <figcaption class="blog-card-note">Illustration non contractuelle</figcaption>
             </figure>
             <div class="blog-card-body">
               <p class="post-card-pillar">Vivre côté Lauves et Sainte-Victoire</p>
               <h2 class="post-card-title"><a href="/blog/quartier-des-lauves-aix-en-provence">Quartier des Lauves à <span class="blog-nowrap">Aix-en-Provence</span> : le guide</a></h2>
+              <p class="blog-card-excerpt">Situation, accès, écoles, patrimoine cézannien : ce que l'on peut vérifier sur le quartier.</p>
             </div>
           </li>
           <!-- Guide 4 : appartement-vue-sainte-victoire-aix-en-provence -->
           <li class="post-card blog-card" id="sainte-victoire">
             <figure class="blog-card-media">
-              <img src="/Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_JARDIN_LOGEMENT-04_Panorama_St-Victoire-800w.webp" srcset="/Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_JARDIN_LOGEMENT-04_Panorama_St-Victoire-800w.webp 800w, /Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_JARDIN_LOGEMENT-04_Panorama_St-Victoire-1200w.webp 1200w" sizes="(min-width: 1320px) 610px, (min-width: 800px) calc(50vw - 3.5rem), calc(100vw - 2.5rem)" alt="Rendu 3D du jardin et de la terrasse du lot 4, avec un salon d'extérieur et la montagne à l'horizon" width="800" height="512" loading="lazy" decoding="async" />
+              <img src="/Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_JARDIN_LOGEMENT-04_Panorama_St-Victoire-800w.webp" srcset="/Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_JARDIN_LOGEMENT-04_Panorama_St-Victoire-800w.webp 800w, /Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_JARDIN_LOGEMENT-04_Panorama_St-Victoire-1200w.webp 1200w" sizes="(min-width: 1320px) 715px, (min-width: 900px) 54vw, 66vw" alt="Rendu 3D du jardin et de la terrasse du lot 4, avec un salon d'extérieur et la montagne à l'horizon" width="800" height="512" loading="lazy" decoding="async" />
               <figcaption class="blog-card-note">Illustration non contractuelle</figcaption>
             </figure>
             <div class="blog-card-body">
               <p class="post-card-pillar">Vivre côté Lauves et Sainte-Victoire</p>
               <h2 class="post-card-title"><a href="/blog/appartement-vue-sainte-victoire-aix-en-provence">Un appartement avec vue sur la Sainte-Victoire à <span class="blog-nowrap">Aix-en-Provence</span></a></h2>
+              <p class="blog-card-excerpt">Orientation, hauteur, vis-à-vis, urbanisme : comment juger une vue avant d'acheter.</p>
             </div>
           </li>
           <!-- Guide 5 : cezanne-lauves-atelier-terrain-des-peintres -->
           <li class="post-card blog-card">
             <figure class="blog-card-media">
-              <img src="/Photo%2059%20C%C3%A9zanne/3D%20Groove%20Architecture/Edited/insertion-ouest-800w.webp" srcset="/Photo%2059%20C%C3%A9zanne/3D%20Groove%20Architecture/Edited/insertion-ouest-800w.webp 800w, /Photo%2059%20C%C3%A9zanne/3D%20Groove%20Architecture/Edited/insertion-ouest-1200w.webp 1200w" sizes="(min-width: 1320px) 610px, (min-width: 800px) calc(50vw - 3.5rem), calc(100vw - 2.5rem)" alt="Insertion aérienne du projet dans son environnement, avec la montagne Sainte-Victoire à l'horizon" width="800" height="600" loading="lazy" decoding="async" />
+              <img src="/Photo%2059%20C%C3%A9zanne/3D%20Groove%20Architecture/Edited/insertion-ouest-800w.webp" srcset="/Photo%2059%20C%C3%A9zanne/3D%20Groove%20Architecture/Edited/insertion-ouest-800w.webp 800w, /Photo%2059%20C%C3%A9zanne/3D%20Groove%20Architecture/Edited/insertion-ouest-1200w.webp 1200w" sizes="(min-width: 1320px) 400px, (min-width: 900px) 30vw, 100vw" alt="Insertion aérienne du projet dans son environnement, avec la montagne Sainte-Victoire à l'horizon" width="800" height="600" loading="lazy" decoding="async" />
               <figcaption class="blog-card-note">Illustration non contractuelle</figcaption>
             </figure>
             <div class="blog-card-body">
               <p class="post-card-pillar">Vivre côté Lauves et Sainte-Victoire</p>
               <h2 class="post-card-title"><a href="/blog/cezanne-lauves-atelier-terrain-des-peintres">Cézanne aux Lauves : l'atelier et le Terrain des Peintres</a></h2>
+              <p class="blog-card-excerpt">L'atelier des Lauves, le Terrain des Peintres, la Sainte-Victoire : un parcours cézannien.</p>
             </div>
           </li>
           <!-- Guide 6 : appartement-de-luxe-aix-en-provence-criteres -->
           <li class="post-card blog-card">
             <figure class="blog-card-media">
-              <img src="/Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_PISCINE_NUIT_Panorama_St-Victoire%202-800w.webp" srcset="/Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_PISCINE_NUIT_Panorama_St-Victoire%202-800w.webp 800w, /Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_PISCINE_NUIT_Panorama_St-Victoire%202-1200w.webp 1200w" sizes="(min-width: 1320px) 610px, (min-width: 800px) calc(50vw - 3.5rem), calc(100vw - 2.5rem)" alt="Rendu 3D de la piscine éclairée de nuit, avec son solarium et la façade en pierre claire" width="800" height="480" loading="lazy" decoding="async" />
+              <img src="/Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_PISCINE_NUIT_Panorama_St-Victoire%202-800w.webp" srcset="/Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_PISCINE_NUIT_Panorama_St-Victoire%202-800w.webp 800w, /Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_PISCINE_NUIT_Panorama_St-Victoire%202-1200w.webp 1200w" sizes="(min-width: 1320px) 400px, (min-width: 900px) 30vw, 80vw" alt="Rendu 3D de la piscine éclairée de nuit, avec son solarium et la façade en pierre claire" width="800" height="480" loading="lazy" decoding="async" />
               <figcaption class="blog-card-note">Illustration non contractuelle</figcaption>
             </figure>
             <div class="blog-card-body">
               <p class="post-card-pillar">Luxe et prestations</p>
               <h2 class="post-card-title"><a href="/blog/appartement-de-luxe-aix-en-provence-criteres">Appartement de luxe à <span class="blog-nowrap">Aix-en-Provence</span> : huit critères</a></h2>
+              <p class="blog-card-excerpt">Emplacement, volumes, extérieurs, exécution, acoustique, sécurité, services, documents : huit critères.</p>
             </div>
           </li>
           <!-- Guide 7 : appartement-jardin-prive-aix-en-provence -->
           <li class="post-card blog-card">
             <figure class="blog-card-media">
-              <img src="/Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_JARDIN_V2_LOGEMENT-04_Panorama_St-Victoire-800w.webp" srcset="/Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_JARDIN_V2_LOGEMENT-04_Panorama_St-Victoire-800w.webp 800w, /Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_JARDIN_V2_LOGEMENT-04_Panorama_St-Victoire-1200w.webp 1200w" sizes="(min-width: 1320px) 610px, (min-width: 800px) calc(50vw - 3.5rem), calc(100vw - 2.5rem)" alt="Rendu 3D de la façade du lot 4, baie coulissante ouverte sur le séjour et le jardin" width="800" height="512" loading="lazy" decoding="async" />
+              <img src="/Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_JARDIN_V2_LOGEMENT-04_Panorama_St-Victoire-800w.webp" srcset="/Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_JARDIN_V2_LOGEMENT-04_Panorama_St-Victoire-800w.webp 800w, /Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_JARDIN_V2_LOGEMENT-04_Panorama_St-Victoire-1200w.webp 1200w" sizes="(min-width: 1320px) 400px, (min-width: 900px) 30vw, 90vw" alt="Rendu 3D de la façade du lot 4, baie coulissante ouverte sur le séjour et le jardin" width="800" height="512" loading="lazy" decoding="async" />
               <figcaption class="blog-card-note">Illustration non contractuelle</figcaption>
             </figure>
             <div class="blog-card-body">
               <p class="post-card-pillar">Luxe et prestations</p>
               <h2 class="post-card-title"><a href="/blog/appartement-jardin-prive-aix-en-provence">Appartement avec jardin privatif à <span class="blog-nowrap">Aix-en-Provence</span> : les points à vérifier</a></h2>
+              <p class="blog-card-excerpt">Jouissance privative, entretien, charges, vis-à-vis, étanchéité : ce qu'il faut vérifier avant d'acheter.</p>
             </div>
           </li>
           <!-- Guide 8 : frais-de-notaire-neuf-tva-taxe-fonciere -->
           <li class="post-card blog-card">
             <figure class="blog-card-media">
-              <img src="/Photo%2059%20C%C3%A9zanne/3D%20interieur/LOGEMENT_1_A_02-800w.webp" srcset="/Photo%2059%20C%C3%A9zanne/3D%20interieur/LOGEMENT_1_A_02-800w.webp 800w, /Photo%2059%20C%C3%A9zanne/3D%20interieur/LOGEMENT_1_A_02-1200w.webp 1200w" sizes="(min-width: 1320px) 610px, (min-width: 800px) calc(50vw - 3.5rem), calc(100vw - 2.5rem)" alt="Rendu 3D du séjour du lot 1, avec la salle à manger et la cuisine ouvertes sur le jardin" width="800" height="480" loading="lazy" decoding="async" />
+              <img src="/Photo%2059%20C%C3%A9zanne/3D%20interieur/LOGEMENT_1_A_02-800w.webp" srcset="/Photo%2059%20C%C3%A9zanne/3D%20interieur/LOGEMENT_1_A_02-800w.webp 800w, /Photo%2059%20C%C3%A9zanne/3D%20interieur/LOGEMENT_1_A_02-1200w.webp 1200w" sizes="(min-width: 1320px) 1250px, (min-width: 900px) 92vw, 66vw" alt="Rendu 3D du séjour du lot 1, avec la salle à manger et la cuisine ouvertes sur le jardin" width="800" height="480" loading="lazy" decoding="async" />
               <figcaption class="blog-card-note">Illustration non contractuelle</figcaption>
             </figure>
             <div class="blog-card-body">
               <p class="post-card-pillar">Budget, financement, fiscalité</p>
               <h2 class="post-card-title"><a href="/blog/frais-de-notaire-neuf-tva-taxe-fonciere">Frais de notaire, TVA, taxe foncière : ce que coûte un appartement neuf</a></h2>
+              <p class="blog-card-excerpt">Frais de notaire réduits dans le neuf, TVA, taxe foncière, taxe d'aménagement.</p>
             </div>
           </li>
           <!-- Guide 9 : financer-appartement-neuf-ptz-appels-de-fonds -->
           <li class="post-card blog-card">
             <figure class="blog-card-media">
-              <img src="/Photo%2059%20C%C3%A9zanne/3D%20interieur/LOGEMENT_2_02-800w.webp" srcset="/Photo%2059%20C%C3%A9zanne/3D%20interieur/LOGEMENT_2_02-800w.webp 800w, /Photo%2059%20C%C3%A9zanne/3D%20interieur/LOGEMENT_2_02-1200w.webp 1200w" sizes="(min-width: 1320px) 610px, (min-width: 800px) calc(50vw - 3.5rem), calc(100vw - 2.5rem)" alt="Rendu 3D du séjour et de la salle à manger du lot 2, avec de grandes baies vitrées" width="800" height="480" loading="lazy" decoding="async" />
+              <img src="/Photo%2059%20C%C3%A9zanne/3D%20interieur/LOGEMENT_2_02-800w.webp" srcset="/Photo%2059%20C%C3%A9zanne/3D%20interieur/LOGEMENT_2_02-800w.webp 800w, /Photo%2059%20C%C3%A9zanne/3D%20interieur/LOGEMENT_2_02-1200w.webp 1200w" sizes="(min-width: 1320px) 715px, (min-width: 900px) 54vw, 100vw" alt="Rendu 3D du séjour et de la salle à manger du lot 2, avec de grandes baies vitrées" width="800" height="480" loading="lazy" decoding="async" />
               <figcaption class="blog-card-note">Illustration non contractuelle</figcaption>
             </figure>
             <div class="blog-card-body">
               <p class="post-card-pillar">Budget, financement, fiscalité</p>
               <h2 class="post-card-title"><a href="/blog/financer-appartement-neuf-ptz-appels-de-fonds">Financer un appartement neuf : apport, PTZ et appels de fonds</a></h2>
+              <p class="blog-card-excerpt">Appels de fonds en VEFA, PTZ, apport, assurance, prêt relais : l'essentiel.</p>
             </div>
           </li>
           <!-- Guide 10 : apres-pinel-dispositif-jeanbrun -->
           <li class="post-card blog-card">
             <figure class="blog-card-media">
-              <img src="/Photo%2059%20C%C3%A9zanne/3D%20Groove%20Architecture/Edited/PISCINE-enhanced-800w.webp" srcset="/Photo%2059%20C%C3%A9zanne/3D%20Groove%20Architecture/Edited/PISCINE-enhanced-800w.webp 800w, /Photo%2059%20C%C3%A9zanne/3D%20Groove%20Architecture/Edited/PISCINE-enhanced-1200w.webp 1200w" sizes="(min-width: 1320px) 610px, (min-width: 800px) calc(50vw - 3.5rem), calc(100vw - 2.5rem)" alt="Rendu 3D de la piscine, de la pelouse et de la façade de la résidence, de jour" width="800" height="450" loading="lazy" decoding="async" />
+              <img src="/Photo%2059%20C%C3%A9zanne/3D%20Groove%20Architecture/Edited/PISCINE-enhanced-800w.webp" srcset="/Photo%2059%20C%C3%A9zanne/3D%20Groove%20Architecture/Edited/PISCINE-enhanced-800w.webp 800w, /Photo%2059%20C%C3%A9zanne/3D%20Groove%20Architecture/Edited/PISCINE-enhanced-1200w.webp 1200w" sizes="(min-width: 1320px) 510px, (min-width: 900px) 38vw, 80vw" alt="Rendu 3D de la piscine, de la pelouse et de la façade de la résidence, de jour" width="800" height="450" loading="lazy" decoding="async" />
               <figcaption class="blog-card-note">Illustration non contractuelle</figcaption>
             </figure>
             <div class="blog-card-body">
               <p class="post-card-pillar">Investir et patrimoine</p>
               <h2 class="post-card-title"><a href="/blog/apres-pinel-dispositif-jeanbrun">Après le Pinel : le dispositif Jeanbrun expliqué</a></h2>
+              <p class="blog-card-excerpt">Fin du Pinel, dispositif Jeanbrun : conditions, durée d'engagement, plafonds. Sans conseil personnalisé.</p>
             </div>
           </li>
           <!-- Guide 11 : acheter-aix-residence-secondaire-investissement -->
           <li class="post-card blog-card">
             <figure class="blog-card-media">
-              <img src="/Photo%2059%20C%C3%A9zanne/Axonometrie/Logement%208/LOGEMENT_08_3D_FB-800w.webp" srcset="/Photo%2059%20C%C3%A9zanne/Axonometrie/Logement%208/LOGEMENT_08_3D_FB-800w.webp 800w, /Photo%2059%20C%C3%A9zanne/Axonometrie/Logement%208/LOGEMENT_08_3D_FB-1200w.webp 1200w" sizes="(min-width: 1320px) 610px, (min-width: 800px) calc(50vw - 3.5rem), calc(100vw - 2.5rem)" alt="Axonométrie meublée du lot 8, un T4 avec son jardin" width="800" height="533" loading="lazy" decoding="async" />
+              <img src="/Photo%2059%20C%C3%A9zanne/Axonometrie/Logement%208/LOGEMENT_08_3D_FB-800w.webp" srcset="/Photo%2059%20C%C3%A9zanne/Axonometrie/Logement%208/LOGEMENT_08_3D_FB-800w.webp 800w, /Photo%2059%20C%C3%A9zanne/Axonometrie/Logement%208/LOGEMENT_08_3D_FB-1200w.webp 1200w" sizes="(min-width: 1320px) 400px, (min-width: 900px) 30vw, 90vw" alt="Axonométrie meublée du lot 8, un T4 avec son jardin" width="800" height="533" loading="lazy" decoding="async" />
               <figcaption class="blog-card-note">Illustration non contractuelle</figcaption>
             </figure>
             <div class="blog-card-body">
               <p class="post-card-pillar">Investir et patrimoine</p>
               <h2 class="post-card-title"><a href="/blog/acheter-aix-residence-secondaire-investissement">Résidence principale, secondaire ou investissement : acheter à Aix selon votre projet</a></h2>
+              <p class="blog-card-excerpt">Taxe d'habitation, taxe foncière, revente, location courte durée : sources officielles.</p>
             </div>
           </li>
           <!-- Guide 12 : quitter-paris-pour-aix-en-provence -->
           <li class="post-card blog-card">
             <figure class="blog-card-media">
-              <img src="/Photo%2059%20C%C3%A9zanne/3D%20Groove%20Architecture/Edited/insertion-est-800w.webp" srcset="/Photo%2059%20C%C3%A9zanne/3D%20Groove%20Architecture/Edited/insertion-est-800w.webp 800w, /Photo%2059%20C%C3%A9zanne/3D%20Groove%20Architecture/Edited/insertion-est-1200w.webp 1200w" sizes="(min-width: 1320px) 610px, (min-width: 800px) calc(50vw - 3.5rem), calc(100vw - 2.5rem)" alt="Insertion aérienne du projet vue du dessus, dans un quartier de villas" width="800" height="600" loading="lazy" decoding="async" />
+              <img src="/Photo%2059%20C%C3%A9zanne/3D%20Groove%20Architecture/Edited/insertion-est-800w.webp" srcset="/Photo%2059%20C%C3%A9zanne/3D%20Groove%20Architecture/Edited/insertion-est-800w.webp 800w, /Photo%2059%20C%C3%A9zanne/3D%20Groove%20Architecture/Edited/insertion-est-1200w.webp 1200w" sizes="(min-width: 1320px) 825px, (min-width: 900px) 62vw, 66vw" alt="Insertion aérienne du projet vue du dessus, dans un quartier de villas" width="800" height="600" loading="lazy" decoding="async" />
               <figcaption class="blog-card-note">Illustration non contractuelle</figcaption>
             </figure>
             <div class="blog-card-body">
               <p class="post-card-pillar">Parisiens et acquéreurs internationaux</p>
               <h2 class="post-card-title"><a href="/blog/quitter-paris-pour-aix-en-provence">Quitter Paris pour <span class="blog-nowrap">Aix-en-Provence</span> : le guide pratique</a></h2>
+              <p class="blog-card-excerpt">TGV, télétravail, écoles, climat, quartiers : les questions concrètes à se poser.</p>
             </div>
           </li>
           <!-- Guide 13 : acheter-appartement-aix-en-provence-non-resident -->
           <li class="post-card blog-card">
             <figure class="blog-card-media">
-              <img src="/Photo%2059%20C%C3%A9zanne/Axonometrie/Logement%206/LOGEMENT_06_3D_FB-800w.webp" srcset="/Photo%2059%20C%C3%A9zanne/Axonometrie/Logement%206/LOGEMENT_06_3D_FB-800w.webp 800w, /Photo%2059%20C%C3%A9zanne/Axonometrie/Logement%206/LOGEMENT_06_3D_FB-1200w.webp 1200w" sizes="(min-width: 1320px) 610px, (min-width: 800px) calc(50vw - 3.5rem), calc(100vw - 2.5rem)" alt="Axonométrie meublée du lot 6, un T2 avec terrasse et jardin" width="800" height="533" loading="lazy" decoding="async" />
+              <img src="/Photo%2059%20C%C3%A9zanne/Axonometrie/Logement%206/LOGEMENT_06_3D_FB-800w.webp" srcset="/Photo%2059%20C%C3%A9zanne/Axonometrie/Logement%206/LOGEMENT_06_3D_FB-800w.webp 800w, /Photo%2059%20C%C3%A9zanne/Axonometrie/Logement%206/LOGEMENT_06_3D_FB-1200w.webp 1200w" sizes="(min-width: 1320px) 510px, (min-width: 900px) 38vw, 100vw" alt="Axonométrie meublée du lot 6, un T2 avec terrasse et jardin" width="800" height="533" loading="lazy" decoding="async" />
               <figcaption class="blog-card-note">Illustration non contractuelle</figcaption>
             </figure>
             <div class="blog-card-body">
               <p class="post-card-pillar">Parisiens et acquéreurs internationaux</p>
               <h2 class="post-card-title"><a href="/blog/acheter-appartement-aix-en-provence-non-resident">Acheter un appartement à <span class="blog-nowrap">Aix-en-Provence</span> quand on vit à l'étranger</a></h2>
+              <p class="blog-card-excerpt">Notaire, origine des fonds, fiscalité selon l'usage, procuration : ce qu'un non-résident doit savoir.</p>
             </div>
           </li>
           <!-- Guide 14 : buying-new-build-apartment-aix-en-provence -->
           <li class="post-card blog-card">
             <figure class="blog-card-media">
-              <img src="/Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_EXT_Panorama_St-Victoire-800w.webp" srcset="/Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_EXT_Panorama_St-Victoire-800w.webp 800w, /Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_EXT_Panorama_St-Victoire-1200w.webp 1200w" sizes="(min-width: 1320px) 610px, (min-width: 800px) calc(50vw - 3.5rem), calc(100vw - 2.5rem)" alt="Rendu 3D de la façade de la résidence côté avenue, avec le portail, le mur de pierre et la piscine" width="800" height="480" loading="lazy" decoding="async" />
+              <img src="/Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_EXT_Panorama_St-Victoire-800w.webp" srcset="/Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_EXT_Panorama_St-Victoire-800w.webp 800w, /Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_EXT_Panorama_St-Victoire-1200w.webp 1200w" sizes="(min-width: 1320px) 510px, (min-width: 900px) 38vw, 80vw" alt="Rendu 3D de la façade de la résidence côté avenue, avec le portail, le mur de pierre et la piscine" width="800" height="480" loading="lazy" decoding="async" />
               <figcaption class="blog-card-note">Illustration non contractuelle</figcaption>
             </figure>
             <div class="blog-card-body">
               <p class="post-card-pillar">Parisiens et acquéreurs internationaux <span class="blog-card-lang" lang="en">English</span></p>
               <h2 class="post-card-title"><a href="/blog/buying-new-build-apartment-aix-en-provence" lang="en" hreflang="en">Buying a new-build apartment in <span class="blog-nowrap">Aix-en-Provence</span>: a guide for international buyers</a></h2>
+              <p class="blog-card-excerpt" lang="en">Reservation, payment stages, completion guarantee, costs and non-resident points.</p>
             </div>
           </li>
       </ul>

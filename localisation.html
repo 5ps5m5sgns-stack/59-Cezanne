@@ -32,73 +32,108 @@
     /* ── Page /localisation : styles locaux (style.css n'est pas modifié) ── */
     .page-hero { height: 100vh; min-height: 560px; }
     .page-hero .hero-title { max-width: 1100px; }
+    .page-hero .hero-subtitle { max-width: 40rem; color: rgba(255,255,255,.94); }
     .page-hero .hero-overlay { background: linear-gradient(to top, rgba(15,12,8,.88) 0%, rgba(15,12,8,.62) 45%, rgba(15,12,8,.28) 100%); }
-    .page-hero .hero-title { text-shadow: 0 1px 14px rgba(0,0,0,.5); }
+    .page-hero .hero-title, .page-hero .hero-subtitle { text-shadow: 0 1px 14px rgba(0,0,0,.5); }
     .hero-credit {
       position: absolute; right: 1.25rem; bottom: 1rem; z-index: 2; margin: 0;
       padding: .25rem .65rem; border-radius: 3px; background: rgba(15,12,8,.6);
       color: rgba(255,255,255,.92); font-size: .8rem; letter-spacing: .03em;
     }
-    .loc-link { color: var(--or-texte); font-weight: 700; text-decoration: underline; text-underline-offset: 4px; }
-    .loc-link:hover { text-decoration-thickness: 2px; }
-    .section-dark .loc-link { color: var(--or-light); }
+    .loc-link, .scene-link { color: var(--or-texte); font-weight: 700; text-decoration: underline; text-underline-offset: 4px; }
+    .loc-link:hover, .scene-link:hover { text-decoration-thickness: 2px; }
+    .scene-link { display: inline-block; margin-top: .4rem; font-size: 1.15rem; }
+    .rg--grande .rg-text .section-lead { margin-bottom: .9rem; }
+    .rg--centre .rg-text .section-lead { max-width: 40rem; }
+    .rg-src { margin: 1.2rem 0 0; max-width: 30rem; font-size: .85rem; line-height: 1.6; color: var(--text-mid); }
+    .rg--centre .rg-src { margin-inline: auto; }
+    .rg-fig .img-tag { max-width: calc(100% - 2rem); }
 
-    .page-hero + .section .section-header, .loc-sector .section-header, #carte .section-header { max-width: 1000px; }
-
-    /* Scène 1 : temps de trajet en grands chiffres (le libellé précède le chiffre dans le DOM pour les lecteurs d'écran) */
-    .loc-times { display: grid; grid-template-columns: repeat(6, 1fr); gap: 3.5rem 1.5rem; text-align: center; }
-    .loc-times li { grid-column: span 2; display: flex; flex-direction: column-reverse; justify-content: flex-end; align-items: center; gap: .8rem; padding-top: 1.6rem; border-top: 1px solid var(--border); }
-    .loc-times li:nth-child(n+4) { grid-column: span 3; }
-    .loc-num { font-family: var(--font-serif); font-size: clamp(3.8rem, 6.4vw, 5rem); font-weight: 300; line-height: 1; color: var(--or-texte); font-variant-numeric: lining-nums; }
-    .loc-num small { margin-left: .5rem; font-family: var(--font-sans); font-size: 1.1rem; font-weight: 400; letter-spacing: .15em; text-transform: uppercase; color: var(--text-mid); }
-    .loc-lab { font-family: var(--font-serif); font-size: 1.55rem; line-height: 1.25; color: var(--text); }
-
-    /* Scène 2 : secteur (titre + phrase + grande image pleine largeur) */
-    .loc-sector { padding-bottom: 0; }
-    .loc-sector .section-header { margin-bottom: 3.5rem; }
-    .loc-sector .section-lead { color: rgba(255,255,255,.85); }
-    .loc-figure { margin: 0; }
-    .loc-figure img { display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; max-height: 88vh; object-fit: cover; object-position: center 15%; }
-    .loc-figure figcaption { padding: 1rem 2rem .3rem; text-align: center; font-size: .85rem; line-height: 1.6; color: rgba(255,255,255,.72); }
-    .loc-note { margin: 0; padding: 0 2rem 1.6rem; text-align: center; font-size: .85rem; line-height: 1.6; color: rgba(255,255,255,.72); }
-
-    /* Scène 3 : carte en deux temps, aucune ressource tierce avant le clic */
-    .map-box [hidden], #mapLoad[hidden] { display: none !important; }
-    .map-box { position: relative; background: var(--creme); border-radius: var(--radius-md); overflow: hidden; box-shadow: var(--shadow); }
-    .map-box iframe { display: block; width: 100%; height: clamp(380px, 62vh, 580px); border: 0; }
-    .map-consent {
-      display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1.4rem;
-      min-height: clamp(380px, 62vh, 580px); padding: 2.5rem 1.5rem; text-align: center;
+    /* ═══ Infographie : page 11 de la plaquette, reprise en HTML / CSS / SVG ═══ */
+    .lx {
+      --lx-line: rgba(127,100,34,.42); --lx-gutter: max(clamp(1.25rem, 4vw, 3rem), calc((100% - var(--container)) / 2));
+      position: relative; overflow: hidden; background: var(--creme);
+      padding: clamp(4rem, 9vw, 9rem) var(--lx-gutter);
     }
+    .lx-mount { position: absolute; top: clamp(3rem, 6vw, 6rem); right: 0; width: min(44vw, 620px); height: auto; color: var(--stone); pointer-events: none; }
+    .lx-head, .lx-grid { position: relative; z-index: 1; }
+    .lx-title { margin: 0; line-height: 1; }
+    .lx-script { display: block; font-family: var(--font-serif); font-style: italic; font-weight: 400; font-size: clamp(3.4rem, 8.2vw, 7rem); line-height: 1.04; color: var(--or-texte); }
+    .lx-caps { display: block; margin-top: .6rem; font-family: var(--font-serif); font-weight: 600; font-size: clamp(1.7rem, 3.6vw, 3.2rem); letter-spacing: .06em; line-height: 1.15; text-transform: uppercase; color: var(--text); }
+    .lx-intro { max-width: 36rem; margin: 2rem 0 0; }
+    .lx-intro + .lx-intro { margin-top: .5rem; }
+
+    .lx-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); margin-top: clamp(3rem, 6vw, 5.5rem); }
+    .lx-col { padding: 0 clamp(1rem, 2vw, 2.2rem); text-align: center; }
+    .lx-centre { grid-column: 1; grid-row: 1 / span 2; border-right: 1px solid var(--lx-line); }
+    .lx-auto { grid-column: 2; grid-row: 1 / span 2; border-right: 1px solid var(--lx-line); }
+    .lx-bus { grid-column: 3; grid-row: 1; border-right: 1px solid var(--lx-line); }
+    .lx-near { grid-column: 4; grid-row: 1; }
+    .lx-ico { display: block; width: 68px; height: 68px; margin: 0 auto 1.4rem; fill: none; stroke: var(--or-texte); stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+    .lx-h { margin: 0 0 1.5rem; font-family: var(--font-sans); font-size: 1.15rem; font-weight: 700; line-height: 1.35; color: var(--or-texte); }
+    .lx-list { list-style: none; margin: 0; padding: 0; }
+    .lx-list li { position: relative; }
+    .lx-list li + li { padding-top: 1.7rem; }
+    .lx-list li + li::before { content: ""; position: absolute; top: 0; left: 50%; height: 1.2rem; border-left: 1px solid var(--lx-line); }
+    .lx-modes li + li { padding-top: 2.6rem; }
+    .lx-modes li + li::before { height: 1.7rem; }
+    .lx-mode-ico { display: block; width: 52px; height: 52px; margin: 0 auto .8rem; fill: none; stroke: var(--or-texte); stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; opacity: .8; }
+    .lx-big { display: block; line-height: 1.1; }
+    .lx-n { font-family: var(--font-serif); font-size: clamp(2.8rem, 4.2vw, 3.8rem); font-weight: 400; line-height: 1; color: var(--or-texte); font-variant-numeric: lining-nums; }
+    .lx-u { font-size: 1.2rem; font-weight: 700; color: var(--or-texte); }
+    .lx-d { display: block; margin-top: .3rem; font-size: 1.15rem; line-height: 1.5; color: var(--text); }
+    .lx-txt { margin: 0; font-size: 1.15rem; line-height: 1.6; color: var(--text); }
+    .lx-txt b { font-weight: 700; white-space: nowrap; color: var(--or-texte); }
+    .lx-near .lx-list li + li { padding-top: 1rem; }
+    .lx-near .lx-list li + li::before { display: none; }
+
+    .lx-tablewrap { grid-column: 3 / 5; grid-row: 2; margin-top: 2.4rem; padding: 0 clamp(1rem, 2vw, 2.2rem); border-top: 1px solid var(--lx-line); overflow-x: auto; }
+    .lx-table { width: 100%; border-collapse: collapse; font-size: 1.1rem; }
+    .lx-table caption { caption-side: top; padding: 1.6rem 0 .6rem; text-align: left; font-family: var(--font-serif); font-size: 1.7rem; line-height: 1.2; color: var(--text); }
+    .lx-table thead th { padding: .9rem .4rem .7rem; text-align: center; font-size: .85rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--text-mid); }
+    .lx-table thead th + th { border-left: 1px solid var(--lx-line); }
+    .lx-th-ico { display: block; width: 48px; height: 34px; margin: 0 auto .35rem; fill: none; stroke: var(--or-texte); stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+    .lx-table tbody tr { border-top: 1px solid rgba(127,100,34,.28); }
+    .lx-table tbody th { padding: 1.05rem .6rem 1.05rem 0; text-align: left; font-weight: 400; line-height: 1.35; color: var(--text); }
+    .lx-table td { padding: 1.05rem .4rem; text-align: center; font-size: 1.25rem; font-weight: 700; white-space: nowrap; color: var(--or-texte); border-left: 1px solid var(--lx-line); }
+    .lx-note { grid-column: 1 / -1; margin: 2.6rem 0 0; text-align: right; font-size: .95rem; color: var(--text-mid); }
+
+    /* Carte en deux temps : aucune ressource tierce avant le clic */
+    .map-box [hidden], #mapLoad[hidden] { display: none !important; }
+    .loc-map { position: relative; aspect-ratio: 16 / 8; background: var(--creme); border-radius: var(--radius-md); overflow: hidden; box-shadow: var(--shadow); }
+    .loc-map iframe { display: block; width: 100%; height: 100%; border: 0; }
+    .map-consent { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1.4rem; height: 100%; padding: 2.5rem 1.5rem; text-align: center; }
     .map-consent svg { color: var(--or-texte); }
     .map-consent-note { max-width: 520px; font-size: 1rem; line-height: 1.7; color: var(--text-mid); }
-    .map-box .btn, .loc-cta .btn { font-size: .9rem; padding: 1.2rem 2.8rem; }
-    .map-links { margin-top: 1.8rem; text-align: center; font-size: 1.15rem; }
+    .loc-map .btn, .loc-cta .btn { font-size: .9rem; padding: 1.2rem 2.8rem; }
 
-    /* Scène 4 : appels à l'action + ligne « Nos guides » */
-    .loc-cta .btn-row { display: flex; flex-wrap: wrap; justify-content: center; gap: 1.2rem; }
-    .loc-guides { display: flex; flex-wrap: wrap; justify-content: center; align-items: baseline; gap: .5rem 1.8rem; margin-top: 3.5rem; font-size: 1rem; color: var(--text-mid); }
+    /* Fin de page : appels à l'action + ligne « Nos guides » */
+    .loc-cta .btn-row { display: flex; flex-wrap: wrap; justify-content: center; gap: 1.2rem; margin-top: 1.6rem; }
+    .loc-guides { display: flex; flex-wrap: wrap; justify-content: center; align-items: baseline; gap: .5rem 1.8rem; margin: 3rem 0 0; font-size: 1rem; color: var(--text-mid); }
 
-    @media (min-width: 1100px) {
-      .loc-times { grid-template-columns: repeat(5, 1fr); }
-      .loc-times li, .loc-times li:nth-child(n+4) { grid-column: auto; }
+    @media (max-width: 1099px) {
+      .lx-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: 3.5rem; }
+      .lx-centre { grid-column: 1; grid-row: 1; }
+      .lx-auto { grid-column: 2; grid-row: 1; border-right: 0; }
+      .lx-bus { grid-column: 1; grid-row: 2; }
+      .lx-near { grid-column: 2; grid-row: 2; }
+      .lx-tablewrap { grid-column: 1 / -1; grid-row: 3; margin-top: 0; padding: 0; }
     }
-    @media (max-width: 768px) {
+    @media (max-width: 900px) {
       .page-hero { height: 88vh; min-height: 480px; }
-      .loc-figure img { aspect-ratio: 4 / 3; max-height: none; }
+      .loc-map { aspect-ratio: auto; height: 420px; }
     }
-    @media (max-width: 599px) {
-      .loc-times { grid-template-columns: 1fr; gap: 0; text-align: left; }
-      .loc-times li, .loc-times li:nth-child(n+4) {
-        grid-column: auto; display: grid; grid-template-columns: 7.6rem 1fr; align-items: baseline;
-        gap: 0 .8rem; padding: 1.3rem 0; border-top: 0; border-bottom: 1px solid var(--border);
-      }
-      .loc-times li:first-child { border-top: 1px solid var(--border); }
-      .loc-times .loc-num { order: -1; }
-      .loc-num small { margin-left: .35rem; font-size: 1rem; letter-spacing: .1em; }
-      .loc-guides > span { flex: 0 0 100%; text-align: center; }
-      .loc-lab { font-size: 1.4rem; }
-      .map-box .btn, .loc-cta .btn { padding: 1.1rem 1.8rem; }
+    @media (max-width: 699px) {
+      .lx-grid { grid-template-columns: minmax(0, 1fr); row-gap: 0; }
+      .lx-col, .lx-centre, .lx-auto, .lx-bus, .lx-near { grid-column: 1; grid-row: auto; padding: 0 0 2.6rem; margin-bottom: 2.6rem; border-right: 0; border-bottom: 1px solid var(--lx-line); }
+      .lx-near { padding-bottom: 0; margin-bottom: 0; border-bottom: 0; }
+      .lx-tablewrap { grid-row: auto; margin-top: 2.6rem; }
+      .lx-table { font-size: 1rem; }
+      .lx-table caption { font-size: 1.5rem; }
+      .lx-table td { font-size: 1.1rem; }
+      .lx-table thead th { padding-inline: .2rem; letter-spacing: .04em; }
+      .lx-note { text-align: left; }
+      .loc-map .btn, .loc-cta .btn { padding-inline: 1.4rem; letter-spacing: .1em; white-space: nowrap; }
     }
   </style>
 
@@ -219,7 +254,16 @@
 
 <main id="contenu">
 
-<section class="page-hero" aria-labelledby="page-title">
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <symbol id="ic-shop" viewBox="0 0 48 48"><path d="M5 19 9 8h30l4 11"/><path d="M5 19a4.75 4.75 0 0 0 9.5 0 4.75 4.75 0 0 0 9.5 0 4.75 4.75 0 0 0 9.5 0 4.75 4.75 0 0 0 9.5 0"/><path d="M9 24v17h30V24"/><path d="M14 29h10v8H14zM29 41V29h5v12"/></symbol>
+    <symbol id="ic-car" viewBox="0 0 48 48"><path d="M4 30v-4c0-1.5 1-2.5 2.5-3l6.5-1.5 4-5c1-1 2-1.5 3.5-1.5H30c1.5 0 2.5.5 3.5 1.5l4.5 5 4 1.5c1.5.5 2 1.5 2 3v4"/><path d="M16 21.5l3-4h10.5l3.5 4z"/><path d="M8.5 30H4M44 30h-4.5M15.5 30h17"/><circle cx="12" cy="30.5" r="3.5"/><circle cx="36" cy="30.5" r="3.5"/></symbol>
+    <symbol id="ic-bus" viewBox="0 0 48 48"><rect x="5" y="9" width="38" height="25" rx="3"/><path d="M5 26h38"/><path d="M9 14h7v7H9zM20.5 14h7v7h-7zM32 14h7v7h-7z"/><circle cx="14" cy="35.5" r="3.5"/><circle cx="34" cy="35.5" r="3.5"/></symbol>
+    <symbol id="ic-walk" viewBox="0 0 48 48"><circle cx="26" cy="9" r="3.2"/><path d="M26 14l-4 11 6 5 2 11"/><path d="M22 25l-6 12"/><path d="M24.5 17 18 22M25.5 17l6 6"/></symbol>
+  </defs>
+</svg>
+
+<section class="page-hero" id="hero" aria-labelledby="page-title">
   <div class="hero-bg">
     <img src="/Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_EXT_Panorama_St-Victoire.webp"
          srcset="/Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_EXT_Panorama_St-Victoire-800w.webp 800w, /Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_EXT_Panorama_St-Victoire-1200w.webp 1200w, /Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_EXT_Panorama_St-Victoire.webp 1600w"
@@ -229,70 +273,204 @@
   <div class="hero-overlay"></div>
   <div class="hero-content">
     <h1 class="hero-title" id="page-title" data-lang-fr="Appartements neufs avenue Paul Cézanne, <em>dans le quartier des Lauves</em>" data-lang-en="New apartments on avenue Paul Cézanne, <em>in the Lauves district</em>">Appartements neufs avenue Paul Cézanne, <em>dans le quartier des Lauves</em></h1>
+    <p class="hero-subtitle" data-lang-fr="Vivez l'exception au quotidien. Entre patrimoine, nature et douceur de vivre, une adresse pensée pour l'excellence." data-lang-en="Live the exceptional every day. Between heritage, nature and a gentle way of life, an address designed for excellence.">Vivez l'exception au quotidien. Entre patrimoine, nature et douceur de vivre, une adresse pensée pour l'excellence.</p>
   </div>
   <p class="hero-credit" data-lang-fr="Rendu 3D — illustration non contractuelle" data-lang-en="3D render — non-contractual illustration">Rendu 3D — illustration non contractuelle</p>
 </section>
 
-<section class="section" id="temps-de-trajet" aria-labelledby="t-trajets">
-  <div class="container">
-    <div class="section-header reveal">
-      <h2 class="section-title" id="t-trajets" data-lang-fr="Les temps de trajet <em>depuis l'adresse</em>" data-lang-en="Travel times <em>from the address</em>">Les temps de trajet <em>depuis l'adresse</em></h2>
-      <p class="section-lead" data-lang-fr="Durées approximatives en voiture, selon la plaquette." data-lang-en="Approximate times by car, according to the brochure.">Durées approximatives en voiture, selon la plaquette.</p>
+<!-- ═══ Temps fort : la page 11 de la plaquette, reprise en HTML / CSS / SVG ═══ -->
+<section class="lx" id="situation" aria-labelledby="t-lx">
+  <svg class="lx-mount" viewBox="0 0 640 170" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+    <path d="M0 138C60 134 110 128 160 118C210 108 245 96 280 78C305 66 322 50 336 36C346 26 354 22 362 28C372 36 380 48 392 56C410 68 440 72 470 80C520 92 570 100 640 98"/>
+    <path d="M338 40C342 52 346 62 344 72M352 30C358 44 366 54 376 62"/>
+    <path d="M120 152C200 140 280 128 350 120C420 112 500 116 640 128"/>
+    <path d="M300 162C380 152 470 150 640 154"/>
+  </svg>
+  <header class="lx-head reveal">
+    <h2 class="lx-title" id="t-lx"><span class="lx-script" data-lang-fr="Un luxe accessible," data-lang-en="Accessible luxury,">Un luxe accessible,</span><span class="lx-caps" data-lang-fr="Une localisation idéale." data-lang-en="An ideal location.">Une localisation idéale.</span></h2>
+    <p class="section-lead lx-intro" data-lang-fr="Dans le quartier des Lauves, 59 Cézanne offre un accès facile à la ville." data-lang-en="In the Lauves district, 59 Cézanne offers easy access to the city.">Dans le quartier des Lauves, 59 Cézanne offre un accès facile à la ville.</p>
+    <p class="section-lead lx-intro" data-lang-fr="Une atmosphère intimiste et raffinée." data-lang-en="An intimate and refined atmosphere.">Une atmosphère intimiste et raffinée.</p>
+    <p class="section-lead lx-intro" data-lang-fr="Voiture, bus ou à pied&nbsp;: choisissez votre rythme." data-lang-en="By car, bus or on foot: choose your own pace.">Voiture, bus ou à pied&nbsp;: choisissez votre rythme.</p>
+  </header>
+
+  <div class="lx-grid reveal">
+    <div class="lx-col lx-centre">
+      <svg class="lx-ico" aria-hidden="true" focusable="false"><use href="#ic-shop"/></svg>
+      <h3 class="lx-h" data-lang-fr="Le centre-ville est à&nbsp;:" data-lang-en="The city centre is:">Le centre-ville est à&nbsp;:</h3>
+      <ul class="lx-list lx-modes">
+        <li>
+          <svg class="lx-mode-ico" aria-hidden="true" focusable="false"><use href="#ic-car"/></svg>
+          <span class="lx-big"><span class="lx-n">4</span> <span class="lx-u" data-lang-fr="minutes" data-lang-en="minutes">minutes</span></span>
+          <span class="lx-d" data-lang-fr="en voiture" data-lang-en="by car">en voiture</span>
+        </li>
+        <li>
+          <svg class="lx-mode-ico" aria-hidden="true" focusable="false"><use href="#ic-bus"/></svg>
+          <span class="lx-big"><span class="lx-n">8</span> <span class="lx-u" data-lang-fr="minutes" data-lang-en="minutes">minutes</span></span>
+          <span class="lx-d" data-lang-fr="en bus" data-lang-en="by bus">en bus</span>
+        </li>
+        <li>
+          <svg class="lx-mode-ico" aria-hidden="true" focusable="false"><use href="#ic-walk"/></svg>
+          <span class="lx-big"><span class="lx-n">20</span> <span class="lx-u" data-lang-fr="minutes" data-lang-en="minutes">minutes</span></span>
+          <span class="lx-d" data-lang-fr="à pied" data-lang-en="on foot">à pied</span>
+        </li>
+      </ul>
     </div>
-    <ul class="loc-times">
-      <li class="reveal"><span class="loc-lab" data-lang-fr="Centre-ville d'Aix" data-lang-en="Aix city centre">Centre-ville d'Aix</span><span class="loc-num">4<small>min</small></span></li>
-      <li class="reveal"><span class="loc-lab" data-lang-fr="Autoroute A51" data-lang-en="A51 motorway">Autoroute A51</span><span class="loc-num">3<small>min</small></span></li>
-      <li class="reveal"><span class="loc-lab" data-lang-fr="Gare TGV" data-lang-en="TGV station">Gare TGV</span><span class="loc-num">15<small>min</small></span></li>
-      <li class="reveal"><span class="loc-lab" data-lang-fr="Aéroport Marseille Provence" data-lang-en="Marseille Provence Airport">Aéroport Marseille Provence</span><span class="loc-num">22<small>min</small></span></li>
-      <li class="reveal"><span class="loc-lab" data-lang-fr="Marseille" data-lang-en="Marseille">Marseille</span><span class="loc-num">26<small>min</small></span></li>
-    </ul>
+
+    <div class="lx-col lx-auto">
+      <svg class="lx-ico" aria-hidden="true" focusable="false"><use href="#ic-car"/></svg>
+      <h3 class="sr-only" data-lang-fr="Autres trajets en voiture" data-lang-en="Other journeys by car">Autres trajets en voiture</h3>
+      <ul class="lx-list">
+        <li><span class="lx-big"><span class="lx-n">3</span> <span class="lx-u" data-lang-fr="minutes" data-lang-en="minutes">minutes</span></span><span class="lx-d" data-lang-fr="de l'autoroute A51" data-lang-en="from the A51 motorway">de l'autoroute A51</span></li>
+        <li><span class="lx-big"><span class="lx-n">7</span> <span class="lx-u" data-lang-fr="minutes" data-lang-en="minutes">minutes</span></span><span class="lx-d" data-lang-fr="de l'hôpital" data-lang-en="from the hospital">de l'hôpital</span></li>
+        <li><span class="lx-big"><span class="lx-n">15</span> <span class="lx-u" data-lang-fr="minutes" data-lang-en="minutes">minutes</span></span><span class="lx-d" data-lang-fr="de la gare TGV, qui relie Paris en environ 3 heures" data-lang-en="from the TGV station, which links Paris in about 3 hours">de la gare TGV, qui relie Paris en environ 3 heures</span></li>
+        <li><span class="lx-big"><span class="lx-n">22</span> <span class="lx-u" data-lang-fr="minutes" data-lang-en="minutes">minutes</span></span><span class="lx-d" data-lang-fr="de l'aéroport international Marseille Provence" data-lang-en="from Marseille Provence international airport">de l'aéroport international Marseille Provence</span></li>
+        <li><span class="lx-big"><span class="lx-n">26</span> <span class="lx-u" data-lang-fr="minutes" data-lang-en="minutes">minutes</span></span><span class="lx-d" data-lang-fr="de Marseille, métropole des Bouches-du-Rhône" data-lang-en="from Marseille, the metropolis of the Bouches-du-Rhône">de Marseille, métropole des Bouches-du-Rhône</span></li>
+      </ul>
+    </div>
+
+    <div class="lx-col lx-bus">
+      <svg class="lx-ico" aria-hidden="true" focusable="false"><use href="#ic-bus"/></svg>
+      <h3 class="lx-h" data-lang-fr="Bus en bas de Cézanne&nbsp;:" data-lang-en="Bus at the foot of Cézanne:">Bus en bas de Cézanne&nbsp;:</h3>
+      <p class="lx-txt" data-lang-fr="<b>Ligne 5</b> et <b>ligne 12</b>, qui desservent toutes les deux le centre-ville." data-lang-en="<b>Line 5</b> and <b>line 12</b>, both serving the city centre."><b>Ligne 5</b> et <b>ligne 12</b>, qui desservent toutes les deux le centre-ville.</p>
+    </div>
+
+    <div class="lx-col lx-near">
+      <svg class="lx-ico" aria-hidden="true" focusable="false"><use href="#ic-car"/></svg>
+      <h3 class="lx-h" data-lang-fr="À proximité en voiture&nbsp;:" data-lang-en="Nearby by car:">À proximité en voiture&nbsp;:</h3>
+      <ul class="lx-list">
+        <li class="lx-txt" data-lang-fr="Picard avec parking&nbsp;: <b>4 min</b>" data-lang-en="Picard, with car park: <b>4 min</b>">Picard avec parking&nbsp;: <b>4 min</b></li>
+        <li class="lx-txt" data-lang-fr="Intermarché avec parking&nbsp;: <b>5 min</b>" data-lang-en="Intermarché, with car park: <b>5 min</b>">Intermarché avec parking&nbsp;: <b>5 min</b></li>
+      </ul>
+    </div>
+
+    <div class="lx-tablewrap">
+      <table class="lx-table">
+        <caption data-lang-fr="Commerces et écoles" data-lang-en="Shops and schools">Commerces et écoles</caption>
+        <thead>
+          <tr>
+            <th scope="col"><span class="sr-only" data-lang-fr="Lieu" data-lang-en="Place">Lieu</span></th>
+            <th scope="col"><svg class="lx-th-ico" aria-hidden="true" focusable="false"><use href="#ic-walk"/></svg><span data-lang-fr="À pied" data-lang-en="On foot">À pied</span></th>
+            <th scope="col"><svg class="lx-th-ico" aria-hidden="true" focusable="false"><use href="#ic-bus"/></svg><span data-lang-fr="En bus" data-lang-en="By bus">En bus</span></th>
+            <th scope="col"><svg class="lx-th-ico" aria-hidden="true" focusable="false"><use href="#ic-car"/></svg><span data-lang-fr="En voiture" data-lang-en="By car">En voiture</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><th scope="row" data-lang-fr="Vival Supérette" data-lang-en="Vival convenience store">Vival Supérette</th><td>14 min</td><td>7 min</td><td>2 min</td></tr>
+          <tr><th scope="row" data-lang-fr="Boulangerie et tabac" data-lang-en="Bakery and tobacconist">Boulangerie et tabac</th><td>15 min</td><td>10 min</td><td>3 min</td></tr>
+          <tr><th scope="row" data-lang-fr="École Maternelle des Lauves" data-lang-en="École Maternelle des Lauves (nursery school)">École Maternelle des Lauves</th><td>11 min</td><td>5 min</td><td>2 min</td></tr>
+          <tr><th scope="row" data-lang-fr="Collège Nina Simone" data-lang-en="Collège Nina Simone (middle school)">Collège Nina Simone</th><td>17 min</td><td>10 min</td><td>3 min</td></tr>
+          <tr><th scope="row" data-lang-fr="Lycée Cézanne" data-lang-en="Lycée Cézanne (high school)">Lycée Cézanne</th><td>28 min</td><td>17 min</td><td>3 min</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p class="lx-note" data-lang-fr="Durées indicatives, selon la plaquette du programme." data-lang-en="Indicative times, according to the programme brochure.">Durées indicatives, selon la plaquette du programme.</p>
   </div>
 </section>
 
-<section class="section section-dark loc-sector" id="secteur" aria-labelledby="t-secteur">
-  <div class="container">
-    <div class="section-header reveal">
-      <h2 class="section-title" id="t-secteur" data-lang-fr="Un secteur lié à <em>Cézanne</em>" data-lang-en="An area tied to <em>Cézanne</em>">Un secteur lié à <em>Cézanne</em></h2>
-      <p class="section-lead" data-lang-fr="L'Atelier des Lauves, dernier atelier de Cézanne, est au 13 de l'avenue, à environ 850 m à pied." data-lang-en="The Atelier des Lauves, Cézanne's last studio, is at number 13 on the avenue, about 850 m on foot.">L'Atelier des Lauves, dernier atelier de Cézanne, est au 13 de l'avenue, à environ 850 m à pied.</p>
-    </div>
+<!-- Scène 1 : moyenne, image à gauche -->
+<section class="rg rg--moyenne-g rg--b" id="secteur" aria-labelledby="t-secteur">
+  <div class="rg-text reveal">
+    <h2 class="section-title" id="t-secteur" data-lang-fr="Un secteur lié à <em>Cézanne</em>" data-lang-en="An area tied to <em>Cézanne</em>">Un secteur lié à <em>Cézanne</em></h2>
+    <p class="section-lead" data-lang-fr="L'Atelier des Lauves, dernier atelier de Cézanne, se trouve au 13 de l'avenue Paul Cézanne." data-lang-en="The Atelier des Lauves, Cézanne's last studio, stands at number 13 on avenue Paul Cézanne.">L'Atelier des Lauves, dernier atelier de Cézanne, se trouve au 13 de l'avenue Paul Cézanne.</p>
+    <p class="section-lead" data-lang-fr="Il est à environ 850 m à pied de la résidence." data-lang-en="It is about 850 m on foot from the residence.">Il est à environ 850 m à pied de la résidence.</p>
+    <p class="section-lead" data-lang-fr="Un cadre où l'histoire, l'art et la nature se rencontrent pour un quotidien d'exception." data-lang-en="A setting where history, art and nature meet for an exceptional everyday life.">Un cadre où l'histoire, l'art et la nature se rencontrent pour un quotidien d'exception.</p>
+    <p class="rg-src" data-lang-fr="Sources&nbsp;: <a class='loc-link' href='https://www.cezanne-en-provence.com/L-Atelier-des-Lauves' target='_blank' rel='noopener noreferrer'>cezanne-en-provence.com<span class='sr-only'> (nouvel onglet)</span></a> ; distance à pied calculée sur données © <a class='loc-link' href='https://www.openstreetmap.org/copyright' target='_blank' rel='noopener noreferrer'>contributeurs OpenStreetMap<span class='sr-only'> (nouvel onglet)</span></a>, indicative, consultée le 6 octobre 2026." data-lang-en="Sources: <a class='loc-link' href='https://www.cezanne-en-provence.com/L-Atelier-des-Lauves' target='_blank' rel='noopener noreferrer'>cezanne-en-provence.com<span class='sr-only'> (opens in a new tab)</span></a>; walking distance computed from © <a class='loc-link' href='https://www.openstreetmap.org/copyright' target='_blank' rel='noopener noreferrer'>OpenStreetMap contributors<span class='sr-only'> (opens in a new tab)</span></a> data, indicative, accessed 6 October 2026.">Sources&nbsp;: <a class='loc-link' href='https://www.cezanne-en-provence.com/L-Atelier-des-Lauves' target='_blank' rel='noopener noreferrer'>cezanne-en-provence.com<span class='sr-only'> (nouvel onglet)</span></a> ; distance à pied calculée sur données © <a class='loc-link' href='https://www.openstreetmap.org/copyright' target='_blank' rel='noopener noreferrer'>contributeurs OpenStreetMap<span class='sr-only'> (nouvel onglet)</span></a>, indicative, consultée le 6 octobre 2026.</p>
   </div>
-  <figure class="loc-figure reveal">
+  <figure class="rg-fig reveal">
     <img src="/Photo%2059%20C%C3%A9zanne/3D%20Groove%20Architecture/Edited/insertion-ouest-1200w.webp"
          srcset="/Photo%2059%20C%C3%A9zanne/3D%20Groove%20Architecture/Edited/insertion-ouest-800w.webp 800w, /Photo%2059%20C%C3%A9zanne/3D%20Groove%20Architecture/Edited/insertion-ouest-1200w.webp 1200w"
-         sizes="100vw" width="1200" height="900" loading="lazy" decoding="async"
+         sizes="(min-width: 901px) 58vw, 100vw" width="1200" height="900" loading="lazy" decoding="async"
          alt="Vue aérienne d'un secteur résidentiel arboré d'Aix-en-Provence, avec la montagne Sainte-Victoire à l'horizon" />
-    <figcaption data-lang-fr="Vue aérienne du secteur : la résidence n'y figure pas. Illustration non contractuelle." data-lang-en="Aerial view of the area: the residence does not appear in it. Non-contractual illustration.">Vue aérienne du secteur : la résidence n'y figure pas. Illustration non contractuelle.</figcaption>
+    <span class="img-tag" data-lang-fr="Secteur vu du ciel, sans la résidence. Illustration non contractuelle." data-lang-en="The area from above, without the residence. Non-contractual illustration.">Secteur vu du ciel, sans la résidence. Illustration non contractuelle.</span>
   </figure>
-  <p class="loc-note" data-lang-fr="Atelier : <a class='loc-link' href='https://www.cezanne-en-provence.com/L-Atelier-des-Lauves' target='_blank' rel='noopener noreferrer'>cezanne-en-provence.com<span class='sr-only'> (nouvel onglet)</span></a>. Distance à pied : calcul sur données © <a class='loc-link' href='https://www.openstreetmap.org/copyright' target='_blank' rel='noopener noreferrer'>contributeurs OpenStreetMap<span class='sr-only'> (nouvel onglet)</span></a>, indicatif, consultées le 6 octobre 2026." data-lang-en="Studio: <a class='loc-link' href='https://www.cezanne-en-provence.com/L-Atelier-des-Lauves' target='_blank' rel='noopener noreferrer'>cezanne-en-provence.com<span class='sr-only'> (opens in a new tab)</span></a>. Walking distance: computed from © <a class='loc-link' href='https://www.openstreetmap.org/copyright' target='_blank' rel='noopener noreferrer'>OpenStreetMap contributors<span class='sr-only'> (opens in a new tab)</span></a> data, indicative, accessed 6 October 2026.">Atelier : <a class='loc-link' href='https://www.cezanne-en-provence.com/L-Atelier-des-Lauves' target='_blank' rel='noopener noreferrer'>cezanne-en-provence.com<span class='sr-only'> (nouvel onglet)</span></a>. Distance à pied : calcul sur données © <a class='loc-link' href='https://www.openstreetmap.org/copyright' target='_blank' rel='noopener noreferrer'>contributeurs OpenStreetMap<span class='sr-only'> (nouvel onglet)</span></a>, indicatif, consultées le 6 octobre 2026.</p>
 </section>
 
-<section class="section section-alt" id="carte" aria-labelledby="t-carte">
-  <div class="container">
-    <div class="section-header reveal">
-      <h2 class="section-title" id="t-carte" data-lang-fr="59 avenue Paul Cézanne, <em style='white-space:nowrap'>Aix-en-Provence</em>" data-lang-en="59 avenue Paul Cézanne, <em style='white-space:nowrap'>Aix-en-Provence</em>">59 avenue Paul Cézanne, <em style='white-space:nowrap'>Aix-en-Provence</em></h2>
-    </div>
-    <div class="map-box reveal" id="mapBox">
-      <div class="map-consent" id="mapPlaceholder">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="48" height="48" aria-hidden="true" focusable="false"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
-        <p class="map-consent-note" data-lang-fr="Carte Google Maps : en l'affichant, vous acceptez que Google reçoive votre adresse IP et dépose des cookies." data-lang-en="Google Maps map: by displaying it, you agree that Google receives your IP address and may set cookies.">Carte Google Maps : en l'affichant, vous acceptez que Google reçoive votre adresse IP et dépose des cookies.</p>
-        <button type="button" class="btn btn-primary" id="mapLoad" hidden aria-controls="mapBox" data-src="https://maps.google.com/maps?q=43.5465,5.4451&amp;z=16&amp;output=embed" data-title-fr="Carte Google Maps : 59 avenue Paul Cézanne, Aix-en-Provence" data-title-en="Google Maps: 59 avenue Paul Cézanne, Aix-en-Provence" data-lang-fr="Afficher la carte" data-lang-en="Show the map">Afficher la carte</button>
-      </div>
-    </div>
-    <p class="map-links reveal">
-      <a class="loc-link" href="https://www.google.com/maps/dir/?api=1&amp;destination=43.5465,5.4451" target="_blank" rel="noopener noreferrer"><span data-lang-fr="Itinéraire (Google Maps)" data-lang-en="Directions (Google Maps)">Itinéraire (Google Maps)</span><span class="sr-only" data-lang-fr=" (nouvel onglet)" data-lang-en=" (opens in a new tab)"> (nouvel onglet)</span></a>
-    </p>
-    <p class="sr-only" role="status" id="mapStatus"></p>
+<!-- Scène 2 : petite, image à droite, grand titre -->
+<section class="rg rg--petite-d" id="panorama" aria-labelledby="t-panorama">
+  <div class="rg-text reveal">
+    <h2 class="section-title" id="t-panorama" data-lang-fr="Un panorama d'exception" data-lang-en="An exceptional panorama">Un panorama d'exception</h2>
+    <p class="section-lead" data-lang-fr="Une source d'inspiration intemporelle." data-lang-en="A timeless source of inspiration.">Une source d'inspiration intemporelle.</p>
+    <p class="section-lead" data-lang-fr="Selon la Ville d'Aix-en-Provence, Cézanne venait régulièrement peindre la Sainte-Victoire au Jardin des Peintres, aussi appelé Terrain des Peintres." data-lang-en="According to the City of Aix-en-Provence, Cézanne regularly came to paint Mont Sainte-Victoire at the Jardin des Peintres, also known as the Terrain des Peintres.">Selon la Ville d'Aix-en-Provence, Cézanne venait régulièrement peindre la Sainte-Victoire au Jardin des Peintres, aussi appelé Terrain des Peintres.</p>
+    <p class="section-lead" data-lang-fr="Le jardin est à environ 300 m à pied. Vue Sainte-Victoire pour plusieurs appartements, selon le lot." data-lang-en="The garden is about 300 m on foot. Mont Sainte-Victoire views for several apartments, depending on the lot.">Le jardin est à environ 300 m à pied. Vue Sainte-Victoire pour plusieurs appartements, selon le lot.</p>
+    <p class="rg-src" data-lang-fr="Source&nbsp;: <a class='loc-link' href='https://www.aixenprovence.fr/Jardin-des-peintres' target='_blank' rel='noopener noreferrer'>aixenprovence.fr<span class='sr-only'> (nouvel onglet)</span></a> ; distance à pied calculée sur données © contributeurs OpenStreetMap, indicative." data-lang-en="Source: <a class='loc-link' href='https://www.aixenprovence.fr/Jardin-des-peintres' target='_blank' rel='noopener noreferrer'>aixenprovence.fr<span class='sr-only'> (opens in a new tab)</span></a>; walking distance computed from © OpenStreetMap contributors data, indicative.">Source&nbsp;: <a class='loc-link' href='https://www.aixenprovence.fr/Jardin-des-peintres' target='_blank' rel='noopener noreferrer'>aixenprovence.fr<span class='sr-only'> (nouvel onglet)</span></a> ; distance à pied calculée sur données © contributeurs OpenStreetMap, indicative.</p>
   </div>
+  <figure class="rg-fig reveal">
+    <img src="/Photo%2059%20C%C3%A9zanne/Photo%20Sainte-Victoire%20pour%20Boris/S22/20250217_174036-1200w.webp"
+         srcset="/Photo%2059%20C%C3%A9zanne/Photo%20Sainte-Victoire%20pour%20Boris/S22/20250217_174036-800w.webp 800w, /Photo%2059%20C%C3%A9zanne/Photo%20Sainte-Victoire%20pour%20Boris/S22/20250217_174036-1200w.webp 1200w"
+         sizes="(min-width: 901px) 34vw, 64vw" width="1200" height="900" loading="lazy" decoding="async" style="object-position: 24% 50%;"
+         alt="La montagne Sainte-Victoire rosée par le soleil couchant, au-dessus de cyprès et de pins, photographiée depuis le terrain le 17 février 2025" />
+    <span class="img-tag" data-lang-fr="Photo du 17 février 2025, prise depuis le terrain avant construction." data-lang-en="Photo of 17 February 2025, taken from the plot before construction.">Photo du 17 février 2025, prise depuis le terrain avant construction.</span>
+  </figure>
 </section>
 
-<section class="section loc-cta" id="contact-cta" aria-label="Appartements et contact" data-aria-label-fr="Appartements et contact" data-aria-label-en="Apartments and contact">
-  <div class="container text-center">
-    <div class="btn-row reveal">
+<!-- Scène 3 : centre -->
+<section class="rg rg--centre rg--b" id="aix" aria-labelledby="t-aix">
+  <div class="rg-text reveal">
+    <h2 class="section-title" id="t-aix" data-lang-fr="Vivez l'exception au cœur de la Provence" data-lang-en="Live the exceptional in the heart of Provence">Vivez l'exception au cœur de la Provence</h2>
+    <p class="section-lead" data-lang-fr="Aix-en-Provence est réputée pour sa douceur de vivre et son riche patrimoine." data-lang-en="Aix-en-Provence is renowned for its gentle way of life and its rich heritage.">Aix-en-Provence est réputée pour sa douceur de vivre et son riche patrimoine.</p>
+    <p class="section-lead" data-lang-fr="Cité d'art et de culture, elle accueille le Festival International d'Art Lyrique et le Festival de Pâques." data-lang-en="A city of art and culture, it hosts the International Festival of Lyric Art and the Easter Festival.">Cité d'art et de culture, elle accueille le Festival International d'Art Lyrique et le Festival de Pâques.</p>
+    <p class="section-lead" data-lang-fr="Marchés de producteurs, Allées Provençales, Cours Mirabeau&nbsp;: la ville se vit au quotidien." data-lang-en="Producers' markets, Allées Provençales, Cours Mirabeau: the city is part of everyday life.">Marchés de producteurs, Allées Provençales, Cours Mirabeau&nbsp;: la ville se vit au quotidien.</p>
+  </div>
+  <figure class="rg-fig reveal">
+    <img src="/Photo%2059%20C%C3%A9zanne/3D%20Groove%20Architecture/Edited/insertion-nord-1200w.webp"
+         srcset="/Photo%2059%20C%C3%A9zanne/3D%20Groove%20Architecture/Edited/insertion-nord-800w.webp 800w, /Photo%2059%20C%C3%A9zanne/3D%20Groove%20Architecture/Edited/insertion-nord-1200w.webp 1200w"
+         sizes="(min-width: 901px) 1100px, 100vw" width="1200" height="900" loading="lazy" decoding="async" style="object-position: 50% 30%;"
+         alt="Vue aérienne oblique d'un quartier de villas avec piscines, la ville d'Aix-en-Provence et la plaine à l'arrière-plan" />
+    <span class="img-tag" data-lang-fr="Secteur vu du ciel, sans la résidence. Illustration non contractuelle." data-lang-en="The area from above, without the residence. Non-contractual illustration.">Secteur vu du ciel, sans la résidence. Illustration non contractuelle.</span>
+  </figure>
+</section>
+
+<!-- Scène 4 : petite, image à gauche -->
+<section class="rg rg--petite-g" id="cadre" aria-labelledby="t-cadre">
+  <div class="rg-text reveal">
+    <h2 class="section-title" id="t-cadre" data-lang-fr="Un cadre idyllique entre nature et patrimoine" data-lang-en="An idyllic setting between nature and heritage">Un cadre idyllique entre nature et patrimoine</h2>
+    <p class="section-lead" data-lang-fr="Aix-en-Provence est bordée de parcs et d'espaces naturels, offrant un cadre verdoyant et apaisant." data-lang-en="Aix-en-Provence is bordered by parks and natural areas, offering a green, soothing setting.">Aix-en-Provence est bordée de parcs et d'espaces naturels, offrant un cadre verdoyant et apaisant.</p>
+    <p class="section-lead" data-lang-fr="Un secteur résidentiel de villas, de piscines et d'oliviers." data-lang-en="A residential area of villas, pools and olive trees.">Un secteur résidentiel de villas, de piscines et d'oliviers.</p>
+    <p class="section-lead" data-lang-fr="La résidence prolonge ce cadre&nbsp;: jardins privatifs et piscine." data-lang-en="The residence extends this setting: private gardens and a pool.">La résidence prolonge ce cadre&nbsp;: jardins privatifs et piscine.</p>
+    <a class="scene-link" href="/exterieurs" data-lang-fr="Voir les espaces communs" data-lang-en="See the common areas">Voir les espaces communs</a>
+  </div>
+  <figure class="rg-fig reveal">
+    <img src="/Photo%2059%20C%C3%A9zanne/3D%20Groove%20Architecture/Edited/insertion-est-1200w.webp"
+         srcset="/Photo%2059%20C%C3%A9zanne/3D%20Groove%20Architecture/Edited/insertion-est-800w.webp 800w, /Photo%2059%20C%C3%A9zanne/3D%20Groove%20Architecture/Edited/insertion-est-1200w.webp 1200w"
+         sizes="(min-width: 901px) 34vw, 64vw" width="1200" height="900" loading="lazy" decoding="async" style="object-position: 46% 40%;"
+         alt="Vue aérienne du dessus d'un quartier résidentiel d'Aix-en-Provence : villas à toits de tuiles, piscines, oliveraie et routes" />
+    <span class="img-tag" data-lang-fr="Secteur vu du ciel, sans la résidence. Illustration non contractuelle." data-lang-en="The area from above, without the residence. Non-contractual illustration.">Secteur vu du ciel, sans la résidence. Illustration non contractuelle.</span>
+  </figure>
+</section>
+
+<!-- Scène 5 : grande, carte au clic -->
+<section class="rg rg--grande rg--b" id="carte" aria-labelledby="t-carte">
+  <div class="rg-text reveal">
+    <h2 class="section-title" id="t-carte" data-lang-fr="59 avenue Paul Cézanne, <em style='white-space:nowrap'>Aix-en-Provence</em>" data-lang-en="59 avenue Paul Cézanne, <em style='white-space:nowrap'>Aix-en-Provence</em>">59 avenue Paul Cézanne, <em style='white-space:nowrap'>Aix-en-Provence</em></h2>
+    <div>
+      <p class="section-lead" data-lang-fr="Une adresse sur l'avenue Paul Cézanne, à quelques minutes du centre-ville d'Aix." data-lang-en="An address on avenue Paul Cézanne, a few minutes from the centre of Aix.">Une adresse sur l'avenue Paul Cézanne, à quelques minutes du centre-ville d'Aix.</p>
+      <p class="section-lead" data-lang-fr="Selon la notice descriptive du 8 avril 2025, le stationnement en sous-sol est accessible de plain-pied depuis l'avenue." data-lang-en="According to the descriptive notice of 8 April 2025, the underground car park is accessed at street level from the avenue.">Selon la notice descriptive du 8 avril 2025, le stationnement en sous-sol est accessible de plain-pied depuis l'avenue.</p>
+      <p class="section-lead" data-lang-fr="Affichez le plan, puis lancez l'itinéraire depuis votre position." data-lang-en="Display the map, then start the directions from your location.">Affichez le plan, puis lancez l'itinéraire depuis votre position.</p>
+      <a class="scene-link" href="https://www.google.com/maps/dir/?api=1&amp;destination=43.5465,5.4451" target="_blank" rel="noopener noreferrer"><span data-lang-fr="Itinéraire (Google Maps)" data-lang-en="Directions (Google Maps)">Itinéraire (Google Maps)</span><span class="sr-only" data-lang-fr=" (nouvel onglet)" data-lang-en=" (opens in a new tab)"> (nouvel onglet)</span></a>
+    </div>
+  </div>
+  <div class="loc-map map-box reveal" id="mapBox">
+    <div class="map-consent" id="mapPlaceholder">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="48" height="48" aria-hidden="true" focusable="false"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+      <p class="map-consent-note" data-lang-fr="Carte Google Maps&nbsp;: en l'affichant, vous acceptez que Google reçoive votre adresse IP et dépose des cookies." data-lang-en="Google Maps map: by displaying it, you agree that Google receives your IP address and may set cookies.">Carte Google Maps&nbsp;: en l'affichant, vous acceptez que Google reçoive votre adresse IP et dépose des cookies.</p>
+      <button type="button" class="btn btn-primary" id="mapLoad" hidden aria-controls="mapBox" data-src="https://maps.google.com/maps?q=43.5465,5.4451&amp;z=16&amp;output=embed" data-title-fr="Carte Google Maps : 59 avenue Paul Cézanne, Aix-en-Provence" data-title-en="Google Maps: 59 avenue Paul Cézanne, Aix-en-Provence" data-lang-fr="Afficher la carte" data-lang-en="Show the map">Afficher la carte</button>
+    </div>
+  </div>
+  <p class="sr-only" role="status" id="mapStatus"></p>
+</section>
+
+<!-- Fin : texte centré, appels à l'action -->
+<section class="rg rg--centre loc-cta" id="contact-cta" aria-labelledby="t-cta">
+  <div class="rg-text reveal">
+    <h2 class="section-title" id="t-cta" data-lang-fr="Une question sur <em>l'adresse ?</em>" data-lang-en="A question about <em>the address?</em>">Une question sur <em>l'adresse ?</em></h2>
+    <p class="section-lead" data-lang-fr="Appartements, accès, plaquette&nbsp;: notre équipe vous répond. Un message suffit." data-lang-en="Apartments, access, brochure: our team will answer. One message is enough.">Appartements, accès, plaquette&nbsp;: notre équipe vous répond. Un message suffit.</p>
+    <div class="btn-row">
       <a class="btn btn-primary" href="/logements" data-lang-fr="Voir les appartements" data-lang-en="See the apartments">Voir les appartements</a>
       <a class="btn btn-outline-dark" href="/contact" data-lang-fr="Nous contacter" data-lang-en="Contact us">Nous contacter</a>
     </div>
-    <p class="loc-guides reveal">
-      <span data-lang-fr="Nos guides :" data-lang-en="Our guides (in French):">Nos guides :</span>
+    <p class="loc-guides">
+      <span data-lang-fr="Nos guides&nbsp;:" data-lang-en="Our guides (in French):">Nos guides&nbsp;:</span>
       <a class="loc-link" href="/blog/quartier-des-lauves-aix-en-provence" data-lang-fr="Le quartier des Lauves" data-lang-en="The Lauves district">Le quartier des Lauves</a>
       <a class="loc-link" href="/blog/cezanne-lauves-atelier-terrain-des-peintres" data-lang-fr="Cézanne aux Lauves" data-lang-en="Cézanne in the Lauves">Cézanne aux Lauves</a>
       <a class="loc-link" href="/blog/quitter-paris-pour-aix-en-provence" data-lang-fr="Quitter Paris pour Aix" data-lang-en="Leaving Paris for Aix">Quitter Paris pour Aix</a>

@@ -33,10 +33,11 @@
   <link rel="preload" as="image" href="/Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_EXT_Panorama_St-Victoire-1200w.webp" imagesrcset="/Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_EXT_Panorama_St-Victoire-800w.webp 800w, /Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_EXT_Panorama_St-Victoire-1200w.webp 1200w, /Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_EXT_Panorama_St-Victoire.webp 1600w" imagesizes="100vw" fetchpriority="high" />
 
   <style>
-    /* ── Page « Le promoteur » : quelques grandes scènes (préfixe pdh-) ──
+    /* ── Page « Le promoteur » : rythme des images (07/10/2026), préfixe pdh- ──
+       Formats : hero immense · chiffres en grand · moyenne-d · petite-g · ligne VEFA · contact.
        Texte doré sur fond clair : var(--or-texte) (≥ 4,9:1) ; doré d'origine seulement sur fond sombre. */
 
-    /* Scène 1 : bandeau plein écran */
+    /* Scène 1 : bandeau plein écran (immense) */
     .pdh-hero { height: 100vh; height: 100svh; min-height: 560px; }
     .pdh-hero .hero-overlay { background: linear-gradient(to top, rgba(15,12,8,0.84) 0%, rgba(15,12,8,0.5) 45%, rgba(15,12,8,0.12) 100%); }
     .pdh-hero .hero-content { padding-bottom: clamp(3rem, 9vh, 6rem); }
@@ -49,9 +50,10 @@
       background: rgba(15,12,8,0.6); padding: 0.25rem 0.7rem; border-radius: 3px;
     }
 
-    /* Scène 2 : qui est PDH, chiffres communiqués par la société */
-    .pdh-who { text-align: center; }
-    .pdh-who .section-title { max-width: 900px; margin: 0 auto; text-wrap: balance; }
+    /* Scène 2 : chiffres en grand, communiqués par la société */
+    .pdh-band { text-align: center; }
+    .pdh-band .section-title { max-width: 900px; margin: 0 auto 1.2rem; text-wrap: balance; }
+    .pdh-band .section-lead { max-width: 40rem; margin: 0 auto; text-wrap: balance; }
     .pdh-logo {
       width: min(100%, 300px); aspect-ratio: 2 / 1; margin: 0 auto 2.5rem; overflow: hidden;
       background: #fff; border: 1px solid var(--border); border-radius: var(--radius-md); box-shadow: var(--shadow-sm);
@@ -62,26 +64,38 @@
     .pdh-stat .label { display: block; margin-top: 0.9rem; font-size: 1rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-mid); }
     .pdh-stats-note { margin-top: 2.5rem; font-size: 1.05rem; color: var(--text-mid); }
 
-    /* Scène 3 : le programme, une grande image pleine largeur */
-    .pdh-prog { padding: var(--section-py) 0 0; text-align: center; }
-    .pdh-prog .section-title { max-width: 900px; margin: 0 auto 2rem; text-wrap: balance; }
-    .pdh-fig .pdh-caption { left: 1.5rem; }
-    .pdh-prog .btn { margin-bottom: clamp(3rem, 6vw, 5rem); }
-    .pdh-fig { position: relative; margin: 0; }
-    .pdh-fig img { width: 100%; height: auto; display: block; }
+    /* Scènes 3 et 4 : moyenne-d et petite-g (formats .rg de style.css) */
+    #valeurs .rg-text .section-lead, #programme .rg-text .section-lead { margin-bottom: 1rem; }
+    #valeurs .rg-fig img { object-position: 50% 50%; }
+    #programme .rg-fig img { object-position: 62% 50%; }
+    .rg-text .section-lead a { color: var(--or-texte); text-decoration: underline; text-underline-offset: 4px; }
+    .rg-text .section-lead a:hover { color: var(--text); }
 
-    /* Scène 4 : protections légales de la VEFA, une ligne + le guide */
+    /* « Lien de scène » (même style que l'accueil) */
+    .scene-link {
+      display: inline-block; padding: 0.7rem 0;
+      font-size: 1.05rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--or-texte);
+    }
+    .scene-link span { text-decoration: underline; text-underline-offset: 6px; text-decoration-thickness: 1px; }
+    .scene-link .btn-icon { display: inline-block; vertical-align: -4px; margin-left: 0.7rem; transition: transform var(--transition-fast); }
+    .scene-link:hover { color: var(--text); }
+    .scene-link:hover .btn-icon, .scene-link:focus-visible .btn-icon { transform: translateX(6px); }
+
+    /* Scène 5 : la ligne VEFA, information générale */
     .pdh-vefa { text-align: center; }
-    .pdh-vefa .section-header { max-width: 900px; margin-bottom: 2.5rem; }
-    .pdh-vefa .section-title { text-wrap: balance; }
-    .pdh-vefa .section-lead { max-width: 760px; }
-    .pdh-guides { margin-top: 4rem; font-size: 1.05rem; color: var(--text-mid); }
+    .pdh-vefa-inner { max-width: 52rem; margin: 0 auto; }
+    .pdh-vefa .section-header { max-width: none; margin-bottom: 1.5rem; }
+    .pdh-vefa .section-title { text-wrap: balance; margin-bottom: 0; }
+    .pdh-vefa .section-lead { max-width: 40rem; margin: 0 auto 0.9rem; text-wrap: balance; }
+    .pdh-vefa .btn { margin-top: 1.2rem; }
+    .pdh-guides { margin-top: 3.5rem; font-size: 1.05rem; color: var(--text-mid); }
     .pdh-guides ul { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.4rem 1.8rem; margin-top: 0.6rem; }
     .pdh-guides a { color: var(--or-texte); text-decoration: underline; text-underline-offset: 3px; }
     .pdh-guides a:hover { color: var(--text); }
 
-    /* Scène 5 : contact */
-    .pdh-cta .section-title { margin-bottom: 2.2rem; }
+    /* Scène 6 : contact */
+    .pdh-cta .section-title { margin-bottom: 1rem; }
+    .pdh-cta .section-lead { margin: 0 auto 2.2rem; text-wrap: balance; }
 
     /* Boutons un peu plus lisibles sur cette page */
     #contenu .btn { font-size: 0.85rem; padding: 1.1rem 2.4rem; }
@@ -93,8 +107,8 @@
       .pdh-hero .hero-subtitle { padding-right: 4.2rem; } /* laisse la place aux boutons flottants */
       .pdh-stats { grid-template-columns: 1fr; gap: 2.2rem; margin-top: 2.5rem; }
       .pdh-caption { left: 1.5rem; bottom: 0.7rem; }
-      .pdh-fig .pdh-caption { left: 1rem; }
       .pdh-guides ul { flex-direction: column; align-items: center; gap: 0.6rem; }
+      .scene-link { letter-spacing: 0.08em; }
     }
     @media (prefers-reduced-motion: reduce) {
       #contenu *, #contenu *::before, #contenu *::after { transition: none !important; animation: none !important; }
@@ -205,7 +219,7 @@
 
 <main id="contenu">
 
-  <!-- ─── Scène 1 : bandeau plein écran ─────────────────────────── -->
+  <!-- ─── Scène 1 · immense : bandeau plein écran ───────────────── -->
   <section class="page-hero pdh-hero" aria-labelledby="promoteur-titre">
     <div class="hero-bg">
       <img src="/Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_EXT_Panorama_St-Victoire-1200w.webp"
@@ -216,51 +230,72 @@
     <div class="hero-overlay"></div>
     <div class="hero-content">
       <h1 class="hero-title" id="promoteur-titre" data-lang-fr="Ponthieu Développement Holding, promoteur immobilier à Aix-en-Provence" data-lang-en="Ponthieu Développement Holding, property developer in Aix-en-Provence">Ponthieu Développement Holding, promoteur immobilier à Aix-en-Provence</h1>
-      <p class="hero-subtitle" data-lang-fr="Promotion immobilière neuve et restauration de bâtiments anciens." data-lang-en="New-build property development and restoration of older buildings.">Promotion immobilière neuve et restauration de bâtiments anciens.</p>
+      <p class="hero-subtitle" data-lang-fr="Un acteur de la promotion immobilière neuve et de la restauration de bâtiments anciens, depuis 2001." data-lang-en="A player in new-build property development and in the restoration of older buildings, since 2001.">Un acteur de la promotion immobilière neuve et de la restauration de bâtiments anciens, depuis 2001.</p>
     </div>
     <p class="pdh-caption" data-lang-fr="Illustration non contractuelle" data-lang-en="Non-contractual illustration">Illustration non contractuelle</p>
   </section>
 
-  <!-- ─── Scène 2 : la société et ses chiffres ──────────────────── -->
-  <section class="section section-alt pdh-who" id="societe" aria-labelledby="societe-titre">
-    <div class="container">
-      <div class="pdh-logo">
-        <img src="/Photo%2059%20C%C3%A9zanne/Logo%20PONTHIEU/Logo%20Ponthieu-800w.webp" srcset="/Photo%2059%20C%C3%A9zanne/Logo%20PONTHIEU/Logo%20Ponthieu-800w.webp 800w, /Photo%2059%20C%C3%A9zanne/Logo%20PONTHIEU/Logo%20Ponthieu-1200w.webp 1200w" sizes="300px"
-             width="1600" height="1132" loading="lazy" decoding="async" alt="Logo Ponthieu" />
-      </div>
-      <h2 class="section-title" id="societe-titre" data-lang-fr="Créée en 2001 par Stéphane Ponthieu" data-lang-en="Founded in 2001 by Stéphane Ponthieu">Créée en 2001 par Stéphane Ponthieu</h2>
-      <ul class="pdh-stats">
-        <li class="pdh-stat"><span class="num">84</span><span class="label" data-lang-fr="Projets réalisés" data-lang-en="Projects completed">Projets réalisés</span></li>
-        <li class="pdh-stat"><span class="num">420</span><span class="label" data-lang-fr="Logements livrés" data-lang-en="Homes delivered">Logements livrés</span></li>
-        <li class="pdh-stat"><span class="num">25</span><span class="label" data-lang-fr="Années d'expertise" data-lang-en="Years of expertise">Années d'expertise</span></li>
-      </ul>
-      <p class="pdh-stats-note" data-lang-fr="Chiffres communiqués par la société." data-lang-en="Figures provided by the company.">Chiffres communiqués par la société.</p>
+  <!-- ─── Scène 2 · chiffres en grand (communiqués par la société) ─ -->
+  <section class="rg rg--b pdh-band" id="societe" aria-labelledby="societe-titre">
+    <div class="pdh-logo">
+      <img src="/Photo%2059%20C%C3%A9zanne/Logo%20PONTHIEU/Logo%20Ponthieu-800w.webp" srcset="/Photo%2059%20C%C3%A9zanne/Logo%20PONTHIEU/Logo%20Ponthieu-800w.webp 800w, /Photo%2059%20C%C3%A9zanne/Logo%20PONTHIEU/Logo%20Ponthieu-1200w.webp 1200w" sizes="300px"
+           width="1600" height="1132" loading="lazy" decoding="async" alt="Logo Ponthieu" />
     </div>
+    <h2 class="section-title" id="societe-titre" data-lang-fr="Créée en 2001 par Stéphane Ponthieu" data-lang-en="Founded in 2001 by Stéphane Ponthieu">Créée en 2001 par Stéphane Ponthieu</h2>
+    <p class="section-lead" data-lang-fr="La société se présente comme un acteur dynamique et innovant. Son siège est à Aix-en-Provence." data-lang-en="The company describes itself as a dynamic, innovative player. Its head office is in Aix-en-Provence.">La société se présente comme un acteur dynamique et innovant. Son siège est à Aix-en-Provence.</p>
+    <ul class="pdh-stats">
+      <li class="pdh-stat"><span class="num">84</span><span class="label" data-lang-fr="Projets réalisés" data-lang-en="Projects completed">Projets réalisés</span></li>
+      <li class="pdh-stat"><span class="num">420</span><span class="label" data-lang-fr="Logements livrés" data-lang-en="Homes delivered">Logements livrés</span></li>
+      <li class="pdh-stat"><span class="num">25</span><span class="label" data-lang-fr="Années d'expertise" data-lang-en="Years of expertise">Années d'expertise</span></li>
+    </ul>
+    <p class="pdh-stats-note" data-lang-fr="Chiffres communiqués par la société." data-lang-en="Figures provided by the company.">Chiffres communiqués par la société.</p>
   </section>
 
-  <!-- ─── Scène 3 : le programme, une grande image ──────────────── -->
-  <section class="pdh-prog" aria-labelledby="programme-titre">
-    <div class="container">
-      <h2 class="section-title" id="programme-titre" data-lang-fr="59 Cézanne, huit appartements neufs" data-lang-en="59 Cézanne, eight new apartments">59 Cézanne, huit appartements neufs</h2>
-      <a class="btn btn-outline-dark" href="/presentation" data-lang-fr="Découvrir la résidence" data-lang-en="Discover the residence">Découvrir la résidence</a>
+  <!-- ─── Scène 3 · moyenne-d : ses principes ───────────────────── -->
+  <section class="rg rg--moyenne-d" id="valeurs" aria-labelledby="valeurs-titre">
+    <div class="rg-text">
+      <h2 class="section-title" id="valeurs-titre" data-lang-fr="Ses principes : qualité et respect du patrimoine" data-lang-en="Its principles: quality and heritage">Ses principes : qualité et respect du patrimoine</h2>
+      <p class="section-lead" data-lang-fr="La société dit offrir des solutions immobilières qui honorent le passé tout en construisant un avenir durable." data-lang-en="The company says it offers property solutions that honour the past while building a sustainable future.">La société dit offrir des solutions immobilières qui honorent le passé tout en construisant un avenir durable.</p>
+      <p class="section-lead" data-lang-fr="Elle s'adresse aux particuliers, aux investisseurs et aux institutions." data-lang-en="It works for private buyers, investors and institutions.">Elle s'adresse aux particuliers, aux investisseurs et aux institutions.</p>
+      <p class="section-lead" data-lang-fr="Ce site ne présente que 59 Cézanne ; pour ses autres réalisations, &lt;a href=&quot;/contact&quot;&gt;contactez-nous&lt;/a&gt;." data-lang-en="This site only presents 59 Cézanne; for its other projects, &lt;a href=&quot;/contact&quot;&gt;contact us&lt;/a&gt;.">Ce site ne présente que 59 Cézanne ; pour ses autres réalisations, <a href="/contact">contactez-nous</a>.</p>
     </div>
-    <figure class="pdh-fig">
-      <img src="/Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_JARDIN_V2_LOGEMENT-04_Panorama_St-Victoire.webp"
+    <figure class="rg-fig">
+      <img src="/Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_JARDIN_V2_LOGEMENT-04_Panorama_St-Victoire-1200w.webp"
            srcset="/Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_JARDIN_V2_LOGEMENT-04_Panorama_St-Victoire-800w.webp 800w, /Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_JARDIN_V2_LOGEMENT-04_Panorama_St-Victoire-1200w.webp 1200w, /Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_JARDIN_V2_LOGEMENT-04_Panorama_St-Victoire.webp 1600w"
-           sizes="100vw" width="1600" height="1024" loading="lazy" decoding="async"
+           sizes="(min-width: 901px) 58vw, 100vw" width="1600" height="1024" loading="lazy" decoding="async"
            alt="Rendu 3D d'un appartement en rez-de-jardin de la résidence 59 Cézanne : baie ouverte sur le séjour, jardin et relief à l'horizon (illustration non contractuelle)" />
-      <figcaption class="pdh-caption" data-lang-fr="Illustration non contractuelle" data-lang-en="Non-contractual illustration">Illustration non contractuelle</figcaption>
+      <span class="img-tag" data-lang-fr="Illustration non contractuelle" data-lang-en="Non-contractual illustration">Illustration non contractuelle</span>
     </figure>
   </section>
 
-  <!-- ─── Scène 4 : protections légales de la VEFA (information générale) ─── -->
-  <section class="section section-alt pdh-vefa" id="garanties" aria-labelledby="garanties-titre">
-    <div class="container">
+  <!-- ─── Scène 4 · petite-g : son programme ────────────────────── -->
+  <section class="rg rg--b rg--petite-g" id="programme" aria-labelledby="programme-titre">
+    <div class="rg-text">
+      <h2 class="section-title" id="programme-titre" data-lang-fr="59 Cézanne, huit appartements neufs" data-lang-en="59 Cézanne, eight new apartments">59 Cézanne, huit appartements neufs</h2>
+      <p class="section-lead" data-lang-fr="Avenue Paul Cézanne, dans le quartier des Lauves, à Aix-en-Provence." data-lang-en="Avenue Paul Cézanne, in the Lauves district of Aix-en-Provence.">Avenue Paul Cézanne, dans le quartier des Lauves, à Aix-en-Provence.</p>
+      <p class="section-lead" data-lang-fr="Avec seulement huit unités, la résidence privilégie l'intimité." data-lang-en="With only eight units, the residence puts privacy first.">Avec seulement huit unités, la résidence privilégie l'intimité.</p>
+      <p class="section-lead" data-lang-fr="Un jardin privatif pour chaque appartement, une piscine commune." data-lang-en="A private garden for each apartment, a shared swimming pool.">Un jardin privatif pour chaque appartement, une piscine commune.</p>
+      <a class="scene-link" href="/presentation"><span data-lang-fr="Découvrir la résidence" data-lang-en="Discover the residence">Découvrir la résidence</span><svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" focusable="false"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+    </div>
+    <figure class="rg-fig">
+      <img src="/Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_PISCINE_NUIT_Panorama_St-Victoire%202-1200w.webp"
+           srcset="/Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_PISCINE_NUIT_Panorama_St-Victoire%202-800w.webp 800w, /Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_PISCINE_NUIT_Panorama_St-Victoire%202-1200w.webp 1200w, /Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_PISCINE_NUIT_Panorama_St-Victoire%202.webp 1600w"
+           sizes="(min-width: 901px) 34vw, 64vw" width="1600" height="960" loading="lazy" decoding="async"
+           alt="Rendu 3D de la piscine éclairée de nuit, du solarium et de la façade de la résidence 59 Cézanne (illustration non contractuelle)" />
+      <span class="img-tag" data-lang-fr="Illustration non contractuelle" data-lang-en="Non-contractual illustration">Illustration non contractuelle</span>
+    </figure>
+  </section>
+
+  <!-- ─── Scène 5 · la ligne VEFA (information générale) ────────── -->
+  <section class="rg pdh-vefa" id="garanties" aria-labelledby="garanties-titre">
+    <div class="pdh-vefa-inner">
       <div class="section-header">
         <p class="eyebrow" data-lang-fr="Information générale, octobre 2026" data-lang-en="General information, October 2026">Information générale, octobre 2026</p>
         <h2 class="section-title" id="garanties-titre" data-lang-fr="Ce que la loi prévoit en &lt;em&gt;VEFA&lt;/em&gt;" data-lang-en="What the law provides for &lt;em&gt;VEFA&lt;/em&gt; (off plan)">Ce que la loi prévoit en <em>VEFA</em></h2>
-        <p class="section-lead" data-lang-fr="Dépôt de garantie plafonné, droit de rétractation, garantie financière, garanties après réception." data-lang-en="Capped reservation deposit, right of withdrawal, financial guarantee, guarantees after acceptance of the works.">Dépôt de garantie plafonné, droit de rétractation, garantie financière, garanties après réception.</p>
       </div>
+      <p class="section-lead" data-lang-fr="Dépôt de garantie plafonné, droit de rétractation, garantie financière, garanties après réception." data-lang-en="Capped reservation deposit, right of withdrawal, financial guarantee, guarantees after acceptance of the works.">Dépôt de garantie plafonné, droit de rétractation, garantie financière, garanties après réception.</p>
+      <p class="section-lead" data-lang-fr="Les justificatifs propres à votre achat sont à vérifier avec le notaire." data-lang-en="The documents specific to your purchase are to be checked with the notary.">Les justificatifs propres à votre achat sont à vérifier avec le notaire.</p>
+      <p class="section-lead" data-lang-fr="Les étapes et les sources sont détaillées dans notre guide." data-lang-en="The steps and the sources are detailed in our guide.">Les étapes et les sources sont détaillées dans notre guide.</p>
       <a class="btn btn-primary" href="/blog/vefa-achat-sur-plan-etapes-garanties" data-lang-fr="Lire le guide VEFA" data-lang-en="Read the VEFA guide (in French)">Lire le guide VEFA</a>
 
       <nav class="pdh-guides" aria-label="Nos guides">
@@ -274,10 +309,11 @@
     </div>
   </section>
 
-  <!-- ─── Scène 5 : contact ─────────────────────────────────────── -->
+  <!-- ─── Scène 6 : contact ─────────────────────────────────────── -->
   <section class="section section-dark pdh-cta" id="contact-promoteur" aria-labelledby="cta-titre">
     <div class="container text-center">
       <h2 class="section-title" id="cta-titre" data-lang-fr="Une question&nbsp;?" data-lang-en="A question?">Une question&nbsp;?</h2>
+      <p class="section-lead" data-lang-fr="Stéphane Ponthieu et son équipe se tiennent à votre disposition pour répondre à vos questions sur la résidence." data-lang-en="Stéphane Ponthieu and his team are available to answer your questions about the residence.">Stéphane Ponthieu et son équipe se tiennent à votre disposition pour répondre à vos questions sur la résidence.</p>
       <div class="d-flex gap-3 align-center flex-wrap" style="justify-content:center;">
         <a class="btn btn-primary" href="/contact" data-lang-fr="Nous contacter" data-lang-en="Contact us">Nous contacter</a>
         <a href="tel:+33609204590" class="btn btn-outline">06 09 20 45 90</a>

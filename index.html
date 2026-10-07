@@ -33,14 +33,16 @@
 
   <style>
     /* Jetons de contraste, focus visible, mouvement réduit et révélations sans JS : fournis par style.css
-       (--or-texte, --olive-texte, --focus-ring, .on-dark). Ici : uniquement la mise en page de l'accueil
-       (hero plein écran + 5 scènes : titre court, une phrase, grande image, un lien). */
+       (--or-texte, --olive-texte, --focus-ring, .on-dark). Les scènes utilisent le système « rg » de style.css
+       (formats moyenne / petite / duo / immense). Ici : hero, lien de scène, texte courant et chiffre clé des
+       scènes, ligne « Nos guides » et scène finale de contact. */
 
     /* ── Hero ── */
     .hero-overlay { background: linear-gradient(to top, rgba(15,12,8,0.9) 0%, rgba(15,12,8,0.62) 45%, rgba(15,12,8,0.18) 100%); }
     .hero-title { font-size: clamp(2.7rem, 6vw, 5.4rem); max-width: 1200px; text-shadow: 0 2px 18px rgba(0,0,0,0.35); }
     .hero-title span, .hero-title em { display: block; }
-    .hero-title .nw, .section-title .nw { display: inline; white-space: nowrap; }
+    .nw { white-space: nowrap; }
+    .hero-title .nw { display: inline; }
     .hero-subtitle { max-width: 760px; color: rgba(255,255,255,0.94); }
     .hero-cta-wrap .btn { font-size: 0.85rem; padding: 1.1rem 2.4rem; }
     .hero-caption {
@@ -68,17 +70,20 @@
       100% { opacity: 0; transform: translateY(0); }
     }
 
-    /* ── Scènes : titre + phrase + lien, puis une grande image pleine largeur ── */
-    .scene { background: var(--creme); }
-    .scene--b { background: var(--beige); }
-    .scene-head {
-      display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr); gap: 1.5rem 5rem; align-items: end;
-      padding-top: clamp(3.5rem, 7vw, 6.5rem); padding-bottom: clamp(2rem, 4vw, 3.5rem);
-    }
-    .scene-head .section-title { margin-bottom: 0; }
-    .scene .section-title, .scene-end .section-title { text-wrap: balance; }
-    .scene-side .section-lead, .scene-end .section-lead { text-wrap: balance; }
-    .scene-side .section-lead { margin: 0 0 1.2rem; max-width: 30rem; }
+    /* ── Texte des scènes : accroche (.section-lead) + 1 à 2 phrases courtes (.rg-body) + chiffre clé ── */
+    .rg-text .section-lead, .rg--duo .rg-text .section-lead { margin-bottom: 0.9rem; }
+    .rg-body { font-size: 1.2rem; line-height: 1.7; color: var(--text-mid); margin: 0 0 1rem; max-width: 30rem; }
+    .rg-text .scene-link, .scene-side .scene-link { margin-top: 0.6rem; }
+    .home-fact { font-family: var(--font-serif); font-size: clamp(2.2rem, 4.4vw, 3.8rem); font-weight: 300; line-height: 1.1; color: var(--or-texte); margin: 0.8rem 0 1.1rem; }
+    .home-fact small { display: block; margin-top: 0.4rem; font-family: var(--font-sans); font-size: 1.05rem; font-weight: 400; letter-spacing: 0.03em; line-height: 1.5; color: var(--text-mid); }
+    .rg--immense .rg-text .section-lead, .rg--immense .rg-body { max-width: 42rem; }
+    .rg--immense .rg-body { color: rgba(255,255,255,0.94); }
+    .rg--immense .rg-fig::after { background: linear-gradient(to top, rgba(15,12,8,0.9) 0%, rgba(15,12,8,0.62) 32%, rgba(15,12,8,0.16) 60%, rgba(15,12,8,0.04) 100%); }
+    .rg--immense .rg-text .section-lead, .rg--immense .rg-body, .scene-end .section-lead, .scene-end .rg-body { text-shadow: 0 1px 14px rgba(0,0,0,0.6); }
+    .rg--duo .rg-text { align-items: center; }
+    .rg--duo .rg-fig.rg-fig--plan:nth-of-type(2) { aspect-ratio: 4 / 3; background: #fff; }
+    .rg--duo .rg-fig--plan img { transform: scale(1.04); }
+
     .scene-link {
       display: inline-block; padding: 0.7rem 0;
       font-size: 1.05rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--or-texte);
@@ -86,15 +91,8 @@
     .scene-link span { text-decoration: underline; text-underline-offset: 6px; text-decoration-thickness: 1px; }
     .scene-link .btn-icon { display: inline-block; vertical-align: -4px; margin-left: 0.7rem; transition: transform var(--transition-fast); }
     .scene-link:hover { color: var(--text); }
+    .rg--immense .scene-link:hover { color: var(--white); }
     .scene-link:hover .btn-icon, .scene-link:focus-visible .btn-icon { transform: translateX(6px); }
-
-    .scene-fig { position: relative; margin: 0; overflow: hidden; background: #0f0c08; }
-    .scene-fig img { width: 100%; height: clamp(420px, 80vh, 920px); object-fit: cover; }
-    .img-tag {
-      position: absolute; left: 1rem; bottom: 1rem; z-index: 2; max-width: calc(100% - 2rem);
-      background: rgba(15,12,8,0.72); color: #fff; font-size: 0.78rem; letter-spacing: 0.03em; line-height: 1.4;
-      padding: 0.3rem 0.7rem; border-radius: 3px;
-    }
 
     /* ── Ligne « Nos guides » ── */
     .guides-line { background: var(--creme); border-top: 1px solid var(--border); padding: 1.6rem 0; }
@@ -103,25 +101,25 @@
     .guides-line a { display: inline-block; padding: 0.6rem 0; font-size: 1.05rem; color: var(--text); text-decoration: underline; text-underline-offset: 5px; text-decoration-color: var(--or-texte); }
     .guides-line a:hover { color: var(--or-texte); }
 
-    /* ── Scène finale : contact ── */
+    /* ── Scène finale : contact (plein cadre, texte centré) ── */
     .scene-end { position: relative; min-height: min(88vh, 820px); display: flex; align-items: center; justify-content: center; text-align: center; overflow: hidden; background: #0f0c08; color: #fff; }
     .scene-end > img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
-    .scene-end-overlay { position: absolute; inset: 0; background: rgba(15,12,8,0.6); }
+    .scene-end-overlay { position: absolute; inset: 0; background: rgba(15,12,8,0.68); }
     .scene-end-inner { position: relative; z-index: 1; width: 100%; max-width: 920px; padding: 5rem 2rem 6rem; }
-    .scene-end .section-title { color: #fff; margin-bottom: 1.1rem; text-shadow: 0 2px 18px rgba(0,0,0,0.35); }
-    .scene-end .section-lead { color: rgba(255,255,255,0.94); margin: 0 auto 2.4rem; max-width: 34rem; }
+    .scene-end .section-title { color: #fff; margin-bottom: 1.1rem; text-wrap: balance; text-shadow: 0 2px 18px rgba(0,0,0,0.35); }
+    .scene-end .section-lead { color: rgba(255,255,255,0.94); margin: 0 auto 0.9rem; max-width: 34rem; text-wrap: balance; }
+    .scene-end .rg-body { color: rgba(255,255,255,0.88); margin: 0 auto 2.2rem; }
     .scene-end-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 1.2rem; }
     .scene-end-actions .btn { font-size: 0.85rem; padding: 1.15rem 2.4rem; }
-    .scene-end .img-tag { left: auto; right: 1rem; }
+    .scene-end .img-tag {
+      position: absolute; right: 1rem; bottom: 1rem; z-index: 2; max-width: calc(100% - 2rem);
+      background: rgba(15,12,8,0.72); color: #fff; font-size: 0.78rem; letter-spacing: 0.03em; line-height: 1.4;
+      padding: 0.3rem 0.7rem; border-radius: 3px;
+    }
 
     @media (max-width: 1100px) { .hero-scroll { display: none; } }
-    @media (max-width: 900px) {
-      .scene-head { grid-template-columns: 1fr; gap: 1.4rem; align-items: start; }
-      .scene-fig img { height: clamp(380px, 62vh, 640px); }
-    }
     @media (max-width: 700px) {
       .hero-caption { right: 1rem; bottom: 0.9rem; }
-      .scene-fig img { height: min(112vw, 70vh); }
       .scene-end-inner { padding: 4rem 1.25rem 5rem; }
       .scene-end-actions .btn { padding: 1.1rem 1.8rem; }
       .hero-cta-wrap { gap: 1rem; }
@@ -303,7 +301,7 @@
 
     <div class="hero-content">
       <h1 class="hero-title"><span data-lang-fr="59 Cézanne," data-lang-en="59 Cézanne,">59 Cézanne,</span> <em data-lang-fr="appartements neufs de prestige à &lt;span class=&quot;nw&quot;&gt;Aix-en-Provence&lt;/span&gt;" data-lang-en="new prestige apartments in &lt;span class=&quot;nw&quot;&gt;Aix-en-Provence&lt;/span&gt;">appartements neufs de prestige à <span class="nw">Aix-en-Provence</span></em></h1>
-      <p class="hero-subtitle" data-lang-fr="Huit appartements neufs, jardins privatifs, piscine chauffée." data-lang-en="Eight new apartments, private gardens, heated pool.">Huit appartements neufs, jardins privatifs, piscine chauffée.</p>
+      <p class="hero-subtitle" data-lang-fr="L'harmonie parfaite entre prestige, nature et confort. Huit appartements neufs, jardins privatifs, piscine chauffée." data-lang-en="The perfect harmony of prestige, nature and comfort. Eight new apartments, private gardens, heated pool.">L'harmonie parfaite entre prestige, nature et confort. Huit appartements neufs, jardins privatifs, piscine chauffée.</p>
       <div class="hero-cta-wrap">
         <a href="/logements" class="btn btn-primary"><svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" focusable="false"><path d="M5 12h14M12 5l7 7-7 7"/></svg><span data-lang-fr="Voir les appartements" data-lang-en="View the apartments">Voir les appartements</span></a>
         <a href="/contact" class="btn btn-outline"><span data-lang-fr="Nous contacter" data-lang-en="Contact us">Nous contacter</span></a>
@@ -314,62 +312,81 @@
     <p class="hero-caption" data-lang-fr="Rendu 3D — illustration non contractuelle" data-lang-en="3D rendering — non-contractual illustration">Rendu 3D — illustration non contractuelle</p>
   </section>
 
-  <!-- ─── Scène 1 : la résidence (page-maison : /presentation) ──── -->
-  <section class="scene" id="residence" aria-labelledby="residence-titre">
-    <div class="container scene-head">
+  <!-- ─── Scène 1 : la résidence · format moyenne-g (page-maison : /presentation) ── -->
+  <section class="rg rg--moyenne-g" id="residence" aria-labelledby="residence-titre">
+    <div class="rg-text">
       <h2 class="section-title reveal" id="residence-titre" data-lang-fr="Une résidence confidentielle à &lt;span class=&quot;nw&quot;&gt;Aix-en-Provence&lt;/span&gt;" data-lang-en="A confidential residence in &lt;span class=&quot;nw&quot;&gt;Aix-en-Provence&lt;/span&gt;">Une résidence confidentielle à <span class="nw">Aix-en-Provence</span></h2>
-      <div class="scene-side reveal reveal-delay-1">
-        <p class="section-lead" data-lang-fr="Avenue Paul Cézanne : pierre claire, toits de tuiles, baies ouvertes sur les jardins." data-lang-en="Avenue Paul Cézanne: light stone, tiled roofs, large openings onto the gardens.">Avenue Paul Cézanne : pierre claire, toits de tuiles, baies ouvertes sur les jardins.</p>
-        <a class="scene-link" href="/presentation"><span data-lang-fr="Découvrir la résidence" data-lang-en="Discover the residence">Découvrir la résidence</span><svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" focusable="false"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
-      </div>
+      <p class="section-lead reveal" data-lang-fr="Vivez l'exception avenue Paul Cézanne." data-lang-en="Live the exceptional on avenue Paul Cézanne.">Vivez l'exception avenue Paul Cézanne.</p>
+      <p class="rg-body reveal" data-lang-fr="Seulement huit appartements neufs : une intimité rare, entre pierre claire, toits de tuiles et jardins." data-lang-en="Only eight new apartments: rare privacy, between light stone, tiled roofs and gardens.">Seulement huit appartements neufs : une intimité rare, entre pierre claire, toits de tuiles et jardins.</p>
+      <a class="scene-link" href="/presentation"><span data-lang-fr="Découvrir la résidence" data-lang-en="Discover the residence">Découvrir la résidence</span><svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" focusable="false"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
     </div>
-    <figure class="scene-fig">
-      <img src="/Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_JARDIN_V2_LOGEMENT-04_Panorama_St-Victoire-1200w.webp" srcset="/Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_JARDIN_V2_LOGEMENT-04_Panorama_St-Victoire-800w.webp 800w, /Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_JARDIN_V2_LOGEMENT-04_Panorama_St-Victoire-1200w.webp 1200w, /Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_JARDIN_V2_LOGEMENT-04_Panorama_St-Victoire.webp 1600w" sizes="100vw" width="1600" height="1024" alt="Rendu 3D de la façade d'un appartement en rez-de-jardin : baie coulissante ouverte entre le séjour et le jardin, pelouse et haie fleurie" loading="lazy" decoding="async" style="object-position:50% 55%" />
+    <figure class="rg-fig">
+      <img src="/Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_JARDIN_V2_LOGEMENT-04_Panorama_St-Victoire-1200w.webp" srcset="/Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_JARDIN_V2_LOGEMENT-04_Panorama_St-Victoire-800w.webp 800w, /Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_JARDIN_V2_LOGEMENT-04_Panorama_St-Victoire-1200w.webp 1200w, /Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_JARDIN_V2_LOGEMENT-04_Panorama_St-Victoire.webp 1600w" sizes="(min-width: 901px) 58vw, 100vw" width="1600" height="1024" alt="Rendu 3D de la façade d'un appartement en rez-de-jardin : baie coulissante ouverte entre le séjour et le jardin, pelouse et haie fleurie" loading="lazy" decoding="async" style="object-position:42% 55%" />
       <span class="img-tag" data-lang-fr="Illustration non contractuelle" data-lang-en="Non-contractual illustration">Illustration non contractuelle</span>
     </figure>
   </section>
 
-  <!-- ─── Scène 2 : les appartements (page-maison : /logements) ─── -->
-  <section class="scene scene--b" id="appartements" aria-labelledby="appartements-titre">
-    <div class="container scene-head">
+  <!-- ─── Scène 2 : les appartements · format petite-d (page-maison : /logements) ── -->
+  <section class="rg rg--petite-d rg--b" id="appartements" aria-labelledby="appartements-titre">
+    <div class="rg-text">
       <h2 class="section-title reveal" id="appartements-titre" data-lang-fr="Du T2 au T4, huit appartements neufs" data-lang-en="From T2 to T4, eight new apartments">Du T2 au T4, huit appartements neufs</h2>
-      <div class="scene-side reveal reveal-delay-1">
-        <p class="section-lead" data-lang-fr="Vue Sainte-Victoire pour plusieurs appartements." data-lang-en="Sainte-Victoire views from several apartments.">Vue Sainte-Victoire pour plusieurs appartements.</p>
-        <a class="scene-link" href="/logements"><span data-lang-fr="Voir les appartements" data-lang-en="View the apartments">Voir les appartements</span><svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" focusable="false"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
-      </div>
+      <p class="section-lead reveal" data-lang-fr="Des espaces sur-mesure, pensés pour l'excellence." data-lang-en="Tailor-made spaces, designed for excellence.">Des espaces sur-mesure, pensés pour l'excellence.</p>
+      <p class="rg-body reveal" data-lang-fr="Grandes baies vitrées, sols au choix (grès cérame ou parquet, selon la notice). Vue &lt;span class=&quot;nw&quot;&gt;Sainte-Victoire&lt;/span&gt; pour plusieurs appartements." data-lang-en="Large glazed openings, floors of your choice (porcelain stoneware or parquet, according to the notice). &lt;span class=&quot;nw&quot;&gt;Sainte-Victoire&lt;/span&gt; views from several apartments.">Grandes baies vitrées, sols au choix (grès cérame ou parquet, selon la notice). Vue <span class="nw">Sainte-Victoire</span> pour plusieurs appartements.</p>
+      <p class="home-fact reveal" data-lang-fr="&lt;span class=&quot;nw&quot;&gt;4 T4&lt;/span&gt; · &lt;span class=&quot;nw&quot;&gt;2 T3 duplex&lt;/span&gt; · &lt;span class=&quot;nw&quot;&gt;2 T2&lt;/span&gt;" data-lang-en="&lt;span class=&quot;nw&quot;&gt;4 T4&lt;/span&gt; · &lt;span class=&quot;nw&quot;&gt;2 T3 duplex&lt;/span&gt; · &lt;span class=&quot;nw&quot;&gt;2 T2&lt;/span&gt;"><span class="nw">4 T4</span> · <span class="nw">2 T3 duplex</span> · <span class="nw">2 T2</span></p>
+      <a class="scene-link" href="/logements"><span data-lang-fr="Voir les appartements" data-lang-en="View the apartments">Voir les appartements</span><svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" focusable="false"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
     </div>
-    <figure class="scene-fig">
-      <img src="/Photo%2059%20C%C3%A9zanne/3D%20interieur/LOGEMENT_2_02-1200w.webp" srcset="/Photo%2059%20C%C3%A9zanne/3D%20interieur/LOGEMENT_2_02-800w.webp 800w, /Photo%2059%20C%C3%A9zanne/3D%20interieur/LOGEMENT_2_02-1200w.webp 1200w, /Photo%2059%20C%C3%A9zanne/3D%20interieur/LOGEMENT_2_02.webp 1600w" sizes="100vw" width="1600" height="960" alt="Rendu 3D du séjour et de la salle à manger d'un T3 duplex : grandes baies vitrées ouvertes vers la montagne" loading="lazy" decoding="async" style="object-position:50% 60%" />
+    <figure class="rg-fig">
+      <img src="/Photo%2059%20C%C3%A9zanne/3D%20interieur/LOGEMENT_1_B_02-1200w.webp" srcset="/Photo%2059%20C%C3%A9zanne/3D%20interieur/LOGEMENT_1_B_02-800w.webp 800w, /Photo%2059%20C%C3%A9zanne/3D%20interieur/LOGEMENT_1_B_02-1200w.webp 1200w, /Photo%2059%20C%C3%A9zanne/3D%20interieur/LOGEMENT_1_B_02.webp 1600w" sizes="(min-width: 901px) 34vw, 64vw" width="1600" height="960" alt="Rendu 3D du séjour d'un T4 : cuisine ouverte avec îlot et suspensions, canapé, grande baie vitrée sur le jardin" loading="lazy" decoding="async" style="object-position:90% 50%" />
       <span class="img-tag" data-lang-fr="Illustration non contractuelle" data-lang-en="Non-contractual illustration">Illustration non contractuelle</span>
     </figure>
   </section>
 
-  <!-- ─── Scène 3 : piscine et jardins (page-maison : /exterieurs) ─ -->
-  <section class="scene" id="piscine" aria-labelledby="piscine-titre">
-    <div class="container scene-head">
-      <h2 class="section-title reveal" id="piscine-titre" data-lang-fr="Piscine chauffée et jardins paysagers" data-lang-en="Heated pool and landscaped gardens">Piscine chauffée et jardins paysagers</h2>
-      <div class="scene-side reveal reveal-delay-1">
-        <p class="section-lead" data-lang-fr="Solarium, oliviers, pins, amandiers et lavandes, selon le plan paysager." data-lang-en="Solarium, olive, pine and almond trees and lavender, according to the landscape plan.">Solarium, oliviers, pins, amandiers et lavandes, selon le plan paysager.</p>
-        <a class="scene-link" href="/exterieurs"><span data-lang-fr="Voir les espaces communs" data-lang-en="View the common areas">Voir les espaces communs</span><svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" focusable="false"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+  <!-- ─── Scène 3 : jardins privatifs · format duo (teaser ; détail sur /logements) ── -->
+  <section class="rg rg--duo" id="jardins" aria-labelledby="jardins-titre">
+    <div class="rg-text">
+      <h2 class="section-title reveal" id="jardins-titre" data-lang-fr="Appartement neuf avec jardin privatif" data-lang-en="New apartment with a private garden">Appartement neuf avec jardin privatif</h2>
+      <div class="scene-side">
+        <p class="section-lead reveal" data-lang-fr="Un jardin, c'est une fenêtre ouverte sur la nature." data-lang-en="A garden is a window open onto nature.">Un jardin, c'est une fenêtre ouverte sur la nature.</p>
+        <p class="rg-body reveal" data-lang-fr="Du T2 au T4, chaque appartement a le sien." data-lang-en="From T2 to T4, every apartment has its own.">Du T2 au T4, chaque appartement a le sien.</p>
+        <p class="home-fact reveal"><span data-lang-fr="environ 28 à 312&nbsp;m²" data-lang-en="about 28 to 312&nbsp;m²">environ 28 à 312&nbsp;m²</span><small data-lang-fr="de jardin privatif selon l'appartement" data-lang-en="of private garden depending on the apartment">de jardin privatif selon l'appartement</small></p>
+        <a class="scene-link" href="/logements"><span data-lang-fr="Voir les jardins par appartement" data-lang-en="See the gardens by apartment">Voir les jardins par appartement</span><svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" focusable="false"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
       </div>
     </div>
-    <figure class="scene-fig">
+    <figure class="rg-fig">
+      <img src="/Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_JARDIN_LOGEMENT-04_Panorama_St-Victoire-1200w.webp" srcset="/Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_JARDIN_LOGEMENT-04_Panorama_St-Victoire-800w.webp 800w, /Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_JARDIN_LOGEMENT-04_Panorama_St-Victoire-1200w.webp 1200w, /Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_JARDIN_LOGEMENT-04_Panorama_St-Victoire.webp 1600w" sizes="(min-width: 901px) 58vw, 100vw" width="1600" height="1024" alt="Rendu 3D du jardin privatif d'un T4 : terrasse, salon d'extérieur, bains de soleil, haie fleurie et cyprès, montagne à l'horizon" loading="lazy" decoding="async" style="object-position:30% 55%" />
+      <span class="img-tag" data-lang-fr="Illustration non contractuelle" data-lang-en="Non-contractual illustration">Illustration non contractuelle</span>
+    </figure>
+    <figure class="rg-fig rg-fig--contain rg-fig--plan">
+      <img src="/Photo%2059%20C%C3%A9zanne/Axonometrie/Logement%206/LOGEMENT_06_3D_FB-1200w.webp" srcset="/Photo%2059%20C%C3%A9zanne/Axonometrie/Logement%206/LOGEMENT_06_3D_FB-800w.webp 800w, /Photo%2059%20C%C3%A9zanne/Axonometrie/Logement%206/LOGEMENT_06_3D_FB-1200w.webp 1200w, /Photo%2059%20C%C3%A9zanne/Axonometrie/Logement%206/LOGEMENT_06_3D_FB.webp 1600w" sizes="(min-width: 901px) 34vw, 58vw" width="1600" height="1067" alt="Axonométrie 3D d'un T2 : séjour, chambre, terrasse avec parasol et jardin" loading="lazy" decoding="async" />
+      <span class="img-tag" data-lang-fr="Illustration non contractuelle" data-lang-en="Non-contractual illustration">Illustration non contractuelle</span>
+    </figure>
+  </section>
+
+  <!-- ─── Scène 4 : piscine et jardins paysagers · format immense (page-maison : /exterieurs) ── -->
+  <section class="rg rg--immense" id="piscine" aria-labelledby="piscine-titre">
+    <div class="rg-text">
+      <h2 class="section-title reveal" id="piscine-titre" data-lang-fr="Piscine chauffée et jardins paysagers" data-lang-en="Heated pool and landscaped gardens">Piscine chauffée et jardins paysagers</h2>
+      <p class="section-lead reveal" data-lang-fr="Au cœur de la résidence, une piscine chauffée." data-lang-en="At the heart of the residence, a heated pool.">Au cœur de la résidence, une piscine chauffée.</p>
+      <p class="rg-body reveal" data-lang-fr="Nage à contre-courant, selon la notice. Solarium aménagé de transats ; oliviers, pins, amandiers et lavandes, selon le plan paysager." data-lang-en="Counter-current swimming system, according to the notice. Solarium with sun loungers; olive, pine and almond trees and lavender, according to the landscape plan.">Nage à contre-courant, selon la notice. Solarium aménagé de transats ; oliviers, pins, amandiers et lavandes, selon le plan paysager.</p>
+      <a class="scene-link" href="/exterieurs"><span data-lang-fr="Voir les espaces communs" data-lang-en="View the common areas">Voir les espaces communs</span><svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" focusable="false"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+    </div>
+    <figure class="rg-fig">
       <img src="/Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_PISCINE_NUIT_Panorama_St-Victoire%202-1200w.webp" srcset="/Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_PISCINE_NUIT_Panorama_St-Victoire%202-800w.webp 800w, /Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_PISCINE_NUIT_Panorama_St-Victoire%202-1200w.webp 1200w, /Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_PISCINE_NUIT_Panorama_St-Victoire%202.webp 1600w" sizes="100vw" width="1600" height="960" alt="Rendu 3D de nuit : piscine éclairée, solarium avec parasols et transats, façade en pierre claire de la résidence" loading="lazy" decoding="async" style="object-position:50% 45%" />
       <span class="img-tag" data-lang-fr="Illustration non contractuelle" data-lang-en="Non-contractual illustration">Illustration non contractuelle</span>
     </figure>
   </section>
 
-  <!-- ─── Scène 4 : la situation (page-maison : /localisation) ──── -->
-  <section class="scene scene--b" id="situation" aria-labelledby="situation-titre">
-    <div class="container scene-head">
+  <!-- ─── Scène 5 : la situation · format moyenne-g (page-maison : /localisation) ── -->
+  <section class="rg rg--moyenne-g rg--b" id="situation" aria-labelledby="situation-titre">
+    <div class="rg-text">
       <h2 class="section-title reveal" id="situation-titre" data-lang-fr="Dans le quartier des Lauves, à &lt;span class=&quot;nw&quot;&gt;Aix-en-Provence&lt;/span&gt;" data-lang-en="In the Lauves district, in &lt;span class=&quot;nw&quot;&gt;Aix-en-Provence&lt;/span&gt;">Dans le quartier des Lauves, à <span class="nw">Aix-en-Provence</span></h2>
-      <div class="scene-side reveal reveal-delay-1">
-        <p class="section-lead" data-lang-fr="Centre-ville à environ 4 minutes en voiture, selon la plaquette." data-lang-en="City centre about 4 minutes by car, according to the brochure.">Centre-ville à environ 4 minutes en voiture, selon la plaquette.</p>
-        <a class="scene-link" href="/localisation"><span data-lang-fr="Voir la localisation" data-lang-en="View the location">Voir la localisation</span><svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" focusable="false"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
-      </div>
+      <p class="section-lead reveal" data-lang-fr="Une adresse accessible, dans une atmosphère intimiste." data-lang-en="An accessible address in an intimate atmosphere.">Une adresse accessible, dans une atmosphère intimiste.</p>
+      <p class="rg-body reveal" data-lang-fr="Centre-ville à environ 4 minutes en voiture, autoroute A51 à 3 minutes, selon la plaquette." data-lang-en="City centre about 4 minutes by car, A51 motorway 3 minutes, according to the brochure.">Centre-ville à environ 4 minutes en voiture, autoroute A51 à 3 minutes, selon la plaquette.</p>
+      <p class="rg-body reveal" data-lang-fr="Bus en bas de l'avenue : lignes 5 et 12 vers le &lt;span class=&quot;nw&quot;&gt;centre-ville&lt;/span&gt;." data-lang-en="Bus at the bottom of the avenue: lines 5 and 12 to the city centre.">Bus en bas de l'avenue : lignes 5 et 12 vers le <span class="nw">centre-ville</span>.</p>
+      <a class="scene-link" href="/localisation"><span data-lang-fr="Voir la localisation" data-lang-en="View the location">Voir la localisation</span><svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" focusable="false"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
     </div>
-    <figure class="scene-fig">
-      <img src="/Photo%2059%20C%C3%A9zanne/3D%20Groove%20Architecture/Edited/insertion-ouest-1200w.webp" srcset="/Photo%2059%20C%C3%A9zanne/3D%20Groove%20Architecture/Edited/insertion-ouest-800w.webp 800w, /Photo%2059%20C%C3%A9zanne/3D%20Groove%20Architecture/Edited/insertion-ouest-1200w.webp 1200w" sizes="100vw" width="1600" height="1200" alt="Vue aérienne d'un secteur résidentiel d'Aix-en-Provence, avec la montagne Sainte-Victoire à l'horizon" loading="lazy" decoding="async" style="object-position:50% 18%" />
+    <figure class="rg-fig">
+      <img src="/Photo%2059%20C%C3%A9zanne/3D%20Groove%20Architecture/Edited/insertion-ouest-1200w.webp" srcset="/Photo%2059%20C%C3%A9zanne/3D%20Groove%20Architecture/Edited/insertion-ouest-800w.webp 800w, /Photo%2059%20C%C3%A9zanne/3D%20Groove%20Architecture/Edited/insertion-ouest-1200w.webp 1200w" sizes="(min-width: 901px) 58vw, 100vw" width="1600" height="1200" alt="Vue aérienne d'un secteur résidentiel d'Aix-en-Provence, avec la montagne Sainte-Victoire à l'horizon" loading="lazy" decoding="async" style="object-position:50% 20%" />
       <span class="img-tag" data-lang-fr="La résidence n'y figure pas. Illustration non contractuelle." data-lang-en="The residence does not appear in it. Non-contractual illustration.">La résidence n'y figure pas. Illustration non contractuelle.</span>
     </figure>
   </section>
@@ -386,13 +403,14 @@
     </div>
   </nav>
 
-  <!-- ─── Scène 5 : contact (page-maison : /contact) ──────────── -->
+  <!-- ─── Scène 6 : contact · scène finale plein cadre (page-maison : /contact) ── -->
   <section class="scene-end on-dark" id="contact-accueil" aria-labelledby="contact-titre">
-    <img src="/Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_JARDIN_LOGEMENT-04_Panorama_St-Victoire-1200w.webp" srcset="/Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_JARDIN_LOGEMENT-04_Panorama_St-Victoire-800w.webp 800w, /Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_JARDIN_LOGEMENT-04_Panorama_St-Victoire-1200w.webp 1200w, /Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_JARDIN_LOGEMENT-04_Panorama_St-Victoire.webp 1600w" sizes="100vw" width="1600" height="1024" alt="Rendu 3D du jardin privatif d'un T4 : terrasse, salon d'extérieur, bains de soleil, haie fleurie et cyprès, montagne à l'horizon" loading="lazy" decoding="async" />
+    <img src="/Photo%2059%20C%C3%A9zanne/3D%20interieur/LOGEMENT_2_02-1200w.webp" srcset="/Photo%2059%20C%C3%A9zanne/3D%20interieur/LOGEMENT_2_02-800w.webp 800w, /Photo%2059%20C%C3%A9zanne/3D%20interieur/LOGEMENT_2_02-1200w.webp 1200w, /Photo%2059%20C%C3%A9zanne/3D%20interieur/LOGEMENT_2_02.webp 1600w" sizes="100vw" width="1600" height="960" alt="Rendu 3D du séjour et de la salle à manger d'un T3 duplex : grandes baies vitrées ouvertes vers la montagne" loading="lazy" decoding="async" style="object-position:50% 60%" />
     <div class="scene-end-overlay"></div>
     <div class="scene-end-inner">
       <h2 class="section-title reveal" id="contact-titre" data-lang-fr="Parlons de votre projet" data-lang-en="Let's talk about your project">Parlons de votre projet</h2>
       <p class="section-lead reveal reveal-delay-1" data-lang-fr="Plaquette, disponibilités, calendrier de livraison : nous contacter." data-lang-en="Brochure, availability, delivery schedule: get in touch.">Plaquette, disponibilités, calendrier de livraison : nous contacter.</p>
+      <p class="rg-body reveal reveal-delay-1" data-lang-fr="Nous répondons à toutes vos questions." data-lang-en="We answer all your questions.">Nous répondons à toutes vos questions.</p>
       <div class="scene-end-actions reveal reveal-delay-2">
         <a href="/contact" class="btn btn-primary"><span data-lang-fr="Nous contacter" data-lang-en="Contact us">Nous contacter</span></a>
         <a href="tel:+33609204590" class="btn btn-outline">
