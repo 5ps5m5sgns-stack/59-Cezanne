@@ -2459,7 +2459,7 @@ html[data-lang-lock] .lang-btn { display: none !important; }
 .rg--petite-d .rg-fig { justify-self: end; }
 .rg--moyenne-g .rg-fig, .rg--moyenne-d .rg-fig, .rg--petite-g .rg-fig, .rg--petite-d .rg-fig { grid-area: fig; }
 .rg--moyenne-g .rg-text, .rg--moyenne-d .rg-text, .rg--petite-g .rg-text, .rg--petite-d .rg-text { grid-area: text; }
-.rg--petite-g .rg-text .section-title, .rg--petite-d .rg-text .section-title { font-size: clamp(3rem, 6vw, 5.4rem); }
+
 
 /* Grande : toute la largeur du conteneur, texte au-dessus */
 .rg--grande { display: grid; row-gap: clamp(1.5rem, 3vw, 3rem); }
@@ -2525,3 +2525,22 @@ html[data-lang-lock] .lang-btn { display: none !important; }
   .floating-cta .float-btn::after { content: attr(data-label); }
   body { padding-bottom: 54px; }
 }
+
+/* Boutons de zoom : dans le flux, pour que la figure prenne la hauteur de son image (sans proportions fixes).
+   Exception : format « immense », où la figure remplit la scène et le bouton la recouvre. */
+.rg:not(.rg--immense) .rg-fig > .rg-zoom,
+.rg:not(.rg--immense) .rg-fig > .lg-zoom,
+.rg:not(.rg--immense) .rg-fig > [data-src] { position: relative; inset: auto; display: block; width: 100%; height: auto; }
+
+/* Équilibre texte / image : l'image remplit sa colonne et le texte est dimensionné pour ne laisser aucun vide à côté. */
+.rg--petite-g { grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); }
+.rg--petite-d { grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); }
+.rg--petite-g .rg-fig, .rg--petite-d .rg-fig { width: 100%; }
+.rg .rg-text .section-title { font-size: clamp(2.2rem, 3.3vw, 3.1rem); line-height: 1.12; margin-bottom: 0.8rem; }
+.rg--grande .rg-text .section-title, .rg--duo .rg-text .section-title, .rg--centre .rg-text .section-title { font-size: clamp(2.4rem, 3.8vw, 3.5rem); }
+.rg--immense .rg-text .section-title { font-size: clamp(2.8rem, 5vw, 4.6rem); }
+.rg .rg-text .section-lead { font-size: clamp(1.1rem, 1.4vw, 1.3rem); line-height: 1.5; margin-bottom: 0.9rem; }
+@media (max-width: 900px) {
+  .rg--petite-g .rg-fig, .rg--petite-d .rg-fig { width: 86%; }
+}
+.rg--grande .rg-text, .rg--duo .rg-text { align-items: center; }
