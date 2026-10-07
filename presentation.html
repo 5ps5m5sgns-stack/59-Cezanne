@@ -2,674 +2,850 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Présentation — 59 Cézanne | Résidence Neuve Haut de Gamme Aix-en-Provence</title>
-  <meta property="og:url" content="https://59-cezanne.com/presentation.html" />
-  <link rel="canonical" href="https://59-cezanne.com/presentation.html" />
-  <meta name="keywords" content="résidence neuve Aix-en-Provence, programme neuf Lauves, appartement prestige Provence, architecture contemporaine Aix, Paul Cézanne avenue immobilier" />
-  <meta name="description" content="Découvrez la résidence 59 Cézanne : 8 appartements d'exception au 59 Avenue Paul Cézanne à Aix-en-Provence. Architecture contemporaine, art de vivre provençal, vue Sainte-Victoire." />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Résidence de prestige à Aix-en-Provence | 59 Cézanne</title>
+  <meta name="description" content="59 Cézanne, résidence confidentielle de 8 appartements neufs, 59 avenue Paul Cézanne, Aix-en-Provence : architecture, jardins, vue Sainte-Victoire." />
+  <link rel="canonical" href="https://59-cezanne.com/presentation" />
+  <meta name="robots" content="index,follow,max-image-preview:large" />
+  <meta name="author" content="Ponthieu Développement Holding" />
+  <meta name="google-site-verification" content="SNN8bzDLw_qboNi81MOuw3SOY2NjIguz_KnPd8e9eUk" />
 
-  <meta property="og:title" content="59 Cézanne — Résidence d'exception au cœur d'Aix-en-Provence" />
-  <meta property="og:description" content="8 appartements de prestige dans le quartier des Lauves. Architecture soignée, matériaux nobles, vue imprenable sur la Sainte-Victoire." />
-  <meta property="og:image" content="Dossier de commercialisation 59 Cézanne/3D Exterieur/PV_EXT_Panorama_St-Victoire.jpg" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="59 Cézanne" />
+  <meta property="og:locale" content="fr_FR" />
+  <meta property="og:title" content="59 Cézanne, résidence de prestige à Aix-en-Provence" />
+  <meta property="og:description" content="Résidence confidentielle de 8 appartements neufs avenue Paul Cézanne : architecture contemporaine, jardins privatifs, piscine, vue Sainte-Victoire pour plusieurs appartements." />
+  <meta property="og:url" content="https://59-cezanne.com/presentation" />
+  <meta property="og:image" content="https://59-cezanne.com/og/og-presentation.jpg" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="Rendu 3D non contractuel : façade d'un appartement en rez-de-jardin de la résidence 59 Cézanne, baie ouverte sur le séjour et le jardin" />
+  <meta name="twitter:card" content="summary_large_image" />
 
-  <link rel="icon" type="image/x-icon" href="favicon.ico" />
-  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png" />
-  <link rel="icon" type="image/png" sizes="192x192" href="favicon-192.png" />
-  <link rel="icon" type="image/png" sizes="512x512" href="favicon-512.png" />
-  <link rel="apple-touch-icon" href="apple-touch-icon.png" />
-  <link rel="stylesheet" href="style.css" />
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+  <link rel="icon" type="image/png" sizes="192x192" href="/favicon-192.png" />
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+
+  <link rel="stylesheet" href="/style.css" />
   <style>
-    /* ── Page-specific ── */
-    .cezanne-heritage {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 5rem;
-      align-items: start;
+    /* ── Page « Présentation » : styles locaux (le CSS partagé n'est pas modifié) ── */
+    main a:focus-visible, main button:focus-visible, main summary:focus-visible, main [tabindex="0"]:focus-visible {
+      outline: 2px solid var(--focus-ring); outline-offset: 3px; border-radius: 2px;
     }
+    .pres-link { color: var(--or-texte); text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 1px; }
+    .pres-link:hover { color: var(--text); }
+    .section-dark .pres-link:hover { color: var(--white); }
 
-    .heritage-img-stack {
-      position: relative;
+    /* Hero : hauteur libre (le titre est long), mention « non contractuel » */
+    .pres-hero { height: auto; min-height: clamp(460px, 74vh, 700px); }
+    .pres-hero .hero-content { padding-top: 7.5rem; padding-bottom: 3.5rem; }
+    .pres-hero .hero-title { font-size: clamp(2rem, 3.9vw, 3.3rem); max-width: 880px; }
+    .pres-hero .hero-subtitle { max-width: 640px; padding-bottom: 0; }
+    .hero-note { position: absolute; right: 1.25rem; bottom: 1rem; z-index: 2; margin: 0; padding: 0.3rem 0.75rem;
+      font-size: 0.72rem; letter-spacing: 0.05em; color: #fff; background: rgba(15,12,8,0.68); border-radius: var(--radius); }
+
+    .pres-fig-num, .pres-strip-num, .pres-table tbody th, .pres-table caption { font-variant-numeric: lining-nums; }
+
+    /* Texte courant */
+    .pres-text { font-size: 0.95rem; line-height: 1.85; color: var(--text-mid); margin-bottom: 1.25rem; }
+    .section-dark .pres-text { color: rgba(255,255,255,0.8); }
+    .pres-narrow { max-width: 760px; margin-left: auto; margin-right: auto; }
+
+    /* Adresse + chiffres */
+    .address-block { display: flex; align-items: center; gap: 1rem; padding: 1.4rem 1.75rem; background: var(--white);
+      border: 1px solid var(--border); border-radius: var(--radius-md); box-shadow: var(--shadow-sm); margin: 0 auto 2rem; max-width: 760px; }
+    .address-icon { width: 52px; height: 52px; border-radius: 50%; background: rgba(201,169,110,0.15); display: flex;
+      align-items: center; justify-content: center; color: var(--or-texte); flex-shrink: 0; }
+    .address-text { flex: 1; min-width: 0; }
+    .address-text strong { display: block; font-family: var(--font-serif); font-size: 1.25rem; font-weight: 500; color: var(--text); }
+    .address-text span { font-size: 0.88rem; color: var(--text-mid); }
+    .pres-figures { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.25rem; margin: 0 0 2.5rem; }
+    .pres-figures li { padding: 1.5rem 1.25rem; background: var(--white); border: 1px solid var(--border); border-radius: var(--radius-md); text-align: center; }
+    .pres-fig-num { display: block; font-family: var(--font-serif); font-size: clamp(1.8rem, 2.6vw, 2.4rem); font-weight: 400;
+      line-height: 1.1; color: var(--or-texte); margin-bottom: 0.5rem; }
+    .pres-fig-lab { display: block; font-size: 0.84rem; line-height: 1.55; color: var(--text-mid); }
+
+    /* Tableau des appartements */
+    .table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; border: 1px solid var(--border); border-radius: var(--radius-md); background: var(--white); }
+    .pres-table { width: 100%; min-width: 680px; border-collapse: collapse; font-size: 0.92rem; }
+    .pres-table caption { text-align: left; padding: 1.1rem 1.25rem; font-family: var(--font-serif); font-size: 1.2rem; color: var(--text); }
+    .pres-table th, .pres-table td { padding: 0.9rem 1.25rem; text-align: left; vertical-align: top; border-top: 1px solid var(--border); line-height: 1.5; color: var(--text-mid); }
+    .pres-table thead th { font-size: 0.7rem; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 700; color: var(--text-mid); background: var(--stone-light); }
+    .pres-table tbody th { font-family: var(--font-serif); font-size: 1.15rem; font-weight: 500; color: var(--text); white-space: nowrap; }
+    .pres-table-note { margin-top: 0.9rem; font-size: 0.82rem; line-height: 1.6; color: var(--text-mid); }
+    .pres-actions { display: flex; flex-wrap: wrap; gap: 1rem; margin-top: 1.75rem; }
+
+    /* Encadré chiffres du projet */
+    .pres-facts { background: var(--white); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 0.4rem 1.5rem; }
+    .pres-facts > div { display: grid; grid-template-columns: minmax(110px, 36%) 1fr; gap: 1rem; padding: 0.95rem 0; border-top: 1px solid var(--border); }
+    .pres-facts > div:first-child { border-top: 0; }
+    .pres-facts dt { font-size: 0.74rem; letter-spacing: 0.08em; text-transform: uppercase; font-weight: 700; color: var(--text-mid); }
+    .pres-facts dd { font-size: 0.93rem; line-height: 1.55; color: var(--text); }
+    .pres-facts-note { margin-top: 0.9rem; font-size: 0.8rem; line-height: 1.6; color: var(--text-mid); }
+    .pres-arch { align-items: start; }
+
+    /* Galerie (rendus, tous « non contractuels ») */
+    .pres-gallery-note { font-size: 0.85rem; color: var(--text-mid); text-align: center; margin: -2rem auto 2.5rem; max-width: 640px; }
+    .pres-gallery { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; }
+    .pres-fig { margin: 0; }
+    .pres-fig-btn { display: block; position: relative; width: 100%; aspect-ratio: 3 / 2; overflow: hidden; border-radius: var(--radius-md); background: var(--stone-light); padding: 0; }
+    .pres-fig-btn img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.7s ease; }
+    .pres-fig-btn:hover img { transform: scale(1.04); }
+    .pres-fig-zoom { position: absolute; right: 0.75rem; bottom: 0.75rem; width: 38px; height: 38px; border-radius: 50%;
+      background: rgba(15,12,8,0.68); color: #fff; display: flex; align-items: center; justify-content: center; }
+    .pres-fig figcaption { padding: 0.8rem 0.25rem 0; font-size: 0.86rem; line-height: 1.55; color: var(--text-mid); }
+    .pres-nc { display: block; margin-top: 0.15rem; font-size: 0.76rem; letter-spacing: 0.04em; color: var(--text-light); }
+
+    /* Art de vivre */
+    .pres-cards { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.25rem; }
+    .pres-card { display: flex; flex-direction: column; padding: 1.75rem 1.5rem; background: var(--white); border: 1px solid var(--border); border-radius: var(--radius-md); }
+    .pres-card-icon { display: flex; align-items: center; justify-content: center; width: 48px; height: 48px; margin-bottom: 1.1rem;
+      border-radius: 50%; background: rgba(201,169,110,0.15); color: var(--or-texte); }
+    .pres-card h3 { font-family: var(--font-serif); font-size: 1.25rem; font-weight: 500; line-height: 1.25; color: var(--text); margin-bottom: 0.6rem; }
+    .pres-card p { font-size: 0.9rem; line-height: 1.7; color: var(--text-mid); }
+    .pres-card .pres-link { display: inline-block; margin-top: auto; padding-top: 1rem; font-size: 0.86rem; }
+
+    /* Prestations */
+    .pres-specs { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0 3rem; }
+    .pres-spec { padding: 1.2rem 0; border-top: 1px solid rgba(90,85,80,0.28); }
+    .pres-spec h3 { font-family: var(--font-serif); font-size: 1.2rem; font-weight: 500; color: var(--text); margin-bottom: 0.3rem; }
+    .pres-spec p { font-size: 0.92rem; line-height: 1.7; color: var(--text-mid); }
+    .pres-note { margin-top: 2rem; padding: 1rem 1.25rem; border-left: 3px solid var(--or); background: rgba(255,255,255,0.6); font-size: 0.86rem; line-height: 1.7; color: var(--text-mid); }
+
+    /* Adresse / Cézanne (section sombre) */
+    .pres-photo { margin: 0; }
+    .pres-photo img { width: 100%; height: auto; aspect-ratio: 4 / 3; object-fit: cover; border-radius: var(--radius-md); box-shadow: var(--shadow-lg); }
+    .pres-photo figcaption { margin-top: 0.9rem; font-size: 0.82rem; line-height: 1.6; color: rgba(255,255,255,0.75); }
+
+    /* Ville */
+    .pres-feats { display: grid; gap: 0.9rem; }
+    .pres-feat { display: flex; gap: 1rem; align-items: flex-start; padding: 1.1rem 1.25rem; background: var(--white); border: 1px solid var(--border); border-radius: var(--radius-md); }
+    .pres-feat-icon { width: 40px; height: 40px; flex-shrink: 0; border-radius: 50%; background: rgba(201,169,110,0.15); display: flex; align-items: center; justify-content: center; color: var(--or-texte); }
+    .pres-feat h3 { font-family: var(--font-serif); font-size: 1.12rem; font-weight: 500; color: var(--text); margin-bottom: 0.15rem; }
+    .pres-feat p { font-size: 0.86rem; line-height: 1.6; color: var(--text-mid); }
+    .pres-sources { margin-top: 2.5rem; font-size: 0.8rem; line-height: 1.8; color: var(--text-mid); }
+    .pres-strip { padding: 3.5rem 0 3rem; }
+    .pres-strip-title { text-align: center; font-family: var(--font-sans); font-size: 0.68rem; font-weight: 400; letter-spacing: 0.35em; text-transform: uppercase; color: var(--or); margin-bottom: 2rem; }
+    .pres-strip-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2rem; text-align: center; }
+    .pres-strip-num { display: block; font-family: var(--font-serif); font-size: clamp(2rem, 3vw, 2.7rem); font-weight: 300; color: var(--or); line-height: 1; margin-bottom: 0.6rem; }
+    .pres-strip-lab { display: block; font-size: 0.8rem; letter-spacing: 0.05em; line-height: 1.5; color: rgba(255,255,255,0.8); }
+    .pres-strip-note { margin: 2rem auto 0; max-width: 720px; text-align: center; font-size: 0.8rem; line-height: 1.7; color: rgba(255,255,255,0.72); }
+
+    /* FAQ (details/summary) */
+    .pres-faq { max-width: 820px; margin: 0 auto; }
+    .pres-faq details { background: var(--white); border: 1px solid var(--border); border-radius: var(--radius-md); margin-bottom: 0.75rem; }
+    .pres-faq summary { list-style: none; cursor: pointer; display: flex; justify-content: space-between; align-items: center; gap: 1rem;
+      min-height: var(--tap); padding: 1.1rem 1.4rem; font-family: var(--font-serif); font-size: 1.2rem; font-weight: 500; line-height: 1.35; color: var(--text); }
+    .pres-faq summary::-webkit-details-marker { display: none; }
+    .pres-faq summary::after { content: "+"; flex-shrink: 0; font-family: var(--font-sans); font-size: 1.5rem; line-height: 1; color: var(--or-texte); }
+    .pres-faq details[open] summary::after { content: "\2212"; }
+    .pres-faq-body { padding: 0 1.4rem 1.3rem; }
+    .pres-faq-body p { font-size: 0.94rem; line-height: 1.8; color: var(--text-mid); }
+    .pres-faq-body .pres-link { display: inline-block; margin-top: 0.7rem; font-size: 0.88rem; }
+
+    /* Pour aller plus loin */
+    .pres-more { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
+    .pres-more-card { position: relative; display: flex; flex-direction: column; padding: 1.75rem 1.5rem; background: var(--white); border: 1px solid var(--border); border-radius: var(--radius-md);
+      transition: transform var(--transition), box-shadow var(--transition), border-color var(--transition); }
+    .pres-more-card:hover { transform: translateY(-4px); box-shadow: var(--shadow); border-color: rgba(201,169,110,0.55); }
+    .pres-more-card:focus-within { outline: 2px solid var(--focus-ring); outline-offset: 3px; }
+    .pres-more-tag { font-size: 0.68rem; font-weight: 700; letter-spacing: 0.25em; text-transform: uppercase; color: var(--or-texte); margin-bottom: 0.8rem; }
+    .pres-more-card h3 { font-family: var(--font-serif); font-size: 1.3rem; font-weight: 500; line-height: 1.3; margin-bottom: 0.6rem; }
+    .pres-more-card h3 a { color: var(--text); }
+    .pres-more-card h3 a::after { content: ""; position: absolute; inset: 0; }
+    .pres-more-card h3 a:focus-visible { outline: none; }
+    .pres-more-card p { font-size: 0.9rem; line-height: 1.7; color: var(--text-mid); }
+    .pres-more-cta { margin-top: auto; padding-top: 1.1rem; font-size: 0.82rem; font-weight: 700; letter-spacing: 0.05em; color: var(--or-texte); }
+    .pres-more-note { margin-top: 1.5rem; text-align: center; font-size: 0.8rem; color: var(--text-mid); }
+    .pres-cta-links { margin-top: 2rem; font-size: 0.92rem; color: var(--text-mid); }
+    .pres-cta-links a { margin: 0 0.35rem; white-space: nowrap; }
+
+    @media (max-width: 1100px) {
+      .pres-cards { grid-template-columns: repeat(2, 1fr); }
+      .pres-strip-grid { grid-template-columns: repeat(2, 1fr); }
+      .pres-figures { grid-template-columns: repeat(2, 1fr); }
     }
-
-    .heritage-img-main {
-      width: 100%;
-      aspect-ratio: 3/4;
-      object-fit: cover;
-      border-radius: var(--radius-md);
-      box-shadow: var(--shadow-lg);
+    @media (max-width: 900px) {
+      .pres-gallery { grid-template-columns: repeat(2, 1fr); }
+      .pres-more { grid-template-columns: 1fr; }
+      .pres-specs { grid-template-columns: 1fr; }
     }
-
-    .heritage-img-main-placeholder {
-      width: 100%;
-      aspect-ratio: 3/4;
-      background: linear-gradient(160deg, var(--stone) 0%, var(--beige) 100%);
-      border-radius: var(--radius-md);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-family: var(--font-serif);
-      font-style: italic;
-      color: var(--text-light);
-      font-size: 1rem;
+    @media (max-width: 600px) {
+      .pres-cards, .pres-gallery { grid-template-columns: 1fr; }
+      .pres-figures { grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+      .pres-figures li { padding: 1.1rem 0.75rem; }
+      .address-block { display: grid; grid-template-columns: auto 1fr; gap: 0.75rem 1rem; padding: 1.1rem 1.25rem; }
+      .address-block > a { grid-column: 1 / -1; padding-left: calc(52px + 1rem); }
+      .pres-facts > div { grid-template-columns: 1fr; gap: 0.2rem; }
+      .pres-strip-grid { gap: 1.5rem 1rem; }
+      .pres-gallery-note { margin-top: -1.5rem; }
     }
-
-    .heritage-img-secondary {
-      position: absolute;
-      bottom: -2rem;
-      right: -2rem;
-      width: 55%;
-      aspect-ratio: 4/3;
-      object-fit: cover;
-      border-radius: var(--radius-md);
-      box-shadow: var(--shadow-lg);
-      border: 4px solid var(--white);
+    @media (max-width: 700px) {
+      .pres-table caption { position: sticky; left: 0; max-width: calc(100vw - 4.5rem); font-size: 1.05rem; }
     }
-
-    .heritage-img-secondary-placeholder {
-      position: absolute;
-      bottom: -2rem;
-      right: -2rem;
-      width: 55%;
-      aspect-ratio: 4/3;
-      background: linear-gradient(135deg, var(--stone-light) 0%, var(--stone) 100%);
-      border-radius: var(--radius-md);
-      border: 4px solid var(--white);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-family: var(--font-serif);
-      font-style: italic;
-      color: var(--text-light);
-      font-size: 0.85rem;
-      text-align: center;
-      padding: 1rem;
-    }
-
-    .heritage-text {
-      padding-top: 2rem;
-    }
-
-    .provence-cards {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 1.5rem;
-    }
-
-    .provence-card {
-      padding: 2rem 1.5rem;
-      background: var(--white);
-      border-radius: var(--radius-md);
-      border: 1px solid var(--border);
-      text-align: center;
-      transition: transform var(--transition), box-shadow var(--transition), border-color var(--transition);
-    }
-
-    .provence-card:hover {
-      transform: translateY(-5px);
-      box-shadow: var(--shadow);
-      border-color: rgba(201,169,110,0.4);
-    }
-
-    .provence-card-icon {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 52px;
-      height: 52px;
-      margin: 0 auto 1.2rem;
-      background: rgba(201,169,110,0.12);
-      border-radius: 50%;
-      color: var(--or);
-    }
-
-    .provence-card h3 {
-      font-family: var(--font-serif);
-      font-size: 1.1rem;
-      font-weight: 400;
-      color: var(--text);
-      margin-bottom: 0.5rem;
-    }
-
-    .provence-card p {
-      font-size: 0.82rem;
-      color: var(--text-mid);
-      line-height: 1.7;
-    }
-
-    .aix-highlight-strip {
-      background: var(--dark);
-      padding: 4rem 0;
-    }
-
-    .aix-highlight-inner {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 2rem;
-      text-align: center;
-    }
-
-    .aix-hl-item .num {
-      font-family: var(--font-serif);
-      font-size: 2.8rem;
-      font-weight: 300;
-      color: var(--or);
-      display: block;
-      line-height: 1;
-      margin-bottom: 0.5rem;
-    }
-
-    .aix-hl-item .label {
-      font-size: 0.72rem;
-      font-weight: 400;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: rgba(255,255,255,0.5);
-    }
-
-    .address-block {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-      padding: 1.5rem 2rem;
-      background: var(--white);
-      border-radius: var(--radius-md);
-      border: 1px solid var(--border);
-      box-shadow: var(--shadow-sm);
-      margin-bottom: 1.5rem;
-    }
-
-    .address-icon {
-      width: 52px;
-      height: 52px;
-      border-radius: 50%;
-      background: rgba(201,169,110,0.1);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: var(--or);
-      flex-shrink: 0;
-    }
-
-    .address-text strong {
-      display: block;
-      font-family: var(--font-serif);
-      font-size: 1.1rem;
-      font-weight: 400;
-      color: var(--text);
-    }
-
-    .address-text span {
-      font-size: 0.84rem;
-      color: var(--text-mid);
-    }
-
-    .photo-row {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 0.5rem;
-      margin-top: 3rem;
-    }
-
-    .photo-row-item {
-      aspect-ratio: 4/3;
-      overflow: hidden;
-      border-radius: var(--radius);
-      cursor: pointer;
-      position: relative;
-    }
-
-    .photo-row-item img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      transition: transform 0.7s ease;
-    }
-
-    .photo-row-item:hover img { transform: scale(1.05); }
-
-    .photo-row-item .gal-overlay {
-      position: absolute;
-      inset: 0;
-      background: rgba(0,0,0,0.35);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      opacity: 0;
-      transition: opacity var(--transition);
-      color: white;
-      font-size: 2rem;
-    }
-
-    .photo-row-item:hover .gal-overlay { opacity: 1; }
-
-    @media (max-width: 1024px) {
-      .cezanne-heritage { grid-template-columns: 1fr; gap: 3rem; }
-      .provence-cards { grid-template-columns: repeat(2, 1fr); }
-      .aix-highlight-inner { grid-template-columns: repeat(2, 1fr); gap: 1.5rem; }
-    }
-
-    @media (max-width: 768px) {
-      .provence-cards { grid-template-columns: 1fr; }
-      .photo-row { grid-template-columns: 1fr 1fr; }
-      .heritage-img-secondary, .heritage-img-secondary-placeholder { position: static; width: 100%; margin-top: 1rem; }
+    @media (prefers-reduced-motion: reduce) {
+      .reveal, .reveal-left, .reveal-right { opacity: 1; transform: none; transition: none; }
+      .pres-fig-btn img, .pres-more-card { transition: none; }
+      .pres-fig-btn:hover img, .pres-more-card:hover { transform: none; }
     }
   </style>
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="59 Cézanne — Résidence d'exception au cœur d'Aix-en-Provence" />
-  <meta name="twitter:description" content="8 appartements de prestige dans le quartier des Lauves. Architecture soignée, matériaux nobles, vue imprenable sur la Sainte-Victoire." />
-  <meta name="twitter:image" content="https://59-cezanne.com/Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_EXT_Panorama_St-Victoire.webp" />
-  <link rel="preload" as="image" href="Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_EXT_Panorama_St-Victoire.webp" />
+  <noscript><style>.reveal, .reveal-left, .reveal-right { opacity: 1 !important; transform: none !important; }</style></noscript>
+
+  <link rel="preload" as="image" href="/Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_EXT_Panorama_St-Victoire-1200w.webp" imagesrcset="/Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_EXT_Panorama_St-Victoire-800w.webp 800w, /Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_EXT_Panorama_St-Victoire-1200w.webp 1200w, /Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_EXT_Panorama_St-Victoire.webp 1600w" imagesizes="100vw" fetchpriority="high" />
+
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Accueil",
+      "item": "https://59-cezanne.com/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": "Présentation",
+      "item": "https://59-cezanne.com/presentation"
+    }
+  ]
+}
+  </script>
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebPage",
+      "@id": "https://59-cezanne.com/presentation#webpage",
+      "url": "https://59-cezanne.com/presentation",
+      "name": "Résidence de prestige à Aix-en-Provence | 59 Cézanne",
+      "description": "59 Cézanne, résidence confidentielle de 8 appartements neufs, 59 avenue Paul Cézanne, Aix-en-Provence : architecture, jardins, vue Sainte-Victoire.",
+      "inLanguage": "fr-FR",
+      "primaryImageOfPage": {
+        "@type": "ImageObject",
+        "url": "https://59-cezanne.com/og/og-presentation.jpg",
+        "width": 1200,
+        "height": 630
+      },
+      "about": {
+        "@id": "https://59-cezanne.com/#residence"
+      }
+    },
+    {
+      "@type": "ApartmentComplex",
+      "@id": "https://59-cezanne.com/#residence",
+      "name": "59 Cézanne",
+      "description": "Résidence neuve de 8 appartements (4 T4, 2 T3 duplex, 2 T2) avec jardins privatifs et piscine commune, au 59 avenue Paul Cézanne à Aix-en-Provence.",
+      "url": "https://59-cezanne.com/presentation",
+      "image": "https://59-cezanne.com/og/og-presentation.jpg",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "59 avenue Paul Cézanne",
+        "postalCode": "13100",
+        "addressLocality": "Aix-en-Provence",
+        "addressRegion": "Provence-Alpes-Côte d'Azur",
+        "addressCountry": "FR"
+      },
+      "numberOfAccommodationUnits": 8,
+      "amenityFeature": [
+        {
+          "@type": "LocationFeatureSpecification",
+          "name": "Jardin privatif pour chaque appartement",
+          "value": true
+        },
+        {
+          "@type": "LocationFeatureSpecification",
+          "name": "Piscine commune",
+          "value": true
+        },
+        {
+          "@type": "LocationFeatureSpecification",
+          "name": "Ascenseur",
+          "value": true
+        }
+      ],
+      "geo": {
+        "@type": "GeoCoordinates",
+        "latitude": 43.5465,
+        "longitude": 5.4451
+      },
+      "hasMap": "https://www.openstreetmap.org/?mlat=43.5465&mlon=5.4451#map=17/43.5465/5.4451"
+    }
+  ]
+}
+  </script>
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Où se situe la résidence 59 Cézanne ?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "La résidence se trouve au 59 avenue Paul Cézanne, 13100 Aix-en-Provence, à proximité du quartier des Lauves. D'après la plaquette du programme, le centre-ville est à environ 4 minutes en voiture, l'autoroute A51 à environ 3 minutes et la gare TGV à environ 15 minutes."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Combien d'appartements compte la résidence, et de quels types ?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "La résidence compte 8 appartements dans un seul bâtiment : 4 T4 (d'environ 100,5 à 138,0 m²), 2 T3 duplex (environ 103,5 m²) et 2 T2 (environ 45,0 m²). Les surfaces sont indicatives, d'après les documents de commercialisation de février 2025."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Chaque appartement a-t-il un jardin privatif ?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Oui. Les documents de commercialisation indiquent un jardin privatif pour chacun des 8 appartements, d'environ 28 m² à 312 m² selon le lot. Les deux T2 disposent de jardins d'environ 102 et 108 m²."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Tous les appartements ont-ils une vue sur la Sainte-Victoire ?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Non. Les documents de commercialisation indiquent une vue Sainte-Victoire pour six appartements (lots 1 à 5 et 8) et une vue sur le jardin pour les deux T2 (lots 6 et 7). La montagne se situe à l'horizon : sa visibilité dépend de l'étage, de l'orientation et de la végétation. Nous vous invitons à la vérifier lors d'une visite."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Quelles prestations sont prévues ?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Selon la notice descriptive du 8 avril 2025 : menuiseries extérieures en aluminium à double vitrage, pompe à chaleur air/air pour le chauffage et le rafraîchissement (sous réserve de l'étude thermique), ballon d'eau chaude thermodynamique, ascenseur et accès sécurisé par visiophone et badge. La cuisine n'est pas équipée dans la notice (évier et attentes) ; une cuisine aménagée figure en option dans les documents de commercialisation de février 2025."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Quand la résidence sera-t-elle livrée ?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Le calendrier de livraison n'est pas publié sur ce site. Contactez-nous pour connaître l'état d'avancement et le calendrier en vigueur."
+      }
+    }
+  ]
+}
+  </script>
 </head>
 <body>
-<div id="scroll-progress"></div>
 
-<div id="loader">
-  <div class="loader-logo">59 Cézanne<span>Aix-en-Provence</span></div>
-  <div class="loader-bar"></div>
-</div>
+<a class="skip-link" href="#contenu" data-lang-fr="Aller au contenu" data-lang-en="Skip to content">Aller au contenu</a>
 
-<!-- Nav -->
-<nav id="navbar" class="transparent">
+<!-- ─── Navigation ────────────────────────────────────────────── -->
+<nav id="navbar" class="transparent" aria-label="Navigation principale">
   <div class="nav-inner">
-    <a href="index.html" class="nav-logo">
+    <a href="/" class="nav-logo" aria-label="59 Cézanne — Aix-en-Provence, accueil">
       <span class="logo-main">59 Cézanne</span>
       <span class="logo-sub">Aix-en-Provence</span>
     </a>
     <div class="nav-links">
-      <a href="index.html" data-lang-fr="Accueil" data-lang-en="Home">Accueil</a>
-      <a href="presentation.html" class="active" data-lang-fr="Présentation" data-lang-en="Presentation">Présentation</a>
-      <a href="logements.html" data-lang-fr="Logements" data-lang-en="Apartments">Logements</a>
-      <a href="exterieurs.html" data-lang-fr="Espaces Communs" data-lang-en="Common Areas">Espaces Communs</a>
-      <a href="localisation.html" data-lang-fr="Localisation" data-lang-en="Location">Localisation</a>
-      <a href="promoteur.html" data-lang-fr="Le Promoteur" data-lang-en="The Developer">Le Promoteur</a>
-      <a href="contact.html" data-lang-fr="Contact" data-lang-en="Contact">Contact</a>
-      <a href="actualites.html" data-lang-fr="Blog" data-lang-en="Blog">Blog</a>
+      <a href="/" data-lang-fr="Accueil" data-lang-en="Home">Accueil</a>
+      <a href="/presentation" class="active" aria-current="page" data-lang-fr="Présentation" data-lang-en="Presentation">Présentation</a>
+      <a href="/logements" data-lang-fr="Logements" data-lang-en="Apartments">Logements</a>
+      <a href="/exterieurs" data-lang-fr="Espaces Communs" data-lang-en="Common Areas">Espaces Communs</a>
+      <a href="/localisation" data-lang-fr="Localisation" data-lang-en="Location">Localisation</a>
+      <a href="/promoteur" data-lang-fr="Le Promoteur" data-lang-en="The Developer">Le Promoteur</a>
+      <a href="/blog" data-lang-fr="Blog" data-lang-en="Blog">Blog</a>
+      <a href="/contact" data-lang-fr="Contact" data-lang-en="Contact">Contact</a>
     </div>
     <div class="d-flex align-center gap-2">
-      <div class="lang-toggle">
-        <button class="lang-btn active" onclick="setLang('fr')">FR</button>
-        <button class="lang-btn" onclick="setLang('en')">EN</button>
+      <div class="lang-toggle" role="group" aria-label="Langue / Language">
+        <button type="button" class="lang-btn active" lang="fr" aria-pressed="true" onclick="setLang('fr')">FR</button>
+        <button type="button" class="lang-btn" lang="en" aria-pressed="false" onclick="setLang('en')">EN</button>
       </div>
-      <div class="nav-burger" id="burger" onclick="toggleMobile()">
+      <button type="button" class="nav-burger" id="burger" aria-label="Ouvrir le menu" aria-expanded="false" aria-controls="mobileMenu" onclick="toggleMobile()">
         <span></span><span></span><span></span>
-      </div>
+      </button>
     </div>
   </div>
 </nav>
-
 <div class="nav-mobile" id="mobileMenu">
-  <a href="index.html" onclick="toggleMobile()" data-lang-fr="Accueil" data-lang-en="Home">Accueil</a>
-  <a href="presentation.html" onclick="toggleMobile()" data-lang-fr="Présentation" data-lang-en="Presentation">Présentation</a>
-  <a href="logements.html" onclick="toggleMobile()" data-lang-fr="Logements" data-lang-en="Apartments">Logements</a>
-  <a href="exterieurs.html" onclick="toggleMobile()" data-lang-fr="Espaces Communs" data-lang-en="Common Areas">Espaces Communs</a>
-  <a href="localisation.html" onclick="toggleMobile()" data-lang-fr="Localisation" data-lang-en="Location">Localisation</a>
-  <a href="promoteur.html" onclick="toggleMobile()" data-lang-fr="Le Promoteur" data-lang-en="The Developer">Le Promoteur</a>
-  <a href="contact.html" onclick="toggleMobile()" data-lang-fr="Contact" data-lang-en="Contact">Contact</a>
-  <div class="nav-mobile-lang">
-    <button class="lang-btn active" onclick="setLang('fr')">FR</button>
-    <button class="lang-btn" onclick="setLang('en')">EN</button>
+  <a href="/" onclick="toggleMobile()" data-lang-fr="Accueil" data-lang-en="Home">Accueil</a>
+  <a href="/presentation" class="active" aria-current="page" onclick="toggleMobile()" data-lang-fr="Présentation" data-lang-en="Presentation">Présentation</a>
+  <a href="/logements" onclick="toggleMobile()" data-lang-fr="Logements" data-lang-en="Apartments">Logements</a>
+  <a href="/exterieurs" onclick="toggleMobile()" data-lang-fr="Espaces Communs" data-lang-en="Common Areas">Espaces Communs</a>
+  <a href="/localisation" onclick="toggleMobile()" data-lang-fr="Localisation" data-lang-en="Location">Localisation</a>
+  <a href="/promoteur" onclick="toggleMobile()" data-lang-fr="Le Promoteur" data-lang-en="The Developer">Le Promoteur</a>
+  <a href="/blog" onclick="toggleMobile()" data-lang-fr="Blog" data-lang-en="Blog">Blog</a>
+  <a href="/contact" onclick="toggleMobile()" data-lang-fr="Contact" data-lang-en="Contact">Contact</a>
+  <div class="nav-mobile-lang" role="group" aria-label="Langue / Language">
+    <button type="button" class="lang-btn active" lang="fr" aria-pressed="true" onclick="setLang('fr')">FR</button>
+    <button type="button" class="lang-btn" lang="en" aria-pressed="false" onclick="setLang('en')">EN</button>
   </div>
 </div>
 
-<!-- ─── Page Hero ────────────────────────────────────────────── -->
-<section class="page-hero">
+<main id="contenu">
+
+<section class="page-hero pres-hero" aria-labelledby="titre-page">
   <div class="hero-bg">
-    <!-- IMAGE: Vue 3D panoramique de la résidence 59 Cézanne avec Sainte-Victoire -->
-    <img
-      src="Photo 59 Cézanne/3D Exterieur/PV_EXT_Panorama_St-Victoire.webp"
-      alt="Résidence 59 Cézanne - Vue panoramique Sainte-Victoire"
-      loading="eager"
-    />
+    <img src="/Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_EXT_Panorama_St-Victoire-1200w.webp" srcset="/Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_EXT_Panorama_St-Victoire-800w.webp 800w, /Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_EXT_Panorama_St-Victoire-1200w.webp 1200w, /Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_EXT_Panorama_St-Victoire.webp 1600w" sizes="100vw" width="1600" height="960"
+         alt="Rendu 3D non contractuel : la résidence vue depuis l'avenue, avec le portail et le numéro 59, la façade sur deux niveaux, la piscine et le jardin"
+         fetchpriority="high" decoding="async" />
   </div>
   <div class="hero-overlay"></div>
   <div class="hero-content">
-    <p class="hero-eyebrow" data-lang-fr="La Résidence" data-lang-en="The Residence">La Résidence</p>
-    <h1 class="hero-title" style="font-size:clamp(2rem,4vw,3.5rem);" data-lang-fr="59 Cézanne — <em>Une adresse d'exception</em>" data-lang-en="59 Cézanne — <em>An exceptional address</em>">59 Cézanne — <em>Une adresse d'exception</em></h1>
-    <p class="hero-subtitle" data-lang-fr="Résidence exclusive de 8 appartements avec vue imprenable sur la Sainte-Victoire" data-lang-en="Exclusive residence of 8 apartments with breathtaking views of Sainte-Victoire">Résidence exclusive de 8 appartements avec vue imprenable sur la Sainte-Victoire</p>
+    <p class="hero-eyebrow" data-lang-fr="La résidence" data-lang-en="The residence">La résidence</p>
+    <h1 class="hero-title" id="titre-page" data-lang-fr="59 Cézanne, une &lt;em&gt;résidence confidentielle&lt;/em&gt; de 8 appartements à Aix-en-Provence" data-lang-en="59 Cézanne, an &lt;em&gt;intimate residence&lt;/em&gt; of 8 apartments in Aix-en-Provence">59 Cézanne, une <em>résidence confidentielle</em> de 8 appartements à Aix-en-Provence</h1>
+    <p class="hero-subtitle" data-lang-fr="Architecture contemporaine, jardins privatifs, piscine commune et vue Sainte-Victoire pour plusieurs appartements, avenue Paul Cézanne." data-lang-en="Contemporary architecture, private gardens, a shared pool and Sainte-Victoire views for several apartments, on avenue Paul Cézanne.">Architecture contemporaine, jardins privatifs, piscine commune et vue Sainte-Victoire pour plusieurs appartements, avenue Paul Cézanne.</p>
   </div>
+  <p class="hero-note" data-lang-fr="Illustration non contractuelle" data-lang-en="Non-contractual illustration">Illustration non contractuelle</p>
 </section>
 
-<!-- ─── Intro ────────────────────────────────────────────────── -->
-<section class="section">
+<section class="section" aria-labelledby="h-projet">
   <div class="container">
     <div class="section-header reveal">
       <p class="eyebrow" data-lang-fr="Le projet" data-lang-en="The project">Le projet</p>
-      <h2 class="section-title" data-lang-fr="Une résidence <em>confidentielle</em> au cœur de Provence" data-lang-en="An <em>exclusive</em> residence in the heart of Provence">Une résidence <em>confidentielle</em> au cœur de Provence</h2>
+      <h2 class="section-title" id="h-projet" data-lang-fr="Huit appartements dans un seul &lt;em&gt;bâtiment&lt;/em&gt;" data-lang-en="Eight apartments in a single &lt;em&gt;building&lt;/em&gt;">Huit appartements dans un seul <em>bâtiment</em></h2>
       <div class="divider center"></div>
-      <p class="section-lead" data-lang-fr="Au 59 Avenue Paul Cézanne, dans un quartier résidentiel privilégié d'Aix-en-Provence, naît une résidence d'exception : 8 appartements soigneusement conçus pour offrir le meilleur de l'art de vivre provençal." data-lang-en="At 59 Avenue Paul Cézanne, in a privileged residential neighbourhood of Aix-en-Provence, an exceptional residence is born: 8 apartments carefully designed to offer the very best of Provençal living.">
-        Au 59 Avenue Paul Cézanne, dans un quartier résidentiel privilégié d'Aix-en-Provence, naît une résidence d'exception : 8 appartements soigneusement conçus pour offrir le meilleur de l'art de vivre provençal.
-      </p>
+      <p class="section-lead" data-lang-fr="59 Cézanne est une résidence neuve de prestige de 8 appartements, un programme Ponthieu Développement Holding situé au 59 avenue Paul Cézanne, à Aix-en-Provence&amp;nbsp;: un bâtiment de deux niveaux, des jardins privatifs, une piscine commune et un stationnement en sous-sol." data-lang-en="59 Cézanne is a new, upmarket residence of 8 apartments, a Ponthieu Développement Holding programme at 59 avenue Paul Cézanne in Aix-en-Provence: a two-level building, private gardens, a shared pool and underground parking.">59 Cézanne est une résidence neuve de prestige de 8 appartements, un programme Ponthieu Développement Holding situé au 59 avenue Paul Cézanne, à Aix-en-Provence&nbsp;: un bâtiment de deux niveaux, des jardins privatifs, une piscine commune et un stationnement en sous-sol.</p>
     </div>
 
     <div class="address-block reveal">
-      <div class="address-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="28" height="28"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg></div>
+      <div class="address-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" width="28" height="28" aria-hidden="true" focusable="false"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg></div>
       <div class="address-text">
-        <strong>59 Avenue Paul Cézanne</strong>
-        <span data-lang-fr="13100 Aix-en-Provence — Quartier des Lauves" data-lang-en="13100 Aix-en-Provence — Les Lauves district">13100 Aix-en-Provence — Quartier des Lauves</span>
+        <strong>59 avenue Paul Cézanne</strong>
+        <span data-lang-fr="13100 Aix-en-Provence · à proximité du quartier des Lauves" data-lang-en="13100 Aix-en-Provence · near the Lauves district">13100 Aix-en-Provence · à proximité du quartier des Lauves</span>
       </div>
+      <a href="/localisation" class="pres-link" data-lang-fr="Localisation et accès" data-lang-en="Location and access">Localisation et accès</a>
+    </div>
+
+    <ul class="pres-figures reveal">
+      <li><strong class="pres-fig-num" data-lang-fr="8" data-lang-en="8">8</strong><span class="pres-fig-lab" data-lang-fr="appartements&amp;nbsp;: 4 T4, 2 T3 duplex et 2 T2" data-lang-en="apartments: 4 T4, 2 T3 duplexes and 2 T2">appartements&nbsp;: 4 T4, 2 T3 duplex et 2 T2</span></li>
+      <li><strong class="pres-fig-num" data-lang-fr="28 à 312 m²" data-lang-en="28 to 312 m²">28 à 312 m²</strong><span class="pres-fig-lab" data-lang-fr="de jardin privatif selon l'appartement" data-lang-en="of private garden depending on the apartment">de jardin privatif selon l'appartement</span></li>
+      <li><strong class="pres-fig-num" data-lang-fr="2 niveaux" data-lang-en="2 levels">2 niveaux</strong><span class="pres-fig-lab" data-lang-fr="un seul bâtiment, desservi par un ascenseur" data-lang-en="a single building served by a lift">un seul bâtiment, desservi par un ascenseur</span></li>
+      <li><strong class="pres-fig-num" data-lang-fr="1" data-lang-en="1">1</strong><span class="pres-fig-lab" data-lang-fr="piscine commune, chauffée selon la notice" data-lang-en="shared pool, heated according to the specification">piscine commune, chauffée selon la notice</span></li>
+    </ul>
+
+    <div class="pres-narrow">
+      <p class="pres-text" data-lang-fr="Le programme réunit quatre T4, deux T3 duplex et deux T2, tous avec un jardin privatif. Il est porté par Ponthieu Développement Holding, société créée en 2001 par Stéphane Ponthieu d'après la plaquette du programme&amp;nbsp;: &lt;a href=&quot;/promoteur&quot; class=&quot;pres-link&quot;&gt;découvrir le promoteur&lt;/a&gt;." data-lang-en="The programme comprises four T4, two T3 duplexes and two T2 apartments, all with a private garden. It is developed by Ponthieu Développement Holding, a company founded in 2001 by Stéphane Ponthieu according to the programme brochure: &lt;a href=&quot;/promoteur&quot; class=&quot;pres-link&quot;&gt;meet the developer&lt;/a&gt;.">Le programme réunit quatre T4, deux T3 duplex et deux T2, tous avec un jardin privatif. Il est porté par Ponthieu Développement Holding, société créée en 2001 par Stéphane Ponthieu d'après la plaquette du programme&nbsp;: <a href="/promoteur" class="pres-link">découvrir le promoteur</a>.</p>
     </div>
   </div>
 </section>
 
-<!-- ─── Héritage Cézanne ─────────────────────────────────────── -->
-<section class="section section-alt">
+<section class="section section-alt" aria-labelledby="h-logements">
   <div class="container">
-    <div class="cezanne-heritage">
-      <div class="heritage-img-stack reveal-left">
-        <!-- IMAGE: Vue depuis la résidence sur la Sainte-Victoire, la montagne de Cézanne -->
-        <img
-          src="Photo 59 Cézanne/Photo Sainte-Victoire pour Boris/S22/20250217_174021.webp"
-          alt="Vue sur la Sainte-Victoire depuis la résidence 59 Cézanne"
-          class="heritage-img-main"
-          loading="lazy"
-        />
-      </div>
+    <div class="section-header reveal">
+      <p class="eyebrow" data-lang-fr="Les appartements" data-lang-en="The apartments">Les appartements</p>
+      <h2 class="section-title" id="h-logements" data-lang-fr="Trois typologies, &lt;em&gt;huit appartements&lt;/em&gt;" data-lang-en="Three types, &lt;em&gt;eight apartments&lt;/em&gt;">Trois typologies, <em>huit appartements</em></h2>
+      <div class="divider center"></div>
+      <p class="section-lead" data-lang-fr="Surfaces et jardins d'après les documents de commercialisation de février 2025&amp;nbsp;; ces valeurs sont indicatives." data-lang-en="Floor areas and gardens as per the February 2025 sales documents; these figures are indicative.">Surfaces et jardins d'après les documents de commercialisation de février 2025&nbsp;; ces valeurs sont indicatives.</p>
+    </div>
+    <div class="table-wrap" role="region" aria-labelledby="cap-logements" tabindex="0">
+      <table class="pres-table">
+        <caption id="cap-logements" data-lang-fr="Les 8 appartements : surfaces et jardins privatifs" data-lang-en="The 8 apartments: floor areas and private gardens">Les 8 appartements : surfaces et jardins privatifs</caption>
+        <thead>
+          <tr>
+            <th scope="col" data-lang-fr="Typologie" data-lang-en="Type">Typologie</th>
+            <th scope="col" data-lang-fr="Nombre" data-lang-en="Number">Nombre</th>
+            <th scope="col" data-lang-fr="Surface" data-lang-en="Floor area">Surface</th>
+            <th scope="col" data-lang-fr="Jardin privatif" data-lang-en="Private garden">Jardin privatif</th>
+            <th scope="col" data-lang-fr="Niveau" data-lang-en="Level">Niveau</th>
+          </tr>
+        </thead>
+        <tbody>
+        <tr>
+          <th scope="row">T4</th>
+          <td data-lang-fr="4 (lots 1, 4, 5 et 8)" data-lang-en="4 (lots 1, 4, 5 and 8)">4 (lots 1, 4, 5 et 8)</td>
+          <td data-lang-fr="de 100,5 à 138,0 m² environ" data-lang-en="about 100.5 to 138.0 m²">de 100,5 à 138,0 m² environ</td>
+          <td data-lang-fr="de 82,1 à 311,6 m²" data-lang-en="82.1 to 311.6 m²">de 82,1 à 311,6 m²</td>
+          <td data-lang-fr="Rez-de-jardin (lots 1 et 4) ou étage (lots 5 et 8)" data-lang-en="Garden level (lots 1 and 4) or upper floor (lots 5 and 8)">Rez-de-jardin (lots 1 et 4) ou étage (lots 5 et 8)</td>
+        </tr>
+        <tr>
+          <th scope="row">T3 duplex</th>
+          <td data-lang-fr="2 (lots 2 et 3)" data-lang-en="2 (lots 2 and 3)">2 (lots 2 et 3)</td>
+          <td data-lang-fr="environ 103,5 m²" data-lang-en="about 103.5 m²">environ 103,5 m²</td>
+          <td data-lang-fr="environ 28 m²" data-lang-en="about 28 m²">environ 28 m²</td>
+          <td data-lang-fr="Rez-de-jardin, sur deux niveaux" data-lang-en="Garden level, over two floors">Rez-de-jardin, sur deux niveaux</td>
+        </tr>
+        <tr>
+          <th scope="row">T2</th>
+          <td data-lang-fr="2 (lots 6 et 7)" data-lang-en="2 (lots 6 and 7)">2 (lots 6 et 7)</td>
+          <td data-lang-fr="environ 45,0 m²" data-lang-en="about 45.0 m²">environ 45,0 m²</td>
+          <td data-lang-fr="101,7 et 108,2 m²" data-lang-en="101.7 and 108.2 m²">101,7 et 108,2 m²</td>
+          <td data-lang-fr="Étage" data-lang-en="Upper floor">Étage</td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="pres-table-note" data-lang-fr="Les surfaces s'entendent «&amp;nbsp;sous réserve des tolérances de construction&amp;nbsp;» (notice descriptive)&amp;nbsp;; la nature exacte de la surface (utile, habitable) n'est pas précisée dans les documents." data-lang-en="Floor areas are stated “subject to construction tolerances” (specification); the exact nature of the area (usable, habitable) is not specified in the documents.">Les surfaces s'entendent «&nbsp;sous réserve des tolérances de construction&nbsp;» (notice descriptive)&nbsp;; la nature exacte de la surface (utile, habitable) n'est pas précisée dans les documents.</p>
+    <p class="pres-table-note" data-lang-fr="&lt;strong&gt;Vue&amp;nbsp;:&lt;/strong&gt; les documents de commercialisation indiquent une vue Sainte-Victoire pour six appartements (lots 1 à 5 et 8) et une vue sur le jardin pour les deux T2 (lots 6 et 7). La montagne se situe à l'horizon&amp;nbsp;: sa visibilité dépend de l'étage, de l'orientation et de la végétation, et se vérifie lors d'une visite." data-lang-en="&lt;strong&gt;View:&lt;/strong&gt; the sales documents list a Sainte-Victoire view for six apartments (lots 1 to 5 and 8) and a garden view for the two T2 apartments (lots 6 and 7). The mountain sits on the horizon: how visible it is depends on the floor, the orientation and the vegetation, and is best checked during a visit."><strong>Vue&nbsp;:</strong> les documents de commercialisation indiquent une vue Sainte-Victoire pour six appartements (lots 1 à 5 et 8) et une vue sur le jardin pour les deux T2 (lots 6 et 7). La montagne se situe à l'horizon&nbsp;: sa visibilité dépend de l'étage, de l'orientation et de la végétation, et se vérifie lors d'une visite.</p>
+    <div class="pres-actions">
+      <a href="/logements" class="btn btn-primary" data-lang-fr="Voir le détail des appartements" data-lang-en="See the apartments in detail">Voir le détail des appartements</a>
+      <a href="/contact" class="btn btn-outline-dark" data-lang-fr="Nous contacter" data-lang-en="Contact us">Nous contacter</a>
+    </div>
+  </div>
+</section>
 
-      <div class="heritage-text reveal-right">
-        <p class="eyebrow" data-lang-fr="Histoire &amp; Héritage" data-lang-en="History &amp; Heritage">Histoire & Héritage</p>
-        <h2 class="section-title" data-lang-fr="Dans les pas de <em>Paul Cézanne</em>" data-lang-en="Following in the footsteps of <em>Paul Cézanne</em>">Dans les pas de <em>Paul Cézanne</em></h2>
+<section class="section" aria-labelledby="h-archi">
+  <div class="container">
+    <div class="two-col pres-arch">
+      <div class="reveal-left">
+        <p class="eyebrow" data-lang-fr="L'architecture" data-lang-en="Architecture">L'architecture</p>
+        <h2 class="section-title" id="h-archi" data-lang-fr="Un bâtiment de &lt;em&gt;deux niveaux&lt;/em&gt; sur un terrain en pente" data-lang-en="A &lt;em&gt;two-level&lt;/em&gt; building on a sloping plot">Un bâtiment de <em>deux niveaux</em> sur un terrain en pente</h2>
         <div class="divider"></div>
-
-        <p style="font-size:0.92rem;color:var(--text-mid);line-height:1.9;margin-bottom:1.5rem;" data-lang-fr="L'Avenue Paul Cézanne rend hommage au génie aixois qui a immortalisé la Sainte-Victoire dans plus de soixante tableaux. C'est depuis ce même quartier que le peintre contemplait et peignait la montagne qui allait devenir l'une des œuvres picturales les plus emblématiques de l'histoire de l'art." data-lang-en="Avenue Paul Cézanne pays tribute to the Aix-born genius who immortalised Sainte-Victoire in more than sixty paintings. It was from this very neighbourhood that the painter contemplated and painted the mountain that would become one of the most iconic works in art history.">
-          L'Avenue Paul Cézanne rend hommage au génie aixois qui a immortalisé la Sainte-Victoire dans plus de soixante tableaux. C'est depuis ce même quartier que le peintre contemplait et peignait la montagne qui allait devenir l'une des œuvres picturales les plus emblématiques de l'histoire de l'art.
-        </p>
-
-        <p style="font-size:0.92rem;color:var(--text-mid);line-height:1.9;margin-bottom:1.5rem;" data-lang-fr="À quelques pas du &lt;strong style='color:var(--text)'&gt;Terrain des Peintres&lt;/strong&gt;, espace naturel préservé d'où Cézanne immortalisait sa montagne sacrée, la résidence 59 Cézanne s'inscrit dans cette tradition d'excellence et de contemplation." data-lang-en="Steps away from the &lt;strong style='color:var(--text)'&gt;Terrain des Peintres&lt;/strong&gt;, the preserved natural site where Cézanne immortalised his sacred mountain, Résidence 59 Cézanne is steeped in this tradition of excellence and contemplation.">
-          À quelques pas du <strong style="color:var(--text)">Terrain des Peintres</strong>, espace naturel préservé d'où Cézanne immortalisait sa montagne sacrée, la résidence 59 Cézanne s'inscrit dans cette tradition d'excellence et de contemplation.
-        </p>
-
-        <div class="quote-block">
-          <p data-lang-fr="« La Sainte-Victoire est belle. C'est une montagne qui s'impose, une présence absolue dans le paysage provençal. »" data-lang-en="&quot;Sainte-Victoire is beautiful. It is a mountain that commands attention, an absolute presence in the Provençal landscape.&quot;">« La Sainte-Victoire est belle. C'est une montagne qui s'impose, une présence absolue dans le paysage provençal. »</p>
-          <cite>— Paul Cézanne (1839-1906)</cite>
-        </div>
-
-        <p style="font-size:0.92rem;color:var(--text-mid);line-height:1.9;margin-top:1.5rem;" data-lang-fr="Depuis chaque appartement de la résidence, cette même montagne emblématique s'offre à votre regard, prolongeant la tradition artistique qui a fait la renommée mondiale d'Aix-en-Provence." data-lang-en="From every apartment in the residence, this same iconic mountain greets your gaze, continuing the artistic tradition that has given Aix-en-Provence its worldwide renown.">
-          Depuis chaque appartement de la résidence, cette même montagne emblématique s'offre à votre regard, prolongeant la tradition artistique qui a fait la renommée mondiale d'Aix-en-Provence.
-        </p>
+        <p class="pres-text" data-lang-fr="Les plans du dossier (permis de construire, plan de masse, façades) sont établis par l'agence Groove Architecture, à Marseille. Ils dessinent un immeuble collectif de huit logements sur deux niveaux, desservis par une cage d'escalier et un ascenseur accessible aux personnes à mobilité réduite. Le stationnement est en sous-sol, accessible de plain-pied depuis l'avenue Paul Cézanne." data-lang-en="The plans in the programme file (building permit, site plans, façades) were drawn up by the practice Groove Architecture, in Marseille. They show a collective building of eight homes on two levels, served by a stairwell and a lift accessible to people with reduced mobility. Parking is underground, with level access from avenue Paul Cézanne.">Les plans du dossier (permis de construire, plan de masse, façades) sont établis par l'agence Groove Architecture, à Marseille. Ils dessinent un immeuble collectif de huit logements sur deux niveaux, desservis par une cage d'escalier et un ascenseur accessible aux personnes à mobilité réduite. Le stationnement est en sous-sol, accessible de plain-pied depuis l'avenue Paul Cézanne.</p>
+        <p class="pres-text" data-lang-fr="Selon la notice descriptive du 8 avril 2025, la toiture est en tuiles canal, les façades reçoivent une finition enduite décorative ou peinte suivant le permis de construire, les menuiseries extérieures sont en aluminium thermolaqué à double vitrage et les volets roulants, à lames d'aluminium de type brise-soleil orientable, sont à commande électrique. La plaquette annonce de grandes baies vitrées sur mesure." data-lang-en="According to the specification of 8 April 2025, the roof is of Roman-style canal tiles, the façades have a decorative rendered or painted finish as set out in the building permit, the exterior joinery is thermally lacquered aluminium with double glazing, and the aluminium-slat roller shutters (adjustable sun-shade type) are electrically operated. The brochure announces large made-to-measure glazed openings.">Selon la notice descriptive du 8 avril 2025, la toiture est en tuiles canal, les façades reçoivent une finition enduite décorative ou peinte suivant le permis de construire, les menuiseries extérieures sont en aluminium thermolaqué à double vitrage et les volets roulants, à lames d'aluminium de type brise-soleil orientable, sont à commande électrique. La plaquette annonce de grandes baies vitrées sur mesure.</p>
+        <p class="pres-text" data-lang-fr="Un jardin privatif prolonge chaque appartement&amp;nbsp;: de plain-pied pour les lots 1 à 4, au niveau supérieur pour les lots 5 à 8, d'après le plan de masse paysagé. &lt;a href=&quot;/exterieurs&quot; class=&quot;pres-link&quot;&gt;Voir les espaces communs&lt;/a&gt;." data-lang-en="A private garden extends each apartment: at ground level for lots 1 to 4, on the upper level for lots 5 to 8, as shown on the landscaped site plan. &lt;a href=&quot;/exterieurs&quot; class=&quot;pres-link&quot;&gt;See the common areas&lt;/a&gt;.">Un jardin privatif prolonge chaque appartement&nbsp;: de plain-pied pour les lots 1 à 4, au niveau supérieur pour les lots 5 à 8, d'après le plan de masse paysagé. <a href="/exterieurs" class="pres-link">Voir les espaces communs</a>.</p>
+      </div>
+      <div class="reveal-right">
+        <dl class="pres-facts">
+        <div><dt data-lang-fr="Terrain" data-lang-en="Plot">Terrain</dt><dd data-lang-fr="2 426 m², en pente" data-lang-en="2,426 m², sloping">2 426 m², en pente</dd></div>
+        <div><dt data-lang-fr="Espace commun paysagé" data-lang-en="Landscaped communal area">Espace commun paysagé</dt><dd data-lang-fr="453 m² (plan de masse paysagé)" data-lang-en="453 m² (landscaped site plan)">453 m² (plan de masse paysagé)</dd></div>
+        <div><dt data-lang-fr="Stationnement en sous-sol" data-lang-en="Underground parking">Stationnement en sous-sol</dt><dd data-lang-fr="16 places et 16 emplacements deux-roues (notice)" data-lang-en="16 car spaces and 16 two-wheeler spaces (specification)">16 places et 16 emplacements deux-roues (notice)</dd></div>
+        <div><dt data-lang-fr="Permis de construire" data-lang-en="Building permit">Permis de construire</dt><dd data-lang-fr="délivré par la commune d'Aix-en-Provence le 16 juin 2023 (n° PC 13 001 23J0003)" data-lang-en="issued by the commune of Aix-en-Provence on 16 June 2023 (no. PC 13 001 23J0003)">délivré par la commune d'Aix-en-Provence le 16 juin 2023 (n° PC 13 001 23J0003)</dd></div>
+        </dl>
+        <p class="pres-facts-note" data-lang-fr="Données tirées des documents du programme&amp;nbsp;; elles peuvent évoluer, notamment par permis modificatif." data-lang-en="Data taken from the programme documents; they may change, in particular through an amended building permit.">Données tirées des documents du programme&nbsp;; elles peuvent évoluer, notamment par permis modificatif.</p>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ─── Photos Galerie ────────────────────────────────────────── -->
-<section class="section pt-0" style="padding-top:0;">
+<section class="section section-alt" aria-labelledby="h-vues">
   <div class="container">
     <div class="section-header reveal">
       <p class="eyebrow" data-lang-fr="La résidence en images" data-lang-en="The residence in pictures">La résidence en images</p>
-      <h2 class="section-title" data-lang-fr="Vues <em>extérieures</em>" data-lang-en="<em>Exterior</em> views">Vues <em>extérieures</em></h2>
+      <h2 class="section-title" id="h-vues" data-lang-fr="Vues &lt;em&gt;extérieures&lt;/em&gt;" data-lang-en="&lt;em&gt;Exterior&lt;/em&gt; views">Vues <em>extérieures</em></h2>
     </div>
+    <p class="pres-gallery-note" data-lang-fr="Rendus 3D à titre indicatif&amp;nbsp;: illustrations non contractuelles. Aucun cliché de chantier n'est présenté sur cette page." data-lang-en="3D renderings for illustration only: non-contractual. No construction-site photograph is shown on this page.">Rendus 3D à titre indicatif&nbsp;: illustrations non contractuelles. Aucun cliché de chantier n'est présenté sur cette page.</p>
+    <div class="pres-gallery" id="gallery-present">
+      <figure class="pres-fig">
+        <button type="button" class="pres-fig-btn" data-src="/Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_PISCINE_NUIT_Panorama_St-Victoire%202.webp" data-caption="La piscine éclairée de nuit, avec son solarium — Illustration non contractuelle" data-caption-fr="La piscine éclairée de nuit, avec son solarium — Illustration non contractuelle" data-caption-en="The pool lit at night, with its sun deck — Non-contractual illustration" onclick="openLightbox(this, 0)" data-keep-label aria-label="Agrandir l'image : La piscine éclairée de nuit, avec son solarium" data-aria-label-fr="Agrandir l'image : La piscine éclairée de nuit, avec son solarium" data-aria-label-en="Enlarge image: The pool lit at night, with its sun deck">
+          <img src="/Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_PISCINE_NUIT_Panorama_St-Victoire%202-800w.webp" srcset="/Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_PISCINE_NUIT_Panorama_St-Victoire%202-800w.webp 800w, /Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_PISCINE_NUIT_Panorama_St-Victoire%202-1200w.webp 1200w, /Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_PISCINE_NUIT_Panorama_St-Victoire%202.webp 1600w" sizes="(max-width: 600px) 92vw, (max-width: 900px) 46vw, 410px" width="1600" height="960" alt="Rendu 3D : piscine éclairée de nuit, solarium avec parasols et transats devant la façade de la résidence" loading="lazy" decoding="async" />
+          <span class="pres-fig-zoom"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18" aria-hidden="true" focusable="false"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3M11 8v6M8 11h6"/></svg></span>
+        </button>
+        <figcaption><span data-lang-fr="La piscine éclairée de nuit, avec son solarium" data-lang-en="The pool lit at night, with its sun deck">La piscine éclairée de nuit, avec son solarium</span><span class="pres-nc" data-lang-fr="Illustration non contractuelle" data-lang-en="Non-contractual illustration">Illustration non contractuelle</span></figcaption>
+      </figure>
+      <figure class="pres-fig">
+        <button type="button" class="pres-fig-btn" data-src="/Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_JARDIN_LOGEMENT-04_Panorama_St-Victoire.webp" data-caption="Terrasse et jardin privatif d'un appartement du rez-de-jardin (lot 4) — Illustration non contractuelle" data-caption-fr="Terrasse et jardin privatif d'un appartement du rez-de-jardin (lot 4) — Illustration non contractuelle" data-caption-en="Terrace and private garden of a garden-level apartment (lot 4) — Non-contractual illustration" onclick="openLightbox(this, 1)" data-keep-label aria-label="Agrandir l'image : Terrasse et jardin privatif d'un appartement du rez-de-jardin (lot 4)" data-aria-label-fr="Agrandir l'image : Terrasse et jardin privatif d'un appartement du rez-de-jardin (lot 4)" data-aria-label-en="Enlarge image: Terrace and private garden of a garden-level apartment (lot 4)">
+          <img src="/Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_JARDIN_LOGEMENT-04_Panorama_St-Victoire-800w.webp" srcset="/Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_JARDIN_LOGEMENT-04_Panorama_St-Victoire-800w.webp 800w, /Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_JARDIN_LOGEMENT-04_Panorama_St-Victoire-1200w.webp 1200w, /Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_JARDIN_LOGEMENT-04_Panorama_St-Victoire.webp 1600w" sizes="(max-width: 600px) 92vw, (max-width: 900px) 46vw, 410px" width="1600" height="1024" alt="Rendu 3D : terrasse et jardin d'un appartement en rez-de-jardin, salon d'extérieur et bains de soleil, relief à l'horizon" loading="lazy" decoding="async" />
+          <span class="pres-fig-zoom"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18" aria-hidden="true" focusable="false"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3M11 8v6M8 11h6"/></svg></span>
+        </button>
+        <figcaption><span data-lang-fr="Terrasse et jardin privatif d'un appartement du rez-de-jardin (lot 4)" data-lang-en="Terrace and private garden of a garden-level apartment (lot 4)">Terrasse et jardin privatif d'un appartement du rez-de-jardin (lot 4)</span><span class="pres-nc" data-lang-fr="Illustration non contractuelle" data-lang-en="Non-contractual illustration">Illustration non contractuelle</span></figcaption>
+      </figure>
+      <figure class="pres-fig">
+        <button type="button" class="pres-fig-btn" data-src="/Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_JARDIN_V2_LOGEMENT-04_Panorama_St-Victoire.webp" data-caption="Le séjour ouvert sur le jardin (lot 4) — Illustration non contractuelle" data-caption-fr="Le séjour ouvert sur le jardin (lot 4) — Illustration non contractuelle" data-caption-en="The living room opening onto the garden (lot 4) — Non-contractual illustration" onclick="openLightbox(this, 2)" data-keep-label aria-label="Agrandir l'image : Le séjour ouvert sur le jardin (lot 4)" data-aria-label-fr="Agrandir l'image : Le séjour ouvert sur le jardin (lot 4)" data-aria-label-en="Enlarge image: The living room opening onto the garden (lot 4)">
+          <img src="/Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_JARDIN_V2_LOGEMENT-04_Panorama_St-Victoire-800w.webp" srcset="/Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_JARDIN_V2_LOGEMENT-04_Panorama_St-Victoire-800w.webp 800w, /Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_JARDIN_V2_LOGEMENT-04_Panorama_St-Victoire-1200w.webp 1200w, /Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_JARDIN_V2_LOGEMENT-04_Panorama_St-Victoire.webp 1600w" sizes="(max-width: 600px) 92vw, (max-width: 900px) 46vw, 410px" width="1600" height="1024" alt="Rendu 3D : baie coulissante ouverte entre le séjour et le jardin d'un appartement en rez-de-jardin" loading="lazy" decoding="async" />
+          <span class="pres-fig-zoom"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18" aria-hidden="true" focusable="false"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3M11 8v6M8 11h6"/></svg></span>
+        </button>
+        <figcaption><span data-lang-fr="Le séjour ouvert sur le jardin (lot 4)" data-lang-en="The living room opening onto the garden (lot 4)">Le séjour ouvert sur le jardin (lot 4)</span><span class="pres-nc" data-lang-fr="Illustration non contractuelle" data-lang-en="Non-contractual illustration">Illustration non contractuelle</span></figcaption>
+      </figure>
+    </div>
+    <div class="pres-actions" style="justify-content:center;">
+      <a href="/exterieurs" class="btn btn-outline-dark" data-lang-fr="Voir tous les espaces communs" data-lang-en="See all the common areas">Voir tous les espaces communs</a>
+    </div>
+  </div>
+</section>
 
-    <div class="photo-row" id="gallery-present">
-      <div class="photo-row-item" onclick="openLightbox(this, 0)" data-src="Photo 59 Cézanne/3D Groove Architecture/Edited/050-APC-230309-INSERTION-enhanced.webp" data-caption="Insertion architecturale - Vue Sud">
-        <img src="Photo 59 Cézanne/3D Groove Architecture/Edited/050-APC-230309-INSERTION-enhanced.webp" alt="Insertion architecturale - Vue Sud" loading="lazy" />
-        <div class="gal-overlay">⊕</div>
+<section class="section" aria-labelledby="h-vivre">
+  <div class="container">
+    <div class="section-header reveal">
+      <p class="eyebrow" data-lang-fr="Art de vivre" data-lang-en="Living">Art de vivre</p>
+      <h2 class="section-title" id="h-vivre" data-lang-fr="Vivre au jardin, &lt;em&gt;autour de la piscine&lt;/em&gt;" data-lang-en="Living in the garden, &lt;em&gt;around the pool&lt;/em&gt;">Vivre au jardin, <em>autour de la piscine</em></h2>
+      <div class="divider center"></div>
+      <p class="section-lead" data-lang-fr="Ce que les documents du programme prévoient pour le quotidien." data-lang-en="What the programme documents provide for everyday life.">Ce que les documents du programme prévoient pour le quotidien.</p>
+    </div>
+    <ul class="pres-cards">
+        <li class="pres-card reveal">
+          <span class="pres-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" width="24" height="24" aria-hidden="true" focusable="false"><path d="M12 22V12M12 12C9 12 6 9 5 5c3 1 6 3 7 7M12 12c3 0 6-3 7-7-3 1-6 3-7 7"/></svg></span>
+          <h3 data-lang-fr="Un jardin privatif par appartement" data-lang-en="A private garden for each apartment">Un jardin privatif par appartement</h3>
+          <p data-lang-fr="Engazonné et arrosé automatiquement, avec une haie séparative entre les jardins, selon la notice descriptive. De 28 à 312 m² environ selon le lot." data-lang-en="Lawned and automatically watered, with a hedge between gardens, according to the specification. From about 28 to 312 m² depending on the apartment.">Engazonné et arrosé automatiquement, avec une haie séparative entre les jardins, selon la notice descriptive. De 28 à 312 m² environ selon le lot.</p>
+          <a href="/logements" class="pres-link" data-lang-fr="Les appartements" data-lang-en="The apartments">Les appartements</a>
+        </li>
+        <li class="pres-card reveal">
+          <span class="pres-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" width="24" height="24" aria-hidden="true" focusable="false"><path d="M2 16c1.5-2 3-2 4.5 0s3 2 4.5 0 3-2 4.5 0 3 2 4.5 0M2 20c1.5-2 3-2 4.5 0s3 2 4.5 0 3-2 4.5 0 3 2 4.5 0M12 3v9"/></svg></span>
+          <h3 data-lang-fr="Une piscine commune" data-lang-en="A shared pool">Une piscine commune</h3>
+          <p data-lang-fr="Piscine enterrée, chauffée et équipée d'un système de nage à contre-courant selon la notice&amp;nbsp;; solarium aménagé avec transats selon la plaquette." data-lang-en="In-ground pool, heated and fitted with a counter-current swimming system, according to the specification; a sun deck with loungers according to the brochure.">Piscine enterrée, chauffée et équipée d'un système de nage à contre-courant selon la notice&nbsp;; solarium aménagé avec transats selon la plaquette.</p>
+          <a href="/exterieurs" class="pres-link" data-lang-fr="Les espaces communs" data-lang-en="The common areas">Les espaces communs</a>
+        </li>
+        <li class="pres-card reveal">
+          <span class="pres-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" width="24" height="24" aria-hidden="true" focusable="false"><path d="M12 22v-6M12 16c-4 0-6-3-6-6 0-4 3-7 6-8 3 1 6 4 6 8 0 3-2 6-6 6z"/></svg></span>
+          <h3 data-lang-fr="Des plantations méditerranéennes" data-lang-en="Mediterranean planting">Des plantations méditerranéennes</h3>
+          <p data-lang-fr="Le plan paysager prévoit notamment oliviers, amandiers, pins, lavande et romarin. Arrosage automatique des espaces verts communs selon la notice." data-lang-en="The landscape plan includes olive trees, almond trees, pines, lavender and rosemary, among others. Automatic watering of the communal green spaces according to the specification.">Le plan paysager prévoit notamment oliviers, amandiers, pins, lavande et romarin. Arrosage automatique des espaces verts communs selon la notice.</p>
+        </li>
+        <li class="pres-card reveal">
+          <span class="pres-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" width="24" height="24" aria-hidden="true" focusable="false"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 018 0v4"/></svg></span>
+          <h3 data-lang-fr="Un quotidien simple" data-lang-en="Easy everyday living">Un quotidien simple</h3>
+          <p data-lang-fr="Ascenseur accessible aux personnes à mobilité réduite, accès par visiophone et badge, local vélos clos et couvert de 22,2 m², prise 32 A destinée à recevoir une borne de recharge pour chacun des huit box de stationnement." data-lang-en="Lift accessible to people with reduced mobility, access by video entry phone and badge, a closed and covered 22.2 m² bicycle room, and a 32 A socket to take an electric-vehicle charger for each of the eight parking bays.">Ascenseur accessible aux personnes à mobilité réduite, accès par visiophone et badge, local vélos clos et couvert de 22,2 m², prise 32 A destinée à recevoir une borne de recharge pour chacun des huit box de stationnement.</p>
+        </li>
+    </ul>
+  </div>
+</section>
+
+<section class="section section-stone" aria-labelledby="h-prestations">
+  <div class="container">
+    <div class="section-header reveal">
+      <p class="eyebrow" data-lang-fr="Prestations" data-lang-en="Features">Prestations</p>
+      <h2 class="section-title" id="h-prestations" data-lang-fr="Ce que prévoit la &lt;em&gt;notice descriptive&lt;/em&gt;" data-lang-en="What the &lt;em&gt;specification&lt;/em&gt; provides">Ce que prévoit la <em>notice descriptive</em></h2>
+      <div class="divider center"></div>
+      <p class="section-lead" data-lang-fr="Prévu selon la notice descriptive du 8 avril 2025." data-lang-en="Planned according to the specification of 8 April 2025.">Prévu selon la notice descriptive du 8 avril 2025.</p>
+    </div>
+    <div class="pres-specs">
+      <div class="pres-spec"><h3 data-lang-fr="Chauffage, rafraîchissement et performance" data-lang-en="Heating, cooling and performance">Chauffage, rafraîchissement et performance</h3><p data-lang-fr="Pompe à chaleur air/air de type VRV avec thermostats d'ambiance, sous réserve de confirmation par l'étude thermique d'exécution. Performance énergétique visée&amp;nbsp;: RE2020." data-lang-en="Air-to-air heat pump (VRV type) with room thermostats, subject to confirmation by the detailed thermal study. Targeted energy performance: RE2020.">Pompe à chaleur air/air de type VRV avec thermostats d'ambiance, sous réserve de confirmation par l'étude thermique d'exécution. Performance énergétique visée&nbsp;: RE2020.</p></div>
+      <div class="pres-spec"><h3 data-lang-fr="Eau chaude et ventilation" data-lang-en="Hot water and ventilation">Eau chaude et ventilation</h3><p data-lang-fr="Ballon d'eau chaude électrique thermodynamique&amp;nbsp;; ventilation mécanique contrôlée hygroréglable (hygro B)." data-lang-en="Thermodynamic electric hot-water cylinder; humidity-controlled mechanical ventilation (hygro B).">Ballon d'eau chaude électrique thermodynamique&nbsp;; ventilation mécanique contrôlée hygroréglable (hygro B).</p></div>
+      <div class="pres-spec"><h3 data-lang-fr="Sols" data-lang-en="Floors">Sols</h3><p data-lang-fr="Grès cérame 80 × 80 cm ou parquet, au choix de l'acquéreur dans la même gamme de prix." data-lang-en="80 × 80 cm porcelain stoneware or parquet, at the buyer's choice within the same price range.">Grès cérame 80 × 80 cm ou parquet, au choix de l'acquéreur dans la même gamme de prix.</p></div>
+      <div class="pres-spec"><h3 data-lang-fr="Salle de bains" data-lang-en="Bathroom">Salle de bains</h3><p data-lang-fr="Baignoire ou bac à douche (au moins 80 × 80 cm), meuble de 120 cm avec vasque, miroir et spots LED." data-lang-en="Bathtub or shower tray (at least 80 × 80 cm), 120 cm vanity unit with basin, mirror and LED spotlights.">Baignoire ou bac à douche (au moins 80 × 80 cm), meuble de 120 cm avec vasque, miroir et spots LED.</p></div>
+      <div class="pres-spec"><h3 data-lang-fr="Cuisine" data-lang-en="Kitchen">Cuisine</h3><p data-lang-fr="Évier encastré avec meuble sous évier de 120 cm, emplacements et attentes pour réfrigérateur, lave-vaisselle et lave-linge. La cuisine aménagée n'est pas incluse dans la notice&amp;nbsp;: elle figure en option dans les documents de commercialisation de février 2025." data-lang-en="Built-in sink with a 120 cm sink unit, spaces and connections for a fridge, dishwasher and washing machine. A fitted kitchen is not included in the specification: it is listed as an option in the sales documents of February 2025.">Évier encastré avec meuble sous évier de 120 cm, emplacements et attentes pour réfrigérateur, lave-vaisselle et lave-linge. La cuisine aménagée n'est pas incluse dans la notice&nbsp;: elle figure en option dans les documents de commercialisation de février 2025.</p></div>
+      <div class="pres-spec"><h3 data-lang-fr="Accès et sécurité" data-lang-en="Access and security">Accès et sécurité</h3><p data-lang-fr="Platine à défilement avec visiophone sur portillon, badge de type VIGIK, porte palière blindée à serrure 3 points labellisée A2P*." data-lang-en="Scrolling entry panel with video entry phone at the gate, VIGIK-type badge, armoured entrance door with a 3-point lock rated A2P*.">Platine à défilement avec visiophone sur portillon, badge de type VIGIK, porte palière blindée à serrure 3 points labellisée A2P*.</p></div>
+      <div class="pres-spec"><h3 data-lang-fr="Acoustique et accessibilité" data-lang-en="Acoustics and accessibility">Acoustique et accessibilité</h3><p data-lang-fr="Planchers en dalle pleine de béton armé d'au moins 20 cm&amp;nbsp;; conformité annoncée à l'arrêté du 30 juin 1999 (acoustique) et à l'arrêté du 1er août 2006 (accessibilité)." data-lang-en="Reinforced-concrete floor slabs at least 20 cm thick; compliance stated with the order of 30 June 1999 (acoustics) and the order of 1 August 2006 (accessibility).">Planchers en dalle pleine de béton armé d'au moins 20 cm&nbsp;; conformité annoncée à l'arrêté du 30 juin 1999 (acoustique) et à l'arrêté du 1er août 2006 (accessibilité).</p></div>
+      <div class="pres-spec"><h3 data-lang-fr="Connectivité" data-lang-en="Connectivity">Connectivité</h3><p data-lang-fr="Câblage de l'immeuble en fibre optique&amp;nbsp;; prises RJ45 dans le séjour, les chambres et la cuisine." data-lang-en="Building cabled with optical fibre; RJ45 sockets in the living room, bedrooms and kitchen.">Câblage de l'immeuble en fibre optique&nbsp;; prises RJ45 dans le séjour, les chambres et la cuisine.</p></div>
+    </div>
+    <p class="pres-note" data-lang-fr="Le maître d'ouvrage peut remplacer des matériaux ou équipements par d'autres de qualité au moins équivalente. Une notice conforme à l'arrêté du 10 mai 1968 est adressée avant la signature de l'acte authentique&amp;nbsp;; plaquette, rendus et plans restent indicatifs. &lt;a href=&quot;/logements&quot; class=&quot;pres-link&quot;&gt;Voir les appartements et leurs prestations&lt;/a&gt;." data-lang-en="The developer may replace materials or equipment with others of at least equivalent quality. A specification compliant with the order of 10 May 1968 is sent before the deed of sale is signed; brochure, renderings and plans remain indicative. &lt;a href=&quot;/logements&quot; class=&quot;pres-link&quot;&gt;See the apartments and their features&lt;/a&gt;.">Le maître d'ouvrage peut remplacer des matériaux ou équipements par d'autres de qualité au moins équivalente. Une notice conforme à l'arrêté du 10 mai 1968 est adressée avant la signature de l'acte authentique&nbsp;; plaquette, rendus et plans restent indicatifs. <a href="/logements" class="pres-link">Voir les appartements et leurs prestations</a>.</p>
+  </div>
+</section>
+
+<section class="section section-dark" aria-labelledby="h-adresse">
+  <div class="container">
+    <div class="two-col">
+      <div class="reveal-right">
+        <figure class="pres-photo">
+          <img src="/Photo%2059%20C%C3%A9zanne/Photo%20Sainte-Victoire%20pour%20Boris/S22/20250217_174036-800w.webp" srcset="/Photo%2059%20C%C3%A9zanne/Photo%20Sainte-Victoire%20pour%20Boris/S22/20250217_174036-800w.webp 800w, /Photo%2059%20C%C3%A9zanne/Photo%20Sainte-Victoire%20pour%20Boris/S22/20250217_174036-1200w.webp 1200w, /Photo%2059%20C%C3%A9zanne/Photo%20Sainte-Victoire%20pour%20Boris/S22/20250217_174036.webp 1600w" sizes="(max-width: 1024px) 92vw, 600px" width="1600" height="1200"
+               alt="La montagne Sainte-Victoire rosée au crépuscule derrière des cyprès, photographiée depuis le terrain en février 2025" loading="lazy" decoding="async" />
+          <figcaption><span data-lang-fr="La Sainte-Victoire photographiée depuis le terrain le 17 février 2025, avant la construction. Photographie non contractuelle&amp;nbsp;: la vue depuis chaque appartement dépend de l'étage, de l'orientation et de la végétation." data-lang-en="Sainte-Victoire photographed from the plot on 17 February 2025, before construction. Non-contractual photograph: the view from each apartment depends on the floor, the orientation and the vegetation.">La Sainte-Victoire photographiée depuis le terrain le 17 février 2025, avant la construction. Photographie non contractuelle&nbsp;: la vue depuis chaque appartement dépend de l'étage, de l'orientation et de la végétation.</span></figcaption>
+        </figure>
       </div>
-      <div class="photo-row-item" onclick="openLightbox(this, 3)" data-src="Photo 59 Cézanne/3D Groove Architecture/Edited/Enscape_2023-03-10-15-39-22-enhanced.webp" data-caption="Visualisation 3D - Enscape">
-        <!-- IMAGE: Rendu 3D Enscape de la résidence avec les jardins paysagers -->
-        <img src="Photo 59 Cézanne/3D Groove Architecture/Edited/Enscape_2023-03-10-15-39-22-enhanced.webp" alt="Rendu 3D Résidence 59 Cézanne" loading="lazy" />
-        <div class="gal-overlay">⊕</div>
+      <div class="reveal-left">
+        <p class="eyebrow" data-lang-fr="L'adresse" data-lang-en="The address">L'adresse</p>
+        <h2 class="section-title" id="h-adresse" data-lang-fr="Une adresse &lt;em&gt;cézannienne&lt;/em&gt;" data-lang-en="A &lt;em&gt;Cézanne&lt;/em&gt; address">Une adresse <em>cézannienne</em></h2>
+        <div class="divider"></div>
+        <p class="pres-text" data-lang-fr="L'avenue Paul Cézanne porte le nom du peintre aixois, dont la peinture a fait la célébrité de la montagne Sainte-Victoire. On y trouve l'atelier des Lauves (13 avenue Paul Cézanne), dernier atelier du peintre, et le Jardin des Peintres (49 avenue Paul Cézanne), espace public que Cézanne affectionnait à la fin de sa vie et qui invite à contempler la montagne, d'après le site officiel Cézanne en Provence. La plaquette du programme situe la résidence «&amp;nbsp;à seulement quelques mètres du célèbre Terrain des Peintres&amp;nbsp;»." data-lang-en="Avenue Paul Cézanne is named after the painter from Aix, whose paintings made Mont Sainte-Victoire famous. It is home to the Atelier des Lauves (13 avenue Paul Cézanne), the painter's last studio, and to the Jardin des Peintres (49 avenue Paul Cézanne), a public space Cézanne cherished at the end of his life that invites visitors to contemplate the mountain, according to the official Cézanne en Provence website. The programme brochure places the residence “just a few metres from the famous Terrain des Peintres”.">L'avenue Paul Cézanne porte le nom du peintre aixois, dont la peinture a fait la célébrité de la montagne Sainte-Victoire. On y trouve l'atelier des Lauves (13 avenue Paul Cézanne), dernier atelier du peintre, et le Jardin des Peintres (49 avenue Paul Cézanne), espace public que Cézanne affectionnait à la fin de sa vie et qui invite à contempler la montagne, d'après le site officiel Cézanne en Provence. La plaquette du programme situe la résidence «&nbsp;à seulement quelques mètres du célèbre Terrain des Peintres&nbsp;».</p>
+        <p class="pres-text" data-lang-fr="La montagne Sainte-Victoire culmine au Pic des Mouches, à 1 011 mètres d'altitude&amp;nbsp;; le massif est classé depuis 1983 au titre des sites pittoresques, d'après le Grand Site Concors Sainte-Victoire. Depuis la résidence, elle se perçoit à l'horizon&amp;nbsp;: voir la photographie ci-contre." data-lang-en="Mont Sainte-Victoire peaks at the Pic des Mouches, at an altitude of 1,011 metres; the massif has been listed since 1983 as a picturesque site, according to the Grand Site Concors Sainte-Victoire. From the residence it can be seen on the horizon: see the photograph opposite.">La montagne Sainte-Victoire culmine au Pic des Mouches, à 1 011 mètres d'altitude&nbsp;; le massif est classé depuis 1983 au titre des sites pittoresques, d'après le Grand Site Concors Sainte-Victoire. Depuis la résidence, elle se perçoit à l'horizon&nbsp;: voir la photographie ci-contre.</p>
+        <p class="pres-text" data-lang-fr="Pour situer l'adresse&amp;nbsp;: &lt;a href=&quot;/blog/quartier-des-lauves-aix-en-provence&quot; class=&quot;pres-link&quot;&gt;le guide du quartier des Lauves&lt;/a&gt; et &lt;a href=&quot;/blog/cezanne-lauves-atelier-terrain-des-peintres&quot; class=&quot;pres-link&quot;&gt;le parcours cézannien aux Lauves&lt;/a&gt;." data-lang-en="To place the address in context: &lt;a href=&quot;/blog/quartier-des-lauves-aix-en-provence&quot; class=&quot;pres-link&quot;&gt;the guide to the Lauves district (in French)&lt;/a&gt; and &lt;a href=&quot;/blog/cezanne-lauves-atelier-terrain-des-peintres&quot; class=&quot;pres-link&quot;&gt;the Cézanne trail in the Lauves (in French)&lt;/a&gt;.">Pour situer l'adresse&nbsp;: <a href="/blog/quartier-des-lauves-aix-en-provence" class="pres-link">le guide du quartier des Lauves</a> et <a href="/blog/cezanne-lauves-atelier-terrain-des-peintres" class="pres-link">le parcours cézannien aux Lauves</a>.</p>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ─── Aix-en-Provence strip ────────────────────────────────── -->
-<div class="aix-highlight-strip reveal">
-  <div class="container">
-    <div class="aix-highlight-inner">
-      <div class="aix-hl-item">
-        <span class="num">+300</span>
-        <span class="label" data-lang-fr="Jours de soleil / an" data-lang-en="Sunny days / year">Jours de soleil / an</span>
-      </div>
-      <div class="aix-hl-item">
-        <span class="num">45<small style="font-size:1.2rem">min</small></span>
-        <span class="label" data-lang-fr="Des Calanques" data-lang-en="From the Calanques">Des Calanques</span>
-      </div>
-      <div class="aix-hl-item">
-        <span class="num">4<sup style="font-size:1rem">e</sup></span>
-        <span class="label" data-lang-fr="Ville éco-responsable de France" data-lang-en="Eco-responsible city in France">Ville éco-responsable de France</span>
-      </div>
-      <div class="aix-hl-item">
-        <span class="num">3h</span>
-        <span class="label" data-lang-fr="De Paris en TGV" data-lang-en="From Paris by TGV">De Paris en TGV</span>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- ─── Aix-en-Provence Prestige ────────────────────────────── -->
-<section class="section">
+<section class="section" aria-labelledby="h-ville">
   <div class="container">
     <div class="two-col">
       <div class="reveal-left">
         <p class="eyebrow" data-lang-fr="La ville" data-lang-en="The city">La ville</p>
-        <h2 class="section-title" data-lang-fr="<em>Aix-en-Provence</em>,<br>une ville de prestige" data-lang-en="<em>Aix-en-Provence</em>,<br>a city of prestige"><em>Aix-en-Provence</em>,<br>une ville de prestige</h2>
+        <h2 class="section-title" id="h-ville" data-lang-fr="&lt;em&gt;Aix-en-Provence&lt;/em&gt;, ville de culture et de patrimoine" data-lang-en="&lt;em&gt;Aix-en-Provence&lt;/em&gt;, a city of culture and heritage"><em>Aix-en-Provence</em>, ville de culture et de patrimoine</h2>
         <div class="divider"></div>
-        <p style="font-size:0.92rem;color:var(--text-mid);line-height:1.9;margin-bottom:1.5rem;" data-lang-fr="Aix-en-Provence est bien plus qu'une ville : c'est une art de vivre. Capitale du pays d'Aix, elle conjugue patrimoine architectural exceptionnel, vie culturelle foisonnante et douceur du climat méditerranéen." data-lang-en="Aix-en-Provence is far more than a city: it is a way of life. Capital of the Aix region, it combines exceptional architectural heritage, a vibrant cultural scene and the mildness of the Mediterranean climate.">
-          Aix-en-Provence est bien plus qu'une ville : c'est une art de vivre. Capitale du pays d'Aix, elle conjugue patrimoine architectural exceptionnel, vie culturelle foisonnante et douceur du climat méditerranéen.
-        </p>
-        <p style="font-size:0.92rem;color:var(--text-mid);line-height:1.9;margin-bottom:2rem;" data-lang-fr="Ses fontaines, ses hôtels particuliers du XVIIe siècle, son célèbre &lt;strong style='color:var(--text)'&gt;Cours Mirabeau&lt;/strong&gt; bordé de platanes centenaires et ses marchés provençaux font d'Aix une destination internationale de première importance." data-lang-en="Its fountains, its 17th-century mansions, the famous &lt;strong style='color:var(--text)'&gt;Cours Mirabeau&lt;/strong&gt; lined with century-old plane trees, and its Provençal markets make Aix a destination of prime international importance.">
-          Ses fontaines, ses hôtels particuliers du XVIIe siècle, son célèbre <strong style="color:var(--text)">Cours Mirabeau</strong> bordé de platanes centenaires et ses marchés provençaux font d'Aix une destination internationale de première importance.
-        </p>
-
-        <div class="feature-list" style="display:grid;grid-template-columns:1fr 1fr;gap:0.8rem;">
-          <div class="feature-item" style="padding:1rem;">
-            <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="22" height="22"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg></div>
-            <div class="feature-text">
-              <h4 data-lang-fr="Festival d'Art Lyrique" data-lang-en="Festival of Opera &amp; Lyric Art">Festival d'Art Lyrique</h4>
-              <p style="font-size:0.78rem;" data-lang-fr="Festival de renommée mondiale chaque été" data-lang-en="World-renowned festival every summer">Festival de renommée mondiale chaque été</p>
-            </div>
-          </div>
-          <div class="feature-item" style="padding:1rem;">
-            <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="22" height="22"><path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6z"/></svg></div>
-            <div class="feature-text">
-              <h4 data-lang-fr="Festival de Pâques" data-lang-en="Easter Festival">Festival de Pâques</h4>
-              <p style="font-size:0.78rem;" data-lang-fr="Concerts classiques de premier plan" data-lang-en="World-class classical concerts">Concerts classiques de premier plan</p>
-            </div>
-          </div>
-          <div class="feature-item" style="padding:1rem;">
-            <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="22" height="22"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 002-2V2M7 2v20M21 15V2h0a5 5 0 00-5 5v6c0 1.1.9 2 2 2h3zm0 0v7"/></svg></div>
-            <div class="feature-text">
-              <h4 data-lang-fr="Gastronomie" data-lang-en="Gastronomy">Gastronomie</h4>
-              <p style="font-size:0.78rem;" data-lang-fr="Calissons, rosés des Coteaux, saveurs provençales" data-lang-en="Calissons, Coteaux rosés, Provençal flavours">Calissons, rosés des Coteaux, saveurs provençales</p>
-            </div>
-          </div>
-          <div class="feature-item" style="padding:1rem;">
-            <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="22" height="22"><path d="M2 22h20M6 22V8M18 22V8M3 8h18M12 2L2 8h20L12 2z"/><path d="M10 22v-5h4v5"/></svg></div>
-            <div class="feature-text">
-              <h4 data-lang-fr="Patrimoine" data-lang-en="Heritage">Patrimoine</h4>
-              <p style="font-size:0.78rem;" data-lang-fr="Cours Mirabeau, hôtels particuliers, musées" data-lang-en="Cours Mirabeau, mansions, museums">Cours Mirabeau, hôtels particuliers, musées</p>
-            </div>
-          </div>
-          <div class="feature-item" style="padding:1rem;">
-            <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="22" height="22"><path d="M22 10v6M2 10l10-5 10 5-10 5-10-5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg></div>
-            <div class="feature-text">
-              <h4 data-lang-fr="Université de renom" data-lang-en="Prestigious universities">Université de renom</h4>
-              <p style="font-size:0.78rem;" data-lang-fr="AMU, Sciences Po, École des Arts" data-lang-en="AMU, Sciences Po, School of Fine Arts">AMU, Sciences Po, École des Arts</p>
-            </div>
-          </div>
-        </div>
+        <p class="pres-text" data-lang-fr="Au centre-ville, le Cours Mirabeau (440 mètres de long, 42 de large) a été créé au XVIIe siècle, lors de l'agrandissement de la ville, sur ordre de l'archevêque Mazarin. Platanes, fontaines et cafés en font un lieu très fréquenté par les habitants comme par les visiteurs&amp;nbsp;; des hôtels particuliers le bordent." data-lang-en="In the city centre, the Cours Mirabeau (440 metres long, 42 wide) was created in the 17th century, when the city was extended, on the orders of Archbishop Mazarin. Plane trees, fountains and cafés make it very popular with residents and visitors alike, and private mansions line its sides.">Au centre-ville, le Cours Mirabeau (440 mètres de long, 42 de large) a été créé au XVIIe siècle, lors de l'agrandissement de la ville, sur ordre de l'archevêque Mazarin. Platanes, fontaines et cafés en font un lieu très fréquenté par les habitants comme par les visiteurs&nbsp;; des hôtels particuliers le bordent.</p>
+        <p class="pres-text" data-lang-fr="Côté culture, le Festival d'Aix-en-Provence fait de la ville, chaque mois de juillet, un rendez-vous de l'art lyrique. Les distances ci-dessous sont celles de la plaquette du programme." data-lang-en="On the cultural side, the Festival d'Aix-en-Provence makes the city a meeting point for lyric art every July. The travel times below are those given in the programme brochure.">Côté culture, le Festival d'Aix-en-Provence fait de la ville, chaque mois de juillet, un rendez-vous de l'art lyrique. Les distances ci-dessous sont celles de la plaquette du programme.</p>
       </div>
-
+      <div class="reveal-right">
+        <ul class="pres-feats">
+        <li class="pres-feat"><span class="pres-feat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" width="20" height="20" aria-hidden="true" focusable="false"><path d="M3 21h18M5 21V9M19 21V9M9 21V9M15 21V9M3 9h18M12 3L3 9h18L12 3z"/></svg></span><div><h3 data-lang-fr="Cours Mirabeau" data-lang-en="Cours Mirabeau">Cours Mirabeau</h3><p data-lang-fr="Platanes, fontaines, cafés et hôtels particuliers" data-lang-en="Plane trees, fountains, cafés and private mansions">Platanes, fontaines, cafés et hôtels particuliers</p></div></li>
+        <li class="pres-feat"><span class="pres-feat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" width="20" height="20" aria-hidden="true" focusable="false"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg></span><div><h3 data-lang-fr="Festival d'Aix-en-Provence" data-lang-en="Festival d'Aix-en-Provence">Festival d'Aix-en-Provence</h3><p data-lang-fr="Rendez-vous lyrique de juillet" data-lang-en="July lyric-art festival">Rendez-vous lyrique de juillet</p></div></li>
+        <li class="pres-feat"><span class="pres-feat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" width="20" height="20" aria-hidden="true" focusable="false"><path d="M18.4 2.6a2 2 0 013 3L10 17l-4 1 1-4L18.4 2.6zM5 21c2 0 3-1 3-3"/></svg></span><div><h3 data-lang-fr="Atelier des Lauves" data-lang-en="Atelier des Lauves">Atelier des Lauves</h3><p data-lang-fr="Dernier atelier de Cézanne, 13 avenue Paul Cézanne" data-lang-en="Cézanne's last studio, 13 avenue Paul Cézanne">Dernier atelier de Cézanne, 13 avenue Paul Cézanne</p></div></li>
+        <li class="pres-feat"><span class="pres-feat-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" width="20" height="20" aria-hidden="true" focusable="false"><path d="M1 20L8 8l4 5 3-4 8 11H1z"/></svg></span><div><h3 data-lang-fr="Sainte-Victoire" data-lang-en="Sainte-Victoire">Sainte-Victoire</h3><p data-lang-fr="Grand Site, massif classé depuis 1983" data-lang-en="Grand Site, massif listed since 1983">Grand Site, massif classé depuis 1983</p></div></li>
+        </ul>
+      </div>
     </div>
+    <p class="pres-sources" data-lang-fr="Sources consultées le 6 octobre 2026&amp;nbsp;: &lt;a href=&quot;https://www.grandsitesaintevictoire.com/proteger/un-grand-site-de-france/concors-sainte-victoire/&quot; class=&quot;pres-link&quot; rel=&quot;noopener noreferrer&quot;&gt;Grand Site Concors Sainte-Victoire&lt;/a&gt;&amp;nbsp;; Cézanne en Provence (&lt;a href=&quot;https://www.cezanne-en-provence.com/L-Atelier-des-Lauves&quot; class=&quot;pres-link&quot; rel=&quot;noopener noreferrer&quot;&gt;atelier des Lauves&lt;/a&gt;, &lt;a href=&quot;https://www.cezanne-en-provence.com/Le-Jardin-des-Peintres&quot; class=&quot;pres-link&quot; rel=&quot;noopener noreferrer&quot;&gt;Jardin des Peintres&lt;/a&gt;)&amp;nbsp;; Provence-Alpes-Côte d'Azur Tourisme (&lt;a href=&quot;https://provence-alpes-cotedazur.com/en/things-to-do/culture-and-heritage/places/the-cours-mirabeau-aix-en-provence-en-2863232/&quot; class=&quot;pres-link&quot; rel=&quot;noopener noreferrer&quot;&gt;Cours Mirabeau, page en anglais&lt;/a&gt;)&amp;nbsp;; &lt;a href=&quot;https://festival-aix.com/en&quot; class=&quot;pres-link&quot; rel=&quot;noopener noreferrer&quot;&gt;Festival d'Aix-en-Provence, site en anglais&lt;/a&gt;. Temps de trajet&amp;nbsp;: plaquette du programme (février 2025)." data-lang-en="Sources consulted on 6 October 2026: &lt;a href=&quot;https://www.grandsitesaintevictoire.com/proteger/un-grand-site-de-france/concors-sainte-victoire/&quot; class=&quot;pres-link&quot; rel=&quot;noopener noreferrer&quot;&gt;Grand Site Concors Sainte-Victoire (in French)&lt;/a&gt;; Cézanne en Provence (&lt;a href=&quot;https://www.cezanne-en-provence.com/L-Atelier-des-Lauves&quot; class=&quot;pres-link&quot; rel=&quot;noopener noreferrer&quot;&gt;Atelier des Lauves&lt;/a&gt;, &lt;a href=&quot;https://www.cezanne-en-provence.com/Le-Jardin-des-Peintres&quot; class=&quot;pres-link&quot; rel=&quot;noopener noreferrer&quot;&gt;Jardin des Peintres&lt;/a&gt;, in French); Provence-Alpes-Côte d'Azur Tourisme (&lt;a href=&quot;https://provence-alpes-cotedazur.com/en/things-to-do/culture-and-heritage/places/the-cours-mirabeau-aix-en-provence-en-2863232/&quot; class=&quot;pres-link&quot; rel=&quot;noopener noreferrer&quot;&gt;Cours Mirabeau&lt;/a&gt;); &lt;a href=&quot;https://festival-aix.com/en&quot; class=&quot;pres-link&quot; rel=&quot;noopener noreferrer&quot;&gt;Festival d'Aix-en-Provence&lt;/a&gt;. Travel times: programme brochure (February 2025).">Sources consultées le 6 octobre 2026&nbsp;: <a href="https://www.grandsitesaintevictoire.com/proteger/un-grand-site-de-france/concors-sainte-victoire/" class="pres-link" rel="noopener noreferrer">Grand Site Concors Sainte-Victoire</a>&nbsp;; Cézanne en Provence (<a href="https://www.cezanne-en-provence.com/L-Atelier-des-Lauves" class="pres-link" rel="noopener noreferrer">atelier des Lauves</a>, <a href="https://www.cezanne-en-provence.com/Le-Jardin-des-Peintres" class="pres-link" rel="noopener noreferrer">Jardin des Peintres</a>)&nbsp;; Provence-Alpes-Côte d'Azur Tourisme (<a href="https://provence-alpes-cotedazur.com/en/things-to-do/culture-and-heritage/places/the-cours-mirabeau-aix-en-provence-en-2863232/" class="pres-link" rel="noopener noreferrer">Cours Mirabeau, page en anglais</a>)&nbsp;; <a href="https://festival-aix.com/en" class="pres-link" rel="noopener noreferrer">Festival d'Aix-en-Provence, site en anglais</a>. Temps de trajet&nbsp;: plaquette du programme (février 2025).</p>
   </div>
 </section>
 
-<!-- ─── Qualités Provence ────────────────────────────────────── -->
-<section class="section section-stone">
+<section class="section-dark pres-strip" aria-labelledby="h-chiffres">
+  <div class="container">
+    <h2 class="pres-strip-title" id="h-chiffres" data-lang-fr="Autour de la résidence, selon la plaquette" data-lang-en="Around the residence, according to the brochure">Autour de la résidence, selon la plaquette</h2>
+    <ul class="pres-strip-grid">
+      <li><span class="pres-strip-num" data-lang-fr="+300" data-lang-en="300+">+300</span><span class="pres-strip-lab" data-lang-fr="jours de soleil par an" data-lang-en="sunny days a year">jours de soleil par an</span></li>
+      <li><span class="pres-strip-num" data-lang-fr="4 min" data-lang-en="4 min">4 min</span><span class="pres-strip-lab" data-lang-fr="du centre-ville, en voiture" data-lang-en="from the city centre, by car">du centre-ville, en voiture</span></li>
+      <li><span class="pres-strip-num" data-lang-fr="15 min" data-lang-en="15 min">15 min</span><span class="pres-strip-lab" data-lang-fr="de la gare TGV (Paris en environ 3 h)" data-lang-en="from the TGV station (Paris in about 3 h)">de la gare TGV (Paris en environ 3 h)</span></li>
+      <li><span class="pres-strip-num" data-lang-fr="&amp;lt; 30 min" data-lang-en="&amp;lt; 30 min">&lt; 30 min</span><span class="pres-strip-lab" data-lang-fr="des calanques, de la Méditerranée et de Marseille" data-lang-en="from the calanques, the Mediterranean and Marseille">des calanques, de la Méditerranée et de Marseille</span></li>
+    </ul>
+    <p class="pres-strip-note" data-lang-fr="Temps indicatifs, repris de la plaquette du programme (février 2025)&amp;nbsp;; ils varient selon la circulation. &lt;a href=&quot;/localisation&quot; class=&quot;pres-link&quot;&gt;Toutes les distances et l'accès&lt;/a&gt;" data-lang-en="Indicative times taken from the programme brochure (February 2025); they vary with traffic. &lt;a href=&quot;/localisation&quot; class=&quot;pres-link&quot;&gt;All distances and access&lt;/a&gt;">Temps indicatifs, repris de la plaquette du programme (février 2025)&nbsp;; ils varient selon la circulation. <a href="/localisation" class="pres-link">Toutes les distances et l'accès</a></p>
+  </div>
+</section>
+
+<section class="section section-alt" aria-labelledby="h-faq">
   <div class="container">
     <div class="section-header reveal">
-      <p class="eyebrow" data-lang-fr="Art de vivre" data-lang-en="Art of living">Art de vivre</p>
-      <h2 class="section-title" data-lang-fr="Le charme <em>provençal</em><br>à chaque instant" data-lang-en="The <em>Provençal</em> charm<br>at every moment">Le charme <em>provençal</em><br>à chaque instant</h2>
+      <p class="eyebrow" data-lang-fr="Questions fréquentes" data-lang-en="Frequently asked questions">Questions fréquentes</p>
+      <h2 class="section-title" id="h-faq" data-lang-fr="Vos questions sur la &lt;em&gt;résidence&lt;/em&gt;" data-lang-en="Your questions about the &lt;em&gt;residence&lt;/em&gt;">Vos questions sur la <em>résidence</em></h2>
     </div>
-
-    <div class="provence-cards">
-      <div class="provence-card reveal reveal-delay-1">
-        <span class="provence-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="30" height="30"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M17.66 6.34l-1.41 1.41M6.34 17.66l-1.41 1.41"/></svg></span>
-        <h3 data-lang-fr="Douceur de vivre" data-lang-en="Gentle way of life">Douceur de vivre</h3>
-        <p data-lang-fr="Plus de 300 jours de soleil par an, un climat méditerranéen idéal pour profiter des terrasses et jardins tout au long de l'année." data-lang-en="More than 300 sunny days a year, an ideal Mediterranean climate for enjoying terraces and gardens all year round.">Plus de 300 jours de soleil par an, un climat méditerranéen idéal pour profiter des terrasses et jardins tout au long de l'année.</p>
-      </div>
-      <div class="provence-card reveal reveal-delay-2">
-        <span class="provence-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="30" height="30"><path d="M3 21h18M5 21V10l7-6 7 6v11"/><path d="M9 21v-5h6v5"/><path d="M10 6h4"/></svg></span>
-        <h3 data-lang-fr="Patrimoine unique" data-lang-en="Unique heritage">Patrimoine unique</h3>
-        <p data-lang-fr="Cours Mirabeau, cathédrale Saint-Sauveur, hôtels particuliers du XVIIe siècle. Un patrimoine architectural d'exception." data-lang-en="Cours Mirabeau, Saint-Sauveur cathedral, 17th-century mansions. An exceptional architectural heritage.">Cours Mirabeau, cathédrale Saint-Sauveur, hôtels particuliers du XVIIe siècle. Un patrimoine architectural d'exception.</p>
-      </div>
-      <div class="provence-card reveal reveal-delay-3">
-        <span class="provence-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="30" height="30"><path d="M9 19c-5 0-8-4-8-9a8 8 0 0116 0c0 5-3 9-8 9z"/><path d="M9 19v2M9 21h4M13 21v-2M6 10a3 3 0 006 0"/></svg></span>
-        <h3 data-lang-fr="Culture vivante" data-lang-en="Living culture">Culture vivante</h3>
-        <p data-lang-fr="Festival International d'Art Lyrique, Festival de Pâques, opéra, galeries d'art. Une programmation culturelle de rang mondial." data-lang-en="International Opera Festival, Easter Festival, opera, art galleries. A world-class cultural programme.">Festival International d'Art Lyrique, Festival de Pâques, opéra, galeries d'art. Une programmation culturelle de rang mondial.</p>
-      </div>
-      <div class="provence-card reveal reveal-delay-1">
-        <span class="provence-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="30" height="30"><path d="M18 8h1a4 4 0 010 8h-1M2 8h16v9a4 4 0 01-4 4H6a4 4 0 01-4-4V8z"/><path d="M6 1v3M10 1v3M14 1v3"/></svg></span>
-        <h3 data-lang-fr="Gastronomie" data-lang-en="Gastronomy">Gastronomie</h3>
-        <p data-lang-fr="Calissons d'Aix, bouillabaisse, aïoli, vins des Coteaux d'Aix. Une tradition culinaire riche portée par des chefs talentueux." data-lang-en="Aix calissons, bouillabaisse, aïoli, Coteaux d'Aix wines. A rich culinary tradition carried by talented chefs.">Calissons d'Aix, bouillabaisse, aïoli, vins des Coteaux d'Aix. Une tradition culinaire riche portée par des chefs talentueux.</p>
-      </div>
-      <div class="provence-card reveal reveal-delay-2">
-        <span class="provence-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="30" height="30"><path d="M2 16c1.5-2 3-2 4.5 0s3 2 4.5 0 3-2 4.5 0 3 2 4.5 0M2 20c1.5-2 3-2 4.5 0s3 2 4.5 0 3-2 4.5 0 3 2 4.5 0M12 4L8 12h8l-4-8z"/></svg></span>
-        <h3 data-lang-fr="Mer &amp; Calanques" data-lang-en="Sea &amp; Calanques">Mer & Calanques</h3>
-        <p data-lang-fr="À seulement 45 minutes, les Calanques de Cassis et de Marseille, classées Parc National, offrent des paysages époustouflants." data-lang-en="Just 45 minutes away, the Calanques of Cassis and Marseille, a National Park, offer breathtaking scenery.">À seulement 45 minutes, les Calanques de Cassis et de Marseille, classées Parc National, offrent des paysages époustouflants.</p>
-      </div>
-      <div class="provence-card reveal reveal-delay-3">
-        <span class="provence-card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="30" height="30"><path d="M12 22V12M12 12C9 12 6 9 5 5c3 1 6 3 7 7M12 12c3 0 6-3 7-7-3 1-6 3-7 7"/></svg></span>
-        <h3 data-lang-fr="Nature préservée" data-lang-en="Preserved nature">Nature préservée</h3>
-        <p data-lang-fr="Parc du Tholonet, Terrain des Peintres, forêts de pins et d'oliviers. Un cadre naturel exceptionnel à deux pas du centre-ville." data-lang-en="Tholonet Park, Terrain des Peintres, pine and olive forests. Exceptional natural surroundings just steps from the city centre.">Parc du Tholonet, Terrain des Peintres, forêts de pins et d'oliviers. Un cadre naturel exceptionnel à deux pas du centre-ville.</p>
-      </div>
+    <div class="pres-faq">
+      <details>
+        <summary><span data-lang-fr="Où se situe la résidence 59 Cézanne&amp;nbsp;?" data-lang-en="Where is the 59 Cézanne residence located?">Où se situe la résidence 59 Cézanne&nbsp;?</span></summary>
+        <div class="pres-faq-body">
+          <p data-lang-fr="La résidence se trouve au 59 avenue Paul Cézanne, 13100 Aix-en-Provence, à proximité du quartier des Lauves. D'après la plaquette du programme, le centre-ville est à environ 4 minutes en voiture, l'autoroute A51 à environ 3 minutes et la gare TGV à environ 15 minutes." data-lang-en="The residence is at 59 avenue Paul Cézanne, 13100 Aix-en-Provence, near the Lauves district. According to the programme brochure, the city centre is about 4 minutes away by car, the A51 motorway about 3 minutes and the TGV station about 15 minutes.">La résidence se trouve au 59 avenue Paul Cézanne, 13100 Aix-en-Provence, à proximité du quartier des Lauves. D'après la plaquette du programme, le centre-ville est à environ 4 minutes en voiture, l'autoroute A51 à environ 3 minutes et la gare TGV à environ 15 minutes.</p>
+          <a href="/localisation" class="pres-link" data-lang-fr="Localisation et accès" data-lang-en="Location and access">Localisation et accès</a>
+        </div>
+      </details>
+      <details>
+        <summary><span data-lang-fr="Combien d'appartements compte la résidence, et de quels types&amp;nbsp;?" data-lang-en="How many apartments are there, and of what types?">Combien d'appartements compte la résidence, et de quels types&nbsp;?</span></summary>
+        <div class="pres-faq-body">
+          <p data-lang-fr="La résidence compte 8 appartements dans un seul bâtiment&amp;nbsp;: 4 T4 (d'environ 100,5 à 138,0 m²), 2 T3 duplex (environ 103,5 m²) et 2 T2 (environ 45,0 m²). Les surfaces sont indicatives, d'après les documents de commercialisation de février 2025." data-lang-en="The residence has 8 apartments in a single building: 4 T4 (about 100.5 to 138.0 m²), 2 T3 duplexes (about 103.5 m²) and 2 T2 (about 45.0 m²). Floor areas are indicative, as per the sales documents of February 2025.">La résidence compte 8 appartements dans un seul bâtiment&nbsp;: 4 T4 (d'environ 100,5 à 138,0 m²), 2 T3 duplex (environ 103,5 m²) et 2 T2 (environ 45,0 m²). Les surfaces sont indicatives, d'après les documents de commercialisation de février 2025.</p>
+          <a href="/logements" class="pres-link" data-lang-fr="Voir les appartements" data-lang-en="See the apartments">Voir les appartements</a>
+        </div>
+      </details>
+      <details>
+        <summary><span data-lang-fr="Chaque appartement a-t-il un jardin privatif&amp;nbsp;?" data-lang-en="Does every apartment have a private garden?">Chaque appartement a-t-il un jardin privatif&nbsp;?</span></summary>
+        <div class="pres-faq-body">
+          <p data-lang-fr="Oui. Les documents de commercialisation indiquent un jardin privatif pour chacun des 8 appartements, d'environ 28 m² à 312 m² selon le lot. Les deux T2 disposent de jardins d'environ 102 et 108 m²." data-lang-en="Yes. The sales documents list a private garden for each of the 8 apartments, from about 28 m² to 312 m² depending on the apartment. The two T2 apartments have gardens of about 102 and 108 m².">Oui. Les documents de commercialisation indiquent un jardin privatif pour chacun des 8 appartements, d'environ 28 m² à 312 m² selon le lot. Les deux T2 disposent de jardins d'environ 102 et 108 m².</p>
+          <a href="/logements" class="pres-link" data-lang-fr="Jardins et appartements, lot par lot" data-lang-en="Gardens and apartments, unit by unit">Jardins et appartements, lot par lot</a>
+        </div>
+      </details>
+      <details>
+        <summary><span data-lang-fr="Tous les appartements ont-ils une vue sur la Sainte-Victoire&amp;nbsp;?" data-lang-en="Do all the apartments have a view of Sainte-Victoire?">Tous les appartements ont-ils une vue sur la Sainte-Victoire&nbsp;?</span></summary>
+        <div class="pres-faq-body">
+          <p data-lang-fr="Non. Les documents de commercialisation indiquent une vue Sainte-Victoire pour six appartements (lots 1 à 5 et 8) et une vue sur le jardin pour les deux T2 (lots 6 et 7). La montagne se situe à l'horizon&amp;nbsp;: sa visibilité dépend de l'étage, de l'orientation et de la végétation. Nous vous invitons à la vérifier lors d'une visite." data-lang-en="No. The sales documents list a Sainte-Victoire view for six apartments (lots 1 to 5 and 8) and a garden view for the two T2 apartments (lots 6 and 7). The mountain sits on the horizon: how visible it is depends on the floor, the orientation and the vegetation. We invite you to check it during a visit.">Non. Les documents de commercialisation indiquent une vue Sainte-Victoire pour six appartements (lots 1 à 5 et 8) et une vue sur le jardin pour les deux T2 (lots 6 et 7). La montagne se situe à l'horizon&nbsp;: sa visibilité dépend de l'étage, de l'orientation et de la végétation. Nous vous invitons à la vérifier lors d'une visite.</p>
+          <a href="/contact" class="pres-link" data-lang-fr="Organiser une visite" data-lang-en="Arrange a visit">Organiser une visite</a>
+        </div>
+      </details>
+      <details>
+        <summary><span data-lang-fr="Quelles prestations sont prévues&amp;nbsp;?" data-lang-en="What features are planned?">Quelles prestations sont prévues&nbsp;?</span></summary>
+        <div class="pres-faq-body">
+          <p data-lang-fr="Selon la notice descriptive du 8 avril 2025&amp;nbsp;: menuiseries extérieures en aluminium à double vitrage, pompe à chaleur air/air pour le chauffage et le rafraîchissement (sous réserve de l'étude thermique), ballon d'eau chaude thermodynamique, ascenseur et accès sécurisé par visiophone et badge. La cuisine n'est pas équipée dans la notice (évier et attentes)&amp;nbsp;; une cuisine aménagée figure en option dans les documents de commercialisation de février 2025." data-lang-en="According to the specification of 8 April 2025: aluminium exterior joinery with double glazing, an air-to-air heat pump for heating and cooling (subject to the thermal study), a thermodynamic hot-water cylinder, a lift and secure access by video entry phone and badge. The kitchen is not fitted in the specification (sink and connections only); a fitted kitchen is listed as an option in the sales documents of February 2025.">Selon la notice descriptive du 8 avril 2025&nbsp;: menuiseries extérieures en aluminium à double vitrage, pompe à chaleur air/air pour le chauffage et le rafraîchissement (sous réserve de l'étude thermique), ballon d'eau chaude thermodynamique, ascenseur et accès sécurisé par visiophone et badge. La cuisine n'est pas équipée dans la notice (évier et attentes)&nbsp;; une cuisine aménagée figure en option dans les documents de commercialisation de février 2025.</p>
+          <a href="/logements" class="pres-link" data-lang-fr="Voir le détail des prestations" data-lang-en="See the full list of features">Voir le détail des prestations</a>
+        </div>
+      </details>
+      <details>
+        <summary><span data-lang-fr="Quand la résidence sera-t-elle livrée&amp;nbsp;?" data-lang-en="When will the residence be delivered?">Quand la résidence sera-t-elle livrée&nbsp;?</span></summary>
+        <div class="pres-faq-body">
+          <p data-lang-fr="Le calendrier de livraison n'est pas publié sur ce site. Contactez-nous pour connaître l'état d'avancement et le calendrier en vigueur." data-lang-en="The delivery schedule is not published on this site. Get in touch to find out the current progress and schedule.">Le calendrier de livraison n'est pas publié sur ce site. Contactez-nous pour connaître l'état d'avancement et le calendrier en vigueur.</p>
+          <a href="/contact" class="pres-link" data-lang-fr="Nous contacter" data-lang-en="Contact us">Nous contacter</a>
+        </div>
+      </details>
     </div>
   </div>
 </section>
 
-<!-- ─── Sainte-Victoire ──────────────────────────────────────── -->
-<section class="section section-dark">
+<section class="section" aria-labelledby="h-plus">
   <div class="container">
-    <div class="two-col">
-      <div class="reveal-right">
-        <!-- IMAGE: La Sainte-Victoire au coucher du soleil, depuis le quartier des Lauves -->
-        <div class="two-col-img">
-          <img
-            src="Photo 59 Cézanne/Photo Sainte-Victoire pour Boris/S22/20250217_174027.webp"
-            alt="La Sainte-Victoire depuis la résidence 59 Cézanne"
-            loading="lazy"
-          />
-        </div>
-      </div>
-      <div class="reveal-left">
-        <p class="eyebrow" data-lang-fr="La Sainte-Victoire" data-lang-en="Sainte-Victoire">La Sainte-Victoire</p>
-        <h2 class="section-title" style="color:var(--white);" data-lang-fr="Votre horizon, une <em>œuvre d'art</em>" data-lang-en="Your horizon, a <em>work of art</em>">Votre horizon, une <em>œuvre d'art</em></h2>
-        <div class="divider"></div>
-        <p style="font-size:0.92rem;color:rgba(255,255,255,0.65);line-height:1.9;margin-bottom:1.5rem;" data-lang-fr="La Montagne Sainte-Victoire, immortalisée par Cézanne dans plus de soixante huiles sur toile et aquarelles, domine le paysage aixois de ses 1 011 mètres. Elle est bien plus qu'un horizon : c'est un symbole de la Provence éternelle." data-lang-en="The Sainte-Victoire mountain, immortalised by Cézanne in more than sixty oil paintings and watercolours, dominates the Aix landscape at 1,011 metres. It is far more than a horizon: it is a symbol of eternal Provence.">
-          La Montagne Sainte-Victoire, immortalisée par Cézanne dans plus de soixante huiles sur toile et aquarelles, domine le paysage aixois de ses 1 011 mètres. Elle est bien plus qu'un horizon : c'est un symbole de la Provence éternelle.
-        </p>
-        <p style="font-size:0.92rem;color:rgba(255,255,255,0.65);line-height:1.9;margin-bottom:2rem;" data-lang-fr="Depuis les appartements de la résidence 59 Cézanne, cette vue imprenable accompagne votre quotidien, changeant de teinte au fil des heures et des saisons — rose à l'aube, ocre au crépuscule, blanche sous la neige hivernale." data-lang-en="From the apartments of Résidence 59 Cézanne, this breathtaking view accompanies your daily life, shifting in hue as the hours and seasons pass — pink at dawn, ochre at dusk, white beneath winter snow.">
-          Depuis les appartements de la résidence 59 Cézanne, cette vue imprenable accompagne votre quotidien, changeant de teinte au fil des heures et des saisons — rose à l'aube, ocre au crépuscule, blanche sous la neige hivernale.
-        </p>
-
-        <div class="eco-badges">
-          <span class="eco-badge" style="background:rgba(107,124,69,0.15);border-color:rgba(107,124,69,0.4);" data-lang-fr="&lt;svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='1.5' width='13' height='13' style='vertical-align:-2px;margin-right:5px;'&gt;&lt;path d='M1 20L8 8l4 5 3-4 8 11H1z'/&gt;&lt;/svg&gt;Vue dégagée certifiée" data-lang-en="&lt;svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='1.5' width='13' height='13' style='vertical-align:-2px;margin-right:5px;'&gt;&lt;path d='M1 20L8 8l4 5 3-4 8 11H1z'/&gt;&lt;/svg&gt;Certified clear view"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="13" height="13" style="vertical-align:-2px;margin-right:5px;"><path d="M1 20L8 8l4 5 3-4 8 11H1z"/></svg>Vue dégagée certifiée</span>
-          <span class="eco-badge" style="background:rgba(107,124,69,0.15);border-color:rgba(107,124,69,0.4);"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="13" height="13" style="vertical-align:-2px;margin-right:5px;"><circle cx="12" cy="8" r="6"/><path d="M12 14v8M8 22h8"/></svg>Terrain des Peintres</span>
-          <span class="eco-badge" style="background:rgba(107,124,69,0.15);border-color:rgba(107,124,69,0.4);" data-lang-fr="&lt;svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='1.5' width='13' height='13' style='vertical-align:-2px;margin-right:5px;'&gt;&lt;circle cx='12' cy='12' r='4'/&gt;&lt;path d='M12 2v2M12 20v2M2 12h2M20 12h2M4.93 4.93l1.41 1.41M17.66 6.34l-1.41 1.41'/&gt;&lt;/svg&gt;Orientations optimisées" data-lang-en="&lt;svg viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='1.5' width='13' height='13' style='vertical-align:-2px;margin-right:5px;'&gt;&lt;circle cx='12' cy='12' r='4'/&gt;&lt;path d='M12 2v2M12 20v2M2 12h2M20 12h2M4.93 4.93l1.41 1.41M17.66 6.34l-1.41 1.41'/&gt;&lt;/svg&gt;Optimised orientations"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="13" height="13" style="vertical-align:-2px;margin-right:5px;"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.93 4.93l1.41 1.41M17.66 6.34l-1.41 1.41"/></svg>Orientations optimisées</span>
-        </div>
-      </div>
+    <div class="section-header reveal">
+      <p class="eyebrow" data-lang-fr="Guides" data-lang-en="Guides">Guides</p>
+      <h2 class="section-title" id="h-plus" data-lang-fr="Pour aller plus &lt;em&gt;loin&lt;/em&gt;" data-lang-en="Going &lt;em&gt;further&lt;/em&gt;">Pour aller plus <em>loin</em></h2>
     </div>
+    <ul class="pres-more">
+      <li class="pres-more-card reveal">
+        <span class="pres-more-tag" data-lang-fr="Quartier" data-lang-en="District">Quartier</span>
+        <h3><a href="/blog/quartier-des-lauves-aix-en-provence" data-lang-fr="Le quartier des Lauves à Aix-en-Provence&amp;nbsp;: le guide" data-lang-en="The Lauves district of Aix-en-Provence: the guide">Le quartier des Lauves à Aix-en-Provence&nbsp;: le guide</a></h3>
+        <p data-lang-fr="Accès, commerces, écoles et patrimoine cézannien&amp;nbsp;: ce qu'il faut savoir sur le quartier avant d'y acheter ou de s'y installer." data-lang-en="Access, shops, schools and Cézanne heritage: what to know about the district before buying or moving there.">Accès, commerces, écoles et patrimoine cézannien&nbsp;: ce qu'il faut savoir sur le quartier avant d'y acheter ou de s'y installer.</p>
+        <span class="pres-more-cta" aria-hidden="true" data-lang-fr="Lire le guide" data-lang-en="Read the guide (in French)">Lire le guide</span>
+      </li>
+      <li class="pres-more-card reveal">
+        <span class="pres-more-tag" data-lang-fr="Cézanne" data-lang-en="Cézanne">Cézanne</span>
+        <h3><a href="/blog/cezanne-lauves-atelier-terrain-des-peintres" data-lang-fr="Cézanne aux Lauves&amp;nbsp;: l'atelier et le Terrain des Peintres" data-lang-en="Cézanne in the Lauves: the studio and the Terrain des Peintres">Cézanne aux Lauves&nbsp;: l'atelier et le Terrain des Peintres</a></h3>
+        <p data-lang-fr="L'atelier des Lauves, le Terrain des Peintres et la Sainte-Victoire&amp;nbsp;: un parcours cézannien à proximité de l'avenue Paul Cézanne." data-lang-en="The Atelier des Lauves, the Terrain des Peintres and Sainte-Victoire: a Cézanne trail close to avenue Paul Cézanne.">L'atelier des Lauves, le Terrain des Peintres et la Sainte-Victoire&nbsp;: un parcours cézannien à proximité de l'avenue Paul Cézanne.</p>
+        <span class="pres-more-cta" aria-hidden="true" data-lang-fr="Lire l'article" data-lang-en="Read the article (in French)">Lire l'article</span>
+      </li>
+      <li class="pres-more-card reveal">
+        <span class="pres-more-tag" data-lang-fr="Critères" data-lang-en="Criteria">Critères</span>
+        <h3><a href="/blog/appartement-de-luxe-aix-en-provence-criteres" data-lang-fr="Appartement de luxe à Aix-en-Provence&amp;nbsp;: 8 critères pour distinguer le haut de gamme" data-lang-en="Luxury apartment in Aix-en-Provence: 8 criteria to tell high-end from standard">Appartement de luxe à Aix-en-Provence&nbsp;: 8 critères pour distinguer le haut de gamme</a></h3>
+        <p data-lang-fr="Adresse, vue, extérieur privatif, matériaux, intimité&amp;nbsp;: huit critères pour distinguer un appartement de luxe d'un bien de standing." data-lang-en="Address, view, private outdoor space, materials, privacy: eight criteria to tell a luxury apartment from a standard one.">Adresse, vue, extérieur privatif, matériaux, intimité&nbsp;: huit critères pour distinguer un appartement de luxe d'un bien de standing.</p>
+        <span class="pres-more-cta" aria-hidden="true" data-lang-fr="Lire l'article" data-lang-en="Read the article (in French)">Lire l'article</span>
+      </li>
+    </ul>
+    <p class="pres-more-note" data-lang-fr="Ces guides sont rédigés en français." data-lang-en="These guides are written in French.">Ces guides sont rédigés en français.</p>
   </div>
 </section>
 
-
-<!-- ─── CTA ──────────────────────────────────────────────────── -->
-<section class="section" style="background:var(--beige);">
+<section class="section section-stone" aria-labelledby="h-cta">
   <div class="container text-center reveal">
     <p class="eyebrow" style="justify-content:center;" data-lang-fr="Prochaine étape" data-lang-en="Next step">Prochaine étape</p>
-    <h2 class="section-title" data-lang-fr="Découvrez nos <em>appartements</em>" data-lang-en="Discover our <em>apartments</em>">Découvrez nos <em>appartements</em></h2>
-    <p class="section-lead mt-2 mb-4" data-lang-fr="Trois typologies pour répondre à tous vos souhaits, avec des prestations haut de gamme et une personnalisation complète." data-lang-en="Three unit types to suit all your wishes, with high-end features and complete personalisation.">
-      Trois typologies pour répondre à tous vos souhaits, avec des prestations haut de gamme et une personnalisation complète.
-    </p>
+    <h2 class="section-title" id="h-cta" data-lang-fr="Découvrir les &lt;em&gt;appartements&lt;/em&gt;" data-lang-en="Discover the &lt;em&gt;apartments&lt;/em&gt;">Découvrir les <em>appartements</em></h2>
+    <p class="section-lead mt-2 mb-4" data-lang-fr="Pour visiter, obtenir des précisions sur un appartement ou connaître le calendrier de livraison, contactez-nous." data-lang-en="To arrange a visit, ask about an apartment or find out the delivery schedule, get in touch.">Pour visiter, obtenir des précisions sur un appartement ou connaître le calendrier de livraison, contactez-nous.</p>
     <div class="d-flex gap-3 align-center flex-wrap" style="justify-content:center;">
-      <a href="logements.html" class="btn btn-primary" data-lang-fr="Voir les logements" data-lang-en="View the apartments">Voir les logements</a>
-      <a href="contact.html" class="btn btn-outline-dark" data-lang-fr="Nous contacter" data-lang-en="Contact us">Nous contacter</a>
+      <a href="/logements" class="btn btn-primary" data-lang-fr="Voir les appartements" data-lang-en="See the apartments">Voir les appartements</a>
+      <a href="/contact" class="btn btn-outline-dark" data-lang-fr="Nous contacter" data-lang-en="Contact us">Nous contacter</a>
     </div>
+    <p class="pres-cta-links"><span data-lang-fr="Voir aussi :" data-lang-en="See also:">Voir aussi :</span>
+      <a href="/exterieurs" class="pres-link" data-lang-fr="les espaces communs" data-lang-en="the common areas">les espaces communs</a> ·
+      <a href="/localisation" class="pres-link" data-lang-fr="la localisation" data-lang-en="the location">la localisation</a> ·
+      <a href="/promoteur" class="pres-link" data-lang-fr="le promoteur" data-lang-en="the developer">le promoteur</a>
+    </p>
   </div>
 </section>
 
-<!-- Footer -->
-<footer>
+</main>
+
+<!-- ─── Footer ────────────────────────────────────────────────── -->
+<footer class="site-footer">
   <div class="container">
     <div class="footer-grid">
       <div class="footer-brand">
-        <div class="footer-logo">59 Cézanne</div>
-        <div class="footer-logo-sub">Aix-en-Provence</div>
-        <p data-lang-fr="Résidence exclusive de 8 appartements d'exception avec vue imprenable sur la Sainte-Victoire. Une réalisation Ponthieu Développement Holding." data-lang-en="Exclusive residence of 8 exceptional apartments with breathtaking views of Sainte-Victoire. A Ponthieu Développement Holding project.">Résidence exclusive de 8 appartements d'exception avec vue imprenable sur la Sainte-Victoire. Une réalisation Ponthieu Développement Holding.</p>
+        <a href="/" class="nav-logo" style="margin-bottom:1rem;display:inline-block;" aria-label="59 Cézanne — accueil">
+          <span class="logo-59">59</span><span class="logo-cez">Cézanne</span>
+        </a>
+        <p style="font-size:0.82rem;color:rgba(255,255,255,0.45);line-height:1.7;max-width:240px;" data-lang-fr="Résidence de 8 appartements neufs à Aix-en-Provence, avenue Paul Cézanne." data-lang-en="Residence of 8 new apartments in Aix-en-Provence, avenue Paul Cézanne.">Résidence de 8 appartements neufs à Aix-en-Provence, avenue Paul Cézanne.</p>
       </div>
-      <div class="footer-col">
+      <nav class="footer-links" aria-label="Pied de page — navigation">
         <h4 data-lang-fr="Navigation" data-lang-en="Navigation">Navigation</h4>
         <ul>
-          <li><a href="index.html" data-lang-fr="Accueil" data-lang-en="Home">Accueil</a></li>
-          <li><a href="presentation.html" data-lang-fr="Présentation" data-lang-en="Presentation">Présentation</a></li>
-          <li><a href="logements.html" data-lang-fr="Logements" data-lang-en="Apartments">Logements</a></li>
-          <li><a href="exterieurs.html" data-lang-fr="Espaces Communs" data-lang-en="Common Areas">Espaces Communs</a></li>
-          <li><a href="localisation.html" data-lang-fr="Localisation" data-lang-en="Location">Localisation</a></li>
-          <li><a href="promoteur.html" data-lang-fr="Le Promoteur" data-lang-en="The Developer">Le Promoteur</a></li>
-          <li><a href="contact.html" data-lang-fr="Contact" data-lang-en="Contact">Contact</a></li>
+          <li><a href="/" data-lang-fr="Accueil" data-lang-en="Home">Accueil</a></li>
+          <li><a href="/presentation" data-lang-fr="Présentation" data-lang-en="Presentation">Présentation</a></li>
+          <li><a href="/logements" data-lang-fr="Logements" data-lang-en="Apartments">Logements</a></li>
+          <li><a href="/exterieurs" data-lang-fr="Espaces Communs" data-lang-en="Common Areas">Espaces Communs</a></li>
+          <li><a href="/localisation" data-lang-fr="Localisation" data-lang-en="Location">Localisation</a></li>
+          <li><a href="/promoteur" data-lang-fr="Le Promoteur" data-lang-en="The Developer">Le Promoteur</a></li>
+          <li><a href="/blog" data-lang-fr="Blog" data-lang-en="Blog">Blog</a></li>
+          <li><a href="/contact" data-lang-fr="Contact" data-lang-en="Contact">Contact</a></li>
         </ul>
-      </div>
-      <div class="footer-col">
-        <h4 data-lang-fr="Logements" data-lang-en="Apartments">Logements</h4>
+      </nav>
+      <nav class="footer-links" aria-label="Pied de page — guides">
+        <h4 data-lang-fr="Guides" data-lang-en="Guides">Guides</h4>
         <ul>
-          <li><a href="logements.html#t4" data-lang-fr="Appartements T4" data-lang-en="T4 Apartments">Appartements T4</a></li>
-          <li><a href="logements.html#t3duplex" data-lang-fr="T3 Duplex" data-lang-en="T3 Duplex">T3 Duplex</a></li>
-          <li><a href="logements.html#t2" data-lang-fr="Appartements T2" data-lang-en="T2 Apartments">Appartements T2</a></li>
-          <li><a href="logements.html#prestations" data-lang-fr="Prestations" data-lang-en="Features">Prestations</a></li>
-          <li><a href="contact.html" data-lang-fr="Réserver" data-lang-en="Reserve">Réserver</a></li>
+          <li><a href="/blog/acheter-appartement-neuf-aix-en-provence">Acheter un appartement neuf à Aix</a></li>
+          <li><a href="/blog/quartier-des-lauves-aix-en-provence">Le quartier des Lauves</a></li>
+          <li><a href="/blog/appartement-vue-sainte-victoire-aix-en-provence">Vue Sainte-Victoire</a></li>
+          <li><a href="/blog/appartement-jardin-prive-aix-en-provence">Appartement avec jardin privatif</a></li>
+          <li><a href="/blog/vefa-achat-sur-plan-etapes-garanties">VEFA : étapes et garanties</a></li>
+          <li><a href="/blog/frais-de-notaire-neuf-tva-taxe-fonciere">Frais de notaire dans le neuf</a></li>
         </ul>
-      </div>
-      <div class="footer-col">
+      </nav>
+      <div class="footer-contact">
         <h4 data-lang-fr="Contact" data-lang-en="Contact">Contact</h4>
-        <div class="footer-contact-item">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
-          59 Avenue Paul Cézanne,<br>13100 Aix-en-Provence
-        </div>
-        <div class="footer-contact-item">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81 19.79 19.79 0 01.01 1.18 2 2 0 012 0h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
-          <a href="tel:0630073601" style="color:rgba(255,255,255,0.6)">06 30 07 36 01</a>
-        </div>
-        <div class="footer-contact-item">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-          <a href="mailto:jessica@ownimmobilier.fr" style="color:rgba(255,255,255,0.6)">jessica@ownimmobilier.fr</a>
-        </div>
+        <p>Ponthieu Développement Holding</p>
+        <p>418 Ancienne Route des Alpes<br/>13100 Aix-en-Provence</p>
+        <p><a href="tel:+33609204590">06 09 20 45 90</a></p>
       </div>
     </div>
     <div class="footer-bottom">
       <p data-lang-fr="© 2026 Ponthieu Développement Holding — Tous droits réservés" data-lang-en="© 2026 Ponthieu Développement Holding — All rights reserved">© 2026 Ponthieu Développement Holding — Tous droits réservés</p>
-      <div class="footer-legal">
-        <a href="mentions-legales.html" data-lang-fr="Mentions légales" data-lang-en="Legal notice">Mentions légales</a>
-        <a href="mentions-legales.html#confidentialite" data-lang-fr="Politique de confidentialité" data-lang-en="Privacy policy">Politique de confidentialité</a>
-      </div>
+      <p style="font-size:0.75rem;color:rgba(255,255,255,0.3);margin-top:0.25rem;">59 Avenue Paul Cézanne, 13100 Aix-en-Provence ·
+        <a href="/mentions-legales" data-lang-fr="Mentions légales" data-lang-en="Legal notice">Mentions légales</a> ·
+        <button type="button" class="footer-cookie-btn" onclick="openCookieSettings()" data-lang-fr="Gérer les cookies" data-lang-en="Cookie settings">Gérer les cookies</button></p>
     </div>
   </div>
 </footer>
 
-<!-- Floating CTA -->
+<!-- Boutons flottants (conservés de l'ancienne page ; absents du gabarit) -->
 <div class="floating-cta">
-  <a href="https://wa.me/33630073601" target="_blank" class="float-btn float-btn-whatsapp">
-    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.890-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+  <a href="https://wa.me/33609204590" target="_blank" rel="noopener" class="float-btn float-btn-whatsapp" aria-label="Contacter par WhatsApp au 06 09 20 45 90 (s'ouvre dans un nouvel onglet)" data-aria-label-fr="Contacter par WhatsApp au 06 09 20 45 90 (s'ouvre dans un nouvel onglet)" data-aria-label-en="Contact us on WhatsApp at 06 09 20 45 90 (opens in a new tab)">
+    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
   </a>
-  <a href="tel:0630073601" class="float-btn float-btn-phone">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81 19.79 19.79 0 01.01 1.18 2 2 0 012 0h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+  <a href="tel:0609204590" class="float-btn float-btn-phone" aria-label="Appeler le 06 09 20 45 90" data-aria-label-fr="Appeler le 06 09 20 45 90" data-aria-label-en="Call 06 09 20 45 90">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" focusable="false"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81 19.79 19.79 0 01.01 1.18 2 2 0 012 0h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
   </a>
 </div>
 
-<div id="lightbox">
-  <button class="lightbox-close" onclick="closeLightbox()">✕</button>
-  <button class="lightbox-nav lightbox-prev" onclick="lightboxNav(-1)">‹</button>
+<div id="lightbox" role="dialog" aria-modal="true" aria-label="Galerie photos agrandie" tabindex="-1">
+  <button type="button" class="lightbox-close" onclick="closeLightbox()" aria-label="Fermer">&#10005;</button>
+  <button type="button" class="lightbox-nav lightbox-prev" onclick="lightboxNav(-1)" aria-label="Image précédente">&#8249;</button>
   <div class="lightbox-img-wrap">
-    <img id="lightbox-img" src="" alt="" />
+    <img id="lightbox-img" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==" alt="" />
     <div class="lightbox-caption" id="lightbox-caption"></div>
     <div class="lightbox-counter" id="lightbox-counter"></div>
   </div>
-  <button class="lightbox-nav lightbox-next" onclick="lightboxNav(1)">›</button>
+  <button type="button" class="lightbox-nav lightbox-next" onclick="lightboxNav(1)" aria-label="Image suivante">&#8250;</button>
 </div>
 
-<script src="translations.js"></script>
-<script src="animations.js"></script>
-<script src="cookie.js"></script>
+<script src="/animations.js" defer></script>
+<script src="/translations.js" defer></script>
+<script src="/cookie.js" defer></script>
+<script type="module">
+  /* Légendes de la lightbox en FR/EN : data-caption suit la langue (événement « 59c:langchange » de translations.js). */
+  (function () {
+    function apply(lang) {
+      document.querySelectorAll('[data-caption-en]').forEach(function (el) {
+        el.setAttribute('data-caption', el.getAttribute(lang === 'en' ? 'data-caption-en' : 'data-caption-fr') || '');
+      });
+    }
+    document.addEventListener('59c:langchange', function (e) { apply(e.detail && e.detail.lang === 'en' ? 'en' : 'fr'); });
+    apply(document.documentElement.getAttribute('lang') === 'en' ? 'en' : 'fr');
+  })();
+</script>
 </body>
 </html>

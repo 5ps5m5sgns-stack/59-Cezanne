@@ -2,188 +2,207 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Merci — 59 Cézanne | Votre demande a bien été envoyée</title>
-  <meta name="description" content="Votre demande a bien été reçue. L'équipe de la résidence 59 Cézanne vous contactera dans les 24 heures." />
-  <meta name="robots" content="noindex, nofollow" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Merci pour votre demande | 59 Cézanne</title>
+  <meta name="description" content="Votre demande a bien été reçue. L'équipe de la résidence 59 Cézanne, à Aix-en-Provence, vous recontacte." />
+  <link rel="canonical" href="https://59-cezanne.com/merci" />
+  <meta name="robots" content="noindex,follow" />
+  <meta name="author" content="Ponthieu Développement Holding" />
+  <meta name="google-site-verification" content="SNN8bzDLw_qboNi81MOuw3SOY2NjIguz_KnPd8e9eUk" />
 
-  <link rel="icon" type="image/x-icon" href="favicon.ico" />
-  <link rel="icon" type="image/png" sizes="192x192" href="favicon-192.png" />
-  <link rel="icon" type="image/png" sizes="512x512" href="favicon-512.png" />
-  <link rel="apple-touch-icon" href="apple-touch-icon.png" />
-  <link rel="stylesheet" href="style.css" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="59 Cézanne" />
+  <meta property="og:locale" content="fr_FR" />
+  <meta property="og:title" content="Merci pour votre demande | 59 Cézanne" />
+  <meta property="og:description" content="Votre demande a bien été reçue. L'équipe de la résidence 59 Cézanne vous recontacte." />
+  <meta property="og:url" content="https://59-cezanne.com/merci" />
+  <meta property="og:image" content="https://59-cezanne.com/og/og-default.jpg" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="Rendu 3D non contractuel de la résidence 59 Cézanne à Aix-en-Provence" />
+  <meta name="twitter:card" content="summary_large_image" />
+
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+  <link rel="icon" type="image/png" sizes="192x192" href="/favicon-192.png" />
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+
+  <link rel="stylesheet" href="/style.css" />
+  <style>
+    /* Page de confirmation : styles propres à la page */
+    .thanks { background: var(--beige); padding: calc(var(--nav-height) + 3.5rem) 1.5rem 5rem; }
+    .th-inner { max-width: 660px; margin: 0 auto; text-align: center; }
+    .th-icon { width: 76px; height: 76px; border-radius: 50%; background: rgba(85,102,58,.12); color: var(--olive-texte); display: flex; align-items: center; justify-content: center; margin: 0 auto 1.8rem; }
+    .thanks .eyebrow { justify-content: center; margin-bottom: .8rem; }
+    .thanks h1 { font-family: var(--font-serif); font-size: clamp(2rem, 4.5vw, 3rem); font-weight: 300; line-height: 1.2; color: var(--text); margin-bottom: 0; }
+    .thanks h1 em { font-style: italic; color: var(--or-texte); }
+    .thanks .divider { margin: 1.5rem auto; }
+    .th-lead { font-size: 1.05rem; color: var(--text); line-height: 1.8; margin-bottom: .7rem; }
+    .th-sub { font-size: .95rem; color: var(--text-mid); line-height: 1.8; margin-bottom: 2rem; }
+    .th-doc { display: flex; align-items: center; gap: 1rem; padding: 1.1rem 1.4rem; background: var(--white); border: 1px solid var(--border); border-radius: var(--radius); color: var(--text); text-decoration: none; text-align: left; transition: border-color var(--transition-fast), box-shadow var(--transition-fast); }
+    .th-doc:hover, .th-doc:focus-visible { border-color: var(--or-texte); box-shadow: var(--shadow-sm); }
+    .th-doc .th-ico { width: 42px; height: 42px; border-radius: 50%; background: rgba(201,169,110,.16); display: flex; align-items: center; justify-content: center; color: var(--or-texte); flex-shrink: 0; }
+    .th-doc strong { display: block; font-family: var(--font-serif); font-size: 1.1rem; font-weight: 500; color: var(--text); }
+    .th-doc small { display: block; font-size: .82rem; color: var(--text-mid); line-height: 1.5; margin-top: .15rem; }
+    .th-note { font-size: .9rem; color: var(--text-mid); line-height: 1.7; margin: 1rem 0 0; }
+    .th-more { margin-top: 3rem; padding-top: 2.5rem; border-top: 1px solid var(--border); }
+    .th-more h2 { font-family: var(--font-serif); font-size: 1.5rem; font-weight: 400; color: var(--text); margin-bottom: 1.3rem; }
+    .th-links { list-style: none; display: grid; grid-template-columns: repeat(3, 1fr); gap: .9rem; text-align: left; }
+    .th-links a { display: block; height: 100%; padding: 1.1rem 1.2rem; background: var(--white); border: 1px solid var(--border); border-radius: var(--radius); text-decoration: none; color: var(--text); transition: border-color var(--transition-fast), box-shadow var(--transition-fast); }
+    .th-links a:hover, .th-links a:focus-visible { border-color: var(--or-texte); box-shadow: var(--shadow-sm); }
+    .th-links strong { display: block; font-family: var(--font-serif); font-size: 1.15rem; font-weight: 500; color: var(--text); margin-bottom: .3rem; }
+    .th-links strong::after { content: '\00a0\2192'; color: var(--or-texte); }
+    .th-links span { display: block; font-size: .85rem; color: var(--text-mid); line-height: 1.55; }
+    .th-phone { margin-top: 2.5rem; font-size: .9rem; color: var(--text-mid); }
+    .th-phone a { color: var(--or-texte); font-weight: 700; text-decoration: underline; text-underline-offset: 3px; }
+    @media (max-width: 720px) {
+      .thanks { padding-left: 1rem; padding-right: 1rem; padding-bottom: 3.5rem; }
+      .th-links { grid-template-columns: 1fr; }
+    }
+    @media (prefers-reduced-motion: reduce) { .th-doc, .th-links a { transition: none; } }
+  </style>
+
 </head>
 <body>
-<div id="scroll-progress"></div>
-<div id="loader">
-  <div class="loader-logo">59 Cézanne<span>Aix-en-Provence</span></div>
-  <div class="loader-bar"></div>
-</div>
 
-<nav id="navbar">
+<a class="skip-link" href="#contenu" data-lang-fr="Aller au contenu" data-lang-en="Skip to content">Aller au contenu</a>
+
+<nav id="navbar" class="scrolled" aria-label="Navigation principale">
   <div class="nav-inner">
-    <a href="index.html" class="nav-logo">
+    <a href="/" class="nav-logo" aria-label="59 Cézanne — Aix-en-Provence, accueil">
       <span class="logo-main">59 Cézanne</span>
       <span class="logo-sub">Aix-en-Provence</span>
     </a>
     <div class="nav-links">
-      <a href="index.html">Accueil</a>
-      <a href="presentation.html">Présentation</a>
-      <a href="logements.html">Logements</a>
-      <a href="exterieurs.html">Espaces Communs</a>
-      <a href="localisation.html">Localisation</a>
-      <a href="promoteur.html">Le Promoteur</a>
-      <a href="contact.html">Contact</a>
+      <a href="/" data-lang-fr="Accueil" data-lang-en="Home">Accueil</a>
+      <a href="/presentation" data-lang-fr="Présentation" data-lang-en="Presentation">Présentation</a>
+      <a href="/logements" data-lang-fr="Logements" data-lang-en="Apartments">Logements</a>
+      <a href="/exterieurs" data-lang-fr="Espaces Communs" data-lang-en="Common Areas">Espaces Communs</a>
+      <a href="/localisation" data-lang-fr="Localisation" data-lang-en="Location">Localisation</a>
+      <a href="/promoteur" data-lang-fr="Le Promoteur" data-lang-en="The Developer">Le Promoteur</a>
+      <a href="/blog" data-lang-fr="Blog" data-lang-en="Blog">Blog</a>
+      <a href="/contact" data-lang-fr="Contact" data-lang-en="Contact">Contact</a>
     </div>
     <div class="d-flex align-center gap-2">
-      <div class="lang-toggle">
-        <button class="lang-btn active" onclick="setLang('fr')">FR</button>
-        <button class="lang-btn" onclick="setLang('en')">EN</button>
+      <div class="lang-toggle" role="group" aria-label="Langue / Language">
+        <button type="button" class="lang-btn active" lang="fr" aria-pressed="true" onclick="setLang('fr')">FR</button>
+        <button type="button" class="lang-btn" lang="en" aria-pressed="false" onclick="setLang('en')">EN</button>
       </div>
-      <div class="nav-burger" id="burger" onclick="toggleMobile()">
+      <button type="button" class="nav-burger" id="burger" aria-label="Ouvrir le menu" aria-expanded="false" aria-controls="mobileMenu" onclick="toggleMobile()">
         <span></span><span></span><span></span>
-      </div>
+      </button>
     </div>
   </div>
 </nav>
-
 <div class="nav-mobile" id="mobileMenu">
-  <a href="index.html" onclick="toggleMobile()">Accueil</a>
-  <a href="presentation.html" onclick="toggleMobile()">Présentation</a>
-  <a href="logements.html" onclick="toggleMobile()">Logements</a>
-  <a href="exterieurs.html" onclick="toggleMobile()">Espaces Communs</a>
-  <a href="localisation.html" onclick="toggleMobile()">Localisation</a>
-  <a href="promoteur.html" onclick="toggleMobile()">Le Promoteur</a>
-  <a href="contact.html" onclick="toggleMobile()">Contact</a>
-  <div class="nav-mobile-lang">
-    <button class="lang-btn active" onclick="setLang('fr')">FR</button>
-    <button class="lang-btn" onclick="setLang('en')">EN</button>
+  <a href="/" onclick="toggleMobile()" data-lang-fr="Accueil" data-lang-en="Home">Accueil</a>
+  <a href="/presentation" onclick="toggleMobile()" data-lang-fr="Présentation" data-lang-en="Presentation">Présentation</a>
+  <a href="/logements" onclick="toggleMobile()" data-lang-fr="Logements" data-lang-en="Apartments">Logements</a>
+  <a href="/exterieurs" onclick="toggleMobile()" data-lang-fr="Espaces Communs" data-lang-en="Common Areas">Espaces Communs</a>
+  <a href="/localisation" onclick="toggleMobile()" data-lang-fr="Localisation" data-lang-en="Location">Localisation</a>
+  <a href="/promoteur" onclick="toggleMobile()" data-lang-fr="Le Promoteur" data-lang-en="The Developer">Le Promoteur</a>
+  <a href="/blog" onclick="toggleMobile()" data-lang-fr="Blog" data-lang-en="Blog">Blog</a>
+  <a href="/contact" onclick="toggleMobile()" data-lang-fr="Contact" data-lang-en="Contact">Contact</a>
+  <div class="nav-mobile-lang" role="group" aria-label="Langue / Language">
+    <button type="button" class="lang-btn active" lang="fr" aria-pressed="true" onclick="setLang('fr')">FR</button>
+    <button type="button" class="lang-btn" lang="en" aria-pressed="false" onclick="setLang('en')">EN</button>
   </div>
 </div>
 
-<!-- Confirmation -->
-<section style="min-height:100vh;display:flex;align-items:center;justify-content:center;background:var(--beige);padding:var(--nav-height) 1.5rem 4rem;">
-  <div style="max-width:580px;width:100%;text-align:center;">
+<main id="contenu">
 
-    <!-- Icône succès -->
-    <div style="width:80px;height:80px;border-radius:50%;background:rgba(107,124,69,0.12);display:flex;align-items:center;justify-content:center;margin:0 auto 2rem;color:#6b7c45;">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="38" height="38">
-        <path d="M20 6L9 17l-5-5"/>
-      </svg>
-    </div>
+  <section class="thanks" aria-labelledby="th-h1">
+    <div class="th-inner">
 
-    <p class="eyebrow" style="justify-content:center;margin-bottom:0.8rem;">Résidence 59 Cézanne</p>
-    <h1 style="font-family:var(--font-serif);font-size:clamp(1.8rem,4vw,2.8rem);font-weight:300;color:var(--text);margin-bottom:1.2rem;line-height:1.2;">
-      Merci pour<br>votre <em>demande</em>
-    </h1>
-    <div class="divider" style="margin:1.5rem auto;"></div>
-    <p style="font-size:0.95rem;color:var(--text-mid);line-height:1.85;margin-bottom:0.8rem;">
-      Votre message a bien été reçu. Stéphane Ponthieu ou un membre de notre équipe vous contactera dans les <strong style="color:var(--text);">24 heures ouvrées</strong>.
-    </p>
-    <p style="font-size:0.875rem;color:var(--text-light);line-height:1.8;margin-bottom:2.5rem;">
-      En attendant, vous pouvez télécharger notre documentation ou consulter les logements disponibles.
-    </p>
+      <div class="th-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="38" height="38" focusable="false"><path d="M20 6L9 17l-5-5"/></svg>
+      </div>
 
-    <!-- PDF Downloads -->
-    <div style="display:flex;flex-direction:column;gap:0.7rem;margin-bottom:2.5rem;text-align:left;">
-      <a href="Dossier%20de%20commercialisation%2059%20C%C3%A9zanne/Plaquette%2059%20C%C3%A9zanne%20Version%20Email.pdf" download style="display:flex;align-items:center;gap:1rem;padding:1.1rem 1.4rem;background:var(--white);border:1px solid var(--border);border-radius:var(--radius);text-decoration:none;color:var(--text);transition:border-color var(--transition-fast),box-shadow var(--transition);" onmouseover="this.style.borderColor='rgba(201,169,110,0.5)';this.style.boxShadow='var(--shadow-sm)';" onmouseout="this.style.borderColor='var(--border)';this.style.boxShadow='none';">
-        <span style="width:42px;height:42px;border-radius:50%;background:rgba(201,169,110,0.12);display:flex;align-items:center;justify-content:center;color:var(--or);flex-shrink:0;">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="20" height="20"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      <p class="eyebrow" data-lang-fr="Résidence 59 Cézanne" data-lang-en="59 Cézanne residence">Résidence 59 Cézanne</p>
+      <h1 id="th-h1" data-lang-fr="Merci pour votre <em>demande</em>" data-lang-en="Thank you for your <em>enquiry</em>">Merci pour votre <em>demande</em></h1>
+      <div class="divider"></div>
+
+      <p class="th-lead" data-lang-fr="Votre message a bien été reçu : notre équipe vous recontacte." data-lang-en="Your message has been received: our team will get back to you.">Votre message a bien été reçu : notre équipe vous recontacte.</p>
+      <p class="th-sub" data-lang-fr="En attendant, vous pouvez télécharger la plaquette du programme ou poursuivre votre découverte de la résidence." data-lang-en="In the meantime, you can download the programme brochure or continue exploring the residence.">En attendant, vous pouvez télécharger la plaquette du programme ou poursuivre votre découverte de la résidence.</p>
+
+      <!-- Document proposé : la plaquette commerciale uniquement. -->
+      <a class="th-doc" href="/Dossier%20de%20commercialisation%2059%20C%C3%A9zanne/Plaquette%2059%20C%C3%A9zanne%20Version%20Email.pdf" download type="application/pdf">
+        <span class="th-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="20" height="20" focusable="false"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></span>
+        <span>
+          <strong data-lang-fr="Plaquette commerciale (PDF, 2 Mo)" data-lang-en="Sales brochure (PDF, 2 MB)">Plaquette commerciale (PDF, 2 Mo)</strong>
+          <small data-lang-fr="Présentation du programme : document commercial non contractuel." data-lang-en="Overview of the programme: non-contractual sales document.">Présentation du programme : document commercial non contractuel.</small>
         </span>
-        <div>
-          <strong style="display:block;font-family:var(--font-serif);font-size:0.95rem;font-weight:400;color:var(--text);">Plaquette commerciale</strong>
-          <span style="font-size:0.78rem;color:var(--text-light);">PDF — Présentation complète de la résidence</span>
-        </div>
       </a>
-      <a href="Dossier%20de%20commercialisation%2059%20C%C3%A9zanne/Grille%20de%20prix%20F%C3%A9vrier%202025.pdf" download style="display:flex;align-items:center;gap:1rem;padding:1.1rem 1.4rem;background:var(--white);border:1px solid var(--border);border-radius:var(--radius);text-decoration:none;color:var(--text);transition:border-color var(--transition-fast),box-shadow var(--transition);" onmouseover="this.style.borderColor='rgba(201,169,110,0.5)';this.style.boxShadow='var(--shadow-sm)';" onmouseout="this.style.borderColor='var(--border)';this.style.boxShadow='none';">
-        <span style="width:42px;height:42px;border-radius:50%;background:rgba(201,169,110,0.12);display:flex;align-items:center;justify-content:center;color:var(--or);flex-shrink:0;">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="20" height="20"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-        </span>
-        <div>
-          <strong style="display:block;font-family:var(--font-serif);font-size:0.95rem;font-weight:400;color:var(--text);">Grille de prix</strong>
-          <span style="font-size:0.78rem;color:var(--text-light);">PDF — Tarifs Février 2025</span>
-        </div>
-      </a>
+      <p class="th-note" data-lang-fr="Notre équipe vous transmet la grille tarifaire à jour sur demande." data-lang-en="Our team will send you the up-to-date price list on request.">Notre équipe vous transmet la grille tarifaire à jour sur demande.</p>
+
+      <div class="th-more">
+        <h2 data-lang-fr="Poursuivre la découverte" data-lang-en="Keep exploring">Poursuivre la découverte</h2>
+        <ul class="th-links">
+          <li><a href="/logements"><strong data-lang-fr="Les logements" data-lang-en="The apartments">Les logements</strong><span data-lang-fr="Appartements T2, T3 duplex et T4 de la résidence." data-lang-en="The residence's 2-room, 3-room duplex and 4-room apartments.">Appartements T2, T3 duplex et T4 de la résidence.</span></a></li>
+          <li><a href="/localisation"><strong data-lang-fr="La localisation" data-lang-en="The location">La localisation</strong><span data-lang-fr="L'adresse, l'environnement et les accès." data-lang-en="The address, the surroundings and how to get there.">L'adresse, l'environnement et les accès.</span></a></li>
+          <li><a href="/blog"><strong data-lang-fr="Le blog" data-lang-en="The blog">Le blog</strong><span data-lang-fr="Guides pour préparer un achat dans le neuf à Aix-en-Provence." data-lang-en="Guides to preparing a new-build purchase in Aix-en-Provence (in French).">Guides pour préparer un achat dans le neuf à Aix-en-Provence.</span></a></li>
+        </ul>
+      </div>
+
+      <p class="th-phone" data-lang-fr="Besoin d'une réponse immédiate ? <a href='tel:0609204590'>06 09 20 45 90</a> ou <a href='https://wa.me/33609204590' target='_blank' rel='noopener'>WhatsApp<span class='sr-only'> (s'ouvre dans un nouvel onglet)</span></a>" data-lang-en="Need an immediate answer? <a href='tel:0609204590'>06 09 20 45 90</a> or <a href='https://wa.me/33609204590' target='_blank' rel='noopener'>WhatsApp<span class='sr-only'> (opens in a new tab)</span></a>">Besoin d'une réponse immédiate ? <a href="tel:0609204590">06 09 20 45 90</a> ou <a href="https://wa.me/33609204590" target="_blank" rel="noopener">WhatsApp<span class="sr-only"> (s'ouvre dans un nouvel onglet)</span></a></p>
+
     </div>
+  </section>
 
-    <!-- CTA Buttons -->
-    <div class="d-flex gap-3 flex-wrap" style="justify-content:center;">
-      <a href="logements.html" class="btn btn-primary">Voir les logements</a>
-      <a href="index.html" class="btn btn-outline">Retour à l'accueil</a>
-    </div>
+</main>
 
-    <!-- Contact direct -->
-    <p style="margin-top:2.5rem;font-size:0.8rem;color:var(--text-light);">
-      Besoin d'une réponse immédiate ?
-      <a href="tel:0620534392" style="color:var(--or);font-weight:600;">06 20 53 43 92</a>
-      ou
-      <a href="https://wa.me/33620534392" target="_blank" style="color:var(--or);font-weight:600;">WhatsApp</a>
-    </p>
-  </div>
-</section>
-
-<!-- Footer -->
-<footer>
+<!-- ─── Footer ────────────────────────────────────────────────── -->
+<footer class="site-footer">
   <div class="container">
     <div class="footer-grid">
       <div class="footer-brand">
-        <div class="footer-logo">59 Cézanne</div>
-        <div class="footer-logo-sub">Aix-en-Provence</div>
-        <p>Résidence exclusive de 8 appartements d'exception avec vue imprenable sur la Sainte-Victoire. Une réalisation Ponthieu Développement Holding.</p>
+        <a href="/" class="nav-logo" style="margin-bottom:1rem;display:inline-block;" aria-label="59 Cézanne — accueil">
+          <span class="logo-59">59</span><span class="logo-cez">Cézanne</span>
+        </a>
+        <p style="font-size:0.82rem;color:rgba(255,255,255,0.45);line-height:1.7;max-width:240px;" data-lang-fr="Résidence de 8 appartements neufs à Aix-en-Provence, avenue Paul Cézanne." data-lang-en="Residence of 8 new apartments in Aix-en-Provence, avenue Paul Cézanne.">Résidence de 8 appartements neufs à Aix-en-Provence, avenue Paul Cézanne.</p>
       </div>
-      <div class="footer-col">
-        <h4>Navigation</h4>
+      <nav class="footer-links" aria-label="Pied de page — navigation">
+        <h4 data-lang-fr="Navigation" data-lang-en="Navigation">Navigation</h4>
         <ul>
-          <li><a href="index.html">Accueil</a></li>
-          <li><a href="presentation.html">Présentation</a></li>
-          <li><a href="logements.html">Logements</a></li>
-          <li><a href="exterieurs.html">Espaces Communs</a></li>
-          <li><a href="localisation.html">Localisation</a></li>
-          <li><a href="promoteur.html">Le Promoteur</a></li>
-          <li><a href="contact.html">Contact</a></li>
+          <li><a href="/" data-lang-fr="Accueil" data-lang-en="Home">Accueil</a></li>
+          <li><a href="/presentation" data-lang-fr="Présentation" data-lang-en="Presentation">Présentation</a></li>
+          <li><a href="/logements" data-lang-fr="Logements" data-lang-en="Apartments">Logements</a></li>
+          <li><a href="/exterieurs" data-lang-fr="Espaces Communs" data-lang-en="Common Areas">Espaces Communs</a></li>
+          <li><a href="/localisation" data-lang-fr="Localisation" data-lang-en="Location">Localisation</a></li>
+          <li><a href="/promoteur" data-lang-fr="Le Promoteur" data-lang-en="The Developer">Le Promoteur</a></li>
+          <li><a href="/blog" data-lang-fr="Blog" data-lang-en="Blog">Blog</a></li>
+          <li><a href="/contact" data-lang-fr="Contact" data-lang-en="Contact">Contact</a></li>
         </ul>
-      </div>
-      <div class="footer-col">
-        <h4>Contact rapide</h4>
+      </nav>
+      <nav class="footer-links" aria-label="Pied de page — guides">
+        <h4 data-lang-fr="Guides" data-lang-en="Guides">Guides</h4>
         <ul>
-          <li><a href="tel:0620534392">06 20 53 43 92</a></li>
-          <li><a href="mailto:stephane@ponthieu.fr">stephane@ponthieu.fr</a></li>
-          <li><a href="https://wa.me/33620534392" target="_blank">WhatsApp</a></li>
+          <li><a href="/blog/acheter-appartement-neuf-aix-en-provence">Acheter un appartement neuf à Aix</a></li>
+          <li><a href="/blog/quartier-des-lauves-aix-en-provence">Le quartier des Lauves</a></li>
+          <li><a href="/blog/appartement-vue-sainte-victoire-aix-en-provence">Vue Sainte-Victoire</a></li>
+          <li><a href="/blog/appartement-jardin-prive-aix-en-provence">Appartement avec jardin privatif</a></li>
+          <li><a href="/blog/vefa-achat-sur-plan-etapes-garanties">VEFA : étapes et garanties</a></li>
+          <li><a href="/blog/frais-de-notaire-neuf-tva-taxe-fonciere">Frais de notaire dans le neuf</a></li>
         </ul>
-      </div>
-      <div class="footer-col">
-        <h4>Adresses</h4>
-        <div class="footer-contact-item">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
-          <span><strong style="color:rgba(255,255,255,0.75);">La résidence</strong><br>59 Avenue Paul Cézanne<br>13100 Aix-en-Provence</span>
-        </div>
-        <div class="footer-contact-item mt-2">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
-          <span><strong style="color:rgba(255,255,255,0.75);">Bureau PDH</strong><br>418 Ancienne Route des Alpes<br>13100 Aix-en-Provence</span>
-        </div>
+      </nav>
+      <div class="footer-contact">
+        <h4 data-lang-fr="Contact" data-lang-en="Contact">Contact</h4>
+        <p>Ponthieu Développement Holding</p>
+        <p>418 Ancienne Route des Alpes<br/>13100 Aix-en-Provence</p>
+        <p><a href="tel:+33609204590">06 09 20 45 90</a></p>
       </div>
     </div>
     <div class="footer-bottom">
-      <p>© 2026 Ponthieu Développement Holding — Tous droits réservés</p>
-      <div class="footer-legal">
-        <a href="mentions-legales.html">Mentions légales</a>
-        <a href="mentions-legales.html#confidentialite">Politique de confidentialité</a>
-      </div>
+      <p data-lang-fr="© 2026 Ponthieu Développement Holding — Tous droits réservés" data-lang-en="© 2026 Ponthieu Développement Holding — All rights reserved">© 2026 Ponthieu Développement Holding — Tous droits réservés</p>
+      <p style="font-size:0.75rem;color:rgba(255,255,255,0.3);margin-top:0.25rem;">59 Avenue Paul Cézanne, 13100 Aix-en-Provence ·
+        <a href="/mentions-legales" data-lang-fr="Mentions légales" data-lang-en="Legal notice">Mentions légales</a> ·
+        <button type="button" class="footer-cookie-btn" onclick="openCookieSettings()" data-lang-fr="Gérer les cookies" data-lang-en="Cookie settings">Gérer les cookies</button></p>
     </div>
   </div>
 </footer>
 
-<script src="translations.js"></script>
-<script src="animations.js"></script>
-<script>
-function setLang(lang) {
-  document.querySelectorAll('[data-lang-' + lang + ']').forEach(el => {
-    el.innerHTML = el.getAttribute('data-lang-' + lang);
-  });
-  document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
-  document.querySelectorAll('.lang-btn[onclick*="' + lang + '"]').forEach(b => b.classList.add('active'));
-}
-</script>
-<script src="cookie.js"></script>
+<script src="/animations.js" defer></script>
+<script src="/translations.js" defer></script>
+<script src="/cookie.js" defer></script>
 </body>
 </html>

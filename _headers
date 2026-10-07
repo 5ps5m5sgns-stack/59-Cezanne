@@ -1,0 +1,36 @@
+# ============================================================
+# 59-cezanne.com — Cloudflare Pages — _headers  (v1, 6 oct. 2026)
+# ============================================================
+
+# --- Ne pas indexer les hôtes de service Pages (doublons du site) ---
+https://:project.pages.dev/*
+  X-Robots-Tag: noindex
+
+https://:version.:project.pages.dev/*
+  X-Robots-Tag: noindex
+
+# --- Sécurité : toutes les pages et ressources ---
+/*
+  X-Frame-Options: DENY
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(), usb=(), interest-cohort=()
+  Strict-Transport-Security: max-age=86400
+  Content-Security-Policy-Report-Only: default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://www.googletagmanager.com https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://*.google-analytics.com https://*.googletagmanager.com; connect-src 'self' https://formspree.io https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com https://cloudflareinsights.com; frame-src https://maps.google.com https://www.google.com; frame-ancestors 'none'; base-uri 'self'; form-action 'self' https://formspree.io; object-src 'none'
+
+# --- Cache : le HTML garde le défaut Pages (public, max-age=0, must-revalidate) : ne rien ajouter ---
+
+# --- Cache : ressources NON versionnées (noms identiques d'un déploiement à l'autre) ---
+/*.css
+  Cache-Control: public, max-age=3600, stale-while-revalidate=86400
+/*.js
+  Cache-Control: public, max-age=3600, stale-while-revalidate=86400
+/*.webp
+  Cache-Control: public, max-age=2592000
+/*.png
+  Cache-Control: public, max-age=2592000
+/*.ico
+  Cache-Control: public, max-age=2592000
+/*.pdf
+  Cache-Control: public, max-age=86400
+  X-Robots-Tag: noindex

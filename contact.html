@@ -2,651 +2,505 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Contact — 59 Cézanne | Renseignements & Réservation Aix-en-Provence</title>
-  <meta property="og:url" content="https://59-cezanne.com/contact.html" />
-  <link rel="canonical" href="https://59-cezanne.com/contact.html" />
-  <meta name="keywords" content="contact résidence 59 Cézanne, achat appartement Aix-en-Provence, renseignements immobilier neuf, Ponthieu Développement Holding, réservation appartement Aix" />
-  <meta name="description" content="Contactez Ponthieu Développement Holding pour toute demande sur la résidence 59 Cézanne. Formulaire en ligne, téléphone 06 20 53 43 92. Bureau à Aix-en-Provence." />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Contact et visite du programme | 59 Cézanne Aix</title>
+  <meta name="description" content="Demandez la plaquette, des précisions sur les lots ou une visite du programme 59 Cézanne à Aix-en-Provence auprès de Ponthieu Développement Holding." />
+  <link rel="canonical" href="https://59-cezanne.com/contact" />
+  <meta name="robots" content="index,follow,max-image-preview:large" />
+  <meta name="author" content="Ponthieu Développement Holding" />
+  <meta name="google-site-verification" content="SNN8bzDLw_qboNi81MOuw3SOY2NjIguz_KnPd8e9eUk" />
 
-  <meta property="og:title" content="Contactez-nous — Résidence 59 Cézanne, Aix-en-Provence" />
-  <meta property="og:description" content="Prenez contact avec notre équipe pour toute demande d'information ou de visite. Réponse sous 24h." />
-
-  <link rel="icon" type="image/x-icon" href="favicon.ico" />
-  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png" />
-  <link rel="icon" type="image/png" sizes="192x192" href="favicon-192.png" />
-  <link rel="icon" type="image/png" sizes="512x512" href="favicon-512.png" />
-  <link rel="apple-touch-icon" href="apple-touch-icon.png" />
-  <link rel="stylesheet" href="style.css" />
-  <link rel="stylesheet" href="contact.css" />
-  <style>
-    /* ── Contact-specific ── */
-    .contact-grid {
-      display: grid;
-      grid-template-columns: 1.1fr 0.9fr;
-      gap: 5rem;
-      align-items: start;
-    }
-
-    .contact-form-wrap {
-      background: var(--white);
-      border-radius: var(--radius-md);
-      padding: 3rem;
-      box-shadow: var(--shadow);
-    }
-
-    .contact-info-block {
-      position: sticky;
-      top: calc(var(--nav-height) + 2rem);
-    }
-
-    .contact-info-items {
-      display: flex;
-      flex-direction: column;
-      gap: 1.2rem;
-      margin-bottom: 2rem;
-    }
-
-    .contact-info-item {
-      display: flex;
-      align-items: flex-start;
-      gap: 1rem;
-      padding: 1.5rem;
-      background: var(--white);
-      border-radius: var(--radius-md);
-      border: 1px solid var(--border);
-      transition: border-color var(--transition-fast), box-shadow var(--transition);
-    }
-
-    .contact-info-item:hover {
-      border-color: rgba(201,169,110,0.4);
-      box-shadow: var(--shadow-sm);
-    }
-
-    .contact-info-icon {
-      width: 48px;
-      height: 48px;
-      border-radius: 50%;
-      background: rgba(201,169,110,0.1);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: var(--or);
-      flex-shrink: 0;
-    }
-
-    .contact-info-text strong {
-      display: block;
-      font-family: var(--font-serif);
-      font-size: 0.95rem;
-      font-weight: 400;
-      color: var(--text);
-      margin-bottom: 2px;
-    }
-
-    .contact-info-text a,
-    .contact-info-text span {
-      font-size: 0.85rem;
-      color: var(--text-mid);
-      line-height: 1.6;
-    }
-
-    .contact-info-text a:hover { color: var(--or); }
-
-    .callback-btn {
-      width: 100%;
-      padding: 1.1rem;
-      background: var(--or);
-      color: var(--dark);
-      font-family: var(--font-sans);
-      font-size: 0.8rem;
-      font-weight: 700;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      border: none;
-      border-radius: var(--radius);
-      cursor: pointer;
-      transition: all var(--transition);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.7rem;
-      box-shadow: 0 4px 20px rgba(201,169,110,0.35);
-    }
-
-    .callback-btn:hover {
-      background: var(--or-dark);
-      transform: translateY(-2px);
-      box-shadow: 0 6px 30px rgba(201,169,110,0.5);
-    }
-
-    .callback-btn svg {
-      width: 18px;
-      height: 18px;
-      animation: pulse 2s ease infinite;
-    }
-
-    @keyframes pulse {
-      0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.15); }
-    }
-
-    .form-title {
-      font-family: var(--font-serif);
-      font-size: 1.6rem;
-      font-weight: 400;
-      color: var(--text);
-      margin-bottom: 0.4rem;
-    }
-
-    .form-subtitle {
-      font-size: 0.85rem;
-      color: var(--text-mid);
-      margin-bottom: 2rem;
-      line-height: 1.6;
-    }
-
-    .checkbox-group {
-      display: flex;
-      align-items: flex-start;
-      gap: 0.8rem;
-      margin-top: 0.5rem;
-    }
-
-    .checkbox-group input[type="checkbox"] {
-      width: 18px;
-      height: 18px;
-      margin-top: 1px;
-      accent-color: var(--or);
-      flex-shrink: 0;
-      cursor: pointer;
-    }
-
-    .checkbox-group label {
-      font-size: 0.8rem;
-      color: var(--text-mid);
-      line-height: 1.6;
-      cursor: pointer;
-    }
-
-    .btn-submit {
-      width: 100%;
-      padding: 1.1rem;
-      background: var(--dark);
-      color: var(--white);
-      font-family: var(--font-sans);
-      font-size: 0.8rem;
-      font-weight: 600;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      border: none;
-      border-radius: var(--radius);
-      cursor: pointer;
-      transition: all var(--transition);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.7rem;
-      margin-top: 1.5rem;
-    }
-
-    .btn-submit:hover {
-      background: var(--or);
-      color: var(--dark);
-    }
-
-    .btn-submit svg {
-      width: 18px;
-      height: 18px;
-    }
-
-    .faq-section {
-      background: var(--beige);
-    }
-
-    @media (max-width: 1024px) {
-      .contact-grid { grid-template-columns: 1fr; gap: 3rem; }
-      .contact-info-block { position: static; }
-    }
-  </style>
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="59 Cézanne" />
+  <meta property="og:locale" content="fr_FR" />
+  <meta property="og:title" content="Contact et visite du programme | 59 Cézanne Aix" />
+  <meta property="og:description" content="Plaquette, précisions sur les lots, visite du programme : contactez Ponthieu Développement Holding pour la résidence 59 Cézanne à Aix-en-Provence." />
+  <meta property="og:url" content="https://59-cezanne.com/contact" />
+  <meta property="og:image" content="https://59-cezanne.com/og/og-contact.jpg" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="Rendu 3D non contractuel : séjour, salle à manger et cuisine ouverte sur le jardin d'un appartement de la résidence 59 Cézanne" />
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="Contactez-nous — Résidence 59 Cézanne, Aix-en-Provence" />
-  <meta name="twitter:description" content="Prenez contact avec notre équipe pour toute demande d'information ou de visite. Réponse sous 24h." />
-  <meta name="twitter:image" content="https://59-cezanne.com/Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_EXT_Panorama_St-Victoire.webp" />
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "ContactPage",
-  "name": "Contact — 59 Cézanne",
-  "url": "https://59-cezanne.com/contact.html",
-  "mainEntity": {
-    "@type": "Organization",
-    "name": "Ponthieu Développement Holding",
-    "telephone": "+33630073601",
-    "address": {
-      "@type": "PostalAddress",
-      "streetAddress": "418 Ancienne Route des Alpes",
-      "addressLocality": "Aix-en-Provence",
-      "postalCode": "13100",
-      "addressCountry": "FR"
-    },
-    "openingHoursSpecification": {
-      "@type": "OpeningHoursSpecification",
-      "dayOfWeek": ["Monday","Tuesday","Wednesday","Thursday","Friday"],
-      "opens": "09:00",
-      "closes": "18:00"
+
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+  <link rel="icon" type="image/png" sizes="192x192" href="/favicon-192.png" />
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+
+  <link rel="stylesheet" href="/style.css" />
+  <link rel="stylesheet" href="/contact.css" />
+
+  <link rel="preload" as="image" href="/Photo%2059%20C%C3%A9zanne/3D%20Groove%20Architecture/Edited/050-APC-230309-INSERTION-enhanced-1200w.webp" imagesrcset="/Photo%2059%20C%C3%A9zanne/3D%20Groove%20Architecture/Edited/050-APC-230309-INSERTION-enhanced-800w.webp 800w, /Photo%2059%20C%C3%A9zanne/3D%20Groove%20Architecture/Edited/050-APC-230309-INSERTION-enhanced-1200w.webp 1200w, /Photo%2059%20C%C3%A9zanne/3D%20Groove%20Architecture/Edited/050-APC-230309-INSERTION-enhanced.webp 1600w" imagesizes="100vw" fetchpriority="high" />
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "ContactPage",
+    "name": "Contact et visite du programme | 59 Cézanne Aix",
+    "url": "https://59-cezanne.com/contact",
+    "description": "Demandez la plaquette, des précisions sur les lots ou une visite du programme 59 Cézanne à Aix-en-Provence auprès de Ponthieu Développement Holding.",
+    "inLanguage": "fr-FR",
+    "mainEntity": {
+      "@type": "Organization",
+      "name": "Ponthieu Développement Holding",
+      "url": "https://59-cezanne.com/",
+      "telephone": "+33609204590",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "418 Ancienne Route des Alpes",
+        "addressLocality": "Aix-en-Provence",
+        "postalCode": "13100",
+        "addressCountry": "FR"
+      }
     }
   }
-}
-</script>
-  <link rel="preload" as="image" href="Photo%2059%20C%C3%A9zanne/3D%20Groove%20Architecture/Edited/050-APC-230309-INSERTION-enhanced.webp" />
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Accueil", "item": "https://59-cezanne.com/" },
+      { "@type": "ListItem", "position": 2, "name": "Contact", "item": "https://59-cezanne.com/contact" }
+    ]
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "Comment recevoir la plaquette et les plans ?",
+        "acceptedAnswer": { "@type": "Answer", "text": "Vous pouvez télécharger la plaquette commerciale (PDF) sur cette page. Pour recevoir les plans ou des précisions sur un logement, remplissez le formulaire en indiquant le logement qui vous intéresse : notre équipe vous répond." }
+      },
+      {
+        "@type": "Question",
+        "name": "Quel est le calendrier de livraison ?",
+        "acceptedAnswer": { "@type": "Answer", "text": "Aucune date de livraison n'est publiée sur ce site. Le calendrier de livraison à jour vous est communiqué sur demande : demandez-le dans votre message ou par téléphone." }
+      },
+      {
+        "@type": "Question",
+        "name": "Les prix sont-ils publiés ?",
+        "acceptedAnswer": { "@type": "Answer", "text": "Les prix des appartements ne sont pas publiés sur ce site. Notre équipe vous transmet la grille tarifaire à jour sur demande." }
+      },
+      {
+        "@type": "Question",
+        "name": "Peut-on financer l'achat avec un prêt immobilier ?",
+        "acceptedAnswer": { "@type": "Answer", "text": "Oui, un achat en VEFA peut être financé par un prêt immobilier, et le modèle de contrat de réservation prévoit le cas où le prêt n'est pas obtenu. En VEFA, le prix se règle par échelons, au fil de l'avancement des travaux. Les conditions de votre financement dépendent de votre situation et de votre banque : nous ne donnons pas de conseil financier personnalisé." }
+      },
+      {
+        "@type": "Question",
+        "name": "Comment organiser une visite ?",
+        "acceptedAnswer": { "@type": "Answer", "text": "Les visites s'organisent sur rendez-vous. Indiquez vos disponibilités dans le formulaire ou appelez-nous : les modalités de la visite, qui dépendent de l'avancement du programme, vous sont précisées lors de la prise de rendez-vous." }
+      },
+      {
+        "@type": "Question",
+        "name": "Puis-je vous contacter depuis l'étranger ?",
+        "acceptedAnswer": { "@type": "Answer", "text": "Oui. Le formulaire accepte les numéros de téléphone internationaux (avec l'indicatif du pays, par exemple +41 ou +44). Les modalités d'un échange ou d'une réservation à distance sont à confirmer avec notre équipe." }
+      }
+    ]
+  }
+  </script>
 </head>
 <body>
-<div id="scroll-progress"></div>
-<div id="loader">
-  <div class="loader-logo">59 Cézanne<span>Aix-en-Provence</span></div>
-  <div class="loader-bar"></div>
-</div>
 
-<nav id="navbar" class="transparent">
+<a class="skip-link" href="#contenu" data-lang-fr="Aller au contenu" data-lang-en="Skip to content">Aller au contenu</a>
+
+<!-- ─── Navigation ────────────────────────────────────────────── -->
+<nav id="navbar" class="transparent" aria-label="Navigation principale">
   <div class="nav-inner">
-    <a href="index.html" class="nav-logo">
+    <a href="/" class="nav-logo" aria-label="59 Cézanne — Aix-en-Provence, accueil">
       <span class="logo-main">59 Cézanne</span>
       <span class="logo-sub">Aix-en-Provence</span>
     </a>
     <div class="nav-links">
-      <a href="index.html" data-lang-fr="Accueil" data-lang-en="Home">Accueil</a>
-      <a href="presentation.html" data-lang-fr="Présentation" data-lang-en="Presentation">Présentation</a>
-      <a href="logements.html" data-lang-fr="Logements" data-lang-en="Apartments">Logements</a>
-      <a href="exterieurs.html" data-lang-fr="Espaces Communs" data-lang-en="Common Areas">Espaces Communs</a>
-      <a href="localisation.html" data-lang-fr="Localisation" data-lang-en="Location">Localisation</a>
-      <a href="promoteur.html" data-lang-fr="Le Promoteur" data-lang-en="The Developer">Le Promoteur</a>
-      <a href="contact.html" class="active" data-lang-fr="Contact" data-lang-en="Contact">Contact</a>
+      <a href="/" data-lang-fr="Accueil" data-lang-en="Home">Accueil</a>
+      <a href="/presentation" data-lang-fr="Présentation" data-lang-en="Presentation">Présentation</a>
+      <a href="/logements" data-lang-fr="Logements" data-lang-en="Apartments">Logements</a>
+      <a href="/exterieurs" data-lang-fr="Espaces Communs" data-lang-en="Common Areas">Espaces Communs</a>
+      <a href="/localisation" data-lang-fr="Localisation" data-lang-en="Location">Localisation</a>
+      <a href="/promoteur" data-lang-fr="Le Promoteur" data-lang-en="The Developer">Le Promoteur</a>
+      <a href="/blog" data-lang-fr="Blog" data-lang-en="Blog">Blog</a>
+      <a href="/contact" class="active" aria-current="page" data-lang-fr="Contact" data-lang-en="Contact">Contact</a>
     </div>
     <div class="d-flex align-center gap-2">
-      <div class="lang-toggle">
-        <button class="lang-btn active" onclick="setLang('fr')">FR</button>
-        <button class="lang-btn" onclick="setLang('en')">EN</button>
+      <div class="lang-toggle" role="group" aria-label="Langue / Language">
+        <button type="button" class="lang-btn active" lang="fr" aria-pressed="true" onclick="setLang('fr')">FR</button>
+        <button type="button" class="lang-btn" lang="en" aria-pressed="false" onclick="setLang('en')">EN</button>
       </div>
-      <div class="nav-burger" id="burger" onclick="toggleMobile()">
+      <button type="button" class="nav-burger" id="burger" aria-label="Ouvrir le menu" aria-expanded="false" aria-controls="mobileMenu" onclick="toggleMobile()">
         <span></span><span></span><span></span>
-      </div>
+      </button>
     </div>
   </div>
 </nav>
-
 <div class="nav-mobile" id="mobileMenu">
-  <a href="index.html" onclick="toggleMobile()" data-lang-fr="Accueil" data-lang-en="Home">Accueil</a>
-  <a href="presentation.html" onclick="toggleMobile()" data-lang-fr="Présentation" data-lang-en="Presentation">Présentation</a>
-  <a href="logements.html" onclick="toggleMobile()" data-lang-fr="Logements" data-lang-en="Apartments">Logements</a>
-  <a href="exterieurs.html" onclick="toggleMobile()" data-lang-fr="Espaces Communs" data-lang-en="Common Areas">Espaces Communs</a>
-  <a href="localisation.html" onclick="toggleMobile()" data-lang-fr="Localisation" data-lang-en="Location">Localisation</a>
-  <a href="promoteur.html" onclick="toggleMobile()" data-lang-fr="Le Promoteur" data-lang-en="The Developer">Le Promoteur</a>
-  <a href="contact.html" onclick="toggleMobile()" data-lang-fr="Contact" data-lang-en="Contact">Contact</a>
-  <div class="nav-mobile-lang">
-    <button class="lang-btn active" onclick="setLang('fr')">FR</button>
-    <button class="lang-btn" onclick="setLang('en')">EN</button>
+  <a href="/" onclick="toggleMobile()" data-lang-fr="Accueil" data-lang-en="Home">Accueil</a>
+  <a href="/presentation" onclick="toggleMobile()" data-lang-fr="Présentation" data-lang-en="Presentation">Présentation</a>
+  <a href="/logements" onclick="toggleMobile()" data-lang-fr="Logements" data-lang-en="Apartments">Logements</a>
+  <a href="/exterieurs" onclick="toggleMobile()" data-lang-fr="Espaces Communs" data-lang-en="Common Areas">Espaces Communs</a>
+  <a href="/localisation" onclick="toggleMobile()" data-lang-fr="Localisation" data-lang-en="Location">Localisation</a>
+  <a href="/promoteur" onclick="toggleMobile()" data-lang-fr="Le Promoteur" data-lang-en="The Developer">Le Promoteur</a>
+  <a href="/blog" onclick="toggleMobile()" data-lang-fr="Blog" data-lang-en="Blog">Blog</a>
+  <a href="/contact" class="active" aria-current="page" onclick="toggleMobile()" data-lang-fr="Contact" data-lang-en="Contact">Contact</a>
+  <div class="nav-mobile-lang" role="group" aria-label="Langue / Language">
+    <button type="button" class="lang-btn active" lang="fr" aria-pressed="true" onclick="setLang('fr')">FR</button>
+    <button type="button" class="lang-btn" lang="en" aria-pressed="false" onclick="setLang('en')">EN</button>
   </div>
 </div>
 
-<!-- Hero -->
-<section class="page-hero" style="height:50vh;">
-  <div class="hero-bg">
-    <!-- IMAGE: Vue de la résidence 59 Cézanne depuis l'entrée -->
-    <img
-      src="Photo 59 Cézanne/3D Groove Architecture/Edited/050-APC-230309-INSERTION-enhanced.webp"
-      alt="59 Cézanne - Contact"
-      loading="eager"
-    />
-  </div>
-  <div class="hero-overlay"></div>
-  <div class="hero-content">
-    <p class="hero-eyebrow" data-lang-fr="Parlons de votre projet" data-lang-en="Let's talk about your project">Parlons de votre projet</p>
-    <h1 class="hero-title" style="font-size:clamp(2rem,4vw,3.5rem);" data-lang-fr="Nous <em>contacter</em>" data-lang-en="<em>Contact</em> us">Nous <em>contacter</em></h1>
-    <p class="hero-subtitle" data-lang-fr="Notre équipe vous répond dans les 24 heures ouvrées." data-lang-en="Our team will get back to you within 24 working hours.">Notre équipe vous répond dans les 24 heures ouvrées.</p>
-  </div>
-</section>
+<main id="contenu">
 
-<!-- ─── Contact Principal ─────────────────────────────────────── -->
-<section class="section">
-  <div class="container">
-    <div class="contact-grid">
-      <!-- Formulaire -->
-      <div class="contact-form-wrap reveal-left">
-        <h2 class="form-title" data-lang-fr="Votre demande" data-lang-en="Your enquiry">Votre demande</h2>
-        <p class="form-subtitle" data-lang-fr="Remplissez ce formulaire pour recevoir la plaquette et les plans, ou pour organiser une visite." data-lang-en="Fill in this form to receive the brochure and plans, or to arrange a visit.">Remplissez ce formulaire pour recevoir la plaquette et les plans, ou pour organiser une visite.</p>
+  <!-- ─── Bandeau ──────────────────────────────────────────────── -->
+  <section class="page-hero ct-hero" aria-labelledby="ct-h1">
+    <div class="hero-bg">
+      <img
+        src="/Photo%2059%20C%C3%A9zanne/3D%20Groove%20Architecture/Edited/050-APC-230309-INSERTION-enhanced-1200w.webp"
+        srcset="/Photo%2059%20C%C3%A9zanne/3D%20Groove%20Architecture/Edited/050-APC-230309-INSERTION-enhanced-800w.webp 800w, /Photo%2059%20C%C3%A9zanne/3D%20Groove%20Architecture/Edited/050-APC-230309-INSERTION-enhanced-1200w.webp 1200w, /Photo%2059%20C%C3%A9zanne/3D%20Groove%20Architecture/Edited/050-APC-230309-INSERTION-enhanced.webp 1600w"
+        sizes="100vw"
+        width="1200" height="811"
+        alt="Insertion 3D de l'immeuble 59 Cézanne vu depuis la rue, derrière un mur de pierre et un portail"
+        fetchpriority="high"
+        decoding="async"
+        style="object-position:50% 42%;"
+      />
+    </div>
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+      <p class="hero-eyebrow" data-lang-fr="Parlons de votre projet" data-lang-en="Let's talk about your project">Parlons de votre projet</p>
+      <h1 class="hero-title" id="ct-h1" data-lang-fr="Nous contacter pour visiter <em>59 Cézanne</em>" data-lang-en="Contact us to visit <em>59 Cézanne</em>">Nous contacter pour visiter <em>59 Cézanne</em></h1>
+      <p class="hero-subtitle" data-lang-fr="Plaquette, précisions sur les logements, organisation d'une visite : décrivez-nous votre projet, notre équipe vous recontacte." data-lang-en="Brochure, details on the apartments, arranging a visit: tell us about your project and our team will get back to you.">Plaquette, précisions sur les logements, organisation d'une visite : décrivez-nous votre projet, notre équipe vous recontacte.</p>
+    </div>
+    <p class="ct-credit" data-lang-fr="Illustration non contractuelle" data-lang-en="Non-contractual illustration">Illustration non contractuelle</p>
+  </section>
 
-        <form id="contactForm" name="contact" method="POST" novalidate>
-          <div class="form-grid">
-            <div class="form-group" id="fg-nom">
-              <label class="form-label" for="nom" data-lang-fr="Nom *" data-lang-en="Surname *">Nom *</label>
-              <input type="text" class="form-input" id="nom" name="nom" placeholder="Votre nom" data-placeholder-fr="Votre nom" data-placeholder-en="Your surname" autocomplete="family-name" />
-              <span class="form-error" data-lang-fr="Veuillez indiquer votre nom." data-lang-en="Please enter your surname.">Veuillez indiquer votre nom.</span>
+  <!-- ─── Formulaire + coordonnées ─────────────────────────────── -->
+  <section class="ct-main" id="formulaire" aria-labelledby="ct-form-title">
+    <div class="container">
+      <div class="ct-grid">
+
+        <!-- Formulaire -->
+        <div class="ct-card">
+          <h2 id="ct-form-title" data-lang-fr="Votre demande" data-lang-en="Your enquiry">Votre demande</h2>
+          <p class="ct-intro" data-lang-fr="Indiquez vos coordonnées et votre projet : nous vous transmettons la plaquette, les précisions demandées ou une proposition de visite." data-lang-en="Give us your contact details and tell us about your project: we will send you the brochure, the information you ask for or a proposed visit.">Indiquez vos coordonnées et votre projet : nous vous transmettons la plaquette, les précisions demandées ou une proposition de visite.</p>
+          <p class="ct-required-note" data-lang-fr="Les champs marqués d'un astérisque (*) sont obligatoires." data-lang-en="Fields marked with an asterisk (*) are required.">Les champs marqués d'un astérisque (*) sont obligatoires.</p>
+
+          <noscript>
+            <div class="ct-noscript">
+              <p>JavaScript est désactivé dans votre navigateur : le formulaire fonctionne quand même. Il est alors envoyé directement par notre prestataire Formspree, et vous arrivez ensuite sur une page de confirmation. En cas de difficulté, appelez-nous au <a class="ct-link" href="tel:+33609204590">06 09 20 45 90</a>.</p>
+              <p lang="en">JavaScript is turned off in your browser: the form still works. It is then sent directly by our provider Formspree, and you will land on a confirmation page afterwards. If you have any difficulty, call us on <a class="ct-link" href="tel:+33609204590">+33 6 09 20 45 90</a>.</p>
             </div>
-            <div class="form-group" id="fg-prenom">
-              <label class="form-label" for="prenom" data-lang-fr="Prénom *" data-lang-en="First name *">Prénom *</label>
-              <input type="text" class="form-input" id="prenom" name="prenom" placeholder="Votre prénom" data-placeholder-fr="Votre prénom" data-placeholder-en="Your first name" autocomplete="given-name" />
-              <span class="form-error" data-lang-fr="Veuillez indiquer votre prénom." data-lang-en="Please enter your first name.">Veuillez indiquer votre prénom.</span>
-            </div>
-            <div class="form-group" id="fg-email">
-              <label class="form-label" for="email" data-lang-fr="Email *" data-lang-en="Email *">Email *</label>
-              <input type="email" class="form-input" id="email" name="email" placeholder="votre@email.fr" data-placeholder-fr="votre@email.fr" data-placeholder-en="your@email.com" autocomplete="email" />
-              <span class="form-error" data-lang-fr="Veuillez indiquer un email valide." data-lang-en="Please enter a valid email address.">Veuillez indiquer un email valide.</span>
-            </div>
-            <div class="form-group" id="fg-tel">
-              <label class="form-label" for="tel" data-lang-fr="Téléphone *" data-lang-en="Phone *">Téléphone *</label>
-              <input type="tel" class="form-input" id="tel" name="tel" placeholder="06 00 00 00 00" data-placeholder-fr="06 00 00 00 00" data-placeholder-en="+33 6 00 00 00 00" autocomplete="tel" />
-              <span class="form-error" data-lang-fr="Veuillez indiquer votre téléphone." data-lang-en="Please enter your phone number.">Veuillez indiquer votre téléphone.</span>
-            </div>
-            <div class="form-group full" id="fg-typology">
-              <label class="form-label" for="typology" data-lang-fr="Typologie souhaitée" data-lang-en="Preferred apartment type">Typologie souhaitée</label>
-              <select class="form-select" id="typology" name="typology">
-                <option value="" disabled selected data-lang-fr="Choisissez une typologie" data-lang-en="Choose an apartment type">Choisissez une typologie</option>
-                <option value="t4" data-lang-fr="4 pièces — Appartement familial (102 à 139 m²)" data-lang-en="4 rooms — Family apartment (102 to 139 m²)">4 pièces — Appartement familial (102 à 139 m²)</option>
-                <option value="t3duplex" data-lang-fr="3 pièces Duplex — Maison sur 2 niveaux (~104 m²)" data-lang-en="3-room Duplex — Two-level home (~104 m²)">3 pièces Duplex — Maison sur 2 niveaux (~104 m²)</option>
-                <option value="t2" data-lang-fr="2 pièces — Appartement intimiste (~46 m²)" data-lang-en="2 rooms — Intimate apartment (~46 m²)">2 pièces — Appartement intimiste (~46 m²)</option>
-                <option value="non-decide" data-lang-fr="Je ne sais pas encore" data-lang-en="Not decided yet">Je ne sais pas encore</option>
-                <option value="info" data-lang-fr="Informations générales seulement" data-lang-en="General information only">Informations générales seulement</option>
-              </select>
-            </div>
-            <div class="form-group full" id="fg-message">
-              <label class="form-label" for="message" data-lang-fr="Message" data-lang-en="Message">Message</label>
-              <textarea class="form-textarea" id="message" name="message" placeholder="Décrivez votre projet, vos questions, vos disponibilités pour une visite..." data-placeholder-fr="Décrivez votre projet, vos questions, vos disponibilités pour une visite..." data-placeholder-en="Describe your project, your questions, your availability for a visit..."></textarea>
-            </div>
-            <div class="form-group full">
-              <div class="checkbox-group">
-                <input type="checkbox" id="rgpd" name="rgpd" />
-                <label for="rgpd" data-lang-fr="J'accepte que mes données personnelles soient utilisées par Ponthieu Développement Holding pour traiter ma demande. Conformément au RGPD, vous disposez d'un droit d'accès, de rectification et de suppression de vos données. &lt;a href='mentions-legales.html#confidentialite' style='color:var(--or);'&gt;En savoir plus&lt;/a&gt;." data-lang-en="I agree that my personal data may be used by Ponthieu Développement Holding to process my enquiry. Under GDPR, you have the right to access, correct and delete your data. &lt;a href='mentions-legales.html#confidentialite' style='color:var(--or);'&gt;Learn more&lt;/a&gt;.">
-                  J'accepte que mes données personnelles soient utilisées par Ponthieu Développement Holding pour traiter ma demande. Conformément au RGPD, vous disposez d'un droit d'accès, de rectification et de suppression de vos données. <a href="mentions-legales.html#confidentialite" style="color:var(--or);">En savoir plus</a>.
-                </label>
+          </noscript>
+
+          <div id="errSummary" class="ct-summary" role="alert" tabindex="-1"></div>
+
+          <form id="contactForm" class="ct-form" name="contact" action="https://formspree.io/f/xpqybwkw" method="POST" accept-charset="UTF-8">
+            <div class="form-grid">
+
+              <div class="form-group" id="fg-nom">
+                <label class="form-label" for="nom"><span id="lbl-nom" data-lang-fr="Nom" data-lang-en="Surname">Nom</span> <span class="ct-req" aria-hidden="true">*</span></label>
+                <input type="text" class="form-input" id="nom" name="nom" required aria-required="true" autocomplete="family-name" maxlength="80" placeholder="Votre nom" data-placeholder-fr="Votre nom" data-placeholder-en="Your surname" />
+                <span class="form-error" id="err-nom" data-lang-fr="Veuillez indiquer votre nom." data-lang-en="Please enter your surname.">Veuillez indiquer votre nom.</span>
               </div>
-              <span class="form-error" id="rgpd-error" style="display:none;" data-lang-fr="Vous devez accepter la politique de confidentialité." data-lang-en="You must accept the privacy policy.">Vous devez accepter la politique de confidentialité.</span>
+
+              <div class="form-group" id="fg-prenom">
+                <label class="form-label" for="prenom"><span id="lbl-prenom" data-lang-fr="Prénom" data-lang-en="First name">Prénom</span> <span class="ct-req" aria-hidden="true">*</span></label>
+                <input type="text" class="form-input" id="prenom" name="prenom" required aria-required="true" autocomplete="given-name" maxlength="80" placeholder="Votre prénom" data-placeholder-fr="Votre prénom" data-placeholder-en="Your first name" />
+                <span class="form-error" id="err-prenom" data-lang-fr="Veuillez indiquer votre prénom." data-lang-en="Please enter your first name.">Veuillez indiquer votre prénom.</span>
+              </div>
+
+              <div class="form-group" id="fg-email">
+                <label class="form-label" for="email"><span id="lbl-email" data-lang-fr="E-mail" data-lang-en="Email">E-mail</span> <span class="ct-req" aria-hidden="true">*</span></label>
+                <input type="email" class="form-input" id="email" name="email" required aria-required="true" autocomplete="email" inputmode="email" spellcheck="false" maxlength="254" placeholder="votre@email.fr" data-placeholder-fr="votre@email.fr" data-placeholder-en="your@email.com" />
+                <span class="form-error" id="err-email" data-lang-fr="Veuillez indiquer une adresse e-mail valide (ex. prenom.nom@exemple.fr)." data-lang-en="Please enter a valid email address (e.g. first.last@example.com).">Veuillez indiquer une adresse e-mail valide (ex. prenom.nom@exemple.fr).</span>
+              </div>
+
+              <div class="form-group" id="fg-tel">
+                <label class="form-label" for="tel"><span id="lbl-tel" data-lang-fr="Téléphone" data-lang-en="Phone">Téléphone</span> <span class="ct-req" aria-hidden="true">*</span></label>
+                <input type="tel" class="form-input" id="tel" name="tel" required aria-required="true" autocomplete="tel" inputmode="tel" maxlength="30" placeholder="+33 6 00 00 00 00" aria-describedby="hint-tel" />
+                <span class="ct-hint" id="hint-tel" data-lang-fr="Numéros français ou internationaux acceptés (ex. +33 6 00 00 00 00)." data-lang-en="French and international numbers accepted (e.g. +33 6 00 00 00 00).">Numéros français ou internationaux acceptés (ex. +33 6 00 00 00 00).</span>
+                <span class="form-error" id="err-tel" data-lang-fr="Veuillez indiquer un numéro de téléphone valide, avec l'indicatif du pays si vous êtes à l'étranger (ex. +41 79 000 00 00)." data-lang-en="Please enter a valid phone number, including the country code if you are abroad (e.g. +41 79 000 00 00).">Veuillez indiquer un numéro de téléphone valide, avec l'indicatif du pays si vous êtes à l'étranger (ex. +41 79 000 00 00).</span>
+              </div>
+
+              <div class="form-group" id="fg-projet">
+                <label class="form-label" for="projet"><span data-lang-fr="Type de projet" data-lang-en="Type of project">Type de projet</span> <span class="ct-opt" data-lang-fr="(facultatif)" data-lang-en="(optional)">(facultatif)</span></label>
+                <select class="form-select" id="projet" name="projet">
+                  <option value="" data-lang-fr="Non précisé" data-lang-en="Not specified">Non précisé</option>
+                  <option value="residence-principale" data-lang-fr="Résidence principale" data-lang-en="Main residence">Résidence principale</option>
+                  <option value="residence-secondaire" data-lang-fr="Résidence secondaire" data-lang-en="Second home">Résidence secondaire</option>
+                  <option value="investissement" data-lang-fr="Investissement" data-lang-en="Investment">Investissement</option>
+                </select>
+              </div>
+
+              <div class="form-group" id="fg-typology">
+                <label class="form-label" for="typology"><span data-lang-fr="Typologie souhaitée" data-lang-en="Preferred apartment type">Typologie souhaitée</span> <span class="ct-opt" data-lang-fr="(facultatif)" data-lang-en="(optional)">(facultatif)</span></label>
+                <select class="form-select" id="typology" name="typology">
+                  <option value="" data-lang-fr="Non précisée" data-lang-en="Not specified">Non précisée</option>
+                  <option value="t4" data-lang-fr="4 pièces (T4) : environ 100,5 à 138 m²" data-lang-en="4 rooms (T4): approx. 100.5 to 138 m²">4 pièces (T4) : environ 100,5 à 138 m²</option>
+                  <option value="t3duplex" data-lang-fr="3 pièces duplex : environ 103,5 m²" data-lang-en="3-room duplex: approx. 103.5 m²">3 pièces duplex : environ 103,5 m²</option>
+                  <option value="t2" data-lang-fr="2 pièces (T2) : environ 45 m²" data-lang-en="2 rooms (T2): approx. 45 m²">2 pièces (T2) : environ 45 m²</option>
+                  <option value="non-decide" data-lang-fr="Je ne sais pas encore" data-lang-en="Not decided yet">Je ne sais pas encore</option>
+                  <option value="info" data-lang-fr="Informations générales seulement" data-lang-en="General information only">Informations générales seulement</option>
+                </select>
+              </div>
+
+              <div class="form-group full" id="fg-message">
+                <label class="form-label" for="message"><span data-lang-fr="Message" data-lang-en="Message">Message</span> <span class="ct-opt" data-lang-fr="(facultatif)" data-lang-en="(optional)">(facultatif)</span></label>
+                <textarea class="form-textarea" id="message" name="message" maxlength="3000" placeholder="Décrivez votre projet, vos questions, vos disponibilités pour une visite…" data-placeholder-fr="Décrivez votre projet, vos questions, vos disponibilités pour une visite…" data-placeholder-en="Describe your project, your questions and when you are available for a visit…"></textarea>
+              </div>
+
+              <div class="form-group full" id="fg-rgpd">
+                <div class="ct-consent">
+                  <input type="checkbox" id="rgpd" name="consentement_rgpd" value="oui" required aria-required="true" />
+                  <label for="rgpd"><span id="rgpd-text" data-lang-fr="J'accepte que Ponthieu Développement Holding utilise les informations saisies dans ce formulaire pour répondre à ma demande (plaquette, informations sur les logements, organisation d'une visite) et me recontacter à ce sujet par téléphone ou par e-mail. Ces informations sont transmises à Formspree, prestataire d'envoi du formulaire situé aux États-Unis. Je peux retirer mon consentement à tout moment." data-lang-en="I agree that Ponthieu Développement Holding may use the information entered in this form to reply to my enquiry (brochure, information about the apartments, arranging a visit) and to contact me about it by phone or email. This information is sent through Formspree, the form-delivery provider, which is located in the United States. I can withdraw my consent at any time.">J'accepte que Ponthieu Développement Holding utilise les informations saisies dans ce formulaire pour répondre à ma demande (plaquette, informations sur les logements, organisation d'une visite) et me recontacter à ce sujet par téléphone ou par e-mail. Ces informations sont transmises à Formspree, prestataire d'envoi du formulaire situé aux États-Unis. Je peux retirer mon consentement à tout moment.</span> <span class="ct-req" aria-hidden="true">*</span></label>
+                </div>
+                <p class="ct-consent-link"><a class="ct-link" href="/mentions-legales#confidentialite" target="_blank" rel="noopener"><span data-lang-fr="Politique de confidentialité et exercice de vos droits" data-lang-en="Privacy policy and how to exercise your rights">Politique de confidentialité et exercice de vos droits</span><span class="sr-only" data-lang-fr=" (s'ouvre dans un nouvel onglet)" data-lang-en=" (opens in a new tab)"> (s'ouvre dans un nouvel onglet)</span></a></p>
+                <span class="form-error" id="err-rgpd" data-lang-fr="Pour envoyer votre demande, veuillez cocher la case de consentement." data-lang-en="To send your enquiry, please tick the consent box.">Pour envoyer votre demande, veuillez cocher la case de consentement.</span>
+              </div>
+
             </div>
-          </div>
 
-          <button type="submit" class="btn-submit">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
-            <span data-lang-fr="Envoyer ma demande" data-lang-en="Send my enquiry">Envoyer ma demande</span>
-          </button>
-        </form>
+            <!-- Anti-spam : champ piège (Formspree ignore silencieusement tout envoi où il est rempli) -->
+            <div class="ct-hp" aria-hidden="true">
+              <label for="ct-extra">Ne pas remplir ce champ</label>
+              <input type="text" id="ct-extra" name="_gotcha" tabindex="-1" autocomplete="off" />
+            </div>
 
-        <div class="form-success" id="formSuccess">
-          <div style="width:64px;height:64px;border-radius:50%;background:rgba(107,124,69,0.12);display:flex;align-items:center;justify-content:center;margin:0 auto 1.2rem;color:var(--olive);">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="32" height="32"><path d="M20 6L9 17l-5-5"/></svg>
-          </div>
-          <strong style="font-family:var(--font-serif);font-size:1.35rem;font-weight:300;display:block;margin-bottom:0.75rem;color:var(--text);" data-lang-fr="Message envoyé avec succès" data-lang-en="Message sent successfully">Message envoyé avec succès</strong>
-          <p style="font-size:0.88rem;color:var(--text-mid);line-height:1.8;max-width:400px;margin:0 auto;" data-lang-fr="Merci pour votre intérêt pour la résidence 59 Cézanne. Notre équipe vous contactera dans les 24 heures ouvrées." data-lang-en="Thank you for your interest in Résidence 59 Cézanne. Our team will contact you within 24 working hours.">Merci pour votre intérêt pour la résidence 59 Cézanne. Notre équipe vous contactera dans les 24 heures ouvrées.</p>
+            <!-- Champs transmis avec la demande (valeurs complétées par contact.js quand JavaScript est actif) -->
+            <input type="hidden" name="_subject" value="Demande d'information — 59 Cézanne (formulaire du site)" />
+            <input type="hidden" name="_next" value="https://59-cezanne.com/merci" />
+            <input type="hidden" name="page_origine" id="page_origine" value="" />
+            <input type="hidden" name="consentement_version" value="mentions-legales-2026-10" />
+            <input type="hidden" name="consentement_texte" value="J'accepte que Ponthieu Développement Holding utilise les informations saisies dans ce formulaire pour répondre à ma demande (plaquette, informations sur les logements, organisation d'une visite) et me recontacter à ce sujet par téléphone ou par e-mail. Ces informations sont transmises à Formspree, prestataire d'envoi du formulaire situé aux États-Unis. Je peux retirer mon consentement à tout moment." />
+
+            <button type="submit" class="ct-submit" id="ct-submit">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" focusable="false"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+              <span id="ct-submit-label" data-lang-fr="Envoyer ma demande" data-lang-en="Send my enquiry">Envoyer ma demande</span>
+            </button>
+          </form>
+
+          <div id="formStatus" class="ct-status" role="status" aria-live="polite" aria-atomic="true"></div>
+          <div id="formFail" class="ct-status" role="alert" aria-atomic="true"></div>
         </div>
-      </div>
 
-      <!-- Infos Contact -->
-      <div class="contact-info-block reveal-right">
-        <p class="eyebrow" data-lang-fr="Coordonnées" data-lang-en="Contact details">Coordonnées</p>
-        <h2 class="section-title" style="font-size:1.8rem;" data-lang-fr="Ponthieu<br><em>Développement</em>" data-lang-en="Ponthieu<br><em>Développement</em>">Ponthieu<br><em>Développement</em></h2>
-        <div class="divider"></div>
+        <!-- Coordonnées -->
+        <aside class="ct-aside" aria-labelledby="ct-coord-title">
+          <p class="eyebrow" data-lang-fr="Coordonnées" data-lang-en="Contact details">Coordonnées</p>
+          <h2 id="ct-coord-title" data-lang-fr="Ponthieu <em>Développement</em> Holding" data-lang-en="Ponthieu <em>Développement</em> Holding">Ponthieu <em>Développement</em> Holding</h2>
+          <div class="divider"></div>
 
-        <div class="contact-info-items">
-          <div class="contact-info-item">
-            <div class="contact-info-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="22" height="22"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg></div>
-            <div class="contact-info-text">
-              <strong data-lang-fr="Bureau Commercial PDH" data-lang-en="PDH Commercial Office">Bureau Commercial PDH</strong>
-              <span>418 Ancienne Route des Alpes<br>13100 Aix-en-Provence</span>
-            </div>
-          </div>
-          <div class="contact-info-item">
-            <div class="contact-info-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="22" height="22"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81 19.79 19.79 0 01.01 1.18 2 2 0 012 0h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg></div>
-            <div class="contact-info-text">
-              <strong data-lang-fr="Téléphone direct" data-lang-en="Direct phone">Téléphone direct</strong>
-              <a href="tel:0630073601">06 30 07 36 01</a>
-            </div>
-          </div>
-          <div class="contact-info-item">
-            <div class="contact-info-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="22" height="22"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></div>
-            <div class="contact-info-text">
-              <strong data-lang-fr="Email" data-lang-en="Email">Email</strong>
-              <a href="mailto:jessica@ownimmobilier.fr">jessica@ownimmobilier.fr</a>
-            </div>
-          </div>
-          <div class="contact-info-item">
-            <div class="contact-info-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="22" height="22"><circle cx="12" cy="12" r="10"/><polyline points="12,6 12,12 16,14"/></svg></div>
-            <div class="contact-info-text">
-              <strong data-lang-fr="Horaires" data-lang-en="Opening hours">Horaires</strong>
-              <span data-lang-fr="Lun–Ven : 9h – 18h<br>Sam sur rendez-vous" data-lang-en="Mon–Fri: 9am – 6pm<br>Sat by appointment">Lun–Ven : 9h – 18h<br>Sam sur rendez-vous</span>
-            </div>
-          </div>
-        </div>
+          <ul class="ct-info">
+            <li>
+              <span class="ct-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="22" height="22"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg></span>
+              <div>
+                <strong data-lang-fr="Adresse postale" data-lang-en="Postal address">Adresse postale</strong>
+                <span>418 Ancienne Route des Alpes<br />13100 Aix-en-Provence</span>
+              </div>
+            </li>
+            <li>
+              <span class="ct-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="22" height="22"><path d="M3 21V9l9-6 9 6v12"/><path d="M9 21v-7h6v7"/></svg></span>
+              <div>
+                <strong data-lang-fr="La résidence" data-lang-en="The residence">La résidence</strong>
+                <span data-lang-fr="59 avenue Paul Cézanne, 13100 Aix-en-Provence. Visites organisées sur rendez-vous." data-lang-en="59 avenue Paul Cézanne, 13100 Aix-en-Provence. Visits by appointment.">59 avenue Paul Cézanne, 13100 Aix-en-Provence. Visites organisées sur rendez-vous.</span>
+              </div>
+            </li>
+            <li>
+              <span class="ct-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="22" height="22"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81 19.79 19.79 0 01.01 1.18 2 2 0 012 0h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg></span>
+              <div>
+                <strong data-lang-fr="Téléphone" data-lang-en="Phone">Téléphone</strong>
+                <a href="tel:+33609204590">06 09 20 45 90</a>
+              </div>
+            </li>
+            <li>
+              <span class="ct-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="22" height="22"><path d="M21 11.5a8.4 8.4 0 01-12.2 7.5L3 21l2-5.6A8.4 8.4 0 1121 11.5z"/></svg></span>
+              <div>
+                <strong>WhatsApp</strong>
+                <a href="https://wa.me/33609204590" target="_blank" rel="noopener"><span data-lang-fr="Écrire sur WhatsApp" data-lang-en="Message us on WhatsApp">Écrire sur WhatsApp</span><span class="sr-only" data-lang-fr=" (s'ouvre dans un nouvel onglet)" data-lang-en=" (opens in a new tab)"> (s'ouvre dans un nouvel onglet)</span></a>
+              </div>
+            </li>
+            <li>
+              <span class="ct-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="22" height="22"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></span>
+              <div>
+                <strong data-lang-fr="E-mail" data-lang-en="Email">E-mail</strong>
+                <a href="mailto:jessica@ownimmobilier.fr">jessica@ownimmobilier.fr</a>
+              </div>
+            </li>
+            <li>
+              <span class="ct-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="22" height="22"><circle cx="12" cy="12" r="10"/><polyline points="12,6 12,12 16,14"/></svg></span>
+              <div>
+                <strong data-lang-fr="Horaires" data-lang-en="Opening hours">Horaires</strong>
+                <span data-lang-fr="Lun–Ven : 9h – 18h<br />Sam. sur rendez-vous" data-lang-en="Mon–Fri: 9am – 6pm<br />Sat. by appointment">Lun–Ven : 9h – 18h<br />Sam. sur rendez-vous</span>
+              </div>
+            </li>
+          </ul>
 
-        <!-- PDF Downloads -->
-        <div style="display:flex;flex-direction:column;gap:0.7rem;margin-bottom:1.2rem;">
-          <a href="Dossier%20de%20commercialisation%2059%20C%C3%A9zanne/Plaquette%2059%20C%C3%A9zanne%20Version%20Email.pdf" download style="display:flex;align-items:center;gap:0.8rem;padding:1rem 1.2rem;background:var(--white);border:1px solid var(--border);border-radius:var(--radius);text-decoration:none;color:var(--text);font-size:0.85rem;transition:border-color var(--transition-fast),box-shadow var(--transition);" onmouseover="this.style.borderColor='rgba(201,169,110,0.4)';this.style.boxShadow='0 2px 12px rgba(0,0,0,0.06)';" onmouseout="this.style.borderColor='var(--border)';this.style.boxShadow='none';">
-            <span style="width:36px;height:36px;border-radius:50%;background:rgba(201,169,110,0.1);display:flex;align-items:center;justify-content:center;color:var(--or);flex-shrink:0;">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="18" height="18"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          <a class="ct-doc" href="/Dossier%20de%20commercialisation%2059%20C%C3%A9zanne/Plaquette%2059%20C%C3%A9zanne%20Version%20Email.pdf" download>
+            <span class="ct-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="20" height="20"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></span>
+            <span>
+              <strong data-lang-fr="Plaquette commerciale (PDF, 2 Mo)" data-lang-en="Sales brochure (PDF, 2 MB)">Plaquette commerciale (PDF, 2 Mo)</strong>
+              <small data-lang-fr="Présentation du programme : document commercial non contractuel." data-lang-en="Overview of the programme: non-contractual sales document.">Présentation du programme : document commercial non contractuel.</small>
             </span>
-            <div>
-              <strong style="display:block;font-family:var(--font-serif);font-size:0.9rem;font-weight:400;" data-lang-fr="Plaquette commerciale" data-lang-en="Sales brochure">Plaquette commerciale</strong>
-              <span style="font-size:0.75rem;color:var(--text-light);" data-lang-fr="PDF — Présentation complète" data-lang-en="PDF — Full presentation">PDF — Présentation complète</span>
-            </div>
           </a>
-        </div>
 
-        <button class="callback-btn" onclick="window.location.href='tel:0630073601'">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81 19.79 19.79 0 01.01 1.18 2 2 0 012 0h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/>
-          </svg>
-          <span data-lang-fr="Être rappelé — 06 30 07 36 01" data-lang-en="Call back — 06 30 07 36 01">Être rappelé — 06 30 07 36 01</span>
-        </button>
+          <a class="btn btn-primary ct-call" href="tel:+33609204590" data-lang-fr="Appeler le 06 09 20 45 90" data-lang-en="Call 06 09 20 45 90">Appeler le 06 09 20 45 90</a>
 
-        <!-- Carte bureau PDH -->
-        <div class="map-container mt-6">
-          <iframe
-            src="https://maps.google.com/maps?q=418+Ancienne+Route+des+Alpes+13100+Aix-en-Provence&t=&z=15&ie=UTF8&iwloc=&output=embed"
-            allowfullscreen=""
-            loading="lazy"
-            referrerpolicy="no-referrer-when-downgrade"
-            title="Bureau Ponthieu Développement Holding"
-            style="height:280px;"
-          ></iframe>
-        </div>
-        <p style="text-align:center;font-size:0.75rem;color:var(--text-light);margin-top:0.6rem;">
-          418 Ancienne Route des Alpes, 13100 Aix-en-Provence
-        </p>
+          <!-- Carte : chargée uniquement après un clic (aucune requête vers Google avant) -->
+          <div class="ct-map">
+            <h3 data-lang-fr="Plan d'accès" data-lang-en="Map">Plan d'accès</h3>
+            <div class="ct-map-box" id="mapBox">
+              <div class="ct-map-ph" id="mapPh">
+                <p data-lang-fr="La carte Google Maps ne s'affiche qu'avec votre accord : Google reçoit alors votre adresse IP et des informations de navigation." data-lang-en="The Google Maps map is only displayed with your consent: Google then receives your IP address and browsing information.">La carte Google Maps ne s'affiche qu'avec votre accord : Google reçoit alors votre adresse IP et des informations de navigation.</p>
+                <button type="button" class="btn btn-outline-dark" id="mapLoad" hidden data-lang-fr="Afficher la carte" data-lang-en="Show the map">Afficher la carte</button>
+                <a class="ct-link" href="https://www.google.com/maps/search/?api=1&amp;query=418+Ancienne+Route+des+Alpes+13100+Aix-en-Provence" target="_blank" rel="noopener"><span data-lang-fr="Ouvrir dans Google Maps" data-lang-en="Open in Google Maps">Ouvrir dans Google Maps</span><span class="sr-only" data-lang-fr=" (s'ouvre dans un nouvel onglet)" data-lang-en=" (opens in a new tab)"> (s'ouvre dans un nouvel onglet)</span></a>
+              </div>
+            </div>
+            <p class="ct-map-addr">418 Ancienne Route des Alpes, 13100 Aix-en-Provence</p>
+          </div>
+        </aside>
+
       </div>
     </div>
-  </div>
-</section>
+  </section>
 
-<!-- ─── FAQ ──────────────────────────────────────────────────── -->
-<section class="section faq-section" id="faq">
-  <div class="container">
-    <div class="section-header reveal">
-      <p class="eyebrow" data-lang-fr="Questions fréquentes" data-lang-en="Frequently asked questions">Questions fréquentes</p>
-      <h2 class="section-title" data-lang-fr="FAQ — Vos <em>questions</em>" data-lang-en="FAQ — Your <em>questions</em>">FAQ — Vos <em>questions</em></h2>
-      <p class="section-lead mt-2" data-lang-fr="Retrouvez les réponses aux questions les plus fréquemment posées par nos futurs acquéreurs." data-lang-en="Find answers to the most frequently asked questions from our prospective buyers.">Retrouvez les réponses aux questions les plus fréquemment posées par nos futurs acquéreurs.</p>
+  <!-- ─── Avant de nous contacter (maillage) ───────────────────── -->
+  <section class="ct-guides" aria-labelledby="ct-guides-title">
+    <div class="container">
+      <div class="section-header">
+        <p class="eyebrow" data-lang-fr="Pour aller plus loin" data-lang-en="Further reading">Pour aller plus loin</p>
+        <h2 class="section-title" id="ct-guides-title" data-lang-fr="Avant de nous <em>contacter</em>" data-lang-en="Before you <em>contact us</em>">Avant de nous <em>contacter</em></h2>
+        <p class="section-lead mt-2" data-lang-fr="Trois guides pour préparer votre projet d'achat dans le neuf." data-lang-en="Three guides to help you prepare your new-build purchase.">Trois guides pour préparer votre projet d'achat dans le neuf.</p>
+      </div>
+      <div class="ct-guide-grid">
+        <article class="ct-guide">
+          <p class="ct-guide-tag" data-lang-fr="Guide" data-lang-en="Guide">Guide</p>
+          <h3><a href="/blog/acheter-appartement-neuf-aix-en-provence" data-lang-fr="Acheter un appartement neuf à Aix-en-Provence" data-lang-en="Buying a new apartment in Aix-en-Provence">Acheter un appartement neuf à Aix-en-Provence</a></h3>
+          <p data-lang-fr="Le guide d'ensemble pour préparer un achat dans le neuf à Aix-en-Provence." data-lang-en="The overall guide to preparing a new-build purchase in Aix-en-Provence.">Le guide d'ensemble pour préparer un achat dans le neuf à Aix-en-Provence.</p>
+        </article>
+        <article class="ct-guide">
+          <p class="ct-guide-tag" data-lang-fr="Guide" data-lang-en="Guide">Guide</p>
+          <h3><a href="/blog/frais-de-notaire-neuf-tva-taxe-fonciere" data-lang-fr="Frais de notaire, TVA et taxe foncière dans le neuf" data-lang-en="Notary fees, VAT and property tax on new builds">Frais de notaire, TVA et taxe foncière dans le neuf</a></h3>
+          <p data-lang-fr="Les frais à prévoir en plus du prix d'achat d'un logement neuf." data-lang-en="The costs to plan for on top of the purchase price of a new home.">Les frais à prévoir en plus du prix d'achat d'un logement neuf.</p>
+        </article>
+        <article class="ct-guide">
+          <p class="ct-guide-tag" data-lang-fr="Guide" data-lang-en="Guide">Guide</p>
+          <h3><a href="/blog/vefa-achat-sur-plan-etapes-garanties" data-lang-fr="VEFA : les étapes de l'achat sur plan et les garanties" data-lang-en="VEFA: the steps of an off-plan purchase and the guarantees">VEFA : les étapes de l'achat sur plan et les garanties</a></h3>
+          <p data-lang-fr="Comment fonctionne l'achat sur plan et quelles protections prévoit la loi." data-lang-en="How buying off-plan works and what protections the law provides.">Comment fonctionne l'achat sur plan et quelles protections prévoit la loi.</p>
+        </article>
+      </div>
+      <p class="ct-guides-more"><a class="ct-link" href="/blog" data-lang-fr="Voir tous les guides" data-lang-en="See all guides">Voir tous les guides</a></p>
     </div>
+  </section>
 
-    <div style="max-width:800px;margin:0 auto;">
-      <div class="faq-item reveal">
-        <div class="faq-question" onclick="toggleFaq(this)" data-lang-fr="Quand est prévue la livraison de la résidence 59 Cézanne ?&lt;div class='faq-toggle'&gt;+&lt;/div&gt;" data-lang-en="When is Résidence 59 Cézanne scheduled for delivery?&lt;div class='faq-toggle'&gt;+&lt;/div&gt;">
-          Quand est prévue la livraison de la résidence 59 Cézanne ?
-          <div class="faq-toggle">+</div>
-        </div>
-        <div class="faq-answer">
-          <div class="faq-answer-inner" data-lang-fr="La résidence 59 Cézanne est actuellement en cours de commercialisation. La date de livraison prévisionnelle est fixée courant 2027. Nous vous communiquerons le calendrier précis lors de notre premier entretien. N'hésitez pas à nous contacter pour obtenir les informations les plus récentes sur l'avancement du chantier." data-lang-en="Résidence 59 Cézanne is currently being marketed. The anticipated delivery date is during 2027. We will provide the precise schedule at our first meeting. Do not hesitate to contact us for the latest news on construction progress.">
-            La résidence 59 Cézanne est actuellement en cours de commercialisation. La date de livraison prévisionnelle est fixée courant 2027. Nous vous communiquerons le calendrier précis lors de notre premier entretien. N'hésitez pas à nous contacter pour obtenir les informations les plus récentes sur l'avancement du chantier.
-          </div>
-        </div>
+  <!-- ─── FAQ ──────────────────────────────────────────────────── -->
+  <section class="ct-faq" id="faq" aria-labelledby="ct-faq-title">
+    <div class="container">
+      <div class="section-header">
+        <p class="eyebrow" data-lang-fr="Questions fréquentes" data-lang-en="Frequently asked questions">Questions fréquentes</p>
+        <h2 class="section-title" id="ct-faq-title" data-lang-fr="Avant de nous écrire : <em>vos questions</em>" data-lang-en="Before you write: <em>your questions</em>">Avant de nous écrire : <em>vos questions</em></h2>
       </div>
+      <div class="ct-faq-list">
 
-      <div class="faq-item reveal">
-        <div class="faq-question" onclick="toggleFaq(this)" data-lang-fr="Peut-on financer l'achat avec un prêt bancaire ?&lt;div class='faq-toggle'&gt;+&lt;/div&gt;" data-lang-en="Can the purchase be financed with a bank loan?&lt;div class='faq-toggle'&gt;+&lt;/div&gt;">
-          Peut-on financer l'achat avec un prêt bancaire ?
-          <div class="faq-toggle">+</div>
-        </div>
-        <div class="faq-answer">
-          <div class="faq-answer-inner" data-lang-fr="Absolument. La résidence 59 Cézanne est éligible au financement bancaire classique. Étant une Vente en l'État Futur d'Achèvement (VEFA), vous bénéficiez de l'échelonnement des appels de fonds selon l'avancement des travaux. Notre équipe peut vous mettre en relation avec des courtiers en financement immobilier partenaires pour optimiser votre plan de financement. Le Prêt à Taux Zéro (PTZ) est également applicable pour la résidence principale." data-lang-en="Absolutely. Résidence 59 Cézanne is eligible for standard bank financing. As an off-plan purchase (VEFA), funds are called in stages as construction progresses. Our team can connect you with partner mortgage brokers to optimise your financing plan. The interest-free loan (PTZ) also applies for primary residences.">
-            Absolument. La résidence 59 Cézanne est éligible au financement bancaire classique. Étant une Vente en l'État Futur d'Achèvement (VEFA), vous bénéficiez de l'échelonnement des appels de fonds selon l'avancement des travaux. Notre équipe peut vous mettre en relation avec des courtiers en financement immobilier partenaires pour optimiser votre plan de financement. Le Prêt à Taux Zéro (PTZ) est également applicable pour la résidence principale.
-          </div>
-        </div>
-      </div>
+        <details>
+          <summary><span data-lang-fr="Comment recevoir la plaquette et les plans ?" data-lang-en="How can I receive the brochure and floor plans?">Comment recevoir la plaquette et les plans ?</span></summary>
+          <div class="ct-faq-a"><p data-lang-fr="Vous pouvez télécharger la plaquette commerciale (PDF) sur cette page. Pour recevoir les plans ou des précisions sur un logement, remplissez le formulaire en indiquant le logement qui vous intéresse : notre équipe vous répond." data-lang-en="You can download the sales brochure (PDF) from this page. To receive floor plans or details about a specific apartment, fill in the form and tell us which one interests you: our team will get back to you.">Vous pouvez télécharger la plaquette commerciale (PDF) sur cette page. Pour recevoir les plans ou des précisions sur un logement, remplissez le formulaire en indiquant le logement qui vous intéresse : notre équipe vous répond.</p></div>
+        </details>
 
-      <div class="faq-item reveal">
-        <div class="faq-question" onclick="toggleFaq(this)" data-lang-fr="Comment fonctionne la personnalisation des finitions ?&lt;div class='faq-toggle'&gt;+&lt;/div&gt;" data-lang-en="How does finish personalisation work?&lt;div class='faq-toggle'&gt;+&lt;/div&gt;">
-          Comment fonctionne la personnalisation des finitions ?
-          <div class="faq-toggle">+</div>
-        </div>
-        <div class="faq-answer">
-          <div class="faq-answer-inner" data-lang-fr="La personnalisation est proposée dans un délai défini après la signature du contrat de réservation, généralement dans les 2 mois. Vous rencontrez notre architecte d'intérieur partenaire pour choisir parmi notre sélection de matériaux : revêtements de sol, carrelages, robinetterie, façades de cuisine. Les modifications structurelles (déplacement de cloisons, ajout d'une prise, etc.) sont également possibles dans certaines limites et selon le planning de chantier. Les murs sont livrés peints en blanc selon la notice." data-lang-en="Personalisation is offered within a defined period after signing the reservation contract, generally within 2 months. You will meet our partner interior architect to choose from our material selection: flooring, tiles, taps, kitchen fronts. Structural modifications (moving partition walls, adding a socket, etc.) are also possible within certain limits and depending on the construction schedule. Walls are delivered painted white as standard.">
-            La personnalisation est proposée dans un délai défini après la signature du contrat de réservation, généralement dans les 2 mois. Vous rencontrez notre architecte d'intérieur partenaire pour choisir parmi notre sélection de matériaux : revêtements de sol, carrelages, robinetterie, façades de cuisine. Les modifications structurelles (déplacement de cloisons, ajout d'une prise, etc.) sont également possibles dans certaines limites et selon le planning de chantier. Les murs sont livrés peints en blanc selon la notice.
-          </div>
-        </div>
-      </div>
+        <details>
+          <summary><span data-lang-fr="Quel est le calendrier de livraison ?" data-lang-en="What is the delivery schedule?">Quel est le calendrier de livraison ?</span></summary>
+          <div class="ct-faq-a"><p data-lang-fr="Aucune date de livraison n'est publiée sur ce site. Le calendrier de livraison à jour vous est communiqué sur demande : demandez-le dans votre message ou par téléphone." data-lang-en="No delivery date is published on this website. The up-to-date delivery schedule is provided on request: ask for it in your message or by phone.">Aucune date de livraison n'est publiée sur ce site. Le calendrier de livraison à jour vous est communiqué sur demande : demandez-le dans votre message ou par téléphone.</p></div>
+        </details>
 
-      <div class="faq-item reveal">
-        <div class="faq-question" onclick="toggleFaq(this)" data-lang-fr="Quelles garanties s'appliquent à mon appartement ?&lt;div class='faq-toggle'&gt;+&lt;/div&gt;" data-lang-en="What guarantees apply to my apartment?&lt;div class='faq-toggle'&gt;+&lt;/div&gt;">
-          Quelles garanties s'appliquent à mon appartement ?
-          <div class="faq-toggle">+</div>
-        </div>
-        <div class="faq-answer">
-          <div class="faq-answer-inner" data-lang-fr="En tant qu'acheteur en VEFA, vous bénéficiez de l'ensemble des garanties légales françaises : (1) Garantie de parfait achèvement pendant 1 an, (2) Garantie biennale sur les équipements pendant 2 ans, (3) Garantie décennale sur le gros œuvre pendant 10 ans, et (4) la Garantie Financière d'Achèvement (GFA) qui protège vos versements en cas de défaillance du promoteur. PDH souscrit systématiquement ces garanties auprès de compagnies d'assurance de premier rang." data-lang-en="As an off-plan (VEFA) buyer, you benefit from all French legal warranties: (1) Completion guarantee for 1 year, (2) Equipment guarantee for 2 years, (3) 10-year structural guarantee, and (4) the Financial Completion Guarantee (GFA) protecting your payments if the developer defaults. PDH systematically takes out these warranties with top-tier insurance companies.">
-            En tant qu'acheteur en VEFA, vous bénéficiez de l'ensemble des garanties légales françaises : (1) Garantie de parfait achèvement pendant 1 an, (2) Garantie biennale sur les équipements pendant 2 ans, (3) Garantie décennale sur le gros œuvre pendant 10 ans, et (4) la Garantie Financière d'Achèvement (GFA) qui protège vos versements en cas de défaillance du promoteur. PDH souscrit systématiquement ces garanties auprès de compagnies d'assurance de premier rang.
-          </div>
-        </div>
-      </div>
+        <details>
+          <summary><span data-lang-fr="Les prix sont-ils publiés ?" data-lang-en="Are prices published?">Les prix sont-ils publiés ?</span></summary>
+          <div class="ct-faq-a"><p data-lang-fr="Les prix des appartements ne sont pas publiés sur ce site. Notre équipe vous transmet la grille tarifaire à jour sur demande." data-lang-en="Apartment prices are not published on this website. Our team will send you the up-to-date price list on request.">Les prix des appartements ne sont pas publiés sur ce site. Notre équipe vous transmet la grille tarifaire à jour sur demande.</p></div>
+        </details>
 
-      <div class="faq-item reveal">
-        <div class="faq-question" onclick="toggleFaq(this)" data-lang-fr="Quels sont les frais d'acquisition ?&lt;div class='faq-toggle'&gt;+&lt;/div&gt;" data-lang-en="What are the acquisition costs?&lt;div class='faq-toggle'&gt;+&lt;/div&gt;">
-          Quels sont les frais d'acquisition ?
-          <div class="faq-toggle">+</div>
-        </div>
-        <div class="faq-answer">
-          <div class="faq-answer-inner" data-lang-fr="Pour un achat en VEFA (neuf), les frais de notaire sont réduits, environ 2 à 3% du prix d'acquisition (contre 7 à 8% dans l'ancien). La TVA à 20% est incluse dans le prix de vente annoncé. Notre équipe peut vous détailler les dispositifs fiscaux applicables lors d'un entretien." data-lang-en="For an off-plan (VEFA) purchase, notary fees are reduced, approximately 2 to 3% of the purchase price (compared to 7 to 8% for existing properties). VAT at 20% is included in the advertised sale price. Our team can detail the applicable tax provisions during a meeting.">
-            Pour un achat en VEFA (neuf), les frais de notaire sont réduits, environ 2 à 3% du prix d'acquisition (contre 7 à 8% dans l'ancien). La TVA à 20% est incluse dans le prix de vente annoncé. Notre équipe peut vous détailler les dispositifs fiscaux applicables lors d'un entretien.
-          </div>
-        </div>
-      </div>
+        <details>
+          <summary><span data-lang-fr="Peut-on financer l'achat avec un prêt immobilier ?" data-lang-en="Can the purchase be financed with a mortgage?">Peut-on financer l'achat avec un prêt immobilier ?</span></summary>
+          <div class="ct-faq-a"><p data-lang-fr="Oui, un achat en VEFA peut être financé par un prêt immobilier, et le modèle de contrat de réservation prévoit le cas où le prêt n'est pas obtenu. En VEFA, le prix se règle par échelons, au fil de l'avancement des travaux. Les conditions de votre financement dépendent de votre situation et de votre banque : nous ne donnons pas de conseil financier personnalisé." data-lang-en="Yes, an off-plan (VEFA) purchase can be financed with a mortgage, and the model reservation contract covers the case where the loan is not obtained. With a VEFA purchase, the price is paid in instalments as the works progress. The terms of your financing depend on your situation and your bank: we do not give personalised financial advice.">Oui, un achat en VEFA peut être financé par un prêt immobilier, et le modèle de contrat de réservation prévoit le cas où le prêt n'est pas obtenu. En VEFA, le prix se règle par échelons, au fil de l'avancement des travaux. Les conditions de votre financement dépendent de votre situation et de votre banque : nous ne donnons pas de conseil financier personnalisé.</p></div>
+        </details>
 
-      <div class="faq-item reveal">
-        <div class="faq-question" onclick="toggleFaq(this)" data-lang-fr="Est-il possible de visiter le chantier ou une unité témoin ?&lt;div class='faq-toggle'&gt;+&lt;/div&gt;" data-lang-en="Is it possible to visit the construction site or a show unit?&lt;div class='faq-toggle'&gt;+&lt;/div&gt;">
-          Est-il possible de visiter le chantier ou une unité témoin ?
-          <div class="faq-toggle">+</div>
-        </div>
-        <div class="faq-answer">
-          <div class="faq-answer-inner" data-lang-fr="Nous organisons toujours une première visite du terrain avant la signature. Ensuite, notre conseiller organise régulièrement des visites de chantier pour les acquéreurs, dans le respect des dispositions de sécurité nécessaires. Contactez-nous pour planifier votre visite personnalisée." data-lang-en="We always arrange an initial site visit before signing. Subsequently, our adviser regularly organises construction site visits for buyers, in compliance with safety requirements. Contact us to plan your personalised visit.">
-            Nous organisons toujours une première visite du terrain avant la signature. Ensuite, notre conseiller organise régulièrement des visites de chantier pour les acquéreurs, dans le respect des dispositions de sécurité nécessaires. Contactez-nous pour planifier votre visite personnalisée.
-          </div>
-        </div>
-      </div>
+        <details>
+          <summary><span data-lang-fr="Comment organiser une visite ?" data-lang-en="How do I arrange a visit?">Comment organiser une visite ?</span></summary>
+          <div class="ct-faq-a"><p data-lang-fr="Les visites s'organisent sur rendez-vous. Indiquez vos disponibilités dans le formulaire ou appelez-nous : les modalités de la visite, qui dépendent de l'avancement du programme, vous sont précisées lors de la prise de rendez-vous." data-lang-en="Visits are by appointment. Give us your availability in the form or call us: the arrangements for the visit, which depend on how far the programme has progressed, are explained when the appointment is made.">Les visites s'organisent sur rendez-vous. Indiquez vos disponibilités dans le formulaire ou appelez-nous : les modalités de la visite, qui dépendent de l'avancement du programme, vous sont précisées lors de la prise de rendez-vous.</p></div>
+        </details>
 
-      <div class="faq-item reveal">
-        <div class="faq-question" onclick="toggleFaq(this)" data-lang-fr="La résidence est-elle bien desservie par les transports en commun ?&lt;div class='faq-toggle'&gt;+&lt;/div&gt;" data-lang-en="Is the residence well served by public transport?&lt;div class='faq-toggle'&gt;+&lt;/div&gt;">
-          La résidence est-elle bien desservie par les transports en commun ?
-          <div class="faq-toggle">+</div>
-        </div>
-        <div class="faq-answer">
-          <div class="faq-answer-inner" data-lang-fr="Oui, la résidence 59 Cézanne est desservie par les lignes 5 et 12 du réseau de bus Aix-en-Bus, avec des arrêts à moins de 5 minutes à pied. Ces lignes relient directement le quartier au centre-ville d'Aix-en-Provence, à la gare routière et aux principaux équipements de la ville. Des horaires étendus le week-end permettent une mobilité sans voiture au quotidien." data-lang-en="Yes, Résidence 59 Cézanne is served by lines 5 and 12 of the Aix-en-Bus network, with stops less than 5 minutes' walk away. These lines connect the neighbourhood directly to Aix-en-Provence city centre, the bus station and the main facilities in the city. Extended weekend timetables allow car-free mobility every day.">
-            Oui, la résidence 59 Cézanne est desservie par les lignes 5 et 12 du réseau de bus Aix-en-Bus, avec des arrêts à moins de 5 minutes à pied. Ces lignes relient directement le quartier au centre-ville d'Aix-en-Provence, à la gare routière et aux principaux équipements de la ville. Des horaires étendus le week-end permettent une mobilité sans voiture au quotidien.
-          </div>
-        </div>
-      </div>
+        <details>
+          <summary><span data-lang-fr="Puis-je vous contacter depuis l'étranger ?" data-lang-en="Can I contact you from abroad?">Puis-je vous contacter depuis l'étranger ?</span></summary>
+          <div class="ct-faq-a"><p data-lang-fr="Oui. Le formulaire accepte les numéros de téléphone internationaux (avec l'indicatif du pays, par exemple +41 ou +44). Les modalités d'un échange ou d'une réservation à distance sont à confirmer avec notre équipe." data-lang-en="Yes. The form accepts international phone numbers (with the country code, for example +41 or +44). The arrangements for a remote discussion or reservation are to be confirmed with our team.">Oui. Le formulaire accepte les numéros de téléphone internationaux (avec l'indicatif du pays, par exemple +41 ou +44). Les modalités d'un échange ou d'une réservation à distance sont à confirmer avec notre équipe.</p></div>
+        </details>
 
-      <div class="faq-item reveal">
-        <div class="faq-question" onclick="toggleFaq(this)" data-lang-fr="Peut-on réserver un appartement sans venir sur place ?&lt;div class='faq-toggle'&gt;+&lt;/div&gt;" data-lang-en="Can one reserve an apartment without coming in person?&lt;div class='faq-toggle'&gt;+&lt;/div&gt;">
-          Peut-on réserver un appartement sans venir sur place ?
-          <div class="faq-toggle">+</div>
-        </div>
-        <div class="faq-answer">
-          <div class="faq-answer-inner" data-lang-fr="Oui, totalement. Pour nos acquéreurs à distance, nous proposons l'ensemble de la documentation complète par email, et la possibilité de signer le contrat de réservation à distance avec signature électronique certifiée. Notre conseiller est disponible pour des entretiens téléphoniques ou par visioconférence. Nous accueillons régulièrement des acquéreurs de Paris, Monaco, Suisse et d'autres pays." data-lang-en="Yes, absolutely. For our remote buyers, we provide full documentation by email and the option to sign the reservation contract remotely with certified electronic signature. Our adviser is available for telephone or video call meetings. We regularly welcome buyers from Paris, Monaco, Switzerland and other countries.">
-            Oui, totalement. Pour nos acquéreurs à distance, nous proposons l'ensemble de la documentation complète par email, et la possibilité de signer le contrat de réservation à distance avec signature électronique certifiée. Notre conseiller est disponible pour des entretiens téléphoniques ou par visioconférence. Nous accueillons régulièrement des acquéreurs de Paris, Monaco, Suisse et d'autres pays.
-          </div>
-        </div>
       </div>
     </div>
-  </div>
-</section>
+  </section>
 
-<!-- Footer -->
-<footer>
+</main>
+
+<!-- ─── Footer ────────────────────────────────────────────────── -->
+<footer class="site-footer">
   <div class="container">
     <div class="footer-grid">
       <div class="footer-brand">
-        <div class="footer-logo">59 Cézanne</div>
-        <div class="footer-logo-sub">Aix-en-Provence</div>
-        <p data-lang-fr="Résidence exclusive de 8 appartements d'exception avec vue imprenable sur la Sainte-Victoire. Une réalisation Ponthieu Développement Holding." data-lang-en="Exclusive residence of 8 exceptional apartments with breathtaking views of Sainte-Victoire. A Ponthieu Développement Holding project.">Résidence exclusive de 8 appartements d'exception avec vue imprenable sur la Sainte-Victoire. Une réalisation Ponthieu Développement Holding.</p>
+        <a href="/" class="nav-logo" style="margin-bottom:1rem;display:inline-block;" aria-label="59 Cézanne — accueil">
+          <span class="logo-59">59</span><span class="logo-cez">Cézanne</span>
+        </a>
+        <p style="font-size:0.82rem;color:rgba(255,255,255,0.45);line-height:1.7;max-width:240px;" data-lang-fr="Résidence de 8 appartements neufs à Aix-en-Provence, avenue Paul Cézanne." data-lang-en="Residence of 8 new apartments in Aix-en-Provence, avenue Paul Cézanne.">Résidence de 8 appartements neufs à Aix-en-Provence, avenue Paul Cézanne.</p>
       </div>
-      <div class="footer-col">
+      <nav class="footer-links" aria-label="Pied de page — navigation">
         <h4 data-lang-fr="Navigation" data-lang-en="Navigation">Navigation</h4>
         <ul>
-          <li><a href="index.html" data-lang-fr="Accueil" data-lang-en="Home">Accueil</a></li>
-          <li><a href="presentation.html" data-lang-fr="Présentation" data-lang-en="Presentation">Présentation</a></li>
-          <li><a href="logements.html" data-lang-fr="Logements" data-lang-en="Apartments">Logements</a></li>
-          <li><a href="exterieurs.html" data-lang-fr="Espaces Communs" data-lang-en="Common Areas">Espaces Communs</a></li>
-          <li><a href="localisation.html" data-lang-fr="Localisation" data-lang-en="Location">Localisation</a></li>
-          <li><a href="promoteur.html" data-lang-fr="Le Promoteur" data-lang-en="The Developer">Le Promoteur</a></li>
-          <li><a href="contact.html" data-lang-fr="Contact" data-lang-en="Contact">Contact</a></li>
+          <li><a href="/" data-lang-fr="Accueil" data-lang-en="Home">Accueil</a></li>
+          <li><a href="/presentation" data-lang-fr="Présentation" data-lang-en="Presentation">Présentation</a></li>
+          <li><a href="/logements" data-lang-fr="Logements" data-lang-en="Apartments">Logements</a></li>
+          <li><a href="/exterieurs" data-lang-fr="Espaces Communs" data-lang-en="Common Areas">Espaces Communs</a></li>
+          <li><a href="/localisation" data-lang-fr="Localisation" data-lang-en="Location">Localisation</a></li>
+          <li><a href="/promoteur" data-lang-fr="Le Promoteur" data-lang-en="The Developer">Le Promoteur</a></li>
+          <li><a href="/blog" data-lang-fr="Blog" data-lang-en="Blog">Blog</a></li>
+          <li><a href="/contact" data-lang-fr="Contact" data-lang-en="Contact">Contact</a></li>
         </ul>
-      </div>
-      <div class="footer-col">
-        <h4 data-lang-fr="Contact rapide" data-lang-en="Quick contact">Contact rapide</h4>
+      </nav>
+      <nav class="footer-links" aria-label="Pied de page — guides">
+        <h4 data-lang-fr="Guides" data-lang-en="Guides">Guides</h4>
         <ul>
-          <li><a href="tel:0630073601">06 30 07 36 01</a></li>
-          <li><a href="mailto:jessica@ownimmobilier.fr">jessica@ownimmobilier.fr</a></li>
-          <li><a href="https://wa.me/33630073601" target="_blank">WhatsApp</a></li>
-          <li><a href="#faq">FAQ</a></li>
+          <li><a href="/blog/acheter-appartement-neuf-aix-en-provence">Acheter un appartement neuf à Aix</a></li>
+          <li><a href="/blog/quartier-des-lauves-aix-en-provence">Le quartier des Lauves</a></li>
+          <li><a href="/blog/appartement-vue-sainte-victoire-aix-en-provence">Vue Sainte-Victoire</a></li>
+          <li><a href="/blog/appartement-jardin-prive-aix-en-provence">Appartement avec jardin privatif</a></li>
+          <li><a href="/blog/vefa-achat-sur-plan-etapes-garanties">VEFA : étapes et garanties</a></li>
+          <li><a href="/blog/frais-de-notaire-neuf-tva-taxe-fonciere">Frais de notaire dans le neuf</a></li>
         </ul>
-      </div>
-      <div class="footer-col">
-        <h4 data-lang-fr="Adresses" data-lang-en="Addresses">Adresses</h4>
-        <div class="footer-contact-item">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
-          <span><strong style="color:rgba(255,255,255,0.75);" data-lang-fr="La résidence" data-lang-en="The residence">La résidence</strong><br>59 Avenue Paul Cézanne<br>13100 Aix-en-Provence</span>
-        </div>
-        <div class="footer-contact-item mt-2">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
-          <span><strong style="color:rgba(255,255,255,0.75);" data-lang-fr="Bureau PDH" data-lang-en="PDH Office">Bureau PDH</strong><br>418 Ancienne Route des Alpes<br>13100 Aix-en-Provence</span>
-        </div>
+      </nav>
+      <div class="footer-contact">
+        <h4 data-lang-fr="Contact" data-lang-en="Contact">Contact</h4>
+        <p>Ponthieu Développement Holding</p>
+        <p>418 Ancienne Route des Alpes<br/>13100 Aix-en-Provence</p>
+        <p><a href="tel:+33609204590">06 09 20 45 90</a></p>
       </div>
     </div>
     <div class="footer-bottom">
       <p data-lang-fr="© 2026 Ponthieu Développement Holding — Tous droits réservés" data-lang-en="© 2026 Ponthieu Développement Holding — All rights reserved">© 2026 Ponthieu Développement Holding — Tous droits réservés</p>
-      <div class="footer-legal">
-        <a href="mentions-legales.html" data-lang-fr="Mentions légales" data-lang-en="Legal notice">Mentions légales</a>
-        <a href="mentions-legales.html#confidentialite" data-lang-fr="Politique de confidentialité" data-lang-en="Privacy policy">Politique de confidentialité</a>
-      </div>
+      <p style="font-size:0.75rem;color:rgba(255,255,255,0.3);margin-top:0.25rem;">59 Avenue Paul Cézanne, 13100 Aix-en-Provence ·
+        <a href="/mentions-legales" data-lang-fr="Mentions légales" data-lang-en="Legal notice">Mentions légales</a> ·
+        <button type="button" class="footer-cookie-btn" onclick="openCookieSettings()" data-lang-fr="Gérer les cookies" data-lang-en="Cookie settings">Gérer les cookies</button></p>
     </div>
   </div>
 </footer>
 
+<!-- ─── Boutons flottants (WhatsApp / téléphone) ──────────────── -->
 <div class="floating-cta">
-  <a href="https://wa.me/33630073601" target="_blank" class="float-btn float-btn-whatsapp">
-    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.890-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+  <a href="https://wa.me/33609204590" target="_blank" rel="noopener" class="float-btn float-btn-whatsapp" aria-label="Nous écrire sur WhatsApp (s'ouvre dans un nouvel onglet)" title="WhatsApp">
+    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.890-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
   </a>
-  <a href="tel:0630073601" class="float-btn float-btn-phone">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81 19.79 19.79 0 01.01 1.18 2 2 0 012 0h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+  <a href="tel:+33609204590" class="float-btn float-btn-phone" aria-label="Appeler le 06 09 20 45 90" title="Appeler">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" focusable="false"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81 19.79 19.79 0 01.01 1.18 2 2 0 012 0h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
   </a>
 </div>
 
-<div id="lightbox">
-  <button class="lightbox-close" onclick="closeLightbox()">✕</button>
-  <button class="lightbox-nav lightbox-prev" onclick="lightboxNav(-1)">‹</button>
-  <div class="lightbox-img-wrap">
-    <img id="lightbox-img" src="" alt="" />
-    <div class="lightbox-caption" id="lightbox-caption"></div>
-    <div class="lightbox-counter" id="lightbox-counter"></div>
-  </div>
-  <button class="lightbox-nav lightbox-next" onclick="lightboxNav(1)">›</button>
-</div>
-
-<script src="translations.js"></script>
-<script src="animations.js"></script>
-<script src="contact.js"></script>
-<script>
-function toggleFaq(el) {
-  const item = el.parentElement;
-  const isOpen = item.classList.contains('open');
-  document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
-  if (!isOpen) item.classList.add('open');
-}
-</script>
-<script src="cookie.js"></script>
+<script src="/animations.js" defer></script>
+<script src="/translations.js" defer></script>
+<script src="/cookie.js" defer></script>
+<script src="/contact.js" defer></script>
 </body>
 </html>

@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<!--
+  HUB DU BLOG — servi sur /blog (fichier site/blog/index.html). Page française seule (data-lang-lock).
+  Propriétaire : agent « gabarit & hub ». Styles : /blog.css (classes .blog-* et .post-*).
+
+  AJOUTER / MODIFIER UN ARTICLE (3 endroits, tous dans ce fichier) :
+    1. Copier un bloc <li class="post-card blog-card"> … </li> dans le <ul class="blog-list"> du bon pilier
+       (changer : lien /blog/<slug>, titre, chapô de 20 à 25 mots, image + alt, date).
+       Les ancres #guide-achat, #lauves, #sainte-victoire (anciens liens de actualites.html) sont sur les cartes 1, 3, 4.
+    2. Ajouter (ou corriger) l'entrée correspondante dans l'ItemList du JSON-LD ci-dessous (position, url, name)
+       et mettre à jour "numberOfItems".
+    3. Si besoin : lien dans le pied de page (liste « Guides ») et dans le sitemap.
+  Les titres des cartes doivent reprendre le H1 (ou le title) définitif de chaque article.
+-->
+<html lang="fr" data-lang-lock>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Guides immobilier neuf à Aix-en-Provence | 59 Cézanne</title>
+  <meta name="description" content="Guides pour acheter un appartement neuf à Aix-en-Provence : quartier, VEFA, frais, financement, fiscalité, vue Sainte-Victoire." />
+  <link rel="canonical" href="https://59-cezanne.com/blog" />
+  <meta name="robots" content="index,follow,max-image-preview:large" />
+  <meta name="author" content="Ponthieu Développement Holding" />
+
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="59 Cézanne" />
+  <meta property="og:locale" content="fr_FR" />
+  <meta property="og:title" content="Guides et conseils pour acheter à Aix-en-Provence" />
+  <meta property="og:description" content="Guides pour acheter un appartement neuf à Aix-en-Provence : quartier, VEFA, frais, financement, fiscalité, vue Sainte-Victoire." />
+  <meta property="og:url" content="https://59-cezanne.com/blog" />
+  <meta property="og:image" content="https://59-cezanne.com/og/og-blog.jpg" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="Rendu 3D de la résidence 59 Cézanne à Aix-en-Provence (illustration non contractuelle)" />
+  <meta name="twitter:card" content="summary_large_image" />
+
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+  <link rel="icon" type="image/png" sizes="192x192" href="/favicon-192.png" />
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+  <link rel="stylesheet" href="/style.css" />
+  <link rel="stylesheet" href="/blog.css" />
+  <link rel="preload" as="image" href="/Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_EXT_Panorama_St-Victoire-1200w.webp" imagesrcset="/Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_EXT_Panorama_St-Victoire-800w.webp 800w, /Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_EXT_Panorama_St-Victoire-1200w.webp 1200w, /Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_EXT_Panorama_St-Victoire.webp 1600w" imagesizes="100vw" fetchpriority="high" />
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "CollectionPage",
+        "@id": "https://59-cezanne.com/blog#page",
+        "url": "https://59-cezanne.com/blog",
+        "name": "Guides et conseils pour acheter à Aix-en-Provence",
+        "description": "Guides pour acheter un appartement neuf à Aix-en-Provence : quartier, VEFA, frais, financement, fiscalité, vue Sainte-Victoire.",
+        "inLanguage": "fr-FR",
+        "dateModified": "2026-10-07",
+        "isPartOf": {
+          "@type": "WebSite",
+          "name": "59 Cézanne",
+          "url": "https://59-cezanne.com/"
+        },
+        "publisher": {
+          "@type": "Organization",
+          "name": "Ponthieu Développement Holding",
+          "url": "https://59-cezanne.com/"
+        },
+        "breadcrumb": {
+          "@id": "https://59-cezanne.com/blog#breadcrumb"
+        },
+        "mainEntity": {
+          "@id": "https://59-cezanne.com/blog#articles"
+        }
+      },
+      {
+        "@type": "BreadcrumbList",
+        "@id": "https://59-cezanne.com/blog#breadcrumb",
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Accueil",
+            "item": "https://59-cezanne.com/"
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "Blog",
+            "item": "https://59-cezanne.com/blog"
+          }
+        ]
+      },
+      {
+        "@type": "ItemList",
+        "@id": "https://59-cezanne.com/blog#articles",
+        "name": "Guides immobilier neuf à Aix-en-Provence",
+        "numberOfItems": 14,
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "url": "https://59-cezanne.com/blog/acheter-appartement-neuf-aix-en-provence",
+            "name": "Acheter un appartement neuf à Aix-en-Provence : le guide"
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "url": "https://59-cezanne.com/blog/vefa-achat-sur-plan-etapes-garanties",
+            "name": "VEFA : les étapes d'un achat sur plan et les garanties"
+          },
+          {
+            "@type": "ListItem",
+            "position": 3,
+            "url": "https://59-cezanne.com/blog/quartier-des-lauves-aix-en-provence",
+            "name": "Quartier des Lauves à Aix-en-Provence : le guide"
+          },
+          {
+            "@type": "ListItem",
+            "position": 4,
+            "url": "https://59-cezanne.com/blog/appartement-vue-sainte-victoire-aix-en-provence",
+            "name": "Un appartement avec vue sur la Sainte-Victoire à Aix-en-Provence"
+          },
+          {
+            "@type": "ListItem",
+            "position": 5,
+            "url": "https://59-cezanne.com/blog/cezanne-lauves-atelier-terrain-des-peintres",
+            "name": "Cézanne aux Lauves : l'atelier et le Terrain des Peintres"
+          },
+          {
+            "@type": "ListItem",
+            "position": 6,
+            "url": "https://59-cezanne.com/blog/appartement-de-luxe-aix-en-provence-criteres",
+            "name": "Appartement de luxe à Aix-en-Provence : huit critères"
+          },
+          {
+            "@type": "ListItem",
+            "position": 7,
+            "url": "https://59-cezanne.com/blog/appartement-jardin-prive-aix-en-provence",
+            "name": "Appartement avec jardin privatif à Aix-en-Provence : les points à vérifier"
+          },
+          {
+            "@type": "ListItem",
+            "position": 8,
+            "url": "https://59-cezanne.com/blog/frais-de-notaire-neuf-tva-taxe-fonciere",
+            "name": "Frais de notaire, TVA, taxe foncière : ce que coûte un appartement neuf"
+          },
+          {
+            "@type": "ListItem",
+            "position": 9,
+            "url": "https://59-cezanne.com/blog/financer-appartement-neuf-ptz-appels-de-fonds",
+            "name": "Financer un appartement neuf : apport, PTZ et appels de fonds"
+          },
+          {
+            "@type": "ListItem",
+            "position": 10,
+            "url": "https://59-cezanne.com/blog/apres-pinel-dispositif-jeanbrun",
+            "name": "Après le Pinel : le dispositif Jeanbrun expliqué"
+          },
+          {
+            "@type": "ListItem",
+            "position": 11,
+            "url": "https://59-cezanne.com/blog/acheter-aix-residence-secondaire-investissement",
+            "name": "Résidence principale, secondaire ou investissement : acheter à Aix selon votre projet"
+          },
+          {
+            "@type": "ListItem",
+            "position": 12,
+            "url": "https://59-cezanne.com/blog/quitter-paris-pour-aix-en-provence",
+            "name": "Quitter Paris pour Aix-en-Provence : le guide pratique"
+          },
+          {
+            "@type": "ListItem",
+            "position": 13,
+            "url": "https://59-cezanne.com/blog/acheter-appartement-aix-en-provence-non-resident",
+            "name": "Acheter un appartement à Aix-en-Provence quand on vit à l'étranger"
+          },
+          {
+            "@type": "ListItem",
+            "position": 14,
+            "url": "https://59-cezanne.com/blog/buying-new-build-apartment-aix-en-provence",
+            "name": "Buying a new-build apartment in Aix-en-Provence: a guide for international buyers"
+          }
+        ]
+      }
+    ]
+  }
+  </script>
+</head>
+<body class="blog-page">
+
+<a class="skip-link" href="#contenu">Aller au contenu</a>
+
+<nav id="navbar" class="scrolled" aria-label="Navigation principale">
+  <div class="nav-inner">
+    <a href="/" class="nav-logo" aria-label="59 Cézanne — Aix-en-Provence, accueil">
+      <span class="logo-main">59 Cézanne</span>
+      <span class="logo-sub">Aix-en-Provence</span>
+    </a>
+    <div class="nav-links">
+      <a href="/">Accueil</a>
+      <a href="/presentation">Présentation</a>
+      <a href="/logements">Logements</a>
+      <a href="/exterieurs">Espaces Communs</a>
+      <a href="/localisation">Localisation</a>
+      <a href="/promoteur">Le Promoteur</a>
+      <a href="/blog" class="active" aria-current="page">Blog</a>
+      <a href="/contact">Contact</a>
+    </div>
+    <div class="d-flex align-center gap-2">
+      <button type="button" class="nav-burger" id="burger" aria-label="Ouvrir le menu" aria-expanded="false" aria-controls="mobileMenu" onclick="toggleMobile()">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+</nav>
+<div class="nav-mobile" id="mobileMenu">
+  <a href="/" onclick="toggleMobile()">Accueil</a>
+  <a href="/presentation" onclick="toggleMobile()">Présentation</a>
+  <a href="/logements" onclick="toggleMobile()">Logements</a>
+  <a href="/exterieurs" onclick="toggleMobile()">Espaces Communs</a>
+  <a href="/localisation" onclick="toggleMobile()">Localisation</a>
+  <a href="/promoteur" onclick="toggleMobile()">Le Promoteur</a>
+  <a href="/blog" onclick="toggleMobile()">Blog</a>
+  <a href="/contact" onclick="toggleMobile()">Contact</a>
+</div>
+
+<main id="contenu">
+
+  <header class="blog-hero">
+    <div class="blog-hero-bg">
+      <img src="/Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_EXT_Panorama_St-Victoire-1200w.webp" srcset="/Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_EXT_Panorama_St-Victoire-800w.webp 800w, /Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_EXT_Panorama_St-Victoire-1200w.webp 1200w, /Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_EXT_Panorama_St-Victoire.webp 1600w" sizes="100vw" alt="Rendu 3D de la façade de la résidence 59 Cézanne côté avenue, avec le portail, un mur de pierre et la piscine" width="1600" height="960" fetchpriority="high" decoding="async" />
+    </div>
+    <div class="container blog-hero-inner">
+      <nav class="post-breadcrumb" aria-label="Fil d'Ariane">
+        <ol>
+          <li><a href="/">Accueil</a></li>
+          <li aria-current="page">Blog</li>
+        </ol>
+      </nav>
+      <p class="post-pillar">Le blog de la résidence</p>
+      <h1 class="blog-hero-title">Guides et conseils pour acheter à Aix-en-Provence</h1>
+      <p class="blog-hero-sub">Des guides sourcés pour préparer l'achat d'un appartement neuf, du quartier au financement.</p>
+      <p class="blog-hero-note">Illustration non contractuelle — rendu 3D de la résidence</p>
+    </div>
+  </header>
+
+  <div class="blog-intro">
+    <div class="container">
+      <p class="blog-intro-text">Ces guides s'adressent à celles et ceux qui préparent l'achat d'un appartement neuf à Aix-en-Provence, pour y vivre, y séjourner ou investir. Ils couvrent le choix du quartier, l'achat sur plan (VEFA), les frais, le financement et la fiscalité. Les règles et les chiffres cités s'appuient sur des sources officielles, datées. Il s'agit d'information générale, qui ne remplace ni un notaire ni un conseiller. Les guides sont publiés par <a href="/promoteur">Ponthieu Développement Holding</a>, promoteur de la <a href="/presentation">résidence 59 Cézanne</a>.</p>
+      <nav class="blog-topics" aria-label="Thèmes des guides">
+        <p class="blog-topics-title">Par thème</p>
+        <ul>
+          <li><a href="#acheter-neuf">Acheter dans le neuf</a></li>
+          <li><a href="#vivre-a-aix">Vivre côté Lauves et Sainte-Victoire</a></li>
+          <li><a href="#luxe-prestations">Luxe et prestations</a></li>
+          <li><a href="#budget-financement">Budget, financement, fiscalité</a></li>
+          <li><a href="#investir-patrimoine">Investir et patrimoine</a></li>
+          <li><a href="#parisiens-internationaux">Parisiens et acquéreurs internationaux</a></li>
+        </ul>
+      </nav>
+    </div>
+  </div>
+
+  <section class="blog-start" aria-labelledby="commencer-titre">
+    <div class="container">
+      <h2 class="blog-start-title" id="commencer-titre">Commencer ici</h2>
+      <p class="blog-start-lead">Trois guides pour poser les bases avant d'entrer dans le détail.</p>
+      <ol class="blog-start-list">
+        <li class="post-card blog-start-item">
+          <p class="post-card-pillar">Comprendre l'achat</p>
+          <h3 class="post-card-title"><a href="/blog/acheter-appartement-neuf-aix-en-provence">Acheter un appartement neuf à <span class="blog-nowrap">Aix-en-Provence</span> : le guide</a></h3>
+          <p class="blog-start-hint">Le point de départ : neuf ou ancien, étapes, coûts et questions à poser avant de s'engager.</p>
+        </li>
+        <li class="post-card blog-start-item">
+          <p class="post-card-pillar">Comprendre la VEFA</p>
+          <h3 class="post-card-title"><a href="/blog/vefa-achat-sur-plan-etapes-garanties">VEFA : les étapes d'un achat sur plan et les garanties</a></h3>
+          <p class="blog-start-hint">Pour savoir ce qui protège un acheteur sur plan, de la réservation à la remise des clés.</p>
+        </li>
+        <li class="post-card blog-start-item">
+          <p class="post-card-pillar">Choisir son secteur</p>
+          <h3 class="post-card-title"><a href="/blog/quartier-des-lauves-aix-en-provence">Quartier des Lauves à <span class="blog-nowrap">Aix-en-Provence</span> : le guide</a></h3>
+          <p class="blog-start-hint">Pour situer le secteur de l'avenue Paul Cézanne et juger son cadre de vie.</p>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <div class="blog-sections">
+    <section class="blog-section" id="acheter-neuf" aria-labelledby="acheter-neuf-titre">
+      <div class="container blog-section-inner">
+        <div class="blog-section-head">
+          <h2 class="blog-section-title" id="acheter-neuf-titre">Acheter dans le neuf</h2>
+          <p class="blog-section-lead">L'achat d'un logement neuf, de la réservation aux garanties, à partir des textes officiels.</p>
+        </div>
+        <ul class="blog-list">
+          <!-- Article 1 : acheter-appartement-neuf-aix-en-provence -->
+          <li class="post-card blog-card" id="guide-achat">
+            <figure class="blog-card-media">
+              <img src="/Photo%2059%20C%C3%A9zanne/3D%20Groove%20Architecture/Edited/Enscape_2023-03-10-15-39-22-enhanced-800w.webp" srcset="/Photo%2059%20C%C3%A9zanne/3D%20Groove%20Architecture/Edited/Enscape_2023-03-10-15-39-22-enhanced-800w.webp 800w, /Photo%2059%20C%C3%A9zanne/3D%20Groove%20Architecture/Edited/Enscape_2023-03-10-15-39-22-enhanced-1200w.webp 1200w" sizes="(max-width: 639px) calc(100vw - 4rem), 330px" alt="Rendu 3D de l'angle de l'immeuble sous des pins, avec un mur de soutènement en pierre et un jardin engazonné" width="800" height="450" loading="lazy" decoding="async" />
+              <figcaption class="blog-card-note">Illustration non contractuelle</figcaption>
+            </figure>
+            <div class="blog-card-body">
+              <p class="post-card-pillar">Acheter dans le neuf</p>
+              <h3 class="post-card-title"><a href="/blog/acheter-appartement-neuf-aix-en-provence">Acheter un appartement neuf à <span class="blog-nowrap">Aix-en-Provence</span> : le guide</a></h3>
+              <p class="blog-card-excerpt">Étapes, garanties, frais et aides : les repères sourcés pour acheter un appartement neuf à Aix-en-Provence, du choix du quartier à la signature.</p>
+              <p class="blog-card-date">Mis à jour le <time datetime="2026-10-07">7 octobre 2026</time></p>
+            </div>
+          </li>
+          <!-- Article 2 : vefa-achat-sur-plan-etapes-garanties -->
+          <li class="post-card blog-card">
+            <figure class="blog-card-media">
+              <img src="/Photo%2059%20C%C3%A9zanne/3D%20Groove%20Architecture/Edited/050-APC-230309-INSERTION-enhanced-800w.webp" srcset="/Photo%2059%20C%C3%A9zanne/3D%20Groove%20Architecture/Edited/050-APC-230309-INSERTION-enhanced-800w.webp 800w, /Photo%2059%20C%C3%A9zanne/3D%20Groove%20Architecture/Edited/050-APC-230309-INSERTION-enhanced-1200w.webp 1200w" sizes="(max-width: 639px) calc(100vw - 4rem), 330px" alt="Photomontage de l'immeuble vu depuis la rue, derrière un mur et de la végétation" width="800" height="541" loading="lazy" decoding="async" />
+              <figcaption class="blog-card-note">Illustration non contractuelle</figcaption>
+            </figure>
+            <div class="blog-card-body">
+              <p class="post-card-pillar">Acheter dans le neuf</p>
+              <h3 class="post-card-title"><a href="/blog/vefa-achat-sur-plan-etapes-garanties">VEFA : les étapes d'un achat sur plan et les garanties</a></h3>
+              <p class="blog-card-excerpt">De la réservation à la remise des clés : dépôt de garantie, appels de fonds, garantie d'achèvement et protections prévues par la loi.</p>
+              <p class="blog-card-date">Mis à jour le <time datetime="2026-10-07">7 octobre 2026</time></p>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </section>
+    <section class="blog-section" id="vivre-a-aix" aria-labelledby="vivre-a-aix-titre">
+      <div class="container blog-section-inner">
+        <div class="blog-section-head">
+          <h2 class="blog-section-title" id="vivre-a-aix-titre">Vivre côté Lauves et Sainte-Victoire</h2>
+          <p class="blog-section-lead">Le secteur de l'avenue Paul Cézanne, la Sainte-Victoire et le patrimoine cézannien.</p>
+        </div>
+        <ul class="blog-list">
+          <!-- Article 3 : quartier-des-lauves-aix-en-provence -->
+          <li class="post-card blog-card" id="lauves">
+            <figure class="blog-card-media">
+              <img src="/Photo%2059%20C%C3%A9zanne/3D%20Groove%20Architecture/Edited/insertion-nord-800w.webp" srcset="/Photo%2059%20C%C3%A9zanne/3D%20Groove%20Architecture/Edited/insertion-nord-800w.webp 800w, /Photo%2059%20C%C3%A9zanne/3D%20Groove%20Architecture/Edited/insertion-nord-1200w.webp 1200w" sizes="(max-width: 639px) calc(100vw - 4rem), 330px" alt="Vue aérienne oblique d'un quartier de villas d'Aix-en-Provence, avec ses jardins et ses routes" width="800" height="600" loading="lazy" decoding="async" />
+              <figcaption class="blog-card-note">Illustration non contractuelle</figcaption>
+            </figure>
+            <div class="blog-card-body">
+              <p class="post-card-pillar">Vivre côté Lauves et Sainte-Victoire</p>
+              <h3 class="post-card-title"><a href="/blog/quartier-des-lauves-aix-en-provence">Quartier des Lauves à <span class="blog-nowrap">Aix-en-Provence</span> : le guide</a></h3>
+              <p class="blog-card-excerpt">Accès, commerces, écoles et patrimoine cézannien : ce qu'il faut savoir sur le secteur de l'avenue Paul Cézanne et des Lauves avant de s'y installer.</p>
+              <p class="blog-card-date">Mis à jour le <time datetime="2026-10-07">7 octobre 2026</time></p>
+            </div>
+          </li>
+          <!-- Article 4 : appartement-vue-sainte-victoire-aix-en-provence -->
+          <li class="post-card blog-card" id="sainte-victoire">
+            <figure class="blog-card-media">
+              <img src="/Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_JARDIN_LOGEMENT-04_Panorama_St-Victoire-800w.webp" srcset="/Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_JARDIN_LOGEMENT-04_Panorama_St-Victoire-800w.webp 800w, /Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_JARDIN_LOGEMENT-04_Panorama_St-Victoire-1200w.webp 1200w" sizes="(max-width: 639px) calc(100vw - 4rem), 330px" alt="Rendu 3D du jardin et de la terrasse du lot 4, avec un salon d'extérieur et la montagne à l'horizon" width="800" height="512" loading="lazy" decoding="async" />
+              <figcaption class="blog-card-note">Illustration non contractuelle</figcaption>
+            </figure>
+            <div class="blog-card-body">
+              <p class="post-card-pillar">Vivre côté Lauves et Sainte-Victoire</p>
+              <h3 class="post-card-title"><a href="/blog/appartement-vue-sainte-victoire-aix-en-provence">Un appartement avec vue sur la Sainte-Victoire à <span class="blog-nowrap">Aix-en-Provence</span></a></h3>
+              <p class="blog-card-excerpt">Orientation, hauteur, vis-à-vis : comment juger une vue sur la Sainte-Victoire avant d'acheter, et quels repères sourcés connaître sur la montagne et sa lumière.</p>
+              <p class="blog-card-date">Mis à jour le <time datetime="2026-10-07">7 octobre 2026</time></p>
+            </div>
+          </li>
+          <!-- Article 5 : cezanne-lauves-atelier-terrain-des-peintres -->
+          <li class="post-card blog-card">
+            <figure class="blog-card-media">
+              <img src="/Photo%2059%20C%C3%A9zanne/3D%20Groove%20Architecture/Edited/insertion-ouest-800w.webp" srcset="/Photo%2059%20C%C3%A9zanne/3D%20Groove%20Architecture/Edited/insertion-ouest-800w.webp 800w, /Photo%2059%20C%C3%A9zanne/3D%20Groove%20Architecture/Edited/insertion-ouest-1200w.webp 1200w" sizes="(max-width: 639px) calc(100vw - 4rem), 330px" alt="Insertion aérienne du projet dans son environnement, avec la montagne Sainte-Victoire à l'horizon" width="800" height="600" loading="lazy" decoding="async" />
+              <figcaption class="blog-card-note">Illustration non contractuelle</figcaption>
+            </figure>
+            <div class="blog-card-body">
+              <p class="post-card-pillar">Vivre côté Lauves et Sainte-Victoire</p>
+              <h3 class="post-card-title"><a href="/blog/cezanne-lauves-atelier-terrain-des-peintres">Cézanne aux Lauves : l'atelier et le Terrain des Peintres</a></h3>
+              <p class="blog-card-excerpt">L'atelier des Lauves, le Terrain des Peintres et la Sainte-Victoire : un parcours cézannien à Aix-en-Provence, à proximité de l'avenue Paul Cézanne.</p>
+              <p class="blog-card-date">Mis à jour le <time datetime="2026-10-07">7 octobre 2026</time></p>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </section>
+    <section class="blog-section" id="luxe-prestations" aria-labelledby="luxe-prestations-titre">
+      <div class="container blog-section-inner">
+        <div class="blog-section-head">
+          <h2 class="blog-section-title" id="luxe-prestations-titre">Luxe et prestations</h2>
+          <p class="blog-section-lead">Des critères observables pour juger le haut de gamme, des extérieurs privatifs aux matériaux.</p>
+        </div>
+        <ul class="blog-list">
+          <!-- Article 6 : appartement-de-luxe-aix-en-provence-criteres -->
+          <li class="post-card blog-card">
+            <figure class="blog-card-media">
+              <img src="/Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_PISCINE_NUIT_Panorama_St-Victoire%202-800w.webp" srcset="/Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_PISCINE_NUIT_Panorama_St-Victoire%202-800w.webp 800w, /Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_PISCINE_NUIT_Panorama_St-Victoire%202-1200w.webp 1200w" sizes="(max-width: 639px) calc(100vw - 4rem), 330px" alt="Rendu 3D de la piscine éclairée de nuit, avec son solarium et la façade en pierre claire" width="800" height="480" loading="lazy" decoding="async" />
+              <figcaption class="blog-card-note">Illustration non contractuelle</figcaption>
+            </figure>
+            <div class="blog-card-body">
+              <p class="post-card-pillar">Luxe et prestations</p>
+              <h3 class="post-card-title"><a href="/blog/appartement-de-luxe-aix-en-provence-criteres">Appartement de luxe à <span class="blog-nowrap">Aix-en-Provence</span> : huit critères</a></h3>
+              <p class="blog-card-excerpt">Emplacement, volumes, extérieurs, exécution, acoustique, sécurité, services, documents : huit critères pour juger un appartement de luxe.</p>
+              <p class="blog-card-date">Mis à jour le <time datetime="2026-10-07">7 octobre 2026</time></p>
+            </div>
+          </li>
+          <!-- Article 7 : appartement-jardin-prive-aix-en-provence -->
+          <li class="post-card blog-card">
+            <figure class="blog-card-media">
+              <img src="/Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_JARDIN_V2_LOGEMENT-04_Panorama_St-Victoire-800w.webp" srcset="/Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_JARDIN_V2_LOGEMENT-04_Panorama_St-Victoire-800w.webp 800w, /Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_JARDIN_V2_LOGEMENT-04_Panorama_St-Victoire-1200w.webp 1200w" sizes="(max-width: 639px) calc(100vw - 4rem), 330px" alt="Rendu 3D de la façade du lot 4, baie coulissante ouverte sur le séjour et le jardin" width="800" height="512" loading="lazy" decoding="async" />
+              <figcaption class="blog-card-note">Illustration non contractuelle</figcaption>
+            </figure>
+            <div class="blog-card-body">
+              <p class="post-card-pillar">Luxe et prestations</p>
+              <h3 class="post-card-title"><a href="/blog/appartement-jardin-prive-aix-en-provence">Appartement avec jardin privatif à <span class="blog-nowrap">Aix-en-Provence</span> : les points à vérifier</a></h3>
+              <p class="blog-card-excerpt">Rez-de-jardin, duplex, surface, exposition, entretien : ce qu'il faut vérifier, dans l'acte comme sur place, avant d'acheter un appartement avec jardin privatif à Aix-en-Provence.</p>
+              <p class="blog-card-date">Mis à jour le <time datetime="2026-10-07">7 octobre 2026</time></p>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </section>
+    <section class="blog-section" id="budget-financement" aria-labelledby="budget-financement-titre">
+      <div class="container blog-section-inner">
+        <div class="blog-section-head">
+          <h2 class="blog-section-title" id="budget-financement-titre">Budget, financement, fiscalité</h2>
+          <p class="blog-section-lead">Frais, TVA, taxe foncière, prêt et appels de fonds : les coûts d'un achat dans le neuf.</p>
+        </div>
+        <ul class="blog-list">
+          <!-- Article 8 : frais-de-notaire-neuf-tva-taxe-fonciere -->
+          <li class="post-card blog-card">
+            <figure class="blog-card-media">
+              <img src="/Photo%2059%20C%C3%A9zanne/3D%20interieur/LOGEMENT_1_A_02-800w.webp" srcset="/Photo%2059%20C%C3%A9zanne/3D%20interieur/LOGEMENT_1_A_02-800w.webp 800w, /Photo%2059%20C%C3%A9zanne/3D%20interieur/LOGEMENT_1_A_02-1200w.webp 1200w" sizes="(max-width: 639px) calc(100vw - 4rem), 330px" alt="Rendu 3D du séjour du lot 1, avec la salle à manger et la cuisine ouvertes sur le jardin" width="800" height="480" loading="lazy" decoding="async" />
+              <figcaption class="blog-card-note">Illustration non contractuelle</figcaption>
+            </figure>
+            <div class="blog-card-body">
+              <p class="post-card-pillar">Budget, financement, fiscalité</p>
+              <h3 class="post-card-title"><a href="/blog/frais-de-notaire-neuf-tva-taxe-fonciere">Frais de notaire, TVA, taxe foncière : ce que coûte un appartement neuf</a></h3>
+              <p class="blog-card-excerpt">Frais de notaire réduits, TVA, taxe foncière : ce que coûte l'achat d'un appartement neuf en VEFA, d'après les sources officielles datées.</p>
+              <p class="blog-card-date">Mis à jour le <time datetime="2026-10-07">7 octobre 2026</time></p>
+            </div>
+          </li>
+          <!-- Article 9 : financer-appartement-neuf-ptz-appels-de-fonds -->
+          <li class="post-card blog-card">
+            <figure class="blog-card-media">
+              <img src="/Photo%2059%20C%C3%A9zanne/3D%20interieur/LOGEMENT_2_02-800w.webp" srcset="/Photo%2059%20C%C3%A9zanne/3D%20interieur/LOGEMENT_2_02-800w.webp 800w, /Photo%2059%20C%C3%A9zanne/3D%20interieur/LOGEMENT_2_02-1200w.webp 1200w" sizes="(max-width: 639px) calc(100vw - 4rem), 330px" alt="Rendu 3D du séjour et de la salle à manger du lot 2, avec de grandes baies vitrées" width="800" height="480" loading="lazy" decoding="async" />
+              <figcaption class="blog-card-note">Illustration non contractuelle</figcaption>
+            </figure>
+            <div class="blog-card-body">
+              <p class="post-card-pillar">Budget, financement, fiscalité</p>
+              <h3 class="post-card-title"><a href="/blog/financer-appartement-neuf-ptz-appels-de-fonds">Financer un appartement neuf : apport, PTZ et appels de fonds</a></h3>
+              <p class="blog-card-excerpt">Prêt, apport, PTZ et appels de fonds : ce qui change quand on finance un logement neuf, et les questions à poser à sa banque.</p>
+              <p class="blog-card-date">Mis à jour le <time datetime="2026-10-07">7 octobre 2026</time></p>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </section>
+    <section class="blog-section" id="investir-patrimoine" aria-labelledby="investir-patrimoine-titre">
+      <div class="container blog-section-inner">
+        <div class="blog-section-head">
+          <h2 class="blog-section-title" id="investir-patrimoine-titre">Investir et patrimoine</h2>
+          <p class="blog-section-lead">Les dispositifs en vigueur et les projets d'achat, expliqués à partir des sources officielles.</p>
+        </div>
+        <ul class="blog-list">
+          <!-- Article 11 : apres-pinel-dispositif-jeanbrun -->
+          <li class="post-card blog-card">
+            <figure class="blog-card-media">
+              <img src="/Photo%2059%20C%C3%A9zanne/3D%20Groove%20Architecture/Edited/PISCINE-enhanced-800w.webp" srcset="/Photo%2059%20C%C3%A9zanne/3D%20Groove%20Architecture/Edited/PISCINE-enhanced-800w.webp 800w, /Photo%2059%20C%C3%A9zanne/3D%20Groove%20Architecture/Edited/PISCINE-enhanced-1200w.webp 1200w" sizes="(max-width: 639px) calc(100vw - 4rem), 330px" alt="Rendu 3D de la piscine, de la pelouse et de la façade de la résidence, de jour" width="800" height="450" loading="lazy" decoding="async" />
+              <figcaption class="blog-card-note">Illustration non contractuelle</figcaption>
+            </figure>
+            <div class="blog-card-body">
+              <p class="post-card-pillar">Investir et patrimoine</p>
+              <h3 class="post-card-title"><a href="/blog/apres-pinel-dispositif-jeanbrun">Après le Pinel : le dispositif Jeanbrun expliqué</a></h3>
+              <p class="blog-card-excerpt">Fin du Pinel, dispositif Jeanbrun (Relance logement) : conditions, durée d'engagement et plafonds, résumés d'après les sources officielles, sans conseil personnalisé.</p>
+              <p class="blog-card-date">Mis à jour le <time datetime="2026-10-07">7 octobre 2026</time></p>
+            </div>
+          </li>
+          <!-- Article 12 : acheter-aix-residence-secondaire-investissement -->
+          <li class="post-card blog-card">
+            <figure class="blog-card-media">
+              <img src="/Photo%2059%20C%C3%A9zanne/Axonometrie/Logement%208/LOGEMENT_08_3D_FB-800w.webp" srcset="/Photo%2059%20C%C3%A9zanne/Axonometrie/Logement%208/LOGEMENT_08_3D_FB-800w.webp 800w, /Photo%2059%20C%C3%A9zanne/Axonometrie/Logement%208/LOGEMENT_08_3D_FB-1200w.webp 1200w" sizes="(max-width: 639px) calc(100vw - 4rem), 330px" alt="Axonométrie meublée du lot 8, un T4 avec son jardin" width="800" height="533" loading="lazy" decoding="async" />
+              <figcaption class="blog-card-note">Illustration non contractuelle</figcaption>
+            </figure>
+            <div class="blog-card-body">
+              <p class="post-card-pillar">Investir et patrimoine</p>
+              <h3 class="post-card-title"><a href="/blog/acheter-aix-residence-secondaire-investissement">Résidence principale, secondaire ou investissement : acheter à Aix selon votre projet</a></h3>
+              <p class="blog-card-excerpt">Trois projets, trois logiques : ce qui change pour une résidence principale, une résidence secondaire ou un investissement locatif, de la taxe d'habitation à la gestion.</p>
+              <p class="blog-card-date">Mis à jour le <time datetime="2026-10-07">7 octobre 2026</time></p>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </section>
+    <section class="blog-section" id="parisiens-internationaux" aria-labelledby="parisiens-internationaux-titre">
+      <div class="container blog-section-inner">
+        <div class="blog-section-head">
+          <h2 class="blog-section-title" id="parisiens-internationaux-titre">Parisiens et acquéreurs internationaux</h2>
+          <p class="blog-section-lead">Les questions propres à ceux qui achètent à distance : TGV, notaire, origine des fonds, fiscalité.</p>
+        </div>
+        <ul class="blog-list">
+          <!-- Article 13 : quitter-paris-pour-aix-en-provence -->
+          <li class="post-card blog-card">
+            <figure class="blog-card-media">
+              <img src="/Photo%2059%20C%C3%A9zanne/3D%20Groove%20Architecture/Edited/insertion-est-800w.webp" srcset="/Photo%2059%20C%C3%A9zanne/3D%20Groove%20Architecture/Edited/insertion-est-800w.webp 800w, /Photo%2059%20C%C3%A9zanne/3D%20Groove%20Architecture/Edited/insertion-est-1200w.webp 1200w" sizes="(max-width: 639px) calc(100vw - 4rem), 330px" alt="Insertion aérienne du projet vue du dessus, dans un quartier de villas" width="800" height="600" loading="lazy" decoding="async" />
+              <figcaption class="blog-card-note">Illustration non contractuelle</figcaption>
+            </figure>
+            <div class="blog-card-body">
+              <p class="post-card-pillar">Parisiens et acquéreurs internationaux</p>
+              <h3 class="post-card-title"><a href="/blog/quitter-paris-pour-aix-en-provence">Quitter Paris pour <span class="blog-nowrap">Aix-en-Provence</span> : le guide pratique</a></h3>
+              <p class="blog-card-excerpt">TGV, télétravail, écoles, quartiers : les questions concrètes à se poser avant de quitter Paris pour Aix-en-Provence et d'y acheter un appartement neuf.</p>
+              <p class="blog-card-date">Mis à jour le <time datetime="2026-10-07">7 octobre 2026</time></p>
+            </div>
+          </li>
+          <!-- Article 14 : acheter-appartement-aix-en-provence-non-resident -->
+          <li class="post-card blog-card">
+            <figure class="blog-card-media">
+              <img src="/Photo%2059%20C%C3%A9zanne/Axonometrie/Logement%206/LOGEMENT_06_3D_FB-800w.webp" srcset="/Photo%2059%20C%C3%A9zanne/Axonometrie/Logement%206/LOGEMENT_06_3D_FB-800w.webp 800w, /Photo%2059%20C%C3%A9zanne/Axonometrie/Logement%206/LOGEMENT_06_3D_FB-1200w.webp 1200w" sizes="(max-width: 639px) calc(100vw - 4rem), 330px" alt="Axonométrie meublée du lot 6, un T2 avec terrasse et jardin" width="800" height="533" loading="lazy" decoding="async" />
+              <figcaption class="blog-card-note">Illustration non contractuelle</figcaption>
+            </figure>
+            <div class="blog-card-body">
+              <p class="post-card-pillar">Parisiens et acquéreurs internationaux</p>
+              <h3 class="post-card-title"><a href="/blog/acheter-appartement-aix-en-provence-non-resident">Acheter un appartement à <span class="blog-nowrap">Aix-en-Provence</span> quand on vit à l'étranger</a></h3>
+              <p class="blog-card-excerpt">Notaire, origine des fonds, fiscalité selon l'usage du bien : les étapes à connaître pour un non-résident qui achète un appartement neuf à Aix-en-Provence.</p>
+              <p class="blog-card-date">Mis à jour le <time datetime="2026-10-07">7 octobre 2026</time></p>
+            </div>
+          </li>
+          <!-- Article 15 : buying-new-build-apartment-aix-en-provence -->
+          <li class="post-card blog-card">
+            <figure class="blog-card-media">
+              <img src="/Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_EXT_Panorama_St-Victoire-800w.webp" srcset="/Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_EXT_Panorama_St-Victoire-800w.webp 800w, /Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_EXT_Panorama_St-Victoire-1200w.webp 1200w" sizes="(max-width: 639px) calc(100vw - 4rem), 330px" alt="Rendu 3D de la façade de la résidence côté avenue, avec le portail, le mur de pierre et la piscine" width="800" height="480" loading="lazy" decoding="async" />
+              <figcaption class="blog-card-note">Illustration non contractuelle</figcaption>
+            </figure>
+            <div class="blog-card-body">
+              <p class="post-card-pillar">Parisiens et acquéreurs internationaux <span class="blog-card-lang">Article en anglais</span></p>
+              <h3 class="post-card-title"><a href="/blog/buying-new-build-apartment-aix-en-provence" lang="en" hreflang="en">Buying a new-build apartment in <span class="blog-nowrap">Aix-en-Provence</span>: a guide for international buyers</a></h3>
+              <p class="blog-card-excerpt" lang="en">How buying off-plan (VEFA) works in France, notary fees on new-build and what to check before reserving a new apartment in Aix-en-Provence.</p>
+              <p class="blog-card-date">Mis à jour le <time datetime="2026-10-07">7 octobre 2026</time></p>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </section>
+  </div>
+
+  <section class="post-cta" aria-labelledby="cta-titre">
+    <div class="container">
+      <h2 id="cta-titre">Une question sur la résidence 59 Cézanne ?</h2>
+      <p>Huit appartements neufs, avenue Paul Cézanne à Aix-en-Provence. Plaquette, plans et calendrier de livraison : nous contacter.</p>
+      <p><a class="btn btn-primary" href="/contact">Demander la plaquette du programme</a> <a class="btn btn-outline-dark" href="/logements">Découvrir les appartements</a></p>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="/" class="nav-logo" style="margin-bottom:1rem;display:inline-block;" aria-label="59 Cézanne — accueil">
+          <span class="logo-59">59</span><span class="logo-cez">Cézanne</span>
+        </a>
+        <p style="font-size:0.82rem;color:rgba(255,255,255,0.45);line-height:1.7;max-width:240px;">Résidence de 8 appartements neufs à Aix-en-Provence, avenue Paul Cézanne.</p>
+      </div>
+      <nav class="footer-links" aria-label="Pied de page — navigation">
+        <h4>Navigation</h4>
+        <ul>
+          <li><a href="/">Accueil</a></li>
+          <li><a href="/presentation">Présentation</a></li>
+          <li><a href="/logements">Logements</a></li>
+          <li><a href="/exterieurs">Espaces Communs</a></li>
+          <li><a href="/localisation">Localisation</a></li>
+          <li><a href="/promoteur">Le Promoteur</a></li>
+          <li><a href="/blog">Blog</a></li>
+          <li><a href="/contact">Contact</a></li>
+        </ul>
+      </nav>
+      <nav class="footer-links" aria-label="Pied de page — guides">
+        <h4>Guides</h4>
+        <ul>
+          <li><a href="/blog/acheter-appartement-neuf-aix-en-provence">Acheter un appartement neuf à Aix</a></li>
+          <li><a href="/blog/quartier-des-lauves-aix-en-provence">Le quartier des Lauves</a></li>
+          <li><a href="/blog/appartement-vue-sainte-victoire-aix-en-provence">Vue Sainte-Victoire</a></li>
+          <li><a href="/blog/appartement-jardin-prive-aix-en-provence">Appartement avec jardin privatif</a></li>
+          <li><a href="/blog/vefa-achat-sur-plan-etapes-garanties">VEFA : étapes et garanties</a></li>
+          <li><a href="/blog/frais-de-notaire-neuf-tva-taxe-fonciere">Frais de notaire dans le neuf</a></li>
+        </ul>
+      </nav>
+      <div class="footer-contact">
+        <h4>Contact</h4>
+        <p>Ponthieu Développement Holding</p>
+        <p>418 Ancienne Route des Alpes<br/>13100 Aix-en-Provence</p>
+        <p><a href="tel:+33609204590">06 09 20 45 90</a></p>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 Ponthieu Développement Holding — Tous droits réservés</p>
+      <p style="font-size:0.75rem;color:rgba(255,255,255,0.3);margin-top:0.25rem;">59 Avenue Paul Cézanne, 13100 Aix-en-Provence ·
+        <a href="/mentions-legales">Mentions légales</a> ·
+        <button type="button" class="footer-cookie-btn" onclick="openCookieSettings()">Gérer les cookies</button></p>
+    </div>
+  </div>
+</footer>
+
+<script src="/animations.js" defer></script>
+<script src="/translations.js" defer></script>
+<script src="/cookie.js" defer></script>
+</body>
+</html>

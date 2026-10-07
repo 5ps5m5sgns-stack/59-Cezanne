@@ -1,178 +1,391 @@
 /* ============================================================
    59 CÉZANNE — contact.js
-   Form validation & submission (Formspree)
+   Formulaire de contact (envoi JSON vers Formspree) :
+   - validation tolérante (téléphone international), erreurs annoncées (aria-invalid,
+     aria-describedby, récapitulatif en zone vivante, focus sur le premier problème) ;
+   - consentement RGPD transmis avec la demande (case non pré-cochée, texte et date) ;
+   - anti-spam : champ piège « _gotcha » + délai minimal avant envoi ;
+   - contexte transmis : page d'origine, page de contact, langue, type de projet ;
+   - événement de succès (generate_lead) UNIQUEMENT si un outil de mesure a déjà été
+     chargé après consentement (window.gtag) : ce script ne charge rien lui-même ;
+   - carte Google Maps chargée seulement après un clic.
+   Sans JavaScript, le <form action="https://formspree.io/f/…" method="POST"> du HTML
+   prend le relais (voir contact.html).
    ============================================================ */
 
-'use strict';
+(function () {
+  'use strict';
 
-/* ── Replace FORMSPREE_ID with your actual Formspree form ID ── */
-const FORMSPREE_ENDPOINT = 'https://formspree.io/f/xpqybwkw';
+  /* Ne pas modifier l'adresse : même formulaire Formspree que celui de l'action HTML. */
+  var FORMSPREE_ENDPOINT = 'https://formspree.io/f/xpqybwkw';
+  var THANKS_URL = '/merci';
+  var MIN_FILL_MS = 3000;          // délai minimal entre le chargement de la page et l'envoi
+  var REQUEST_TIMEOUT_MS = 20000;  // abandon de la requête au-delà
+  var REDIRECT_DELAY_MS = 700;     // laisse le temps d'annoncer le succès et d'envoyer la mesure
+  var CONSENT_VERSION = 'mentions-legales-2026-10';
+  var MAP_SRC = 'https://maps.google.com/maps?q=418+Ancienne+Route+des+Alpes+13100+Aix-en-Provence&t=&z=15&ie=UTF8&iwloc=&output=embed';
 
-document.addEventListener('DOMContentLoaded', function () {
-  const form = document.getElementById('contactForm');
-  if (!form) return;
+  /* ─── Utilitaires ────────────────────────────────────────── */
+  function $(id) { return document.getElementById(id); }
 
-  /* ─── Validation helpers ─────────────────────────────────── */
-  function isValidEmail(email) {
-    return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email.trim());
+  function lang() {
+    if (typeof window.getLang === 'function') return window.getLang();
+    return String(document.documentElement.lang || '').toLowerCase().indexOf('en') === 0 ? 'en' : 'fr';
   }
 
-  function isValidPhone(phone) {
-    const cleaned = phone.replace(/[\s\-\.\(\)]/g, '');
-    return /^(\+33|0033|0)[1-9](\d{8})$/.test(cleaned);
+  /* Affiche un message dans une zone vivante, en le rendant traduisible (data-lang-*) :
+     si l'utilisateur change de langue, translations.js le remplace tout seul. */
+  function say(el, state, fr, en) {
+    if (!el) return;
+    el.setAttribute('data-lang-fr', fr);
+    el.setAttribute('data-lang-en', en);
+    el.setAttribute('data-state', state);
+    el.textContent = lang() === 'en' ? en : fr;
   }
 
-  function setError(groupId, show) {
-    const group = document.getElementById(groupId);
-    if (!group) return;
-    if (show) {
-      group.classList.add('error');
+  function wipe(el) {
+    if (!el) return;
+    el.removeAttribute('data-lang-fr');
+    el.removeAttribute('data-lang-en');
+    el.removeAttribute('data-state');
+    el.textContent = '';
+  }
+
+  function addDescribedBy(input, id) {
+    var ids = (input.getAttribute('aria-describedby') || '').split(/\s+/).filter(Boolean);
+    if (ids.indexOf(id) === -1) ids.push(id);
+    input.setAttribute('aria-describedby', ids.join(' '));
+  }
+
+  function removeDescribedBy(input, id) {
+    var ids = (input.getAttribute('aria-describedby') || '').split(/\s+/).filter(function (x) { return x && x !== id; });
+    if (ids.length) input.setAttribute('aria-describedby', ids.join(' '));
+    else input.removeAttribute('aria-describedby');
+  }
+
+  /* ─── Validation ─────────────────────────────────────────── */
+  function validName(v) {
+    v = v.trim();
+    return v.length >= 1 && v.length <= 80;
+  }
+
+  function validEmail(v) {
+    v = v.trim();
+    return v.length <= 254 && /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v);
+  }
+
+  /* Téléphone tolérant (E.164 et formats nationaux étrangers) :
+     chiffres, espaces, points, tirets, parenthèses, barre oblique ; « + » seulement en tête ;
+     préfixe international « 00 » accepté ; 7 à 15 chiffres (maximum E.164). */
+  function validPhone(v) {
+    v = v.trim();
+    if (!/^[+()0-9][0-9\s().\-\/+]*$/.test(v)) return false;
+    if (v.indexOf('+', 1) !== -1) return false;
+    var compact = v.replace(/[\s().\-\/]/g, '');
+    var digits = compact.replace(/\D/g, '');
+    if (compact.indexOf('00') === 0) digits = digits.slice(2);
+    return digits.length >= 7 && digits.length <= 15;
+  }
+
+  var FIELDS = [
+    { id: 'nom',    group: 'fg-nom',    err: 'err-nom',    label: 'lbl-nom',    test: validName },
+    { id: 'prenom', group: 'fg-prenom', err: 'err-prenom', label: 'lbl-prenom', test: validName },
+    { id: 'email',  group: 'fg-email',  err: 'err-email',  label: 'lbl-email',  test: validEmail },
+    { id: 'tel',    group: 'fg-tel',    err: 'err-tel',    label: 'lbl-tel',    test: validPhone },
+    { id: 'rgpd',   group: 'fg-rgpd',   err: 'err-rgpd',   label: 'rgpd-text',  test: function () { return $('rgpd').checked; }, checkbox: true }
+  ];
+
+  function fieldValue(f) {
+    var el = $(f.id);
+    return f.checkbox ? (el.checked ? 'oui' : '') : el.value;
+  }
+
+  function setFieldError(f, on) {
+    var group = $(f.group);
+    var input = $(f.id);
+    if (!group || !input) return;
+    group.classList.toggle('error', on);
+    if (on) {
+      input.setAttribute('aria-invalid', 'true');
+      addDescribedBy(input, f.err);
     } else {
-      group.classList.remove('error');
+      input.removeAttribute('aria-invalid');
+      removeDescribedBy(input, f.err);
     }
   }
 
-  /* ─── Real-time validation ──────────────────────────────── */
-  function attachLiveValidation(inputId, groupId, validator) {
-    const input = document.getElementById(inputId);
-    if (!input) return;
-    input.addEventListener('blur', () => {
-      const valid = validator(input.value);
-      setError(groupId, !valid);
-    });
-    input.addEventListener('input', () => {
-      if (document.getElementById(groupId)?.classList.contains('error')) {
-        const valid = validator(input.value);
-        if (valid) setError(groupId, false);
+  /* ─── Initialisation ─────────────────────────────────────── */
+  function init() {
+    var form = $('contactForm');
+    if (!form) return;
+
+    form.noValidate = true; // JS actif : validation maison ; sans JS, les attributs « required » restent actifs
+
+    var summary = $('errSummary');
+    var statusEl = $('formStatus');
+    var failEl = $('formFail');
+    var submitBtn = $('ct-submit');
+    var submitLabel = $('ct-submit-label');
+    var honeypot = form.querySelector('[name="_gotcha"]');
+    var originField = $('page_origine');
+
+    var startedAt = Date.now();
+    var sending = false;
+    var attempted = false;
+
+    if (originField) originField.value = document.referrer || '';
+
+    /* — Validation en direct (sans punir le simple passage au clavier) — */
+    FIELDS.forEach(function (f) {
+      var el = $(f.id);
+      if (!el) return;
+      if (!f.checkbox) {
+        el.addEventListener('blur', function () {
+          if (attempted || el.value.trim() !== '') setFieldError(f, !f.test(el.value));
+        });
+        el.addEventListener('input', function () {
+          if ($(f.group).classList.contains('error') && f.test(el.value)) setFieldError(f, false);
+        });
+      } else {
+        el.addEventListener('change', function () {
+          if (el.checked) setFieldError(f, false);
+        });
       }
     });
-  }
 
-  attachLiveValidation('nom',    'fg-nom',    v => v.trim().length >= 2);
-  attachLiveValidation('prenom', 'fg-prenom', v => v.trim().length >= 2);
-  attachLiveValidation('email',  'fg-email',  v => isValidEmail(v));
-  attachLiveValidation('tel',    'fg-tel',    v => isValidPhone(v));
-
-  /* ─── Form submit ───────────────────────────────────────── */
-  form.addEventListener('submit', function (e) {
-    e.preventDefault();
-
-    // Clear previous errors
-    ['fg-nom', 'fg-prenom', 'fg-email', 'fg-tel'].forEach(id => setError(id, false));
-    const rgpdError = document.getElementById('rgpd-error');
-    if (rgpdError) rgpdError.style.display = 'none';
-
-    const nom    = document.getElementById('nom');
-    const prenom = document.getElementById('prenom');
-    const email  = document.getElementById('email');
-    const tel    = document.getElementById('tel');
-    const rgpd   = document.getElementById('rgpd');
-
-    let isValid = true;
-
-    if (!nom || nom.value.trim().length < 2) {
-      setError('fg-nom', true);
-      isValid = false;
+    /* — Récapitulatif des erreurs : zone vivante + focus — */
+    function showSummary(errors) {
+      var n = errors.length;
+      var fr = 'Le formulaire contient ' + n + (n > 1 ? ' erreurs' : ' erreur') + '. Veuillez corriger :';
+      var en = 'The form contains ' + n + (n > 1 ? ' errors' : ' error') + '. Please correct:';
+      summary.textContent = '';
+      var p = document.createElement('p');
+      p.setAttribute('data-lang-fr', fr);
+      p.setAttribute('data-lang-en', en);
+      p.textContent = lang() === 'en' ? en : fr;
+      var ul = document.createElement('ul');
+      errors.forEach(function (f) {
+        var src = $(f.label);
+        var li = document.createElement('li');
+        var a = document.createElement('a');
+        a.href = '#' + f.id;
+        var labelFr = src.getAttribute('data-lang-fr') || src.textContent;
+        var labelEn = src.getAttribute('data-lang-en') || src.textContent;
+        if (f.checkbox) { labelFr = 'Consentement'; labelEn = 'Consent'; }
+        a.setAttribute('data-lang-fr', labelFr);
+        a.setAttribute('data-lang-en', labelEn);
+        a.textContent = lang() === 'en' ? labelEn : labelFr;
+        a.addEventListener('click', function (ev) {
+          ev.preventDefault();
+          focusField(f.id);
+        });
+        li.appendChild(a);
+        ul.appendChild(li);
+      });
+      summary.appendChild(p);
+      summary.appendChild(ul);
+      summary.focus();
     }
 
-    if (!prenom || prenom.value.trim().length < 2) {
-      setError('fg-prenom', true);
-      isValid = false;
+    function hideSummary() {
+      summary.textContent = '';
     }
 
-    if (!email || !isValidEmail(email.value)) {
-      setError('fg-email', true);
-      isValid = false;
+    function focusField(id) {
+      var el = $(id);
+      if (!el) return;
+      try { el.scrollIntoView({ block: 'center' }); } catch (e) { /* ancien navigateur */ }
+      el.focus({ preventScroll: true });
     }
 
-    if (!tel || !isValidPhone(tel.value)) {
-      setError('fg-tel', true);
-      isValid = false;
+    function validateAll() {
+      var errors = [];
+      FIELDS.forEach(function (f) {
+        var ok = f.test($(f.id).value);
+        setFieldError(f, !ok);
+        if (!ok) errors.push(f);
+      });
+      return errors;
     }
 
-    if (!rgpd || !rgpd.checked) {
-      if (rgpdError) rgpdError.style.display = 'block';
-      isValid = false;
+    /* — Données envoyées — */
+    function selectLabelFr(id) {
+      var sel = $(id);
+      if (!sel || !sel.value) return '';
+      var opt = sel.options[sel.selectedIndex];
+      return (opt && (opt.getAttribute('data-lang-fr') || opt.textContent) || '').trim();
     }
 
-    if (!isValid) {
-      const firstError = form.querySelector('.form-group.error');
-      if (firstError) {
-        firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    function buildPayload() {
+      var consent = ($('rgpd-text').textContent || '').replace(/\s+/g, ' ').trim();
+      var subject = form.querySelector('[name="_subject"]');
+      return {
+        nom: $('nom').value.trim(),
+        prenom: $('prenom').value.trim(),
+        email: $('email').value.trim(),
+        tel: $('tel').value.trim(),
+        projet: selectLabelFr('projet'),
+        typology: selectLabelFr('typology'),
+        message: ($('message').value || '').trim(),
+        consentement_rgpd: 'oui',
+        consentement_texte: consent,
+        consentement_date: new Date().toISOString(),
+        consentement_version: CONSENT_VERSION,
+        langue: lang(),
+        page_origine: document.referrer || '(accès direct ou page précédente inconnue)',
+        page_url: window.location.href,
+        _subject: subject ? subject.value : 'Demande d\'information — 59 Cézanne',
+        _gotcha: honeypot ? honeypot.value : ''
+      };
+    }
+
+    /* — Mesure : seulement si un outil a déjà été activé après consentement — */
+    function trackLead(payload) {
+      try {
+        if (typeof window.gtag === 'function') {
+          window.gtag('event', 'generate_lead', {
+            form_id: 'contact',
+            typology: payload.typology || '',
+            project_type: payload.projet || '',
+            transport_type: 'beacon'
+          });
+        }
+      } catch (e) { /* la mesure ne doit jamais bloquer la demande */ }
+    }
+
+    /* — États du bouton — */
+    function setSending(on) {
+      sending = on;
+      submitBtn.setAttribute('aria-disabled', on ? 'true' : 'false');
+      if (on) {
+        submitLabel.textContent = lang() === 'en' ? 'Sending…' : 'Envoi en cours…';
+      } else {
+        submitLabel.textContent = submitLabel.getAttribute('data-lang-' + lang()) || 'Envoyer ma demande';
       }
-      return;
     }
 
-    // Show loading state
-    const submitBtn = form.querySelector('.btn-submit');
-    const originalBtnHtml = submitBtn.innerHTML;
-    submitBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="animation:spin 1s linear infinite;width:18px;height:18px;"><circle cx="12" cy="12" r="10" stroke-dasharray="60" stroke-dashoffset="30"/></svg>&nbsp; Envoi en cours...';
-    submitBtn.disabled = true;
-
-    if (!document.getElementById('spin-style')) {
-      const style = document.createElement('style');
-      style.id = 'spin-style';
-      style.textContent = '@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }';
-      document.head.appendChild(style);
+    function onSuccess(payload) {
+      trackLead(payload);
+      wipe(failEl);
+      say(statusEl, 'ok',
+        'Merci, votre demande a bien été envoyée. Vous allez être redirigé(e) vers la page de confirmation.',
+        'Thank you, your enquiry has been sent. You are being redirected to the confirmation page.');
+      form.classList.add('is-sent');
+      window.setTimeout(function () { window.location.assign(THANKS_URL); }, REDIRECT_DELAY_MS);
     }
 
-    // Track conversion
-    if (typeof gtag === 'function') {
-      gtag('event', 'form_submit', {
-        event_category: 'Contact',
-        event_label: '59 Cézanne Contact Form'
+    function onFailure(data) {
+      setSending(false);
+      wipe(statusEl);
+      var emailRejected = false;
+      if (data && data.errors && data.errors.length) {
+        for (var i = 0; i < data.errors.length; i++) {
+          if (data.errors[i] && data.errors[i].field === 'email') emailRejected = true;
+        }
+      }
+      if (emailRejected) {
+        setFieldError(FIELDS[2], true);
+        showSummary([FIELDS[2]]);
+        return;
+      }
+      say(failEl, 'error',
+        'Votre demande n\'a pas pu être envoyée. Veuillez réessayer dans un instant ou nous joindre par téléphone ou par e-mail (coordonnées sur cette page).',
+        'Your enquiry could not be sent. Please try again in a moment, or reach us by phone or email (details on this page).');
+    }
+
+    /* — Soumission — */
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      if (sending) return;
+      attempted = true;
+      wipe(failEl);
+      wipe(statusEl);
+
+      // Champ piège rempli : c'est un robot. Faux succès, aucun envoi, aucune redirection.
+      if (honeypot && honeypot.value) {
+        say(statusEl, 'ok',
+          'Merci, votre demande a bien été envoyée.',
+          'Thank you, your enquiry has been sent.');
+        return;
+      }
+
+      var errors = validateAll();
+      if (errors.length) {
+        showSummary(errors);
+        return;
+      }
+      hideSummary();
+
+      // Délai minimal : un humain met plus de quelques secondes à remplir le formulaire.
+      if (Date.now() - startedAt < MIN_FILL_MS) {
+        say(failEl, 'error',
+          'Votre demande n\'a pas été envoyée : le formulaire a été validé trop rapidement. Merci de patienter quelques secondes, puis de réessayer.',
+          'Your enquiry was not sent: the form was submitted too quickly. Please wait a few seconds and try again.');
+        return;
+      }
+
+      var payload = buildPayload();
+      setSending(true);
+      say(statusEl, 'info', 'Envoi de votre demande en cours…', 'Sending your enquiry…');
+
+      var controller = ('AbortController' in window) ? new AbortController() : null;
+      var timer = window.setTimeout(function () { if (controller) controller.abort(); }, REQUEST_TIMEOUT_MS);
+
+      fetch(FORMSPREE_ENDPOINT, {
+        method: 'POST',
+        headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+        signal: controller ? controller.signal : undefined
+      })
+        .then(function (res) {
+          window.clearTimeout(timer);
+          if (res.ok) {
+            onSuccess(payload);
+            return null;
+          }
+          return res.json().then(function (d) { return d; }, function () { return null; }).then(onFailure);
+        })
+        .catch(function () {
+          window.clearTimeout(timer);
+          onFailure(null);
+        });
+    });
+
+    /* Retour arrière depuis /merci (cache de navigation) : formulaire de nouveau utilisable */
+    window.addEventListener('pageshow', function (ev) {
+      if (ev.persisted) {
+        form.classList.remove('is-sent');
+        wipe(statusEl);
+        wipe(failEl);
+        setSending(false);
+        startedAt = Date.now() - MIN_FILL_MS;
+      }
+    });
+
+    /* — Carte Google Maps : chargée au clic seulement — */
+    var mapBtn = $('mapLoad');
+    var mapBox = $('mapBox');
+    if (mapBtn && mapBox) {
+      mapBtn.hidden = false; // sans JS, seul le lien « Ouvrir dans Google Maps » est proposé
+      mapBtn.addEventListener('click', function () {
+        var iframe = document.createElement('iframe');
+        iframe.src = MAP_SRC;
+        iframe.title = lang() === 'en'
+          ? 'Map: Ponthieu Développement Holding, 418 Ancienne Route des Alpes, Aix-en-Provence'
+          : 'Carte : Ponthieu Développement Holding, 418 Ancienne Route des Alpes, Aix-en-Provence';
+        iframe.loading = 'lazy';
+        iframe.referrerPolicy = 'no-referrer-when-downgrade';
+        iframe.setAttribute('allowfullscreen', '');
+        mapBox.textContent = '';
+        mapBox.appendChild(iframe);
+        iframe.focus();
       });
     }
+  }
 
-    // Submit to Formspree
-    fetch(FORMSPREE_ENDPOINT, {
-      method: 'POST',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        nom:      nom.value.trim(),
-        prenom:   prenom.value.trim(),
-        email:    email.value.trim(),
-        tel:      tel.value.trim(),
-        typology: (document.getElementById('typology') || {}).value || '',
-        message:  ((document.getElementById('message') || {}).value || '').trim()
-      })
-    })
-    .then(function (res) {
-      if (res.ok) {
-        window.location.href = 'merci.html';
-      } else {
-        return res.json().then(function (data) { throw data; });
-      }
-    })
-    .catch(function () {
-      submitBtn.innerHTML = originalBtnHtml;
-      submitBtn.disabled = false;
-      let errEl = document.getElementById('form-submit-error');
-      if (!errEl) {
-        errEl = document.createElement('p');
-        errEl.id = 'form-submit-error';
-        errEl.style.cssText = 'color:#c0392b;font-size:0.85rem;margin-top:0.8rem;text-align:center;';
-        submitBtn.insertAdjacentElement('afterend', errEl);
-      }
-      errEl.textContent = 'Une erreur est survenue. Veuillez réessayer ou nous contacter par téléphone.';
-    });
-  });
-
-});
-
-/* ─── Callback button animation ────────────────────────────── */
-document.addEventListener('DOMContentLoaded', function () {
-  const callbackBtn = document.querySelector('.callback-btn');
-  if (!callbackBtn) return;
-
-  callbackBtn.addEventListener('mouseenter', function () {
-    this.style.transform = 'translateY(-3px)';
-  });
-
-  callbackBtn.addEventListener('mouseleave', function () {
-    this.style.transform = 'translateY(0)';
-  });
-});
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+})();

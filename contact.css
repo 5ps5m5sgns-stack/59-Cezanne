@@ -1,8 +1,554 @@
-/* contact.css — extra styles loaded only on contact.html */
-/* Most styles are already in style.css */
+/* ============================================================
+   59 CÉZANNE — contact.css
+   Styles propres à /contact : bandeau, formulaire, coordonnées, carte au clic, guides, FAQ.
+   S'appuie sur les jetons de style.css (--or-texte, --erreur, --focus-ring, --tap…) avec
+   des valeurs de repli ; aucune règle ne sort des classes .ct-* (sauf .page-hero.ct-hero).
+   ============================================================ */
 
-.form-group input:autofill,
-.form-group input:-webkit-autofill {
+/* ─── Bandeau d'en-tête ─────────────────────────────────────── */
+.page-hero.ct-hero {
+  height: auto;
+  min-height: clamp(340px, 46vh, 480px);
+}
+
+.ct-hero .hero-content {
+  padding-top: calc(var(--nav-height) + 2rem);
+  padding-bottom: 3rem;
+}
+
+.ct-hero .hero-title {
+  font-size: clamp(2rem, 4.2vw, 3.4rem);
+  max-width: 780px;
+}
+
+.ct-hero .hero-subtitle {
+  max-width: 600px;
+  color: rgba(255, 255, 255, 0.88);
+}
+
+.ct-credit {
+  position: absolute;
+  right: 1rem;
+  bottom: 0.8rem;
+  z-index: 2;
+  margin: 0;
+  padding: 0.2rem 0.65rem;
+  border-radius: 3px;
+  background: rgba(0, 0, 0, 0.55);
+  color: #fff;
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+}
+
+/* ─── Mise en page principale ───────────────────────────────── */
+.ct-main {
+  padding: 5rem 0 6rem;
+}
+
+.ct-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+  gap: 4rem;
+  align-items: start;
+}
+
+.ct-card {
+  background: var(--white);
+  border-radius: var(--radius-md);
+  padding: 2.75rem;
+  box-shadow: var(--shadow);
+}
+
+.ct-card h2 {
+  font-family: var(--font-serif);
+  font-size: 1.9rem;
+  font-weight: 400;
+  line-height: 1.2;
+  color: var(--text);
+  margin-bottom: 0.6rem;
+}
+
+.ct-intro {
+  font-size: 0.95rem;
+  line-height: 1.75;
+  color: var(--text-mid);
+  margin-bottom: 0.5rem;
+}
+
+.ct-required-note {
+  font-size: 0.82rem;
+  line-height: 1.5;
+  color: var(--text-mid);
+  margin-bottom: 1.75rem;
+}
+
+.ct-noscript {
+  margin: 0 0 1.5rem;
+  padding: 0.9rem 1.1rem;
+  border: 1px solid var(--stone);
+  border-radius: var(--radius);
+  background: var(--beige);
+  font-size: 0.88rem;
+  line-height: 1.65;
+  color: var(--text);
+}
+
+.ct-noscript p + p { margin-top: 0.5rem; }
+
+.ct-link {
+  color: var(--or-texte, #7f6422);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.ct-link:hover { color: var(--text); }
+
+/* ─── Formulaire ────────────────────────────────────────────── */
+.ct-form .form-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.35rem 1.2rem;
+}
+
+.ct-form .form-label {
+  font-size: 0.74rem;
+  color: var(--text-mid);
+}
+
+.ct-req {
+  color: var(--erreur, #b3261e);
+  margin-left: 0.15em;
+}
+
+.ct-opt {
+  font-weight: 400;
+  letter-spacing: 0.04em;
+  text-transform: none;
+  color: var(--text-mid);
+}
+
+/* 16 px : évite le zoom automatique sur iOS ; cible tactile ≥ 44 px */
+.ct-form .form-input,
+.ct-form .form-select,
+.ct-form .form-textarea {
+  font-size: 1rem;
+  min-height: var(--tap, 44px);
+}
+
+.ct-form .form-input::placeholder,
+.ct-form .form-textarea::placeholder {
+  color: #6b655f;
+  opacity: 1;
+}
+
+.ct-hint {
+  font-size: 0.8rem;
+  line-height: 1.5;
+  color: var(--text-mid);
+}
+
+.ct-form .form-error {
+  display: none;
+  font-size: 0.84rem;
+  line-height: 1.45;
+  color: var(--erreur, #b3261e);
+}
+
+.ct-form .form-group.error .form-error { display: block; }
+
+.ct-form .form-error::before {
+  content: "!";
+  display: inline-block;
+  width: 1.15em;
+  height: 1.15em;
+  margin-right: 0.5em;
+  border-radius: 50%;
+  background: var(--erreur, #b3261e);
+  color: #fff;
+  font-size: 0.8em;
+  font-weight: 700;
+  line-height: 1.15em;
+  text-align: center;
+  vertical-align: 0.05em;
+}
+
+.ct-form .form-group.error :is(.form-input, .form-select, .form-textarea) {
+  border-color: var(--erreur, #b3261e);
+  box-shadow: 0 0 0 1px var(--erreur, #b3261e);
+}
+
+/* Récapitulatif d'erreurs : zone vivante toujours présente, sans hauteur tant qu'elle est vide */
+.ct-summary {
+  margin-bottom: 1.5rem;
+  padding: 1rem 1.2rem;
+  border: 2px solid var(--erreur, #b3261e);
+  border-radius: var(--radius);
+  background: #fdf3f2;
+  color: #7a1b15;
+  font-size: 0.92rem;
+  line-height: 1.6;
+}
+
+.ct-summary:empty {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  height: 0;
+  overflow: hidden;
+}
+
+.ct-summary p { font-weight: 700; margin-bottom: 0.4rem; }
+.ct-summary ul { list-style: disc; padding-left: 1.25rem; }
+.ct-summary a { color: inherit; text-decoration: underline; text-underline-offset: 3px; }
+
+/* Consentement */
+.ct-consent {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.85rem;
+}
+
+.ct-consent input[type="checkbox"] {
+  flex: 0 0 22px;
+  width: 22px;
+  height: 22px;
+  margin-top: 0.15rem;
+  accent-color: var(--or-texte, #7f6422);
+  cursor: pointer;
+}
+
+.ct-consent label {
+  font-size: 0.88rem;
+  line-height: 1.65;
+  color: var(--text-mid);
+  cursor: pointer;
+}
+
+.ct-consent-link {
+  margin: 0.55rem 0 0 calc(22px + 0.85rem);
+  font-size: 0.88rem;
+}
+
+/* Champ piège (anti-spam) : hors écran, jamais display:none */
+.ct-hp {
+  position: absolute !important;
+  left: -10000px;
+  top: auto;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+/* Bouton d'envoi */
+.ct-submit {
+  width: 100%;
+  min-height: 3.4rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.7rem;
+  margin-top: 1.6rem;
+  padding: 1.05rem;
+  background: var(--dark);
+  color: var(--white);
+  font-family: var(--font-sans);
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: background var(--transition-fast), color var(--transition-fast);
+}
+
+.ct-submit:hover { background: var(--or); color: var(--dark); }
+.ct-submit svg { width: 18px; height: 18px; flex-shrink: 0; }
+.ct-submit[aria-disabled="true"] { opacity: 0.7; cursor: progress; }
+
+/* Messages d'état (zones vivantes toujours présentes ; invisibles tant qu'elles sont vides) */
+.ct-status {
+  font-size: 0.92rem;
+  line-height: 1.6;
+}
+
+.ct-status:not(:empty) {
+  margin-top: 1rem;
+  padding: 0.9rem 1.1rem;
+  border: 1px solid var(--stone);
+  border-radius: var(--radius);
+}
+
+.ct-status[data-state="info"] { color: var(--text); background: var(--beige); }
+
+.ct-status[data-state="ok"] {
+  color: var(--olive-texte, #55663a);
+  background: rgba(107, 124, 69, 0.09);
+  border-color: rgba(85, 102, 58, 0.45);
+}
+
+.ct-status[data-state="error"] {
+  color: var(--erreur, #b3261e);
+  background: #fdf3f2;
+  border-color: rgba(179, 38, 30, 0.5);
+}
+
+/* ─── Coordonnées ───────────────────────────────────────────── */
+.ct-aside {
+  position: sticky;
+  top: calc(var(--nav-height) + 2rem);
+}
+
+.ct-aside h2 {
+  font-family: var(--font-serif);
+  font-size: 1.9rem;
+  font-weight: 300;
+  line-height: 1.2;
+  color: var(--text);
+  margin: 0;
+}
+
+.ct-aside h2 em { font-style: italic; color: var(--or-texte, #7f6422); }
+
+.ct-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+  margin: 0 0 1.5rem;
+}
+
+.ct-info li {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: 1.1rem 1.25rem;
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+}
+
+.ct-ico {
+  flex: 0 0 44px;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(201, 169, 110, 0.16);
+  color: var(--or-texte, #7f6422);
+}
+
+.ct-info strong {
+  display: block;
+  font-family: var(--font-serif);
+  font-size: 1.05rem;
+  font-weight: 500;
+  color: var(--text);
+  margin-bottom: 0.1rem;
+}
+
+.ct-info span,
+.ct-info a {
+  font-size: 0.92rem;
+  line-height: 1.65;
+  color: var(--text-mid);
+}
+
+.ct-info a {
+  display: inline-block;
+  padding: 0.1rem 0;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  overflow-wrap: anywhere;
+}
+
+.ct-info a:hover { color: var(--text); }
+
+.ct-doc {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 0.9rem;
+  padding: 1rem 1.2rem;
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text);
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.ct-doc:hover { border-color: var(--or-texte, #7f6422); box-shadow: var(--shadow-sm); }
+
+.ct-doc strong {
+  display: block;
+  font-family: var(--font-serif);
+  font-size: 1.02rem;
+  font-weight: 500;
+}
+
+.ct-doc small { font-size: 0.82rem; line-height: 1.5; color: var(--text-mid); }
+
+.btn.ct-call { width: 100%; justify-content: center; }
+
+/* Carte chargée au clic */
+.ct-map { margin-top: 2rem; }
+
+.ct-map h3 {
+  font-family: var(--font-serif);
+  font-size: 1.2rem;
+  font-weight: 400;
+  color: var(--text);
+  margin-bottom: 0.75rem;
+}
+
+.ct-map-box {
+  min-height: 280px;
+  display: flex;
+  background: var(--beige);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  box-shadow: var(--shadow);
+}
+
+.ct-map-ph {
+  margin: auto;
+  max-width: 340px;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.9rem;
+  text-align: center;
+}
+
+.ct-map-ph p { font-size: 0.88rem; line-height: 1.6; color: var(--text-mid); }
+.ct-map-box iframe { display: block; width: 100%; height: 280px; border: 0; }
+.ct-map-addr { margin-top: 0.7rem; font-size: 0.82rem; color: var(--text-mid); text-align: center; }
+
+/* ─── Guides (maillage) ─────────────────────────────────────── */
+.ct-guides {
+  padding: 5rem 0;
+  background: var(--beige);
+}
+
+.ct-guide-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1.5rem;
+}
+
+.ct-guide {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  padding: 1.75rem;
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  transition: box-shadow var(--transition-fast), border-color var(--transition-fast);
+}
+
+.ct-guide:hover { border-color: var(--or-texte, #7f6422); box-shadow: var(--shadow); }
+.ct-guide:focus-within { outline: 2px solid var(--focus-ring, #7f6422); outline-offset: 3px; }
+
+.ct-guide-tag {
+  font-size: 0.68rem;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--or-texte, #7f6422);
+}
+
+.ct-guide h3 {
+  font-family: var(--font-serif);
+  font-size: 1.3rem;
+  font-weight: 400;
+  line-height: 1.3;
+  color: var(--text);
+}
+
+.ct-guide h3 a::after { content: ""; position: absolute; inset: 0; }
+.ct-guide h3 a:focus-visible { outline: none; }
+.ct-guide p { font-size: 0.92rem; line-height: 1.7; color: var(--text-mid); }
+.ct-guides-more { margin-top: 2rem; text-align: center; }
+
+/* ─── FAQ (<details>) ───────────────────────────────────────── */
+.ct-faq { padding: 5rem 0 6rem; }
+.ct-faq-list { max-width: 820px; margin: 0 auto; }
+.ct-faq details { border-bottom: 1px solid var(--border); }
+
+.ct-faq summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  min-height: var(--tap, 44px);
+  padding: 1.25rem 0;
+  list-style: none;
+  cursor: pointer;
+  font-family: var(--font-serif);
+  font-size: 1.18rem;
+  line-height: 1.4;
+  color: var(--text);
+}
+
+.ct-faq summary::-webkit-details-marker { display: none; }
+.ct-faq summary:hover { color: var(--or-texte, #7f6422); }
+
+.ct-faq summary::after {
+  content: "+";
+  flex: 0 0 30px;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--or-texte, #7f6422);
+  border-radius: 50%;
+  color: var(--or-texte, #7f6422);
+  font: 400 1.25rem/1 var(--font-sans);
+  transition: transform var(--transition-fast), background var(--transition-fast);
+}
+
+.ct-faq details[open] summary::after {
+  transform: rotate(45deg);
+  background: var(--or);
+  border-color: var(--or);
+  color: var(--dark);
+}
+
+.ct-faq-a {
+  padding: 0 2.6rem 1.5rem 0;
+  font-size: 0.97rem;
+  line-height: 1.8;
+  color: var(--text-mid);
+}
+
+/* ─── Responsive ────────────────────────────────────────────── */
+@media (max-width: 1024px) {
+  .ct-grid { grid-template-columns: 1fr; gap: 3rem; }
+  .ct-aside { position: static; }
+}
+
+@media (max-width: 640px) {
+  .ct-main { padding: 3rem 0 4rem; }
+  .ct-card { padding: 1.75rem 1.25rem; }
+  .ct-card h2 { font-size: 1.65rem; }
+  .ct-form .form-grid { grid-template-columns: 1fr; }
+  .ct-guides, .ct-faq { padding: 3.5rem 0; }
+  .ct-faq summary { font-size: 1.08rem; }
+  .ct-faq-a { padding-right: 0; }
+  .ct-credit { right: 0.6rem; font-size: 0.68rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ct-faq summary::after,
+  .ct-doc,
+  .ct-guide,
+  .ct-submit { transition: none; }
+}
+
+/* Auto-remplissage du navigateur : garde le fond blanc et le texte lisible */
+.ct-form input:-webkit-autofill {
   -webkit-box-shadow: 0 0 0 30px var(--white) inset !important;
   -webkit-text-fill-color: var(--text) !important;
 }

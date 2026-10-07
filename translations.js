@@ -1,35 +1,123 @@
 /* ============================================================
    59 CÉZANNE — translations.js
-   Bilingual FR / EN support via data-lang-* attributes
+   Bascule FR / EN via les attributs data-lang-* — UNIQUE définition de setLang().
+
+   Contrat (ne pas redéfinir setLang ailleurs : ni dans animations.js, ni en ligne) :
+   - data-lang-fr / data-lang-en       → innerHTML de l'élément
+   - data-placeholder-fr / -en         → attribut placeholder
+   - data-aria-label-fr / -en          → attribut aria-label (optionnel)
+   - <html lang> mis à jour ; boutons .lang-btn : classe .active + aria-pressed
+   - langue mémorisée dans sessionStorage ('59cezanne-lang'), pour la session seulement
+   - <html data-lang-lock> (pages de blog : français seul, ou anglais natif) :
+       setLang() ne fait RIEN, la langue mémorisée est ignorée et jamais modifiée,
+       et les boutons de langue éventuels sont masqués par style.css.
+   - événement document « 59c:langchange » ({detail:{lang}}) pour les autres scripts
+     (libellés ARIA de animations.js, bandeau de cookie.js).
+   - window.getLang() renvoie 'fr' ou 'en' (langue courante de l'interface).
+   Compatible avec <script defer> : ne dépend d'aucun ordre de chargement.
    ============================================================ */
 
-window.setLang = function(lang) {
-  // 1. innerHTML replacement via data-lang-* attributes
-  document.querySelectorAll('[data-lang-' + lang + ']').forEach(el => {
-    el.innerHTML = el.getAttribute('data-lang-' + lang);
-  });
+(function () {
+  'use strict';
 
-  // 2. Placeholder replacement for inputs/textareas
-  document.querySelectorAll('[data-placeholder-' + lang + ']').forEach(el => {
-    el.placeholder = el.getAttribute('data-placeholder-' + lang);
-  });
+  var STORAGE_KEY = '59cezanne-lang';
+  var root = document.documentElement;
 
-  // 3. Update html[lang] attribute
-  document.documentElement.lang = lang === 'fr' ? 'fr' : 'en';
+  function isLocked() {
+    return root.hasAttribute('data-lang-lock');
+  }
 
-  // 4. Update active lang button
-  document.querySelectorAll('.lang-btn').forEach(b => {
-    b.classList.toggle('active', b.getAttribute('onclick')?.includes("'" + lang + "'"));
-  });
+  function normalize(lang) {
+    return String(lang || '').toLowerCase().indexOf('en') === 0 ? 'en' : 'fr';
+  }
 
-  // 5. Save preference for this session only
-  try { sessionStorage.setItem('59cezanne-lang', lang); } catch(e) {}
-};
+  function currentLang() {
+    return normalize(root.getAttribute('lang'));
+  }
 
-/* Restore saved language across pages within the same session */
-document.addEventListener('DOMContentLoaded', function() {
-  try {
-    const saved = sessionStorage.getItem('59cezanne-lang');
-    if (saved && saved !== 'fr') window.setLang(saved);
-  } catch(e) {}
-});
+  function readStored() {
+    try { return sessionStorage.getItem(STORAGE_KEY); } catch (e) { return null; }
+  }
+
+  function writeStored(lang) {
+    try { sessionStorage.setItem(STORAGE_KEY, lang); } catch (e) { /* stockage indisponible : on ignore */ }
+  }
+
+  /* Langue portée par un bouton : data-set-lang, sinon lang="fr|en", sinon onclick="setLang('xx')" */
+  function buttonLang(btn) {
+    var l = btn.getAttribute('data-set-lang') || btn.getAttribute('lang');
+    if (!l) {
+      var m = /setLang\(\s*['"](\w+)['"]/.exec(btn.getAttribute('onclick') || '');
+      l = m ? m[1] : '';
+    }
+    return l ? normalize(l) : '';
+  }
+
+  function syncButtons(lang) {
+    var buttons = document.querySelectorAll('.lang-btn');
+    for (var i = 0; i < buttons.length; i++) {
+      var bl = buttonLang(buttons[i]);
+      if (!bl) continue;
+      var on = bl === lang;
+      buttons[i].classList.toggle('active', on);
+      buttons[i].setAttribute('aria-pressed', on ? 'true' : 'false');
+    }
+  }
+
+  function setLang(lang) {
+    if (isLocked()) return false;          // pages de blog : langue figée
+    lang = normalize(lang);
+
+    // 1. Contenu : innerHTML
+    var texts = document.querySelectorAll('[data-lang-' + lang + ']');
+    for (var i = 0; i < texts.length; i++) {
+      texts[i].innerHTML = texts[i].getAttribute('data-lang-' + lang);
+    }
+
+    // 2. Placeholders des champs
+    var fields = document.querySelectorAll('[data-placeholder-' + lang + ']');
+    for (var j = 0; j < fields.length; j++) {
+      fields[j].setAttribute('placeholder', fields[j].getAttribute('data-placeholder-' + lang));
+    }
+
+    // 3. aria-label optionnels
+    var labelled = document.querySelectorAll('[data-aria-label-' + lang + ']');
+    for (var k = 0; k < labelled.length; k++) {
+      labelled[k].setAttribute('aria-label', labelled[k].getAttribute('data-aria-label-' + lang));
+    }
+
+    // 4. <html lang>
+    root.setAttribute('lang', lang);
+
+    // 5. Boutons FR / EN
+    syncButtons(lang);
+
+    // 6. Préférence conservée pour la session uniquement
+    writeStored(lang);
+
+    // 7. Prévenir les autres scripts
+    try {
+      document.dispatchEvent(new CustomEvent('59c:langchange', { detail: { lang: lang } }));
+    } catch (e) { /* CustomEvent indisponible : sans conséquence */ }
+    return true;
+  }
+
+  window.setLang = setLang;
+  window.getLang = currentLang;
+
+  /* Restauration de la langue au chargement (même session, autres pages) */
+  function init() {
+    if (isLocked()) return;                // on ne lit ni n'écrit la langue mémorisée
+    if (readStored() === 'en') {
+      setLang('en');
+    } else {
+      syncButtons(currentLang());          // état initial FR : aria-pressed cohérent
+    }
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+})();

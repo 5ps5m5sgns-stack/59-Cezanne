@@ -1,445 +1,651 @@
 /* ============================================================
    59 CÉZANNE — animations.js
-   Global animations, loader, nav, scroll, lightbox, counters
+   Barre de navigation, menu mobile, révélations au défilement, compteurs,
+   parallaxe légère, lightbox, accordéons FAQ.
+
+   - Compatible <script defer> (ou en bas de <body>) ; aucune dépendance.
+   - Fonctions globales conservées pour les attributs onclick des pages :
+     toggleMobile(), openLightbox(el), closeLightbox(), lightboxNav(dir),
+     showLightboxImage(i), animateCounter(el, n), triggerHeroAnim(), toggleFaq(el).
+   - SANS setLang() : la bascule FR/EN vit uniquement dans translations.js
+     (événement « 59c:langchange » écouté ici pour les libellés ARIA).
+   - Tolérant à l'absence de #loader, #lightbox, #burger, #scroll-progress… :
+     aucune erreur console quelle que soit la page.
+   - Respecte prefers-reduced-motion (pas de parallaxe, compteurs instantanés,
+     révélations immédiates) ; le CSS neutralise en plus les transitions.
    ============================================================ */
 
-'use strict';
+(function () {
+  'use strict';
 
-/* ─── Loader ────────────────────────────────────────────────── */
-(function initLoader() {
-  const loader = document.getElementById('loader');
-  if (!loader) return;
+  var doc = document;
+  var win = window;
 
-  const minDuration = 1200; // ms
-  const start = Date.now();
+  /* ─── Utilitaires ─────────────────────────────────────────── */
+  function byId(id) { return doc.getElementById(id); }
+  function $$(sel, ctx) { return Array.prototype.slice.call((ctx || doc).querySelectorAll(sel)); }
+  function onReady(fn) {
+    if (doc.readyState === 'loading') doc.addEventListener('DOMContentLoaded', fn);
+    else fn();
+  }
 
-  function hideLoader() {
-    const elapsed = Date.now() - start;
-    const delay = Math.max(0, minDuration - elapsed);
-    setTimeout(() => {
-      loader.classList.add('hidden');
-      document.body.classList.remove('no-scroll');
+  var reduceMQ = win.matchMedia ? win.matchMedia('(prefers-reduced-motion: reduce)') : null;
+  function reducedMotion() { return !!(reduceMQ && reduceMQ.matches); }
+
+  /* Langue de l'interface = <html lang> (tenu à jour par translations.js) */
+  function lang() {
+    return String(doc.documentElement.getAttribute('lang') || 'fr').toLowerCase().indexOf('en') === 0 ? 'en' : 'fr';
+  }
+
+  var I18N = {
+    fr: {
+      menuOpen: 'Ouvrir le menu', menuClose: 'Fermer le menu',
+      lbLabel: 'Galerie photos agrandie', lbClose: 'Fermer', lbPrev: 'Image précédente', lbNext: 'Image suivante',
+      enlarge: "Agrandir l'image", enlarged: 'Image agrandie'
+    },
+    en: {
+      menuOpen: 'Open menu', menuClose: 'Close menu',
+      lbLabel: 'Enlarged photo gallery', lbClose: 'Close', lbPrev: 'Previous image', lbNext: 'Next image',
+      enlarge: 'Enlarge image', enlarged: 'Enlarged image'
+    }
+  };
+  function t(key) { return I18N[lang()][key]; }
+
+  var FOCUSABLE = 'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
+  function visibleFocusables(container) {
+    return $$(FOCUSABLE, container).filter(function (el) {
+      return el.getClientRects().length > 0 && getComputedStyle(el).visibility !== 'hidden';
+    });
+  }
+
+  /* Le défilement de la page est bloqué tant que le menu mobile OU la lightbox est ouvert */
+  function syncScrollLock() {
+    if (!doc.body) return;
+    var menu = byId('mobileMenu');
+    var lb = byId('lightbox');
+    var lock = (menu && menu.classList.contains('open')) || (lb && lb.classList.contains('open'));
+    doc.body.classList.toggle('no-scroll', !!lock);
+  }
+
+  /* ─── Loader (facultatif : les pages le suppriment) ─────────── */
+  /* S'il existe, il ne bloque JAMAIS plus de 400 ms et n'attend pas `load`. */
+  function triggerHeroAnim() {
+    var hero = doc.querySelector('.hero');
+    if (hero) hero.classList.add('hero-loaded');   // compat : l'animation du hero est en CSS pur
+  }
+
+  (function initLoader() {
+    var loader = byId('loader');
+    var done = false;
+    function hide() {
+      if (done) return;
+      done = true;
+      if (loader) loader.classList.add('hidden');
       triggerHeroAnim();
-    }, delay);
-  }
+    }
+    if (!loader) {
+      onReady(hide);
+      return;
+    }
+    var failsafe = setTimeout(hide, 400);
+    onReady(function () { clearTimeout(failsafe); hide(); });
+  })();
 
-  document.body.classList.add('no-scroll');
-
-  if (document.readyState === 'complete') {
-    hideLoader();
-  } else {
-    window.addEventListener('load', hideLoader);
-  }
-})();
-
-/* ─── Hero animation trigger ────────────────────────────────── */
-function triggerHeroAnim() {
-  const hero = document.querySelector('.hero');
-  if (hero) hero.classList.add('hero-loaded');
-}
-
-/* ─── Scroll Progress Bar ───────────────────────────────────── */
-(function initScrollProgress() {
-  const bar = document.getElementById('scroll-progress');
-  if (!bar) return;
+  /* ─── Barre de progression, navbar, parallaxe : un seul écouteur de scroll ─── */
+  var progressBar = null;
+  var navbar = null;
+  var navSolid = false;
+  var parallaxImgs = [];
+  var NAV_SCROLL_THRESHOLD = 60;
 
   function updateProgress() {
-    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-    const docHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-    const pct = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
-    bar.style.width = pct + '%';
+    if (!progressBar) return;
+    var scrollTop = win.pageYOffset || doc.documentElement.scrollTop;
+    var docHeight = doc.documentElement.scrollHeight - doc.documentElement.clientHeight;
+    progressBar.style.width = (docHeight > 0 ? (scrollTop / docHeight) * 100 : 0) + '%';
   }
-
-  window.addEventListener('scroll', updateProgress, { passive: true });
-  updateProgress();
-})();
-
-/* ─── Navbar ────────────────────────────────────────────────── */
-(function initNavbar() {
-  const navbar = document.getElementById('navbar');
-  if (!navbar) return;
-
-  const SCROLL_THRESHOLD = 60;
 
   function updateNav() {
-    const scrolled = window.pageYOffset > SCROLL_THRESHOLD;
-    if (scrolled) {
-      navbar.classList.add('scrolled');
-      navbar.classList.remove('transparent');
-    } else {
-      navbar.classList.remove('scrolled');
-      navbar.classList.add('transparent');
-    }
+    if (!navbar || navSolid) return;
+    var scrolled = win.pageYOffset > NAV_SCROLL_THRESHOLD;
+    navbar.classList.toggle('scrolled', scrolled);
+    navbar.classList.toggle('transparent', !scrolled);
   }
-
-  window.addEventListener('scroll', updateNav, { passive: true });
-  updateNav();
-})();
-
-/* ─── Mobile Menu ───────────────────────────────────────────── */
-function toggleMobile() {
-  const burger = document.getElementById('burger');
-  const menu = document.getElementById('mobileMenu');
-  if (!burger || !menu) return;
-
-  const isOpen = menu.classList.contains('open');
-
-  if (isOpen) {
-    menu.classList.remove('open');
-    burger.classList.remove('open');
-    document.body.classList.remove('no-scroll');
-  } else {
-    menu.classList.add('open');
-    burger.classList.add('open');
-    document.body.classList.add('no-scroll');
-  }
-}
-
-// Close menu on Escape
-document.addEventListener('keydown', (e) => {
-  if (e.key === 'Escape') {
-    const menu = document.getElementById('mobileMenu');
-    const burger = document.getElementById('burger');
-    if (menu && menu.classList.contains('open')) {
-      menu.classList.remove('open');
-      burger && burger.classList.remove('open');
-      document.body.classList.remove('no-scroll');
-    }
-    closeLightbox();
-  }
-});
-
-/* ─── Scroll Reveal (Intersection Observer) ─────────────────── */
-(function initScrollReveal() {
-  const elements = document.querySelectorAll('.reveal, .reveal-left, .reveal-right');
-  if (!elements.length) return;
-
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('visible');
-        observer.unobserve(entry.target);
-      }
-    });
-  }, {
-    threshold: 0.12,
-    rootMargin: '0px 0px -40px 0px'
-  });
-
-  elements.forEach(el => observer.observe(el));
-})();
-
-/* ─── Animated Counters ─────────────────────────────────────── */
-(function initCounters() {
-  const counters = document.querySelectorAll('.counter[data-target]');
-  if (!counters.length) return;
-
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (!entry.isIntersecting) return;
-      const el = entry.target;
-      const target = parseInt(el.getAttribute('data-target'), 10);
-      if (isNaN(target)) return;
-
-      animateCounter(el, target);
-      observer.unobserve(el);
-    });
-  }, { threshold: 0.5 });
-
-  counters.forEach(c => observer.observe(c));
-})();
-
-function animateCounter(el, target) {
-  const duration = 1800;
-  const start = performance.now();
-  const startVal = 0;
-
-  function easeOutQuart(t) {
-    return 1 - Math.pow(1 - t, 4);
-  }
-
-  function tick(now) {
-    const elapsed = now - start;
-    const progress = Math.min(elapsed / duration, 1);
-    const eased = easeOutQuart(progress);
-    const current = Math.round(startVal + eased * (target - startVal));
-
-    el.textContent = current.toLocaleString('fr-FR');
-
-    if (progress < 1) {
-      requestAnimationFrame(tick);
-    } else {
-      el.textContent = target.toLocaleString('fr-FR');
-    }
-  }
-
-  requestAnimationFrame(tick);
-}
-
-/* ─── Parallax (light, CSS transform-based) ─────────────────── */
-(function initParallax() {
-  const images = document.querySelectorAll('[id^="parallax-img"]');
-  if (!images.length) return;
 
   function updateParallax() {
-    const scrollY = window.pageYOffset;
-
-    images.forEach(img => {
-      const parent = img.closest('section, .full-img-section');
+    if (!parallaxImgs.length) return;
+    var scrollY = win.pageYOffset;
+    var viewH = win.innerHeight;
+    parallaxImgs.forEach(function (img) {
+      var parent = img.closest('section, .full-img-section');
       if (!parent) return;
-
-      const rect = parent.getBoundingClientRect();
-      const viewH = window.innerHeight;
-
+      var rect = parent.getBoundingClientRect();
       if (rect.bottom < 0 || rect.top > viewH) return;
-
-      const relScroll = (scrollY - (parent.offsetTop - viewH)) / (parent.offsetHeight + viewH);
-      const offset = (relScroll - 0.5) * 80; // max ±40px
-
-      img.style.transform = `translateY(${offset}px) scale(1.08)`;
+      var relScroll = (scrollY - (parent.offsetTop - viewH)) / (parent.offsetHeight + viewH);
+      var offset = (relScroll - 0.5) * 80; // max ±40 px
+      img.style.transform = 'translateY(' + offset + 'px) scale(1.08)';
     });
   }
 
-  window.addEventListener('scroll', updateParallax, { passive: true });
-  updateParallax();
-})();
+  var scrollTicking = false;
+  function onScroll() {
+    if (scrollTicking) return;
+    scrollTicking = true;
+    win.requestAnimationFrame(function () {
+      scrollTicking = false;
+      updateNav();
+      updateProgress();
+      updateParallax();
+    });
+  }
 
-/* ─── Lightbox ──────────────────────────────────────────────── */
-let lightboxImages = [];
-let lightboxIndex = 0;
+  onReady(function () {
+    progressBar = byId('scroll-progress');
+    navbar = byId('navbar');
+    // Barre déjà « scrolled » dès le départ (pages sans hero, blog) : elle reste pleine.
+    navSolid = !!navbar && (navbar.hasAttribute('data-solid') ||
+      (navbar.classList.contains('scrolled') && !navbar.classList.contains('transparent')));
+    parallaxImgs = reducedMotion() ? [] : $$('[id^="parallax-img"]');
 
-function openLightbox(el, idx) {
-  // Walk up the DOM to find the tightest container that holds multiple [data-src] items.
-  // We stop before reaching containers that are inactive tabs (to avoid mixing tab galleries).
-  const GALLERY_SELECTORS = [
-    '.logement-gallery',
-    '.gallery-grid',
-    '.solarium-grid',
-    '.photo-row',
-    '[id^="gallery-"]',
-    '.plan-images',
-    '.logement-tab-panel.active', // only active tab panels
-    '.plan-tab-panel.active'
-  ];
-
-  let container = null;
-  let node = el.parentElement;
-
-  while (node && node !== document.body) {
-    // Skip inactive tab panels — images there should not be navigable
-    if (node.classList.contains('logement-tab-panel') && !node.classList.contains('active')) {
-      break;
+    if (progressBar || (navbar && !navSolid) || parallaxImgs.length) {
+      win.addEventListener('scroll', onScroll, { passive: true });
+      win.addEventListener('resize', onScroll, { passive: true });
     }
-    const hasSrcs = node.querySelectorAll(':scope > [data-src], :scope [data-src]');
-    // Prefer specific gallery wrappers; accept any node with ≥2 data-src children
-    const isGalleryWrapper = GALLERY_SELECTORS.some(sel => node.matches(sel));
-    if (isGalleryWrapper || hasSrcs.length >= 2) {
-      container = node;
-      // Keep climbing only if we haven't reached a gallery wrapper yet
-      if (isGalleryWrapper) break;
-    }
-    node = node.parentElement;
+    updateNav();
+    updateProgress();
+    updateParallax();
+  });
+
+  /* ─── Menu mobile ───────────────────────────────────────────── */
+  var INERT_WHEN_MENU_OPEN = 'main, body > footer, .site-footer, .floating-cta, .skip-link';
+
+  function isMenuOpen() {
+    var menu = byId('mobileMenu');
+    return !!(menu && menu.classList.contains('open'));
   }
 
-  // Collect only direct [data-src] items from the resolved container
-  let items = container ? container.querySelectorAll('[data-src]') : null;
+  function applyMenuState(open, returnFocus) {
+    var burger = byId('burger');
+    var menu = byId('mobileMenu');
+    if (!burger || !menu) return;
 
-  if (items && items.length > 0) {
-    lightboxImages = Array.from(items).map(item => ({
-      src: item.getAttribute('data-src') || item.querySelector('img')?.src || '',
-      caption: item.getAttribute('data-caption') || item.querySelector('img')?.alt || ''
-    }));
-    lightboxIndex = Array.from(items).indexOf(el);
-    if (lightboxIndex < 0) lightboxIndex = (typeof idx === 'number') ? idx : 0;
-  } else {
-    // Fallback: single image
-    const src = el.getAttribute('data-src') || el.querySelector('img')?.src || '';
-    const caption = el.getAttribute('data-caption') || el.querySelector('img')?.alt || '';
-    lightboxImages = [{ src, caption }];
-    lightboxIndex = 0;
+    menu.classList.toggle('open', open);
+    burger.classList.toggle('open', open);                         // compat CSS ancien balisage
+    burger.setAttribute('aria-expanded', open ? 'true' : 'false'); // source de vérité (CSS : croix)
+    burger.setAttribute('aria-label', t(open ? 'menuClose' : 'menuOpen'));
+
+    // Pendant que le menu plein écran est ouvert, le reste de la page est inerte
+    // (ni focus clavier, ni lecteur d'écran) : pas de tabulation « derrière » le menu.
+    $$(INERT_WHEN_MENU_OPEN).forEach(function (el) {
+      if (open) el.setAttribute('inert', ''); else el.removeAttribute('inert');
+    });
+    syncScrollLock();
+
+    if (!open && returnFocus) burger.focus();
   }
 
-  showLightboxImage(lightboxIndex);
-  const lb = document.getElementById('lightbox');
-  if (lb) lb.classList.add('open');
-  document.body.classList.add('no-scroll');
-}
-
-function showLightboxImage(index) {
-  if (!lightboxImages.length) return;
-  lightboxIndex = (index + lightboxImages.length) % lightboxImages.length;
-
-  const imgEl = document.getElementById('lightbox-img');
-  const captionEl = document.getElementById('lightbox-caption');
-  const counterEl = document.getElementById('lightbox-counter');
-
-  if (imgEl) {
-    imgEl.style.opacity = '0';
-    imgEl.style.transform = 'scale(0.96)';
-    imgEl.src = lightboxImages[lightboxIndex].src;
-    imgEl.onload = () => {
-      imgEl.style.transition = 'opacity 0.35s ease, transform 0.35s ease';
-      imgEl.style.opacity = '1';
-      imgEl.style.transform = 'scale(1)';
-    };
-    // Also handle broken images gracefully
-    imgEl.onerror = () => {
-      imgEl.style.opacity = '1';
-      imgEl.style.transform = 'scale(1)';
-    };
-  }
-
-  if (captionEl) {
-    captionEl.textContent = lightboxImages[lightboxIndex].caption || '';
-  }
-
-  // Update counter (only show when multiple images)
-  if (counterEl) {
-    if (lightboxImages.length > 1) {
-      counterEl.textContent = (lightboxIndex + 1) + ' / ' + lightboxImages.length;
-      counterEl.style.display = 'block';
+  /* toggleMobile()      : bascule (appelé par le burger ET par les liens du menu via onclick)
+     toggleMobile(true|false) : force l'état. Un clic sur un lien du menu ferme toujours. */
+  function toggleMobile(force) {
+    var open;
+    var fromLink = false;
+    if (typeof force === 'boolean') {
+      open = force;
     } else {
-      counterEl.style.display = 'none';
+      var ev = win.event;
+      fromLink = !!(ev && ev.target && ev.target.closest && ev.target.closest('#mobileMenu a'));
+      open = fromLink ? false : !isMenuOpen();
     }
+    applyMenuState(open, !open && !fromLink);   // focus rendu au burger sauf navigation par lien
   }
 
-  // Hide nav buttons when only one image
-  const prev = document.querySelector('.lightbox-prev');
-  const next = document.querySelector('.lightbox-next');
-  const showNav = lightboxImages.length > 1;
-  if (prev) prev.style.display = showNav ? '' : 'none';
-  if (next) next.style.display = showNav ? '' : 'none';
-}
+  onReady(function () {
+    var menu = byId('mobileMenu');
+    var burger = byId('burger');
+    if (!menu || !burger) return;
 
-function lightboxNav(direction) {
-  showLightboxImage(lightboxIndex + direction);
-}
+    // Valeurs ARIA initiales cohérentes, même si le balisage de la page est ancien
+    if (burger.tagName !== 'BUTTON') {
+      burger.setAttribute('role', 'button');
+      burger.setAttribute('tabindex', '0');
+      burger.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleMobile(); }
+      });
+    }
+    burger.setAttribute('aria-controls', 'mobileMenu');
+    burger.setAttribute('aria-expanded', isMenuOpen() ? 'true' : 'false');
+    burger.setAttribute('aria-label', t(isMenuOpen() ? 'menuClose' : 'menuOpen'));
 
-function closeLightbox() {
-  const lb = document.getElementById('lightbox');
-  if (lb) lb.classList.remove('open');
-  document.body.classList.remove('no-scroll');
-}
-
-// Close on backdrop click
-document.addEventListener('DOMContentLoaded', () => {
-  const lb = document.getElementById('lightbox');
-  if (lb) {
-    lb.addEventListener('click', (e) => {
-      if (e.target === lb) closeLightbox();
+    // Clic sur un lien du menu : fermer (même si l'attribut onclick a été retiré de la page)
+    menu.addEventListener('click', function (e) {
+      if (e.target.closest && e.target.closest('a') && isMenuOpen()) applyMenuState(false, false);
     });
+
+    // Passage en grand écran avec le menu ouvert : on le referme
+    if (win.matchMedia) {
+      var mq = win.matchMedia('(min-width: 769px)');
+      var onChange = function (e) { if (e.matches && isMenuOpen()) applyMenuState(false, false); };
+      if (mq.addEventListener) mq.addEventListener('change', onChange);
+      else if (mq.addListener) mq.addListener(onChange);
+    }
+  });
+
+  /* ─── Révélation au défilement (IntersectionObserver) ──────── */
+  onReady(function () {
+    var elements = $$('.reveal, .reveal-left, .reveal-right');
+    if (!elements.length) return;
+
+    if (reducedMotion() || !('IntersectionObserver' in win)) {
+      elements.forEach(function (el) { el.classList.add('visible'); });
+      return;
+    }
+
+    var observer = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+
+    elements.forEach(function (el) { observer.observe(el); });
+  });
+
+  /* ─── Compteurs animés ─────────────────────────────────────── */
+  /* data-target="418" ; data-no-group (années, pas de séparateur de milliers) */
+  function formatCounter(el, value) {
+    if (el.hasAttribute('data-no-group')) return String(value);
+    return value.toLocaleString(lang() === 'en' ? 'en-GB' : 'fr-FR');
   }
-});
 
-// Keyboard navigation for lightbox
-document.addEventListener('keydown', (e) => {
-  const lb = document.getElementById('lightbox');
-  if (!lb || !lb.classList.contains('open')) return;
-
-  if (e.key === 'ArrowLeft') lightboxNav(-1);
-  if (e.key === 'ArrowRight') lightboxNav(1);
-});
-
-// Touch swipe for lightbox
-(function initLightboxSwipe() {
-  let touchStartX = 0;
-  document.addEventListener('touchstart', (e) => {
-    const lb = document.getElementById('lightbox');
-    if (!lb || !lb.classList.contains('open')) return;
-    touchStartX = e.touches[0].clientX;
-  }, { passive: true });
-
-  document.addEventListener('touchend', (e) => {
-    const lb = document.getElementById('lightbox');
-    if (!lb || !lb.classList.contains('open')) return;
-    const diff = touchStartX - e.changedTouches[0].clientX;
-    if (Math.abs(diff) > 50) {
-      lightboxNav(diff > 0 ? 1 : -1);
+  function animateCounter(el, target) {
+    if (reducedMotion()) {
+      el.textContent = formatCounter(el, target);
+      return;
     }
-  }, { passive: true });
-})();
+    var duration = 1800;
+    var start = performance.now();
 
-/* ─── FAQ ───────────────────────────────────────────────────── */
-// toggleFaq is defined inline in contact.html for page-specific use
-// but can also be called from here for other pages
-if (typeof window.toggleFaq === 'undefined') {
-  window.toggleFaq = function(el) {
-    const item = el.parentElement;
-    const isOpen = item.classList.contains('open');
-    document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
-    if (!isOpen) item.classList.add('open');
-  };
-}
+    function easeOutQuart(p) { return 1 - Math.pow(1 - p, 4); }
 
-/* ─── Smooth Scroll for anchor links ────────────────────────── */
-document.addEventListener('DOMContentLoaded', () => {
-  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-    anchor.addEventListener('click', (e) => {
-      const href = anchor.getAttribute('href');
-      if (href === '#') return;
-
-      const target = document.querySelector(href);
-      if (!target) return;
-
-      e.preventDefault();
-
-      const navH = parseInt(getComputedStyle(document.documentElement).getPropertyValue('--nav-height')) || 80;
-      const offsetTop = target.getBoundingClientRect().top + window.pageYOffset - navH - 20;
-
-      window.scrollTo({ top: offsetTop, behavior: 'smooth' });
-    });
-  });
-});
-
-/* ─── Active Nav Link ───────────────────────────────────────── */
-(function setActiveNavLink() {
-  const currentPage = window.location.pathname.split('/').pop() || 'index.html';
-  document.querySelectorAll('.nav-links a, .nav-mobile a').forEach(a => {
-    const href = a.getAttribute('href');
-    if (href === currentPage || (currentPage === '' && href === 'index.html')) {
-      a.classList.add('active');
+    function tick(now) {
+      var progress = Math.min((now - start) / duration, 1);
+      el.textContent = formatCounter(el, Math.round(easeOutQuart(progress) * target));
+      if (progress < 1) win.requestAnimationFrame(tick);
+      else el.textContent = formatCounter(el, target);
     }
+    win.requestAnimationFrame(tick);
+  }
+
+  onReady(function () {
+    var counters = $$('.counter[data-target]');
+    if (!counters.length) return;
+
+    if (reducedMotion() || !('IntersectionObserver' in win)) {
+      counters.forEach(function (c) {
+        var n = parseInt(c.getAttribute('data-target'), 10);
+        if (!isNaN(n)) c.textContent = formatCounter(c, n);
+      });
+      return;
+    }
+
+    var observer = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (!entry.isIntersecting) return;
+        var n = parseInt(entry.target.getAttribute('data-target'), 10);
+        if (!isNaN(n)) animateCounter(entry.target, n);
+        observer.unobserve(entry.target);
+      });
+    }, { threshold: 0.5 });
+    counters.forEach(function (c) { observer.observe(c); });
   });
-})();
 
-/* ─── Image lazy loading fallback ──────────────────────────── */
-(function initLazyFallback() {
-  if ('loading' in HTMLImageElement.prototype) return; // native support
+  /* ─── Lightbox ──────────────────────────────────────────────── */
+  var lightboxImages = [];
+  var lightboxIndex = 0;
+  var lightboxTrigger = null;
 
-  const images = document.querySelectorAll('img[loading="lazy"]');
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        const img = entry.target;
-        const src = img.getAttribute('data-src');
-        if (src) img.src = src;
-        observer.unobserve(img);
+  function lightboxEl() { return byId('lightbox'); }
+  function isLightboxOpen() {
+    var lb = lightboxEl();
+    return !!(lb && lb.classList.contains('open'));
+  }
+
+  /* Rôle de dialogue modal, nom accessible, boutons étiquetés (idempotent ; relancé au changement de langue) */
+  function setupLightboxA11y() {
+    var lb = lightboxEl();
+    if (!lb) return;
+    lb.setAttribute('role', 'dialog');
+    lb.setAttribute('aria-modal', 'true');
+    lb.setAttribute('aria-label', t('lbLabel'));
+    lb.setAttribute('tabindex', '-1');
+
+    var close = lb.querySelector('.lightbox-close');
+    var prev = lb.querySelector('.lightbox-prev');
+    var next = lb.querySelector('.lightbox-next');
+    if (close) { close.setAttribute('aria-label', t('lbClose')); close.setAttribute('type', 'button'); }
+    if (prev)  { prev.setAttribute('aria-label', t('lbPrev'));   prev.setAttribute('type', 'button'); }
+    if (next)  { next.setAttribute('aria-label', t('lbNext'));   next.setAttribute('type', 'button'); }
+
+    // Le texte des boutons (✕ ‹ ›) est décoratif : le nom vient de aria-label
+    [close, prev, next].forEach(function (b) { if (b) b.setAttribute('data-glyph', '1'); });
+
+    var caption = byId('lightbox-caption');
+    var counter = byId('lightbox-counter');
+    if (caption) caption.setAttribute('aria-live', 'polite');
+    if (counter) counter.setAttribute('aria-hidden', 'true');
+  }
+
+  /* Éléments de galerie activables au clavier : tout élément [data-src] qui ouvre la lightbox
+     et qui n'est ni <a> ni <button> devient role="button" tabindex="0" avec un nom accessible. */
+  function enhanceLightboxTriggers() {
+    $$('[data-src]').forEach(function (item) {
+      var oc = item.getAttribute('onclick') || '';
+      if (!/openLightbox/.test(oc) && !item.hasAttribute('data-lightbox')) return;
+      var tag = item.tagName;
+      if (tag !== 'A' && tag !== 'BUTTON') {
+        if (!item.hasAttribute('role')) item.setAttribute('role', 'button');
+        if (!item.hasAttribute('tabindex')) item.setAttribute('tabindex', '0');
+        if (!item.__lbKey) {
+          item.__lbKey = true;
+          item.addEventListener('keydown', function (e) {
+            if ((e.key === 'Enter' || e.key === ' ') && e.target === item) {
+              e.preventDefault();
+              item.click();
+            }
+          });
+        }
+      }
+      // Nom accessible généré seulement si la page n'en fournit pas (et régénéré au changement de langue)
+      if (!item.hasAttribute('aria-label') || item.hasAttribute('data-auto-label')) {
+        var img = item.querySelector('img');
+        var cap = item.getAttribute('data-caption') || (img && img.getAttribute('alt')) || '';
+        item.setAttribute('aria-label', t('enlarge') + (cap ? ' : ' + cap : ''));
+        item.setAttribute('data-auto-label', '1');
       }
     });
-  }, { rootMargin: '200px' });
+  }
 
-  images.forEach(img => observer.observe(img));
+  function openLightbox(el, idx) {
+    // Remonte le DOM jusqu'au plus petit conteneur de galerie (≥ 2 éléments [data-src]).
+    // On s'arrête avant les onglets inactifs pour ne pas mélanger les galeries.
+    var GALLERY_SELECTORS = [
+      '.logement-gallery',
+      '.gallery-grid',
+      '.solarium-grid',
+      '.photo-row',
+      '[id^="gallery-"]',
+      '.plan-images',
+      '.logement-tab-panel.active',
+      '.plan-tab-panel.active'
+    ];
+
+    var container = null;
+    var node = el.parentElement;
+
+    while (node && node !== doc.body) {
+      if (node.classList.contains('logement-tab-panel') && !node.classList.contains('active')) break;
+      var hasSrcs = node.querySelectorAll('[data-src]');
+      var isGalleryWrapper = GALLERY_SELECTORS.some(function (sel) { return node.matches(sel); });
+      if (isGalleryWrapper || hasSrcs.length >= 2) {
+        container = node;
+        if (isGalleryWrapper) break;
+      }
+      node = node.parentElement;
+    }
+
+    var items = container ? container.querySelectorAll('[data-src]') : null;
+    function srcOf(item) {
+      var im = item.querySelector('img');
+      return item.getAttribute('data-src') || (im && im.src) || '';
+    }
+    function captionOf(item) {
+      var im = item.querySelector('img');
+      return item.getAttribute('data-caption') || (im && im.alt) || '';
+    }
+
+    if (items && items.length > 0) {
+      var list = Array.prototype.slice.call(items);
+      lightboxImages = list.map(function (item) { return { src: srcOf(item), caption: captionOf(item) }; });
+      lightboxIndex = list.indexOf(el);
+      if (lightboxIndex < 0) lightboxIndex = (typeof idx === 'number') ? idx : 0;
+    } else {
+      lightboxImages = [{ src: srcOf(el), caption: captionOf(el) }];
+      lightboxIndex = 0;
+    }
+
+    var active = doc.activeElement;
+    lightboxTrigger = (active && active !== doc.body && active !== doc.documentElement) ? active : el;
+
+    var lb = lightboxEl();
+    if (!lb) return;
+    setupLightboxA11y();
+    showLightboxImage(lightboxIndex);
+    lb.classList.add('open');
+    syncScrollLock();
+
+    // Focus dans la boîte de dialogue (bouton Fermer), sinon sur le dialogue lui-même.
+    // Réessaie brièvement : tant que la transition de visibilité n'a pas démarré, focus() peut échouer.
+    var closeBtn = lb.querySelector('.lightbox-close') || lb;
+    var tries = 0;
+    (function focusDialog() {
+      closeBtn.focus();
+      if (!lb.contains(doc.activeElement) && tries++ < 8 && lb.classList.contains('open')) setTimeout(focusDialog, 40);
+    })();
+  }
+
+  function showLightboxImage(index) {
+    if (!lightboxImages.length) return;
+    lightboxIndex = (index + lightboxImages.length) % lightboxImages.length;
+
+    var imgEl = byId('lightbox-img');
+    var captionEl = byId('lightbox-caption');
+    var counterEl = byId('lightbox-counter');
+    var current = lightboxImages[lightboxIndex];
+
+    if (imgEl) {
+      imgEl.style.opacity = '0';
+      imgEl.style.transform = 'scale(0.96)';
+      imgEl.onload = function () {
+        imgEl.style.transition = 'opacity 0.35s ease, transform 0.35s ease';
+        imgEl.style.opacity = '1';
+        imgEl.style.transform = 'scale(1)';
+      };
+      imgEl.onerror = function () {
+        imgEl.style.opacity = '1';
+        imgEl.style.transform = 'scale(1)';
+      };
+      imgEl.alt = current.caption || t('enlarged');   // alt à jour pour chaque image affichée
+      imgEl.src = current.src;
+    }
+
+    if (captionEl) captionEl.textContent = current.caption || '';
+
+    if (counterEl) {
+      if (lightboxImages.length > 1) {
+        counterEl.textContent = (lightboxIndex + 1) + ' / ' + lightboxImages.length;
+        counterEl.style.display = 'block';
+      } else {
+        counterEl.style.display = 'none';
+      }
+    }
+
+    var prev = doc.querySelector('.lightbox-prev');
+    var next = doc.querySelector('.lightbox-next');
+    var showNav = lightboxImages.length > 1;
+    if (prev) prev.style.display = showNav ? '' : 'none';
+    if (next) next.style.display = showNav ? '' : 'none';
+  }
+
+  function lightboxNav(direction) {
+    showLightboxImage(lightboxIndex + direction);
+  }
+
+  function closeLightbox() {
+    var lb = lightboxEl();
+    if (!lb) return;
+    var wasOpen = lb.classList.contains('open');
+    lb.classList.remove('open');
+    syncScrollLock();
+    // Le focus retourne à l'élément qui a ouvert la lightbox
+    if (wasOpen && lightboxTrigger && doc.contains(lightboxTrigger) && typeof lightboxTrigger.focus === 'function') {
+      lightboxTrigger.focus();
+    }
+    lightboxTrigger = null;
+  }
+
+  onReady(function () {
+    var lb = lightboxEl();
+    setupLightboxA11y();
+    enhanceLightboxTriggers();
+    if (lb) {
+      // Clic sur le fond (hors image et boutons) : fermer
+      lb.addEventListener('click', function (e) { if (e.target === lb) closeLightbox(); });
+    }
+  });
+
+  // Balayage tactile
+  (function initLightboxSwipe() {
+    var touchStartX = 0;
+    doc.addEventListener('touchstart', function (e) {
+      if (!isLightboxOpen()) return;
+      touchStartX = e.touches[0].clientX;
+    }, { passive: true });
+    doc.addEventListener('touchend', function (e) {
+      if (!isLightboxOpen()) return;
+      var diff = touchStartX - e.changedTouches[0].clientX;
+      if (Math.abs(diff) > 50) lightboxNav(diff > 0 ? 1 : -1);
+    }, { passive: true });
+  })();
+
+  /* ─── Clavier global : Échap, flèches, piège de focus de la lightbox ─── */
+  doc.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' || e.key === 'Esc') {
+      if (isLightboxOpen()) { closeLightbox(); return; }
+      if (isMenuOpen()) applyMenuState(false, true);
+      return;
+    }
+
+    if (!isLightboxOpen()) return;
+
+    if (e.key === 'ArrowLeft')  { e.preventDefault(); lightboxNav(-1); return; }
+    if (e.key === 'ArrowRight') { e.preventDefault(); lightboxNav(1);  return; }
+
+    if (e.key === 'Tab') {
+      var lb = lightboxEl();
+      var focusables = visibleFocusables(lb);
+      if (!focusables.length) { e.preventDefault(); lb.focus(); return; }
+      var first = focusables[0];
+      var last = focusables[focusables.length - 1];
+      var activeEl = doc.activeElement;
+      if (!lb.contains(activeEl)) { e.preventDefault(); first.focus(); }
+      else if (e.shiftKey && (activeEl === first || activeEl === lb)) { e.preventDefault(); last.focus(); }
+      else if (!e.shiftKey && activeEl === last) { e.preventDefault(); first.focus(); }
+    }
+  });
+
+  /* ─── FAQ (accordéons .faq-item) ───────────────────────────── */
+  /* Les pages récentes utilisent <details>/<summary> (natif). Ce bloc ne sert qu'aux accordéons
+     historiques .faq-item / .faq-question (div ou button) : aria-expanded, aria-controls,
+     Entrée / Espace, état toujours synchronisé avec la classe .open. */
+  function syncFaqAria() {
+    $$('.faq-item').forEach(function (item) {
+      var q = item.querySelector('.faq-question');
+      if (!q) return;
+      q.setAttribute('aria-expanded', item.classList.contains('open') ? 'true' : 'false');
+    });
+  }
+
+  if (typeof win.toggleFaq === 'undefined') {
+    win.toggleFaq = function (el) {
+      var item = el.parentElement;
+      var isOpen = item.classList.contains('open');
+      $$('.faq-item').forEach(function (i) { i.classList.remove('open'); });
+      if (!isOpen) item.classList.add('open');
+      syncFaqAria();
+    };
+  }
+
+  onReady(function () {
+    var uid = 0;
+    $$('.faq-item').forEach(function (item) {
+      var q = item.querySelector('.faq-question');
+      var a = item.querySelector('.faq-answer');
+      if (!q) return;
+      if (q.tagName !== 'BUTTON') {
+        q.setAttribute('role', 'button');
+        if (!q.hasAttribute('tabindex')) q.setAttribute('tabindex', '0');
+      } else if (!q.hasAttribute('type')) {
+        q.setAttribute('type', 'button');
+      }
+      if (a) {
+        if (!a.id) a.id = 'faq-answer-' + (++uid);
+        q.setAttribute('aria-controls', a.id);
+      }
+    });
+    syncFaqAria();
+
+    // Entrée / Espace sur les questions qui ne sont pas des <button>
+    doc.addEventListener('keydown', function (e) {
+      if (e.key !== 'Enter' && e.key !== ' ') return;
+      var q = e.target && e.target.closest ? e.target.closest('.faq-question') : null;
+      if (q && q === e.target && q.tagName !== 'BUTTON') {
+        e.preventDefault();
+        q.click();
+      }
+    });
+
+    // Quel que soit le gestionnaire de clic de la page, on resynchronise aria-expanded ensuite
+    doc.addEventListener('click', function (e) {
+      if (e.target && e.target.closest && e.target.closest('.faq-question')) {
+        setTimeout(syncFaqAria, 0);
+      }
+    });
+  });
+
+  /* ─── Lien actif du menu : repli uniquement ────────────────────
+     Les pages posent désormais class="active" aria-current="page" en dur. Ce repli ne s'applique
+     QUE si aucun lien du menu n'est déjà marqué. Comparaison robuste aux URLs sans extension :
+     /logements, /logements.html, /logements/ et index.html / « / » sont équivalents. */
+  onReady(function () {
+    var links = $$('.nav-links a, .nav-mobile a');
+    if (!links.length) return;
+    if (links.some(function (a) { return a.getAttribute('aria-current') === 'page'; })) return;
+
+    function norm(path) {
+      return String(path || '/')
+        .replace(/\/index(\.html)?$/, '/')
+        .replace(/\.html$/, '')
+        .replace(/\/+$/, '') || '/';
+    }
+    var here = norm(win.location.pathname);
+    links.forEach(function (a) {
+      var url;
+      try { url = new URL(a.getAttribute('href'), win.location.href); } catch (e) { return; }
+      if (url.origin !== win.location.origin) return;
+      if (norm(url.pathname) === here) {
+        a.classList.add('active');
+        a.setAttribute('aria-current', 'page');
+      }
+    });
+  });
+
+  /* ─── Changement de langue : libellés ARIA (burger, lightbox, vignettes) ─── */
+  function refreshA11yLabels() {
+    var burger = byId('burger');
+    if (burger) burger.setAttribute('aria-label', t(isMenuOpen() ? 'menuClose' : 'menuOpen'));
+    setupLightboxA11y();
+    enhanceLightboxTriggers();
+  }
+  doc.addEventListener('59c:langchange', refreshA11yLabels);
+
+  /* ─── API globale (attributs onclick des pages) ─────────────── */
+  win.toggleMobile = toggleMobile;
+  win.openLightbox = openLightbox;
+  win.closeLightbox = closeLightbox;
+  win.lightboxNav = lightboxNav;
+  win.showLightboxImage = showLightboxImage;
+  win.animateCounter = animateCounter;
+  win.triggerHeroAnim = triggerHeroAnim;
 })();
-
-/* ─── Language switch (global) ──────────────────────────────── */
-function setLang(lang) {
-  document.querySelectorAll('[data-lang-' + lang + ']').forEach(el => {
-    el.innerHTML = el.getAttribute('data-lang-' + lang);
-  });
-  document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
-  document.querySelectorAll('.lang-btn[onclick*="' + lang + '"]').forEach(b => b.classList.add('active'));
-  // Mobile menu lang buttons
-  document.querySelectorAll('.nav-mobile-lang .lang-btn').forEach(b => {
-    b.classList.toggle('active', b.getAttribute('onclick') && b.getAttribute('onclick').includes(lang));
-  });
-  // Store preference for this session only
-  try { sessionStorage.setItem('59cezanne-lang', lang); } catch(e) {}
-}
-
-// Restore saved language preference within the same session
-document.addEventListener('DOMContentLoaded', function() {
-  try {
-    const saved = sessionStorage.getItem('59cezanne-lang');
-    if (saved && saved !== 'fr') setLang(saved);
-  } catch(e) {}
-});

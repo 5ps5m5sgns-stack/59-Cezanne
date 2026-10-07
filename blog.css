@@ -1,0 +1,1277 @@
+/* ============================================================
+   59 CÉZANNE — blog.css
+   Feuille de style du blog (hub /blog + articles /blog/<slug>)
+   et des cartes « Pour aller plus loin » des pages produit.
+
+   Principes
+   - Se charge APRÈS /style.css et n'utilise que ses variables
+     (--creme, --beige, --or, --stone…, polices serif/sans, .btn, .container).
+   - Tout sélecteur est scopé (.blog-*, .post-*) : la feuille est
+     inoffensive sur une page produit. Seuls .post-related, .post-cards,
+     .post-card (+ .post-card-pillar / .post-card-title) sont conçus pour
+     être utilisés hors blog (aucune dépendance à body.blog-page).
+   - Le doré --or (#C9A96E) est trop pâle pour du texte sur fond clair
+     (2,2:1 sur blanc). Texte doré = --blog-gold-text (= --or-texte de
+     style.css, repli #7A5F1F) : ≥ 4,5:1 sur --creme, --beige, --stone-light.
+   - Aucun JavaScript requis (sommaire = liste d'ancres, FAQ = details).
+   ============================================================ */
+
+
+/* ─── 0. Jetons (scopés) ───────────────────────────────────── */
+.blog-page,
+.post-related,
+.post-cards,
+.post-card,
+.post-cta {
+  --blog-gold-text: var(--or-texte, #7A5F1F);   /* texte doré (jeton de style.css), ≥ 4,5:1 sur fonds clairs */
+  --blog-gold-hover: #5C4513;                   /* survol des liens dorés */
+  --blog-focus: var(--focus-ring, #7A5F1F);     /* anneau de focus sur fond clair */
+  --blog-nav-h: 64px;             /* hauteur de la barre fixe sur les pages blog */
+  --blog-toc-w: 14rem;            /* colonne du sommaire */
+  --blog-body-w: 40rem;           /* colonne de lecture (~70 caractères à 18 px) */
+  --blog-gap: clamp(2rem, 4vw, 4rem);
+}
+
+
+/* ─── 1. Page blog : décalage sous la barre fixe ─────────────── */
+
+/* Le hero est clair : la barre reste pleine et sombre (classe « scrolled » posée dans le HTML,
+   conservée par animations.js). Filet de sécurité si « transparent » était ajouté. */
+.blog-page #navbar.transparent {
+  background: rgba(26, 23, 20, 0.97);
+}
+
+/* Décalage sous la barre fixe (64 px, hauteur de #navbar.scrolled) */
+.blog-page main {
+  padding-top: var(--blog-nav-h);
+}
+
+/* Les ancres ne passent pas sous la barre fixe */
+.blog-page [id] {
+  scroll-margin-top: calc(var(--blog-nav-h) + 1.5rem);
+}
+
+/* De 769 à 1180 px, huit liens + le logo ne tiennent pas sur une ligne (la barre de style.css
+   ne passe au burger qu'à 768 px) : sur les pages blog on bascule plus tôt.
+   À supprimer d'ici quand le point de rupture de style.css aura été relevé (demande au coordinateur). */
+@media (min-width: 769px) and (max-width: 1180px) {
+  .blog-page .nav-links { display: none; }
+  .blog-page .nav-burger { display: flex; }
+}
+
+/* Boutons : anneau de focus décalé, lisible sur fond clair */
+.blog-page .btn:focus-visible,
+.post-cards .btn:focus-visible {
+  outline: 2px solid var(--blog-focus);
+  outline-offset: 4px;
+}
+
+
+/* ─── 2. Hero d'article ────────────────────────────────────── */
+.post-hero {
+  background: linear-gradient(180deg, var(--beige) 0%, var(--creme) 100%);
+  border-bottom: 1px solid var(--border);
+  padding: clamp(1.75rem, 4vw, 3rem) 0 clamp(2.25rem, 5vw, 3.75rem);
+}
+
+/* Le bloc héros et la grille de lecture partagent la même largeur :
+   le texte du héros s'aligne sur le bord gauche du sommaire. */
+.container.post-hero-inner,
+.container.post-layout {
+  max-width: calc(var(--blog-body-w) + 4rem);
+}
+@media (min-width: 1024px) {
+  .container.post-hero-inner,
+  .container.post-layout {
+    max-width: calc(var(--blog-toc-w) + var(--blog-gap) + var(--blog-body-w) + 4rem);
+  }
+}
+/* Très petits écrans : marges latérales réduites pour garder une ligne lisible */
+@media (max-width: 420px) {
+  .blog-page .container { padding-left: 1.25rem; padding-right: 1.25rem; }
+}
+
+/* Fil d'Ariane */
+.post-breadcrumb {
+  margin-bottom: clamp(1.25rem, 3vw, 2rem);
+  font-size: 0.8125rem;
+  line-height: 1.5;
+}
+.post-breadcrumb ol {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.2rem 0.55rem;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+.post-breadcrumb li {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  color: var(--text-mid);
+}
+.post-breadcrumb li + li::before {
+  content: "\203A";
+  content: "\203A" / "";
+  color: var(--text-mid);
+  opacity: 0.7;
+}
+.post-breadcrumb a {
+  color: var(--text-mid);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
+  text-decoration-color: rgba(90, 85, 80, 0.4);
+}
+.post-breadcrumb a:hover {
+  color: var(--text);
+  text-decoration-color: currentColor;
+}
+.post-breadcrumb a:focus-visible {
+  outline: 2px solid var(--blog-focus);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+.post-breadcrumb [aria-current="page"] {
+  color: var(--text);
+  font-weight: 700;
+}
+
+/* Étiquette de pilier (eyebrow) */
+.post-pillar {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  margin-bottom: 1rem;
+  font-family: var(--font-sans);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--blog-gold-text);
+}
+.post-pillar::before {
+  content: "";
+  flex: none;
+  width: 28px;
+  height: 1px;
+  background: currentColor;
+}
+
+/* Titre H1 */
+.post-title {
+  max-width: 21em;
+  font-family: var(--font-serif);
+  font-size: clamp(2rem, 1.35rem + 2.7vw, 3.35rem);
+  font-weight: 400;
+  line-height: 1.14;
+  letter-spacing: -0.005em;
+  font-variant-numeric: lining-nums;
+  color: var(--text);
+  text-wrap: balance;
+}
+
+/* Signature, dates, temps de lecture */
+.post-meta {
+  margin-top: 1.5rem;
+  font-size: 0.875rem;
+  line-height: 1.8;
+  color: var(--text-mid);
+}
+.post-meta a {
+  color: var(--blog-gold-text);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
+}
+.post-meta a:hover { color: var(--blog-gold-hover); }
+.post-meta a:focus-visible {
+  outline: 2px solid var(--blog-focus);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+
+/* ─── 3. Grille de lecture : sommaire + corps ───────────────── */
+.container.post-layout {
+  display: block;
+  padding-top: clamp(2rem, 4vw, 3.25rem);
+  padding-bottom: clamp(3rem, 6vw, 5.5rem);
+}
+
+@media (min-width: 1024px) {
+  .container.post-layout {
+    display: grid;
+    grid-template-columns: var(--blog-toc-w) minmax(0, var(--blog-body-w));
+    column-gap: var(--blog-gap);
+    align-items: start;
+    padding-top: clamp(2.75rem, 4vw, 3.75rem);
+  }
+}
+
+/* Sommaire (liste d'ancres, sticky sur grand écran) */
+.post-toc {
+  margin-bottom: 2.25rem;
+  padding: 1.25rem 1.5rem;
+  background: var(--beige);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  font-size: 0.9rem;
+  line-height: 1.45;
+}
+.post-toc-title {
+  margin-bottom: 0.9rem;
+  font-family: var(--font-sans);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--text-mid);
+}
+.post-toc ol {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.post-toc li { break-inside: avoid; }
+.post-toc a {
+  display: block;
+  padding: 0.4rem 0;
+  color: var(--text-mid);
+  transition: color var(--transition-fast), border-color var(--transition-fast);
+}
+.post-toc a:hover { color: var(--text); text-decoration: underline; text-underline-offset: 0.2em; }
+.post-toc a:focus-visible {
+  outline: 2px solid var(--blog-focus);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+@media (min-width: 600px) and (max-width: 1023px) {
+  .post-toc ol { column-count: 2; column-gap: 2.5rem; }
+}
+
+@media (min-width: 1024px) {
+  .post-toc {
+    position: sticky;
+    top: calc(var(--blog-nav-h) + 1.75rem);
+    margin-bottom: 0;
+    padding: 0 0.5rem 0 0;
+    max-height: calc(100vh - var(--blog-nav-h) - 3.5rem);
+    overflow-y: auto;
+    background: none;
+    border: 0;
+    border-radius: 0;
+    font-size: 0.875rem;
+  }
+  .post-toc ol { border-left: 1px solid var(--border); }
+  .post-toc a {
+    margin-left: -1px;
+    padding: 0.45rem 0 0.45rem 1rem;
+    border-left: 2px solid transparent;
+  }
+  .post-toc a:hover {
+    text-decoration: none;
+    border-left-color: var(--or);
+  }
+}
+
+
+/* ─── 4. Corps de l'article : typographie de lecture ─────────── */
+.post-body {
+  min-width: 0;
+  font-family: var(--font-sans);
+  font-size: clamp(1.0625rem, 1.02rem + 0.2vw, 1.125rem);
+  font-weight: 400;
+  line-height: 1.8;
+  color: var(--text);
+  overflow-wrap: break-word;
+  hyphens: manual;
+}
+.post-body > :first-child { margin-top: 0; }
+
+.post-body p,
+.post-body ul,
+.post-body ol,
+.post-body dl {
+  margin-bottom: 1.3em;
+}
+
+.post-body strong { font-weight: 700; color: var(--text); }
+.post-body em { font-style: italic; }
+
+/* Chapô */
+.post-lead {
+  margin-bottom: 2.25rem;
+  font-family: var(--font-serif);
+  font-size: clamp(1.3rem, 1.12rem + 0.75vw, 1.65rem);
+  font-weight: 500;
+  line-height: 1.5;
+  font-variant-numeric: lining-nums;
+  color: var(--text);
+}
+
+/* Intertitres */
+.post-body h2 {
+  margin: clamp(2.75rem, 5vw, 3.75rem) 0 1.1rem;
+  font-family: var(--font-serif);
+  font-size: clamp(1.7rem, 1.35rem + 1.4vw, 2.3rem);
+  font-weight: 400;
+  line-height: 1.2;
+  font-variant-numeric: lining-nums;
+  color: var(--text);
+  text-wrap: balance;
+}
+.post-body h2::before {
+  content: "";
+  display: block;
+  width: 2.5rem;
+  height: 2px;
+  margin-bottom: 1rem;
+  background: var(--or);
+}
+.post-body h3 {
+  margin: 2.25rem 0 0.7rem;
+  font-family: var(--font-serif);
+  font-size: clamp(1.3rem, 1.15rem + 0.6vw, 1.55rem);
+  font-weight: 600;
+  line-height: 1.3;
+  font-variant-numeric: lining-nums;
+  color: var(--text);
+  text-wrap: balance;
+}
+.post-body h4 {
+  margin: 1.75rem 0 0.5rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-mid);
+}
+
+/* Liens dans le texte : soulignés (jamais la couleur seule) */
+.post-body a:not(.btn) {
+  color: var(--blog-gold-text);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-decoration-color: rgba(122, 95, 31, 0.5);
+  text-underline-offset: 0.2em;
+  transition: color var(--transition-fast), text-decoration-color var(--transition-fast);
+}
+.post-body a:not(.btn):hover {
+  color: var(--blog-gold-hover);
+  text-decoration-thickness: 2px;
+  text-decoration-color: currentColor;
+}
+.post-body a:not(.btn):focus-visible {
+  outline: 2px solid var(--blog-focus);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+/* Listes (style.css remet list-style: none sur ul/ol) */
+.post-body ul,
+.post-body ol { padding-left: 1.5em; }
+.post-body ul { list-style: disc outside; }
+.post-body ol { list-style: decimal outside; }
+.post-body li { margin-bottom: 0.55em; padding-left: 0.3em; }
+.post-body li:last-child { margin-bottom: 0; }
+.post-body ul li::marker { color: var(--or); }
+.post-body ol li::marker {
+  font-family: var(--font-sans);
+  font-size: 0.95em;
+  font-weight: 700;
+  color: var(--blog-gold-text);
+}
+.post-body li > ul,
+.post-body li > ol { margin: 0.6em 0 0.2em; }
+
+/* Liste de contrôle (optionnelle) : <ul class="post-checklist"> */
+.post-body ul.post-checklist {
+  padding-left: 0;
+  list-style: none;
+}
+.post-body ul.post-checklist li {
+  position: relative;
+  padding-left: 2rem;
+}
+.post-body ul.post-checklist li::before {
+  content: "";
+  position: absolute;
+  left: 0.15rem;
+  top: 0.5em;
+  width: 0.9rem;
+  height: 0.5rem;
+  border-left: 2px solid var(--blog-gold-text);
+  border-bottom: 2px solid var(--blog-gold-text);
+  transform: rotate(-45deg);
+}
+
+/* Définitions */
+.post-body dt {
+  font-family: var(--font-serif);
+  font-size: 1.2rem;
+  font-weight: 600;
+  line-height: 1.35;
+}
+.post-body dd { margin: 0 0 1rem; color: var(--text); }
+
+/* Citation */
+.post-body blockquote {
+  margin: 2rem 0;
+  padding: 0.25rem 0 0.25rem 1.5rem;
+  border-left: 3px solid var(--or);
+  font-family: var(--font-serif);
+  font-size: 1.3rem;
+  font-style: italic;
+  line-height: 1.55;
+  color: var(--text);
+}
+.post-body blockquote p { margin-bottom: 0.6em; }
+.post-body blockquote p:last-child { margin-bottom: 0; }
+.post-body blockquote cite {
+  display: block;
+  margin-top: 0.5rem;
+  font-family: var(--font-sans);
+  font-size: 0.82rem;
+  font-style: normal;
+  color: var(--text-mid);
+}
+
+.post-body hr {
+  margin: 3rem 0;
+  border: 0;
+  border-top: 1px solid var(--border);
+}
+
+
+/* ─── 5. Figures, tableaux, encarts, FAQ, mentions ─────────── */
+
+/* Figure + légende */
+.post-figure {
+  margin: 2.25rem 0;
+}
+.post-figure img {
+  width: 100%;
+  height: auto;
+  border-radius: var(--radius-md);
+  background: var(--stone-light);
+  box-shadow: var(--shadow-sm);
+}
+.post-caption {
+  margin-top: 0.7rem;
+  font-size: 0.8125rem;
+  line-height: 1.55;
+  color: var(--text-mid);
+}
+
+/* Tableau de données (utiliser <caption>, <thead>, <th scope>) */
+.post-table {
+  width: 100%;
+  margin: 2.25rem 0;
+  border-collapse: separate;
+  border-spacing: 0;
+  border: 1px solid var(--stone-light);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  background: var(--white);
+  font-size: 0.9375rem;
+  line-height: 1.55;
+  font-variant-numeric: tabular-nums;
+}
+.post-table caption {
+  caption-side: top;
+  padding: 0 0 0.8rem;
+  font-family: var(--font-serif);
+  font-size: 1.15rem;
+  font-weight: 500;
+  line-height: 1.35;
+  text-align: left;
+  font-variant-numeric: lining-nums;
+  color: var(--text);
+}
+.post-table th,
+.post-table td {
+  padding: 0.85rem 1rem;
+  text-align: left;
+  vertical-align: top;
+  border-bottom: 1px solid var(--stone-light);
+}
+.post-table thead th {
+  background: var(--beige);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-mid);
+  border-bottom: 1px solid var(--stone);
+}
+.post-table tbody th {
+  font-weight: 700;
+  color: var(--text);
+}
+.post-table tbody tr:last-child th,
+.post-table tbody tr:last-child td { border-bottom: 0; }
+.post-table tbody tr:nth-child(even) { background: rgba(245, 240, 232, 0.45); }
+
+/* Enveloppe optionnelle : <div class="post-table-wrap" tabindex="0" role="region" aria-label="…"> */
+.post-table-wrap {
+  margin: 2.25rem 0;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.post-table-wrap .post-table { margin: 0; min-width: 34rem; }
+.post-table-wrap:focus-visible {
+  outline: 2px solid var(--blog-focus);
+  outline-offset: 3px;
+}
+
+@media (max-width: 640px) {
+  .post-table {
+    display: block;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    font-size: 0.875rem;
+  }
+  .post-table th,
+  .post-table td { padding: 0.7rem 0.8rem; }
+}
+
+/* Encart (général) */
+.post-callout {
+  margin: 2.5rem 0;
+  padding: 1.5rem 1.75rem;
+  background: var(--beige);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--or);
+  border-radius: var(--radius-md);
+  font-size: 0.975rem;
+  line-height: 1.75;
+}
+.post-callout > :last-child { margin-bottom: 0; }
+.post-callout .post-callout-title {
+  margin: 0 0 0.7rem;
+  font-family: var(--font-serif);
+  font-size: clamp(1.35rem, 1.2rem + 0.5vw, 1.55rem);
+  font-weight: 500;
+  line-height: 1.25;
+  font-variant-numeric: lining-nums;
+  color: var(--text);
+}
+.post-callout .post-callout-title::before { display: none; }
+.post-callout .btn { margin-top: 0.35rem; }
+
+/* Encart « Le programme 59 Cézanne » : sobre, clairement délimité */
+.post-callout--programme {
+  padding: 1.75rem 2rem 1.9rem;
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-top: 3px solid var(--or);
+  box-shadow: var(--shadow-sm);
+}
+
+/* Boutons « outline » sur fond clair : survol lisible (le doré pâle ne l'est pas) */
+.post-callout .btn-outline-dark:hover,
+.post-body .btn-outline-dark:hover,
+.post-related .btn-outline-dark:hover {
+  border-color: var(--blog-gold-text);
+  color: var(--blog-gold-hover);
+}
+
+/* FAQ en details/summary */
+.post-faq {
+  margin: clamp(2.75rem, 5vw, 3.75rem) 0 0;
+}
+.post-faq h2 {
+  margin-top: 0;
+}
+.post-faq details {
+  border-bottom: 1px solid var(--border);
+}
+.post-faq details:first-of-type {
+  border-top: 1px solid var(--border);
+}
+.post-faq summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.25rem;
+  padding: 1.15rem 0;
+  font-family: var(--font-serif);
+  font-size: clamp(1.15rem, 1.05rem + 0.4vw, 1.3rem);
+  font-weight: 600;
+  line-height: 1.35;
+  font-variant-numeric: lining-nums;
+  color: var(--text);
+  cursor: pointer;
+  list-style: none;
+  transition: color var(--transition-fast);
+}
+.post-faq summary::-webkit-details-marker { display: none; }
+.post-faq summary::marker { content: ""; }
+.post-faq summary:hover { color: var(--blog-gold-text); }
+.post-faq summary:focus-visible {
+  outline: 2px solid var(--blog-focus);
+  outline-offset: 4px;
+  border-radius: 2px;
+}
+/* Marqueur personnalisé : « + » qui devient « − » (décoratif, texte vide pour les lecteurs d'écran) */
+.post-faq summary::after {
+  content: "";
+  flex: none;
+  width: 1.75rem;
+  height: 1.75rem;
+  border: 1px solid var(--blog-gold-text);
+  border-radius: 50%;
+  background:
+    linear-gradient(var(--blog-gold-text), var(--blog-gold-text)) center / 0.7rem 1.5px no-repeat,
+    linear-gradient(var(--blog-gold-text), var(--blog-gold-text)) center / 1.5px 0.7rem no-repeat;
+  transition: background-size var(--transition-fast), background-color var(--transition-fast);
+}
+.post-faq details[open] summary::after {
+  background-size: 0.7rem 1.5px, 1.5px 0;
+}
+.post-faq summary:hover::after { background-color: rgba(201, 169, 110, 0.14); }
+.post-faq details > :not(summary) {
+  padding-right: 2.75rem;
+}
+.post-faq details > p:last-child { margin-bottom: 1.35rem; }
+
+@media (prefers-reduced-motion: no-preference) {
+  .post-faq details[open] > :not(summary) {
+    animation: blog-fade-in 0.35s ease both;
+  }
+}
+@keyframes blog-fade-in {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* Avertissement (information générale) */
+.post-disclaimer {
+  margin: 2.5rem 0 0;
+  padding: 1rem 1.25rem;
+  background: rgba(245, 240, 232, 0.6);
+  border-left: 2px solid var(--stone);
+  border-radius: 0 var(--radius) var(--radius) 0;
+  font-size: 0.875rem;
+  line-height: 1.65;
+  color: var(--text-mid);
+}
+
+/* Sources */
+.post-sources {
+  margin-top: clamp(2.75rem, 5vw, 3.5rem);
+}
+.post-sources h2 { margin-top: 0; }
+.post-sources ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.post-sources li {
+  margin: 0;
+  padding: 0.7rem 0;
+  border-bottom: 1px solid var(--stone-light);
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: var(--text-mid);
+  overflow-wrap: anywhere;
+}
+.post-sources li:first-child { border-top: 1px solid var(--stone-light); }
+.post-sources a[target="_blank"]::after {
+  content: "\00A0\2197";
+  content: "\00A0\2197" / "";
+  font-size: 0.85em;
+  text-decoration: none;
+  display: inline-block;
+}
+
+
+/* ─── 6. Bande d'appel à l'action ──────────────────────────── */
+.post-cta {
+  position: relative;
+  padding: clamp(3.5rem, 8vw, 5.5rem) 0;
+  background: var(--dark);
+  color: var(--white);
+  text-align: center;
+}
+.post-cta::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 4rem;
+  height: 2px;
+  background: var(--or);
+  transform: translateX(-50%);
+}
+.post-cta h2 {
+  max-width: 28ch;
+  margin: 0 auto 1rem;
+  font-family: var(--font-serif);
+  font-size: clamp(1.8rem, 1.3rem + 2vw, 2.8rem);
+  font-weight: 300;
+  line-height: 1.2;
+  font-variant-numeric: lining-nums;
+  color: var(--white);
+  text-wrap: balance;
+}
+.post-cta p {
+  max-width: 38rem;
+  margin: 0 auto 1.25rem;
+  font-size: 1rem;
+  line-height: 1.75;
+  color: rgba(255, 255, 255, 0.8);
+}
+.post-cta .container > p:last-child {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.9rem 1rem;
+  margin-top: 2rem;
+  margin-bottom: 0;
+  max-width: none;
+}
+.post-cta .btn-outline-dark {
+  border-color: rgba(255, 255, 255, 0.5);
+  color: var(--white);
+}
+.post-cta .btn-outline-dark:hover {
+  border-color: var(--or);
+  color: var(--or);
+}
+.post-cta a:focus-visible {
+  outline: 2px solid var(--or);
+  outline-offset: 3px;
+}
+
+
+/* ─── 7. « À lire aussi » + cartes (réutilisables hors blog) ── */
+.post-related {
+  padding: clamp(3rem, 7vw, 5rem) 0;
+  background: var(--beige);
+}
+.post-related h2 {
+  margin: 0 0 clamp(1.75rem, 4vw, 2.5rem);
+  font-family: var(--font-serif);
+  font-size: clamp(1.7rem, 1.35rem + 1.4vw, 2.3rem);
+  font-weight: 400;
+  line-height: 1.2;
+  font-variant-numeric: lining-nums;
+  text-align: center;
+  color: var(--text);
+}
+
+.post-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 17rem), 1fr));
+  gap: 1.5rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.post-card {
+  position: relative;
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  transition: transform var(--transition), box-shadow var(--transition), border-color var(--transition);
+}
+.post-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow);
+  border-color: var(--or);
+}
+
+/* Forme simple : <li class="post-card"><a><span pillar><span title></a></li> */
+.post-card > a {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  height: 100%;
+  padding: 1.6rem 1.75rem;
+  color: inherit;
+  border-radius: var(--radius-md);
+}
+.post-card > a::after {
+  content: "\2192";
+  content: "\2192" / "";
+  margin-top: auto;
+  padding-top: 0.4rem;
+  font-size: 1.15rem;
+  line-height: 1;
+  color: var(--blog-gold-text);
+  transition: transform var(--transition-fast);
+}
+.post-card > a:hover::after { transform: translateX(4px); }
+.post-card > a:focus-visible {
+  outline: 2px solid var(--blog-focus);
+  outline-offset: 3px;
+}
+
+.post-card-pillar {
+  display: block;
+  font-family: var(--font-sans);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  line-height: 1.5;
+  text-transform: uppercase;
+  color: var(--blog-gold-text);
+}
+.post-card-title {
+  display: block;
+  font-family: var(--font-serif);
+  font-size: clamp(1.25rem, 1.15rem + 0.4vw, 1.45rem);
+  font-weight: 500;
+  line-height: 1.3;
+  font-variant-numeric: lining-nums;
+  color: var(--text);
+  text-wrap: balance;
+  transition: color var(--transition-fast);
+}
+.post-card:hover .post-card-title { color: var(--blog-gold-hover); }
+
+/* Forme « lien étendu » : titre <h3> avec <a> dont la zone couvre toute la carte */
+.post-card-title > a {
+  color: inherit;
+  text-decoration: none;
+}
+.post-card-title > a::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  border-radius: var(--radius-md);
+}
+.post-card-title > a:focus-visible { outline: none; }
+.post-card-title > a:focus-visible::after {
+  outline: 2px solid var(--blog-focus);
+  outline-offset: 3px;
+}
+
+
+/* ─── 8. Hub /blog ─────────────────────────────────────────── */
+
+/* Héros photographique */
+.blog-hero {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  align-items: flex-end;
+  min-height: clamp(24rem, 58vh, 34rem);
+  overflow: hidden;
+  background: var(--dark);
+  color: var(--white);
+}
+.blog-hero-bg {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+}
+.blog-hero-bg img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 45%;
+}
+.blog-hero::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(
+    to top,
+    rgba(15, 12, 8, 0.9) 0%,
+    rgba(15, 12, 8, 0.72) 50%,
+    rgba(15, 12, 8, 0.64) 100%
+  );
+}
+/* Grand écran : le texte est à gauche, l'image respire à droite */
+@media (min-width: 900px) {
+  .blog-hero::after {
+    background:
+      linear-gradient(90deg, rgba(15, 12, 8, 0.88) 0%, rgba(15, 12, 8, 0.72) 42%, rgba(15, 12, 8, 0.3) 78%, rgba(15, 12, 8, 0.18) 100%),
+      linear-gradient(to top, rgba(15, 12, 8, 0.45) 0%, rgba(15, 12, 8, 0) 45%);
+  }
+}
+.blog-hero-inner {
+  width: 100%;
+  padding-top: clamp(1.5rem, 3vw, 2.25rem);
+  padding-bottom: clamp(2.25rem, 5vw, 3.75rem);
+}
+.blog-hero .post-breadcrumb,
+.blog-hero .post-breadcrumb li,
+.blog-hero .post-breadcrumb li + li::before,
+.blog-hero .post-breadcrumb a {
+  color: rgba(255, 255, 255, 0.88);
+}
+.blog-hero .post-breadcrumb a { text-decoration-color: rgba(255, 255, 255, 0.45); }
+.blog-hero .post-breadcrumb a:hover { color: var(--or-light); text-decoration-color: currentColor; }
+.blog-hero .post-breadcrumb [aria-current="page"] { color: var(--white); }
+.blog-hero .post-breadcrumb a:focus-visible,
+.blog-hero a:focus-visible { outline-color: var(--or); }
+.blog-hero .post-pillar { color: var(--or-light); }
+.blog-hero-title {
+  max-width: 18em;
+  font-family: var(--font-serif);
+  font-size: clamp(2.1rem, 1.3rem + 3.4vw, 3.9rem);
+  font-weight: 300;
+  line-height: 1.12;
+  font-variant-numeric: lining-nums;
+  color: var(--white);
+  text-wrap: balance;
+}
+.blog-hero-sub {
+  max-width: 38rem;
+  margin-top: 1.2rem;
+  font-size: clamp(1rem, 0.95rem + 0.3vw, 1.15rem);
+  line-height: 1.75;
+  color: rgba(255, 255, 255, 0.9);
+}
+.blog-hero-note {
+  display: inline-block;
+  margin-top: 1.5rem;
+  padding: 0.2rem 0.75rem;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: 50px;
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  color: rgba(255, 255, 255, 0.88);
+}
+
+/* Chapô du hub */
+.blog-intro {
+  padding: clamp(2.5rem, 6vw, 4rem) 0 0;
+}
+.blog-intro-text {
+  max-width: 46rem;
+  font-family: var(--font-serif);
+  font-size: clamp(1.2rem, 1.08rem + 0.6vw, 1.5rem);
+  font-weight: 500;
+  line-height: 1.55;
+  font-variant-numeric: lining-nums;
+  color: var(--text);
+}
+.blog-intro-text a {
+  color: var(--blog-gold-text);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
+}
+.blog-intro-text a:hover { color: var(--blog-gold-hover); }
+
+/* Navigation par thème */
+.blog-topics {
+  margin-top: 2rem;
+}
+.blog-topics-title {
+  margin-bottom: 0.75rem;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--text-mid);
+}
+.blog-topics ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.blog-topics a {
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  border: 1px solid var(--stone);
+  border-radius: 50px;
+  background: var(--white);
+  font-size: 0.82rem;
+  line-height: 1.3;
+  color: var(--text);
+  transition: border-color var(--transition-fast), background var(--transition-fast), color var(--transition-fast);
+}
+.blog-topics a:hover {
+  border-color: var(--blog-gold-text);
+  background: var(--beige);
+  color: var(--blog-gold-hover);
+}
+.blog-topics a:focus-visible {
+  outline: 2px solid var(--blog-focus);
+  outline-offset: 3px;
+}
+
+/* « Commencer ici » */
+.blog-start {
+  margin-top: clamp(2.5rem, 6vw, 4rem);
+  padding: clamp(2.5rem, 6vw, 3.75rem) 0;
+  background: var(--beige);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+.blog-start-title,
+.blog-section-title {
+  font-family: var(--font-serif);
+  font-size: clamp(1.8rem, 1.4rem + 1.5vw, 2.4rem);
+  font-weight: 400;
+  line-height: 1.15;
+  font-variant-numeric: lining-nums;
+  color: var(--text);
+  text-wrap: balance;
+}
+.blog-start-lead,
+.blog-section-lead {
+  margin-top: 0.8rem;
+  max-width: 34rem;
+  font-size: 0.95rem;
+  line-height: 1.7;
+  color: var(--text-mid);
+}
+.blog-start-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 17rem), 1fr));
+  gap: 1.5rem;
+  margin: clamp(1.5rem, 4vw, 2.25rem) 0 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: blog-start;
+}
+.blog-start-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  padding: 1.5rem 1.75rem 1.6rem;
+  counter-increment: blog-start;
+}
+.blog-start-item::before {
+  content: counter(blog-start, decimal-leading-zero);
+  font-family: var(--font-serif);
+  font-size: 2.4rem;
+  font-weight: 300;
+  line-height: 1;
+  font-variant-numeric: lining-nums;
+  color: var(--blog-gold-text);
+}
+.blog-start-hint {
+  font-size: 0.92rem;
+  line-height: 1.65;
+  color: var(--text-mid);
+}
+
+/* Sections par pilier */
+.blog-section {
+  padding: clamp(2.75rem, 6vw, 4.5rem) 0;
+  border-top: 1px solid var(--border);
+}
+.blog-start + .blog-section,
+.blog-start + .blog-sections > .blog-section:first-child { border-top: 0; }
+.blog-section-inner {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1.75rem;
+}
+.blog-section-title::before {
+  content: "";
+  display: block;
+  width: 2.5rem;
+  height: 2px;
+  margin-bottom: 1rem;
+  background: var(--or);
+}
+.blog-list {
+  display: grid;
+  gap: 1.5rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+@media (min-width: 960px) {
+  .blog-section-inner {
+    grid-template-columns: minmax(0, 17rem) minmax(0, 1fr);
+    gap: clamp(2.5rem, 5vw, 4.5rem);
+    align-items: start;
+  }
+  .blog-section-head {
+    position: sticky;
+    top: calc(var(--blog-nav-h) + 2rem);
+  }
+}
+
+/* Empêche la coupure d'un nom propre composé (Aix-en-Provence) dans un titre de carte */
+.blog-nowrap { white-space: nowrap; }
+
+/* Carte d'article du hub : image, pilier, titre, chapô, date */
+.blog-card {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  overflow: hidden;
+}
+.blog-card-media {
+  position: relative;
+  margin: 0;
+  overflow: hidden;
+  aspect-ratio: 3 / 2;
+  background: var(--stone-light);
+}
+.blog-card-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.8s ease;
+}
+.blog-card:hover .blog-card-media img { transform: scale(1.04); }
+.blog-card-note {
+  position: absolute;
+  left: 0.6rem;
+  bottom: 0.6rem;
+  max-width: calc(100% - 1.2rem);
+  padding: 0.18rem 0.6rem;
+  border-radius: 50px;
+  background: rgba(26, 23, 20, 0.82);
+  font-size: 0.68rem;
+  letter-spacing: 0.04em;
+  line-height: 1.5;
+  color: var(--white);
+}
+.blog-card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  padding: 1.4rem 1.6rem 1.35rem;
+}
+.blog-card-body .post-card-title { font-size: clamp(1.25rem, 1.12rem + 0.5vw, 1.5rem); }
+.blog-card-lang {
+  display: inline-block;
+  margin-left: 0.6rem;
+  padding: 0.05rem 0.55rem;
+  border: 1px solid var(--blog-gold-text);
+  border-radius: 50px;
+  font-size: 0.64rem;
+  letter-spacing: 0.1em;
+  color: var(--blog-gold-text);
+  vertical-align: 0.05em;
+}
+.blog-card-excerpt {
+  font-size: 0.94rem;
+  line-height: 1.7;
+  color: var(--text-mid);
+}
+.blog-card-date {
+  margin-top: auto;
+  padding-top: 0.35rem;
+  font-size: 0.78rem;
+  line-height: 1.5;
+  color: var(--text-mid);
+}
+
+@media (min-width: 640px) {
+  .blog-card { grid-template-columns: minmax(0, 36%) minmax(0, 1fr); }
+  .blog-card-media {
+    aspect-ratio: auto;
+    min-height: 13rem;
+  }
+  .blog-card-body { padding: 1.5rem 1.85rem 1.4rem; }
+}
+
+
+/* ─── 9. Mouvements réduits ────────────────────────────────── */
+/* style.css neutralise déjà transitions et animations ; on retire ici les décalages de survol. */
+@media (prefers-reduced-motion: reduce) {
+  .post-card:hover,
+  .blog-card:hover .blog-card-media img,
+  .post-card > a:hover::after { transform: none; }
+}
+
+
+/* ─── 10. Impression : article propre, sans navigation ni CTA ─ */
+@media print {
+  .blog-page #navbar,
+  .blog-page .nav-mobile,
+  .blog-page .skip-link,
+  .blog-page .site-footer,
+  .blog-page footer,
+  .blog-page #scroll-progress,
+  .blog-page .floating-cta,
+  .blog-page .post-toc,
+  .blog-page .post-cta,
+  .blog-page .post-related,
+  .blog-page .blog-topics,
+  .blog-page .blog-start,
+  .blog-page .post-breadcrumb {
+    display: none !important;
+  }
+
+  .blog-page,
+  .blog-page main { padding-top: 0; background: #fff; color: #000; }
+
+  .post-hero,
+  .blog-hero {
+    padding: 0 0 1rem;
+    background: none;
+    border: 0;
+    min-height: 0;
+    color: #000;
+  }
+  .blog-hero::after,
+  .blog-hero-bg { display: none; }
+  .post-title,
+  .blog-hero-title { color: #000; font-size: 24pt; max-width: none; }
+  .blog-hero-sub, .blog-hero-note { color: #000; border-color: #000; }
+  .post-pillar { color: #000; }
+  .post-meta { color: #000; max-width: none; }
+
+  .container.post-layout {
+    display: block;
+    max-width: none;
+    padding: 0;
+  }
+  .container.post-hero-inner { max-width: none; }
+
+  .post-body {
+    font-size: 11pt;
+    line-height: 1.55;
+    color: #000;
+  }
+  .post-body h2 { font-size: 16pt; margin-top: 1.5rem; break-after: avoid; }
+  .post-body h2::before { display: none; }
+  .post-body h3 { font-size: 13pt; break-after: avoid; }
+  .post-lead { font-size: 13pt; }
+  .post-body a:not(.btn) { color: #000; text-decoration: underline; }
+  .post-body a[href^="http"]::after,
+  .post-sources a[href^="http"]::after {
+    content: " (" attr(href) ")";
+    font-size: 0.85em;
+    word-break: break-all;
+    text-decoration: none;
+  }
+
+  .post-figure,
+  .post-table,
+  .post-callout,
+  .post-faq details,
+  .post-sources li,
+  .blog-card { break-inside: avoid; }
+  .post-figure img { box-shadow: none; }
+  .post-callout,
+  .post-callout--programme { background: none; box-shadow: none; }
+  .post-callout .btn { display: none; }
+
+  /* Réponses de la FAQ toujours imprimées, même repliées (Chrome récent) */
+  .post-faq details::details-content {
+    content-visibility: visible;
+    display: block;
+  }
+  .post-faq summary::after { display: none; }
+
+  /* Hub */
+  .blog-section-inner { display: block; }
+  .blog-section-head { position: static; }
+  .blog-card { grid-template-columns: 30% 1fr; box-shadow: none; }
+}

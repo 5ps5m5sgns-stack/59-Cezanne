@@ -1,0 +1,13 @@
+# 59-cezanne.com — Cloudflare Pages — _redirects
+#
+# Déjà gérés nativement par Pages (ne rien déclarer ici) :
+#   /x.html -> /x (308)   /index.html -> / (308)   /x/ -> /x (308)   URL inconnue -> 404.html (statut 404)
+# Déjà gérés par Cloudflare (hors fichier) : http -> https (301), www -> apex (301, règle de redirection de zone)
+#
+# L'ancienne page « Blog » (actualites) devient le hub /blog : on conserve l'URL historique en 301.
+/actualites        /blog   301
+/actualites.html   /blog   301
+
+# Alias plausibles (URLs que des visiteurs ou des liens externes peuvent essayer)
+/appartements      /logements       301
+/espaces-communs   /exterieurs      301
