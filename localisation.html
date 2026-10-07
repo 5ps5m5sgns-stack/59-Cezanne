@@ -135,9 +135,37 @@
       .lx-note { text-align: left; }
       .loc-map .btn, .loc-cta .btn { padding-inline: 1.4rem; letter-spacing: .1em; white-space: nowrap; }
     }
+  
+    /* Carte statique + repères (aucune requête tierce au chargement) */
+    .loc-map--static { position: relative; aspect-ratio: auto; height: auto; background: var(--stone-light); border-radius: var(--radius-md); overflow: hidden; box-shadow: var(--shadow); }
+    .loc-map--static .loc-map-img { display: block; width: 100%; height: auto; }
+    .map-pins { list-style: none; position: absolute; inset: 0; margin: 0; padding: 0; }
+    .map-pin { position: absolute; left: var(--x); top: var(--y); transform: translate(-50%, -100%); display: flex; flex-direction: column; align-items: center; pointer-events: none; }
+    .map-pin::after { content: ""; order: 3; width: 14px; height: 14px; margin-top: 2px; border-radius: 50%; background: var(--dark); border: 3px solid #fff; box-shadow: 0 2px 6px rgba(0,0,0,.4); }
+    .map-pin span { order: 1; background: #fff; color: var(--text); font-size: .85rem; font-weight: 700; padding: .25rem .6rem; border-radius: 3px; box-shadow: 0 2px 8px rgba(0,0,0,.25); white-space: nowrap; }
+    .map-pin small { order: 2; margin-top: 2px; background: rgba(26,23,20,.82); color: #fff; font-size: .72rem; padding: .1rem .45rem; border-radius: 3px; white-space: nowrap; }
+    .map-pin--below { transform: translate(-50%, -7px); }
+    .map-pin--below::after { order: 0; margin: 0 0 3px; }
+    .map-pin--below span { order: 1; }
+    .map-pin--below small { order: 2; }
+    .map-pin--res { z-index: 2; }
+    .map-pin--res::after { width: 22px; height: 22px; background: var(--or-texte); }
+    .map-pin--res span { background: var(--or-texte); color: #fff; font-size: 1rem; }
+    .loc-map--static iframe { display: block; width: 100%; height: 660px; border: 0; }
+    .loc-map-foot { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1rem 2rem; margin-top: 1rem; }
+    .loc-map-credit { font-size: .8rem; color: var(--text-light); margin: 0; max-width: 34rem; }
+    .loc-map-credit a { text-decoration: underline; }
+    .loc-map-actions { display: flex; flex-wrap: wrap; align-items: center; gap: .6rem 1.2rem; }
+    .loc-map-actions .map-consent-note { font-size: .78rem; color: var(--text-light); margin: 0; max-width: 24rem; }
+    @media (max-width: 700px) {
+      .map-pin { left: var(--mx); top: var(--my); }
+      .map-pin span { font-size: .78rem; padding: .2rem .45rem; }
+      .map-pin small { font-size: .66rem; }
+      .loc-map--static iframe { height: 420px; }
+    }
   </style>
 
-  <link rel="preload" as="image" href="/Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_EXT_Panorama_St-Victoire-1200w.webp" imagesrcset="/Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_EXT_Panorama_St-Victoire-800w.webp 800w, /Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_EXT_Panorama_St-Victoire-1200w.webp 1200w, /Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_EXT_Panorama_St-Victoire.webp 1600w" imagesizes="100vw" fetchpriority="high" />
+  <link rel="preload" as="image" href="/Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_EXT_Panorama_St-Victoire.webp" imagesrcset="/Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_EXT_Panorama_St-Victoire-800w.webp 800w, /Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_EXT_Panorama_St-Victoire-1200w.webp 1200w, /Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_EXT_Panorama_St-Victoire.webp 2400w" imagesizes="100vw" fetchpriority="high" />
 
   <script type="application/ld+json">
 {
@@ -266,7 +294,7 @@
 <section class="page-hero" id="hero" aria-labelledby="page-title">
   <div class="hero-bg">
     <img src="/Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_EXT_Panorama_St-Victoire.webp"
-         srcset="/Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_EXT_Panorama_St-Victoire-800w.webp 800w, /Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_EXT_Panorama_St-Victoire-1200w.webp 1200w, /Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_EXT_Panorama_St-Victoire.webp 1600w"
+         srcset="/Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_EXT_Panorama_St-Victoire-800w.webp 800w, /Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_EXT_Panorama_St-Victoire-1200w.webp 1200w, /Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_EXT_Panorama_St-Victoire.webp 2400w"
          sizes="100vw" width="1600" height="960" fetchpriority="high" decoding="async"
          alt="Rendu 3D de la résidence 59 Cézanne côté avenue : façade en pierre claire, portail, mur de pierre sèche et numéro 59 sur le pilier" />
   </div>
@@ -378,8 +406,8 @@
     <p class="rg-src" data-lang-fr="Sources&nbsp;: <a class='loc-link' href='https://www.cezanne-en-provence.com/L-Atelier-des-Lauves' target='_blank' rel='noopener noreferrer'>cezanne-en-provence.com<span class='sr-only'> (nouvel onglet)</span></a> ; distance à pied calculée sur données © <a class='loc-link' href='https://www.openstreetmap.org/copyright' target='_blank' rel='noopener noreferrer'>contributeurs OpenStreetMap<span class='sr-only'> (nouvel onglet)</span></a>, indicative, consultée le 6 octobre 2026." data-lang-en="Sources: <a class='loc-link' href='https://www.cezanne-en-provence.com/L-Atelier-des-Lauves' target='_blank' rel='noopener noreferrer'>cezanne-en-provence.com<span class='sr-only'> (opens in a new tab)</span></a>; walking distance computed from © <a class='loc-link' href='https://www.openstreetmap.org/copyright' target='_blank' rel='noopener noreferrer'>OpenStreetMap contributors<span class='sr-only'> (opens in a new tab)</span></a> data, indicative, accessed 6 October 2026.">Sources&nbsp;: <a class='loc-link' href='https://www.cezanne-en-provence.com/L-Atelier-des-Lauves' target='_blank' rel='noopener noreferrer'>cezanne-en-provence.com<span class='sr-only'> (nouvel onglet)</span></a> ; distance à pied calculée sur données © <a class='loc-link' href='https://www.openstreetmap.org/copyright' target='_blank' rel='noopener noreferrer'>contributeurs OpenStreetMap<span class='sr-only'> (nouvel onglet)</span></a>, indicative, consultée le 6 octobre 2026.</p>
   </div>
   <figure class="rg-fig reveal">
-    <img src="/Photo%2059%20C%C3%A9zanne/3D%20Groove%20Architecture/Edited/insertion-ouest-1200w.webp"
-         srcset="/Photo%2059%20C%C3%A9zanne/3D%20Groove%20Architecture/Edited/insertion-ouest-800w.webp 800w, /Photo%2059%20C%C3%A9zanne/3D%20Groove%20Architecture/Edited/insertion-ouest-1200w.webp 1200w"
+    <img src="/Photo%2059%20C%C3%A9zanne/3D%20Groove%20Architecture/Edited/insertion-ouest.webp"
+         srcset="/Photo%2059%20C%C3%A9zanne/3D%20Groove%20Architecture/Edited/insertion-ouest-800w.webp 800w, /Photo%2059%20C%C3%A9zanne/3D%20Groove%20Architecture/Edited/insertion-ouest-1200w.webp 1200w, /Photo%2059%20C%C3%A9zanne/3D%20Groove%20Architecture/Edited/insertion-ouest.webp 2048w"
          sizes="(min-width: 901px) 58vw, 100vw" width="1200" height="900" loading="lazy" decoding="async"
          alt="Vue aérienne d'un secteur résidentiel arboré d'Aix-en-Provence, avec la montagne Sainte-Victoire à l'horizon" />
     <span class="img-tag" data-lang-fr="Secteur vu du ciel, sans la résidence. Illustration non contractuelle." data-lang-en="The area from above, without the residence. Non-contractual illustration.">Secteur vu du ciel, sans la résidence. Illustration non contractuelle.</span>
@@ -396,8 +424,8 @@
     <p class="rg-src" data-lang-fr="Source&nbsp;: <a class='loc-link' href='https://www.aixenprovence.fr/Jardin-des-peintres' target='_blank' rel='noopener noreferrer'>aixenprovence.fr<span class='sr-only'> (nouvel onglet)</span></a> ; distance à pied calculée sur données © contributeurs OpenStreetMap, indicative." data-lang-en="Source: <a class='loc-link' href='https://www.aixenprovence.fr/Jardin-des-peintres' target='_blank' rel='noopener noreferrer'>aixenprovence.fr<span class='sr-only'> (opens in a new tab)</span></a>; walking distance computed from © OpenStreetMap contributors data, indicative.">Source&nbsp;: <a class='loc-link' href='https://www.aixenprovence.fr/Jardin-des-peintres' target='_blank' rel='noopener noreferrer'>aixenprovence.fr<span class='sr-only'> (nouvel onglet)</span></a> ; distance à pied calculée sur données © contributeurs OpenStreetMap, indicative.</p>
   </div>
   <figure class="rg-fig reveal">
-    <img src="/Photo%2059%20C%C3%A9zanne/Photo%20Sainte-Victoire%20pour%20Boris/S22/20250217_174036-1200w.webp"
-         srcset="/Photo%2059%20C%C3%A9zanne/Photo%20Sainte-Victoire%20pour%20Boris/S22/20250217_174036-800w.webp 800w, /Photo%2059%20C%C3%A9zanne/Photo%20Sainte-Victoire%20pour%20Boris/S22/20250217_174036-1200w.webp 1200w"
+    <img src="/Photo%2059%20C%C3%A9zanne/Photo%20Sainte-Victoire%20pour%20Boris/S22/20250217_174036.webp"
+         srcset="/Photo%2059%20C%C3%A9zanne/Photo%20Sainte-Victoire%20pour%20Boris/S22/20250217_174036-800w.webp 800w, /Photo%2059%20C%C3%A9zanne/Photo%20Sainte-Victoire%20pour%20Boris/S22/20250217_174036-1200w.webp 1200w, /Photo%2059%20C%C3%A9zanne/Photo%20Sainte-Victoire%20pour%20Boris/S22/20250217_174036.webp 2400w"
          sizes="(min-width: 901px) 34vw, 64vw" width="1200" height="900" loading="lazy" decoding="async" style="object-position: 24% 50%;"
          alt="La montagne Sainte-Victoire rosée par le soleil couchant, au-dessus de cyprès et de pins, photographiée depuis le terrain le 17 février 2025" />
     <span class="img-tag" data-lang-fr="Photo du 17 février 2025, prise depuis le terrain avant construction." data-lang-en="Photo of 17 February 2025, taken from the plot before construction.">Photo du 17 février 2025, prise depuis le terrain avant construction.</span>
@@ -413,8 +441,8 @@
     <p class="section-lead" data-lang-fr="Marchés de producteurs, Allées Provençales, Cours Mirabeau&nbsp;: la ville se vit au quotidien." data-lang-en="Producers' markets, Allées Provençales, Cours Mirabeau: the city is part of everyday life.">Marchés de producteurs, Allées Provençales, Cours Mirabeau&nbsp;: la ville se vit au quotidien.</p>
   </div>
   <figure class="rg-fig reveal">
-    <img src="/Photo%2059%20C%C3%A9zanne/3D%20Groove%20Architecture/Edited/insertion-nord-1200w.webp"
-         srcset="/Photo%2059%20C%C3%A9zanne/3D%20Groove%20Architecture/Edited/insertion-nord-800w.webp 800w, /Photo%2059%20C%C3%A9zanne/3D%20Groove%20Architecture/Edited/insertion-nord-1200w.webp 1200w"
+    <img src="/Photo%2059%20C%C3%A9zanne/3D%20Groove%20Architecture/Edited/insertion-nord.webp"
+         srcset="/Photo%2059%20C%C3%A9zanne/3D%20Groove%20Architecture/Edited/insertion-nord-800w.webp 800w, /Photo%2059%20C%C3%A9zanne/3D%20Groove%20Architecture/Edited/insertion-nord-1200w.webp 1200w, /Photo%2059%20C%C3%A9zanne/3D%20Groove%20Architecture/Edited/insertion-nord.webp 2400w"
          sizes="(min-width: 901px) 1100px, 100vw" width="1200" height="900" loading="lazy" decoding="async" style="object-position: 50% 30%;"
          alt="Vue aérienne oblique d'un quartier de villas avec piscines, la ville d'Aix-en-Provence et la plaine à l'arrière-plan" />
     <span class="img-tag" data-lang-fr="Secteur vu du ciel, sans la résidence. Illustration non contractuelle." data-lang-en="The area from above, without the residence. Non-contractual illustration.">Secteur vu du ciel, sans la résidence. Illustration non contractuelle.</span>
@@ -431,8 +459,8 @@
     <a class="scene-link" href="/exterieurs" data-lang-fr="Voir les espaces communs" data-lang-en="See the common areas">Voir les espaces communs</a>
   </div>
   <figure class="rg-fig reveal">
-    <img src="/Photo%2059%20C%C3%A9zanne/3D%20Groove%20Architecture/Edited/insertion-est-1200w.webp"
-         srcset="/Photo%2059%20C%C3%A9zanne/3D%20Groove%20Architecture/Edited/insertion-est-800w.webp 800w, /Photo%2059%20C%C3%A9zanne/3D%20Groove%20Architecture/Edited/insertion-est-1200w.webp 1200w"
+    <img src="/Photo%2059%20C%C3%A9zanne/3D%20Groove%20Architecture/Edited/insertion-est.webp"
+         srcset="/Photo%2059%20C%C3%A9zanne/3D%20Groove%20Architecture/Edited/insertion-est-800w.webp 800w, /Photo%2059%20C%C3%A9zanne/3D%20Groove%20Architecture/Edited/insertion-est-1200w.webp 1200w, /Photo%2059%20C%C3%A9zanne/3D%20Groove%20Architecture/Edited/insertion-est.webp 2048w"
          sizes="(min-width: 901px) 34vw, 64vw" width="1200" height="900" loading="lazy" decoding="async" style="object-position: 46% 40%;"
          alt="Vue aérienne du dessus d'un quartier résidentiel d'Aix-en-Provence : villas à toits de tuiles, piscines, oliveraie et routes" />
     <span class="img-tag" data-lang-fr="Secteur vu du ciel, sans la résidence. Illustration non contractuelle." data-lang-en="The area from above, without the residence. Non-contractual illustration.">Secteur vu du ciel, sans la résidence. Illustration non contractuelle.</span>
@@ -446,15 +474,27 @@
     <div>
       <p class="section-lead" data-lang-fr="Une adresse sur l'avenue Paul Cézanne, à quelques minutes du centre-ville d'Aix." data-lang-en="An address on avenue Paul Cézanne, a few minutes from the centre of Aix.">Une adresse sur l'avenue Paul Cézanne, à quelques minutes du centre-ville d'Aix.</p>
       <p class="section-lead" data-lang-fr="Selon la notice descriptive du 8 avril 2025, le stationnement en sous-sol est accessible de plain-pied depuis l'avenue." data-lang-en="According to the descriptive notice of 8 April 2025, the underground car park is accessed at street level from the avenue.">Selon la notice descriptive du 8 avril 2025, le stationnement en sous-sol est accessible de plain-pied depuis l'avenue.</p>
-      <p class="section-lead" data-lang-fr="Affichez le plan, puis lancez l'itinéraire depuis votre position." data-lang-en="Display the map, then start the directions from your location.">Affichez le plan, puis lancez l'itinéraire depuis votre position.</p>
+      <p class="section-lead" data-lang-fr="Lancez l'itinéraire depuis votre position." data-lang-en="Start the directions from your location.">Lancez l'itinéraire depuis votre position.</p>
       <a class="scene-link" href="https://www.google.com/maps/dir/?api=1&amp;destination=43.5465,5.4451" target="_blank" rel="noopener noreferrer"><span data-lang-fr="Itinéraire (Google Maps)" data-lang-en="Directions (Google Maps)">Itinéraire (Google Maps)</span><span class="sr-only" data-lang-fr=" (nouvel onglet)" data-lang-en=" (opens in a new tab)"> (nouvel onglet)</span></a>
     </div>
   </div>
-  <div class="loc-map map-box reveal" id="mapBox">
-    <div class="map-consent" id="mapPlaceholder">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="48" height="48" aria-hidden="true" focusable="false"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
-      <p class="map-consent-note" data-lang-fr="Carte Google Maps&nbsp;: en l'affichant, vous acceptez que Google reçoive votre adresse IP et dépose des cookies." data-lang-en="Google Maps map: by displaying it, you agree that Google receives your IP address and may set cookies.">Carte Google Maps&nbsp;: en l'affichant, vous acceptez que Google reçoive votre adresse IP et dépose des cookies.</p>
-      <button type="button" class="btn btn-primary" id="mapLoad" hidden aria-controls="mapBox" data-src="https://maps.google.com/maps?q=43.5465,5.4451&amp;z=16&amp;output=embed" data-title-fr="Carte Google Maps : 59 avenue Paul Cézanne, Aix-en-Provence" data-title-en="Google Maps: 59 avenue Paul Cézanne, Aix-en-Provence" data-lang-fr="Afficher la carte" data-lang-en="Show the map">Afficher la carte</button>
+  <div class="loc-map loc-map--static reveal" id="mapBox">
+    <picture id="mapPic">
+      <source media="(max-width: 700px)" srcset="/carte/carte-localisation-m.webp" width="1000" height="1000">
+      <img class="loc-map-img" src="/carte/carte-localisation.webp" srcset="/carte/carte-localisation-800w.webp 800w, /carte/carte-localisation.webp 1600w" sizes="(min-width: 1372px) 1320px, 100vw" width="1600" height="800" loading="lazy" decoding="async"
+           alt="Plan du secteur : la résidence 59 Cézanne, avenue Paul Cézanne, le Jardin des Peintres à environ 200 m à vol d'oiseau et l'Atelier des Lauves, au n° 13, à environ 850 m à pied." />
+    </picture>
+    <ul class="map-pins" id="mapPins">
+      <li class="map-pin map-pin--res" style="--x:51.33%;--y:20.05%;--mx:52.13%;--my:26.04%"><span data-lang-fr="59 Cézanne" data-lang-en="59 Cézanne">59 Cézanne</span></li>
+      <li class="map-pin map-pin--below" style="--x:49.2%;--y:35.43%;--mx:48.73%;--my:38.35%"><span data-lang-fr="Jardin des Peintres" data-lang-en="Jardin des Peintres">Jardin des Peintres</span><small data-lang-fr="env. 200 m" data-lang-en="approx. 200 m">env. 200 m</small></li>
+      <li class="map-pin map-pin--below" style="--x:54.33%;--y:78.71%;--mx:56.93%;--my:72.97%"><span data-lang-fr="Atelier des Lauves" data-lang-en="Atelier des Lauves">Atelier des Lauves</span><small data-lang-fr="env. 850 m à pied" data-lang-en="approx. 850 m on foot">env. 850 m à pied</small></li>
+    </ul>
+  </div>
+  <div class="loc-map-foot">
+    <p class="loc-map-credit" data-lang-fr="Fond de carte © contributeurs d'OpenStreetMap. Image du site : aucune donnée n'est transmise à un tiers." data-lang-en="Base map © OpenStreetMap contributors. Image hosted on this site: no data is sent to a third party.">Fond de carte © contributeurs d'OpenStreetMap. Image du site : aucune donnée n'est transmise à un tiers.</p>
+    <div class="loc-map-actions">
+      <button type="button" class="btn btn-outline-dark" id="mapLoad" hidden aria-controls="mapBox" data-src="https://maps.google.com/maps?q=43.546526,5.445257&amp;z=16&amp;output=embed" data-title-fr="Carte Google Maps : 59 avenue Paul Cézanne, Aix-en-Provence" data-title-en="Google Maps: 59 avenue Paul Cézanne, Aix-en-Provence" data-lang-fr="Carte interactive (Google Maps)" data-lang-en="Interactive map (Google Maps)">Carte interactive (Google Maps)</button>
+      <p class="map-consent-note" id="mapNote" data-lang-fr="En affichant la carte interactive, vous acceptez que Google reçoive votre adresse IP et dépose des cookies." data-lang-en="By displaying the interactive map, you agree that Google receives your IP address and may set cookies.">En affichant la carte interactive, vous acceptez que Google reçoive votre adresse IP et dépose des cookies.</p>
     </div>
   </div>
   <p class="sr-only" role="status" id="mapStatus"></p>
@@ -532,10 +572,10 @@
 
 <!-- ─── Boutons flottants (WhatsApp / téléphone) ──────────────── -->
 <div class="floating-cta">
-  <a href="https://wa.me/33609204590" target="_blank" rel="noopener" class="float-btn float-btn-whatsapp" aria-label="Nous écrire sur WhatsApp (s'ouvre dans un nouvel onglet)" title="WhatsApp">
+  <a href="https://wa.me/33609204590" target="_blank" rel="noopener" class="float-btn float-btn-whatsapp" data-label="WhatsApp" aria-label="Nous écrire sur WhatsApp (s'ouvre dans un nouvel onglet)" title="WhatsApp">
     <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.890-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
   </a>
-  <a href="tel:+33609204590" class="float-btn float-btn-phone" aria-label="Appeler le 06 09 20 45 90" title="Appeler">
+  <a href="tel:+33609204590" class="float-btn float-btn-phone" data-label="Appeler" aria-label="Appeler le 06 09 20 45 90" title="Appeler">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" focusable="false"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81 19.79 19.79 0 01.01 1.18 2 2 0 012 0h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
   </a>
 </div>
@@ -545,13 +585,11 @@
 <script src="/cookie.js" defer></script>
 
 <script>
-/* Carte en deux temps : aucune requête vers Google tant que l'utilisateur n'a pas cliqué. */
+/* Carte interactive Google : chargée uniquement au clic (la carte statique ci-dessus ne contacte personne). */
 (function () {
-  var btn = document.getElementById('mapLoad');
-  var box = document.getElementById('mapBox');
-  var ph = document.getElementById('mapPlaceholder');
-  var status = document.getElementById('mapStatus');
-  if (!btn || !box || !ph) return;
+  var btn = document.getElementById('mapLoad'), box = document.getElementById('mapBox'), pic = document.getElementById('mapPic'),
+      pins = document.getElementById('mapPins'), note = document.getElementById('mapNote'), status = document.getElementById('mapStatus');
+  if (!btn || !box) return;
   btn.hidden = false;
   btn.addEventListener('click', function () {
     var en = document.documentElement.lang === 'en';
@@ -560,9 +598,9 @@
     f.title = btn.getAttribute(en ? 'data-title-en' : 'data-title-fr');
     f.referrerPolicy = 'strict-origin-when-cross-origin';
     f.setAttribute('allowfullscreen', '');
-    ph.hidden = true;
+    if (pic) pic.hidden = true; if (pins) pins.hidden = true; if (note) note.hidden = true; btn.hidden = true;
     box.appendChild(f);
-    if (status) status.textContent = en ? 'Map loaded.' : 'Carte chargée.';
+    if (status) status.textContent = en ? 'Interactive map loaded.' : 'Carte interactive chargée.';
     f.focus();
   });
 })();
