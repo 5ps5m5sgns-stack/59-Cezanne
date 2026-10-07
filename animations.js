@@ -460,7 +460,7 @@
       imgEl.src = current.src;
     }
 
-    if (captionEl) captionEl.textContent = current.caption || '';
+    if (captionEl) captionEl.textContent = '';   /* pas de légende visible (demande du client) ; current.caption sert d'alt */
 
     if (counterEl) {
       if (lightboxImages.length > 1) {
