@@ -127,6 +127,20 @@
       .scene-link { letter-spacing: 0.08em; }
       .guides-line ul { flex-direction: column; gap: 0; }
     }
+  
+    /* ── Grille « Les huit logements » ── */
+    .lots-grid { background: var(--creme); padding: clamp(3rem, 6vw, 5rem) 0 clamp(2.5rem, 5vw, 4rem); border-top: 1px solid var(--border); }
+    .lots-title { font-family: var(--font-serif); font-weight: 300; font-size: clamp(2.2rem, 3.6vw, 3.2rem); line-height: 1.1; margin: 0 0 1.8rem; color: var(--text); }
+    .lots-list { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1rem; }
+    .lots-list a { display: grid; grid-template-columns: auto 1fr; grid-template-areas: "n t" "n s" "n j"; column-gap: 1.1rem; align-items: center; padding: 1.1rem 1.3rem; background: #fff; border: 1px solid var(--border); border-radius: var(--radius-md); color: var(--text); text-decoration: none; transition: border-color var(--transition-fast), box-shadow var(--transition-fast), transform var(--transition-fast); }
+    .lots-list a:hover, .lots-list a:focus-visible { border-color: var(--or-texte); box-shadow: var(--shadow); transform: translateY(-2px); }
+    .lot-n { grid-area: n; font-family: var(--font-serif); font-size: 3.4rem; line-height: 1; color: var(--or-texte); }
+    .lot-t { grid-area: t; font-size: 0.82rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-mid); }
+    .lot-s { grid-area: s; font-family: var(--font-serif); font-size: 1.7rem; line-height: 1.15; }
+    .lot-j { grid-area: j; font-size: 0.95rem; color: var(--text-mid); }
+    .lots-note { margin: 1.4rem 0 0; font-size: 0.8rem; color: var(--text-light); max-width: 46rem; }
+    @media (max-width: 1100px) { .lots-list { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+    @media (max-width: 460px) { .lots-list a { padding: 0.9rem 1rem; column-gap: 0.8rem; } .lot-n { font-size: 2.6rem; } .lot-s { font-size: 1.4rem; } }
   </style>
   <noscript><style>.reveal, .reveal-left, .reveal-right { opacity: 1; transform: none; }</style></noscript>
 
@@ -143,8 +157,8 @@
       "logo": {
         "@type": "ImageObject",
         "url": "https://59-cezanne.com/Photo%2059%20C%C3%A9zanne/Logo%20PONTHIEU/Logo%20Ponthieu.webp",
-        "width": 1600,
-        "height": 1132
+        "width": 1754,
+        "height": 1241
       },
       "foundingDate": "2001",
       "founder": {
@@ -256,12 +270,10 @@
     </a>
     <div class="nav-links">
       <a href="/" class="active" aria-current="page" data-lang-fr="Accueil" data-lang-en="Home">Accueil</a>
-      <a href="/presentation" data-lang-fr="Présentation" data-lang-en="Presentation">Présentation</a>
+      <a href="/residence" data-lang-fr="La résidence" data-lang-en="The residence">La résidence</a>
       <a href="/logements" data-lang-fr="Logements" data-lang-en="Apartments">Logements</a>
-      <a href="/exterieurs" data-lang-fr="Espaces Communs" data-lang-en="Common Areas">Espaces Communs</a>
-      <a href="/localisation" data-lang-fr="Localisation" data-lang-en="Location">Localisation</a>
-      <a href="/promoteur" data-lang-fr="Le Promoteur" data-lang-en="The Developer">Le Promoteur</a>
-      <a href="/blog" data-lang-fr="Blog" data-lang-en="Blog">Blog</a>
+            <a href="/localisation" data-lang-fr="Localisation" data-lang-en="Location">Localisation</a>
+            <a href="/blog" data-lang-fr="Blog" data-lang-en="Blog">Blog</a>
       <a href="/contact" data-lang-fr="Contact" data-lang-en="Contact">Contact</a>
     </div>
     <div class="d-flex align-center gap-2">
@@ -277,12 +289,10 @@
 </nav>
 <div class="nav-mobile" id="mobileMenu">
   <a href="/" aria-current="page" onclick="toggleMobile()" data-lang-fr="Accueil" data-lang-en="Home">Accueil</a>
-  <a href="/presentation" onclick="toggleMobile()" data-lang-fr="Présentation" data-lang-en="Presentation">Présentation</a>
+  <a href="/residence" onclick="toggleMobile()" data-lang-fr="La résidence" data-lang-en="The residence">La résidence</a>
   <a href="/logements" onclick="toggleMobile()" data-lang-fr="Logements" data-lang-en="Apartments">Logements</a>
-  <a href="/exterieurs" onclick="toggleMobile()" data-lang-fr="Espaces Communs" data-lang-en="Common Areas">Espaces Communs</a>
-  <a href="/localisation" onclick="toggleMobile()" data-lang-fr="Localisation" data-lang-en="Location">Localisation</a>
-  <a href="/promoteur" onclick="toggleMobile()" data-lang-fr="Le Promoteur" data-lang-en="The Developer">Le Promoteur</a>
-  <a href="/blog" onclick="toggleMobile()" data-lang-fr="Blog" data-lang-en="Blog">Blog</a>
+    <a href="/localisation" onclick="toggleMobile()" data-lang-fr="Localisation" data-lang-en="Location">Localisation</a>
+    <a href="/blog" onclick="toggleMobile()" data-lang-fr="Blog" data-lang-en="Blog">Blog</a>
   <a href="/contact" onclick="toggleMobile()" data-lang-fr="Contact" data-lang-en="Contact">Contact</a>
   <div class="nav-mobile-lang" role="group" aria-label="Langue / Language">
     <button type="button" class="lang-btn active" lang="fr" aria-pressed="true" onclick="setLang('fr')">FR</button>
@@ -318,7 +328,7 @@
       <h2 class="section-title reveal" id="residence-titre" data-lang-fr="Une résidence confidentielle à &lt;span class=&quot;nw&quot;&gt;Aix-en-Provence&lt;/span&gt;" data-lang-en="A confidential residence in &lt;span class=&quot;nw&quot;&gt;Aix-en-Provence&lt;/span&gt;">Une résidence confidentielle à <span class="nw">Aix-en-Provence</span></h2>
       <p class="section-lead reveal" data-lang-fr="Vivez l'exception avenue Paul Cézanne." data-lang-en="Live the exceptional on avenue Paul Cézanne.">Vivez l'exception avenue Paul Cézanne.</p>
       <p class="rg-body reveal" data-lang-fr="Seulement huit appartements neufs : une intimité rare, entre pierre claire, toits de tuiles et jardins." data-lang-en="Only eight new apartments: rare privacy, between light stone, tiled roofs and gardens.">Seulement huit appartements neufs : une intimité rare, entre pierre claire, toits de tuiles et jardins.</p>
-      <a class="scene-link" href="/presentation"><span data-lang-fr="Découvrir la résidence" data-lang-en="Discover the residence">Découvrir la résidence</span><svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" focusable="false"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+      <a class="scene-link" href="/residence"><span data-lang-fr="Découvrir la résidence" data-lang-en="Discover the residence">Découvrir la résidence</span><svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" focusable="false"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
     </div>
     <figure class="rg-fig">
       <img src="/Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_JARDIN_V2_LOGEMENT-04_Panorama_St-Victoire.webp" srcset="/Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_JARDIN_V2_LOGEMENT-04_Panorama_St-Victoire-800w.webp 800w, /Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_JARDIN_V2_LOGEMENT-04_Panorama_St-Victoire-1200w.webp 1200w, /Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_JARDIN_V2_LOGEMENT-04_Panorama_St-Victoire.webp 2400w" sizes="(min-width: 901px) 58vw, 100vw" width="1600" height="1024" alt="Rendu 3D de la façade d'un appartement en rez-de-jardin : baie coulissante ouverte entre le séjour et le jardin, pelouse et haie fleurie" loading="lazy" decoding="async" style="object-position:42% 55%" />
@@ -332,7 +342,6 @@
       <h2 class="section-title reveal" id="appartements-titre" data-lang-fr="Du T2 au T4, huit appartements neufs" data-lang-en="From T2 to T4, eight new apartments">Du T2 au T4, huit appartements neufs</h2>
       <p class="section-lead reveal" data-lang-fr="Des espaces sur-mesure, pensés pour l'excellence." data-lang-en="Tailor-made spaces, designed for excellence.">Des espaces sur-mesure, pensés pour l'excellence.</p>
       <p class="rg-body reveal" data-lang-fr="Grandes baies vitrées, sols au choix (grès cérame ou parquet, selon la notice). Vue &lt;span class=&quot;nw&quot;&gt;Sainte-Victoire&lt;/span&gt; pour plusieurs appartements." data-lang-en="Large glazed openings, floors of your choice (porcelain stoneware or parquet, according to the notice). &lt;span class=&quot;nw&quot;&gt;Sainte-Victoire&lt;/span&gt; views from several apartments.">Grandes baies vitrées, sols au choix (grès cérame ou parquet, selon la notice). Vue <span class="nw">Sainte-Victoire</span> pour plusieurs appartements.</p>
-      <p class="home-fact reveal" data-lang-fr="&lt;span class=&quot;nw&quot;&gt;4 T4&lt;/span&gt; · &lt;span class=&quot;nw&quot;&gt;2 T3 duplex&lt;/span&gt; · &lt;span class=&quot;nw&quot;&gt;2 T2&lt;/span&gt;" data-lang-en="&lt;span class=&quot;nw&quot;&gt;4 T4&lt;/span&gt; · &lt;span class=&quot;nw&quot;&gt;2 T3 duplex&lt;/span&gt; · &lt;span class=&quot;nw&quot;&gt;2 T2&lt;/span&gt;"><span class="nw">4 T4</span> · <span class="nw">2 T3 duplex</span> · <span class="nw">2 T2</span></p>
       <a class="scene-link" href="/logements"><span data-lang-fr="Voir les appartements" data-lang-en="View the apartments">Voir les appartements</span><svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" focusable="false"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
     </div>
     <figure class="rg-fig">
@@ -340,6 +349,24 @@
       <span class="img-tag" data-lang-fr="Illustration non contractuelle" data-lang-en="Non-contractual illustration">Illustration non contractuelle</span>
     </figure>
   </section>
+  <!-- ─── Les huit logements en un coup d'œil (renvoie à /logements) ─── -->
+  <section class="lots-grid" id="lots" aria-labelledby="lots-titre">
+    <div class="container">
+      <h2 class="lots-title reveal" id="lots-titre" data-lang-fr="Les huit logements" data-lang-en="The eight apartments">Les huit logements</h2>
+      <ul class="lots-list">
+      <li><a href="/logements#lot-1"><span class="lot-n">1</span><span class="lot-t">T4</span><span class="lot-s" data-lang-fr="125,3&nbsp;m²" data-lang-en="125.3&nbsp;m²">125,3&nbsp;m²</span><span class="lot-j" data-lang-fr="jardin 153,5&nbsp;m²" data-lang-en="garden 153.5&nbsp;m²">jardin 153,5&nbsp;m²</span></a></li>
+      <li><a href="/logements#lot-2"><span class="lot-n">2</span><span class="lot-t">T3 duplex</span><span class="lot-s" data-lang-fr="103,6&nbsp;m²" data-lang-en="103.6&nbsp;m²">103,6&nbsp;m²</span><span class="lot-j" data-lang-fr="jardin 28,3&nbsp;m²" data-lang-en="garden 28.3&nbsp;m²">jardin 28,3&nbsp;m²</span></a></li>
+      <li><a href="/logements#lot-3"><span class="lot-n">3</span><span class="lot-t">T3 duplex</span><span class="lot-s" data-lang-fr="103,4&nbsp;m²" data-lang-en="103.4&nbsp;m²">103,4&nbsp;m²</span><span class="lot-j" data-lang-fr="jardin 28,6&nbsp;m²" data-lang-en="garden 28.6&nbsp;m²">jardin 28,6&nbsp;m²</span></a></li>
+      <li><a href="/logements#lot-4"><span class="lot-n">4</span><span class="lot-t">T4</span><span class="lot-s" data-lang-fr="100,5&nbsp;m²" data-lang-en="100.5&nbsp;m²">100,5&nbsp;m²</span><span class="lot-j" data-lang-fr="jardin 237,6&nbsp;m²" data-lang-en="garden 237.6&nbsp;m²">jardin 237,6&nbsp;m²</span></a></li>
+      <li><a href="/logements#lot-5"><span class="lot-n">5</span><span class="lot-t">T4</span><span class="lot-s" data-lang-fr="108,9&nbsp;m²" data-lang-en="108.9&nbsp;m²">108,9&nbsp;m²</span><span class="lot-j" data-lang-fr="jardin 311,6&nbsp;m²" data-lang-en="garden 311.6&nbsp;m²">jardin 311,6&nbsp;m²</span></a></li>
+      <li><a href="/logements#lot-6"><span class="lot-n">6</span><span class="lot-t">T2</span><span class="lot-s" data-lang-fr="45,0&nbsp;m²" data-lang-en="45.0&nbsp;m²">45,0&nbsp;m²</span><span class="lot-j" data-lang-fr="jardin 108,2&nbsp;m²" data-lang-en="garden 108.2&nbsp;m²">jardin 108,2&nbsp;m²</span></a></li>
+      <li><a href="/logements#lot-7"><span class="lot-n">7</span><span class="lot-t">T2</span><span class="lot-s" data-lang-fr="45,0&nbsp;m²" data-lang-en="45.0&nbsp;m²">45,0&nbsp;m²</span><span class="lot-j" data-lang-fr="jardin 101,7&nbsp;m²" data-lang-en="garden 101.7&nbsp;m²">jardin 101,7&nbsp;m²</span></a></li>
+      <li><a href="/logements#lot-8"><span class="lot-n">8</span><span class="lot-t">T4</span><span class="lot-s" data-lang-fr="138,0&nbsp;m²" data-lang-en="138.0&nbsp;m²">138,0&nbsp;m²</span><span class="lot-j" data-lang-fr="jardin 82,1&nbsp;m²" data-lang-en="garden 82.1&nbsp;m²">jardin 82,1&nbsp;m²</span></a></li>
+      </ul>
+      <p class="lots-note" data-lang-fr="Surfaces des lots principaux, selon la grille de pré-commercialisation de février 2025&nbsp;; documents non contractuels." data-lang-en="Main-lot floor areas from the February 2025 pre-marketing schedule; non-contractual documents.">Surfaces des lots principaux, selon la grille de pré-commercialisation de février 2025&nbsp;; documents non contractuels.</p>
+    </div>
+  </section>
+
 
   <!-- ─── Scène 3 : jardins privatifs · format duo (teaser ; détail sur /logements) ── -->
   <section class="rg rg--duo" id="jardins" aria-labelledby="jardins-titre">
@@ -368,7 +395,7 @@
       <h2 class="section-title reveal" id="piscine-titre" data-lang-fr="Piscine chauffée et jardins paysagers" data-lang-en="Heated pool and landscaped gardens">Piscine chauffée et jardins paysagers</h2>
       <p class="section-lead reveal" data-lang-fr="Au cœur de la résidence, une piscine chauffée." data-lang-en="At the heart of the residence, a heated pool.">Au cœur de la résidence, une piscine chauffée.</p>
       <p class="rg-body reveal" data-lang-fr="Nage à contre-courant, selon la notice. Solarium aménagé de transats ; oliviers, pins, amandiers et lavandes, selon le plan paysager." data-lang-en="Counter-current swimming system, according to the notice. Solarium with sun loungers; olive, pine and almond trees and lavender, according to the landscape plan.">Nage à contre-courant, selon la notice. Solarium aménagé de transats ; oliviers, pins, amandiers et lavandes, selon le plan paysager.</p>
-      <a class="scene-link" href="/exterieurs"><span data-lang-fr="Voir les espaces communs" data-lang-en="View the common areas">Voir les espaces communs</span><svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" focusable="false"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+      <a class="scene-link" href="/residence#piscine"><span data-lang-fr="Voir les espaces communs" data-lang-en="View the common areas">Voir les espaces communs</span><svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" focusable="false"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
     </div>
     <figure class="rg-fig">
       <img src="/Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_PISCINE_NUIT_Panorama_St-Victoire%202.webp" srcset="/Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_PISCINE_NUIT_Panorama_St-Victoire%202-800w.webp 800w, /Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_PISCINE_NUIT_Panorama_St-Victoire%202-1200w.webp 1200w, /Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_PISCINE_NUIT_Panorama_St-Victoire%202.webp 2400w" sizes="100vw" width="1600" height="960" alt="Rendu 3D de nuit : piscine éclairée, solarium avec parasols et transats, façade en pierre claire de la résidence" loading="lazy" decoding="async" style="object-position:50% 45%" />
@@ -438,11 +465,9 @@
         <h4 data-lang-fr="Navigation" data-lang-en="Navigation">Navigation</h4>
         <ul>
           <li><a href="/" data-lang-fr="Accueil" data-lang-en="Home">Accueil</a></li>
-          <li><a href="/presentation" data-lang-fr="Présentation" data-lang-en="Presentation">Présentation</a></li>
+          <li><a href="/residence" data-lang-fr="La résidence" data-lang-en="The residence">La résidence</a></li>
           <li><a href="/logements" data-lang-fr="Logements" data-lang-en="Apartments">Logements</a></li>
-          <li><a href="/exterieurs" data-lang-fr="Espaces Communs" data-lang-en="Common Areas">Espaces Communs</a></li>
           <li><a href="/localisation" data-lang-fr="Localisation" data-lang-en="Location">Localisation</a></li>
-          <li><a href="/promoteur" data-lang-fr="Le Promoteur" data-lang-en="The Developer">Le Promoteur</a></li>
           <li><a href="/blog" data-lang-fr="Blog" data-lang-en="Blog">Blog</a></li>
           <li><a href="/contact" data-lang-fr="Contact" data-lang-en="Contact">Contact</a></li>
         </ul>

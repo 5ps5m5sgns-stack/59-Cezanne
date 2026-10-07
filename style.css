@@ -2544,3 +2544,8 @@ html[data-lang-lock] .lang-btn { display: none !important; }
   .rg--petite-g .rg-fig, .rg--petite-d .rg-fig { width: 86%; }
 }
 .rg--grande .rg-text, .rg--duo .rg-text { align-items: center; }
+
+/* Mobile : les formats « petite » s'empilent (cette règle doit rester APRÈS le bloc d'équilibre texte/image ci-dessus). */
+@media (max-width: 900px) {
+  .rg--petite-g, .rg--petite-d { grid-template-columns: minmax(0, 1fr); }
+}

@@ -10,4 +10,12 @@
 
 # Alias plausibles (URLs que des visiteurs ou des liens externes peuvent essayer)
 /appartements      /logements       301
-/espaces-communs   /exterieurs      301
+/espaces-communs   /residence       301
+
+# Regroupement (07/10/2026) : présentation + espaces communs + promoteur -> une seule page /residence
+/presentation        /residence   301
+/presentation.html   /residence   301
+/exterieurs          /residence   301
+/exterieurs.html     /residence   301
+/promoteur           /residence   301
+/promoteur.html      /residence   301
