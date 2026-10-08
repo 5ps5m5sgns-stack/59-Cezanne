@@ -726,3 +726,17 @@
   .pdh-stat + .pdh-stat::before { top: 0; left: 50%; width: 1px; height: 1.2rem; }
   .pdh-stat .num { font-size: clamp(2.6rem, 14vw, 3.2rem); }
 }
+
+
+/* ─── Fonds classiques (9/10/2026) : couverture claire, blanc cassé ─────────────────────────────── */
+.cover-hero.ct-cover { background: #faf7f2; color: var(--text); }
+.cover-hero.ct-cover h1 { color: var(--brun); }
+.ct-cover .ct-tel { color: var(--brun); }
+.ct-cover .ct-tel:hover { color: var(--terra-texte); }
+.ct-cover .ct-hours { color: var(--text-mid); }
+.ct-cover .ct-btn--main { background: var(--terra-texte); color: #fff; box-shadow: 0 4px 20px rgba(164, 81, 58, 0.30); }
+.ct-cover .ct-btn--main:hover { background: var(--brun); color: #fff; box-shadow: 0 6px 30px rgba(123, 69, 56, 0.40); }
+.ct-cover .ct-btn--wa { border: 1px solid rgba(123, 69, 56, 0.45); color: var(--brun); }
+.ct-cover .ct-btn--wa:hover { border-color: var(--terra-texte); color: var(--terra-texte); }
+.ct-cover .ct-more { color: var(--brun); }
+.ct-cover .ct-more:hover { color: var(--terra-texte); }

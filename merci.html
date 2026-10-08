@@ -34,7 +34,7 @@
     /* Page de confirmation : couverture travertin (grand logo « 59 Cézanne », tracé de la Sainte-Victoire dans une bande réservée),
        puis une bande de pierre pour la suite de la découverte. */
     .thanks { position: relative; z-index: 2; isolation: isolate; overflow: hidden; color: var(--text);
-      background-color: var(--travertin); background-image: linear-gradient(rgba(228,214,189,.58), rgba(228,214,189,.58)), url("/fonds/travertin.webp"); background-size: auto, 860px auto;
+      background-color: var(--travertin); background-image: none;
       border-radius: 0 0 var(--arche) 0; margin-bottom: calc(-1 * var(--arche));
       padding: calc(var(--nav-height) + 3rem) 0 clamp(7.5rem, 15vw, 12rem); }
     .thanks::after { content: ""; position: absolute; z-index: -1; pointer-events: none; left: -3%; bottom: clamp(1.25rem, 3vw, 2.5rem); width: min(66%, 860px); aspect-ratio: 2400 / 424;
@@ -50,11 +50,11 @@
     .th-actions { display: flex; flex-wrap: wrap; gap: .9rem 1rem; margin-top: 1.8rem; }
     .th-actions .btn { min-height: 48px; }
     .th-note { font-size: .92rem; color: var(--text-mid); line-height: 1.7; margin: 1.2rem 0 0; max-width: 34rem; }
-    .th-more { position: relative; background-color: var(--pierre); background-image: linear-gradient(rgba(246,241,231,.72), rgba(246,241,231,.72)), url("/fonds/travertin.webp"); background-size: auto, 860px auto;
+    .th-more { position: relative; background-color: var(--pierre); background-image: none;
       padding: calc(var(--arche) + 3rem) 0 clamp(3.5rem, 7vw, 5.5rem); }
     .th-more h2 { font-family: var(--font-serif); font-size: clamp(1.8rem, 1.4rem + 1.4vw, 2.5rem); font-weight: 400; color: var(--brun); margin-bottom: 1.6rem; }
     .th-links { list-style: none; display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.2rem; text-align: left; }
-    .th-links a { display: block; height: 100%; padding: 2.1rem 1.6rem 1.7rem; background: var(--travertin) url("/fonds/travertin.webp") 0 0 / 860px auto; background-blend-mode: multiply; border-radius: clamp(2.25rem, 4.2vw, 3.75rem) 0 0 0; text-decoration: none; color: var(--text); transition: background-color var(--transition-fast); }
+    .th-links a { display: block; height: 100%; padding: 2.1rem 1.6rem 1.7rem; background: var(--travertin); border-radius: clamp(2.25rem, 4.2vw, 3.75rem) 0 0 0; text-decoration: none; color: var(--text); transition: background-color var(--transition-fast); }
     .th-links li:nth-child(2) a { border-radius: 0 clamp(2.25rem, 4.2vw, 3.75rem) 0 0; }
     .th-links li:nth-child(3) a { border-radius: 0 0 clamp(2.25rem, 4.2vw, 3.75rem) 0; }
     .th-links a:hover, .th-links a:focus-visible { background-color: var(--sable); }

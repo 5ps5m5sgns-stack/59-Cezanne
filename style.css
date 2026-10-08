@@ -2620,10 +2620,10 @@ body { background-color: var(--pierre); color: var(--text); }
 
 /* 2 ─ Fonds : plus jamais de grande surface blanche. Sections « scène » = pierre ; alternées = travertin. */
 .rg:not(.rg--immense) { background-color: var(--pierre); }
-.rg--b:not(.rg--immense) { background: var(--travertin) url("/fonds/travertin.webp") repeat 0 0 / 860px auto; background-blend-mode: multiply; }
+.rg--b:not(.rg--immense) { background: var(--travertin); }
 .section { background-color: var(--pierre); }
-.section-alt { background: var(--travertin) url("/fonds/travertin.webp") repeat 0 0 / 860px auto; background-blend-mode: multiply; }
-.fond-pierre { background: var(--pierre) url("/fonds/travertin.webp") repeat 0 0 / 860px auto; }
+.section-alt { background: var(--travertin); }
+.fond-pierre { background: var(--pierre); }
 .fond-brun { background: var(--brun-profond); color: rgba(255, 255, 255, 0.88); --or-texte: var(--or); --focus-ring: var(--or-light); --trait-color: #f1dcc6; --trait-op: 0.16; }
 .fond-brun .section-title, .fond-brun h2, .fond-brun h3 { color: #fff; }
 .fond-brun .section-lead { color: rgba(255, 255, 255, 0.78); }
@@ -2691,7 +2691,7 @@ body { background-color: var(--pierre); color: var(--text); }
 .script--blanc { color: #f1c9ae; }
 
 /* 6 ─ Onglet de la plaquette (pages 2 et 12) : pilule verticale en travertin, ou aplat terracotta aux angles arrondis. */
-.onglet { display: inline-flex; align-items: center; justify-content: center; background: var(--travertin) url("/fonds/travertin.webp") center / 520px auto; color: var(--terra); border-radius: 999px; padding: 1.2rem 0.9rem; box-shadow: 0 8px 24px rgba(59, 35, 29, 0.12); }
+.onglet { display: inline-flex; align-items: center; justify-content: center; background: var(--travertin); color: var(--terra); border-radius: 999px; padding: 1.2rem 0.9rem; box-shadow: 0 8px 24px rgba(59, 35, 29, 0.12); }
 .panneau-terra { background: var(--terra-texte); color: #fff; border-radius: var(--arche) 0 var(--arche-s) 0; padding: clamp(1.8rem, 4vw, 3.5rem); }
 
 /* 7 ─ Pied de page et menu : brun profond ; le tracé de la montagne ferme chaque page. */
@@ -2769,7 +2769,7 @@ body > footer::before, .site-footer::before {
 .orn--logo   { --orn-img: url("/fonds/logo-59-cezanne-mask.png"); aspect-ratio: 800 / 844; }
 @media (forced-colors: active) { .orn { display: none; } }
 /* Pierres : veinée (arches/pilules), brune (sections sombres). */
-.fond-veine { background: var(--travertin) url("/fonds/travertin-veine.webp") repeat 0 0 / 1080px auto; }
+.fond-veine { background: var(--travertin); }
 .fond-brun-pierre { background: var(--brun-profond) url("/fonds/travertin-brun.webp") repeat 0 0 / 1080px auto; color: rgba(255, 255, 255, 0.88); --or-texte: var(--or); --focus-ring: var(--or-light); --trait-color: #f1dcc6; --trait-op: 0.16; }
 .fond-brun-pierre .section-title, .fond-brun-pierre h2, .fond-brun-pierre h3 { color: #fff; }
 
@@ -2813,3 +2813,17 @@ body > footer::before, .site-footer::before {
 @media (max-width: 900px) {
   .rg--immense .rg-fig::after { background: linear-gradient(to top, rgba(15,12,8,0.92) 0%, rgba(15,12,8,0.78) 42%, rgba(15,12,8,0.5) 66%, rgba(15,12,8,0.12) 100%); }
 }
+
+/* ═══ Fonds classiques : blanc et blanc cassé (9/10/2026) ═══════════════════════════════════════════
+   Demande de Gabriel : la texture travertin de la plaquette est trop présente. Les sections courantes passent en
+   blanc / blanc cassé, en alternance ; l'identité reste portée par les tracés, les arches, les ornements et les
+   quelques blocs bruns (un par page au plus). Les anciennes classes (.fond-pierre, .fond-veine, .deco-travertin,
+   .section-alt, .rg--b) sont conservées dans le HTML : elles sont simplement aplaties ici. */
+:root { --pierre: #faf7f2; --travertin: #f3ede3; --blanc: #ffffff; }
+body { background-color: var(--pierre); }
+.rg:not(.rg--immense), .section { background-color: var(--blanc); }
+.rg--b:not(.rg--immense), .section-alt, .fond-pierre, .fond-veine { background-color: var(--pierre); background-image: none; }
+.deco-travertin, .deco-travertin--chaud { background-color: var(--pierre); background-image: none; background-blend-mode: normal; }
+.onglet { background-image: none; }
+/* Bloc brun d'appel (un par page au plus) : aplat uni, couleur moyenne de l'ancienne texture, sans veines. */
+.fond-brun-pierre { background: #79483d; }

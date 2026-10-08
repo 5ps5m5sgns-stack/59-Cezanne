@@ -33,7 +33,7 @@
   <style>
     /* Page 404 : couverture travertin (page 1 de la plaquette), grand logo « 59 Cézanne », tracé de la Sainte-Victoire dans une bande réservée */
     .nf { position: relative; isolation: isolate; overflow: hidden; color: var(--text);
-      background-color: var(--travertin); background-image: linear-gradient(rgba(228,214,189,.58), rgba(228,214,189,.58)), url("/fonds/travertin.webp"); background-size: auto, 860px auto;
+      background-color: var(--travertin); background-image: none;
       padding: calc(var(--nav-height) + 3rem) 0 clamp(7.5rem, 15vw, 12rem); }
     .nf::after { content: ""; position: absolute; z-index: -1; pointer-events: none; left: -3%; bottom: clamp(1.25rem, 3vw, 2.5rem); width: min(66%, 860px); aspect-ratio: 2400 / 424;
       background-color: var(--ocre); opacity: .78; -webkit-mask: url("/fonds/trace-1-mask.png") no-repeat left bottom / contain; mask: url("/fonds/trace-1-mask.png") no-repeat left bottom / contain; }
@@ -47,7 +47,7 @@
     .nf-actions { display: flex; flex-wrap: wrap; gap: .9rem 1rem; margin-top: 2rem; }
     .nf-actions .btn { min-height: 48px; }
     .nf-nav { display: grid; grid-template-columns: 1fr 1fr; gap: 2.5rem; text-align: left; margin-top: clamp(2.5rem, 5vw, 4rem); padding: clamp(2rem, 4vw, 2.8rem) clamp(1.5rem, 4vw, 3rem);
-      background-color: var(--travertin); background-image: linear-gradient(rgba(236,226,207,.62), rgba(236,226,207,.62)), url("/fonds/travertin.webp"); background-size: auto, 860px auto; border-radius: var(--arche-s) 0 0 0; }
+      background-color: var(--travertin); background-image: none; border-radius: var(--arche-s) 0 0 0; }
     .nf-nav h2 { font-family: var(--font-serif); font-size: 1.6rem; font-style: italic; font-weight: 500; line-height: 1.2; color: var(--brun); margin-bottom: .6rem; }
     .nf-nav ul { list-style: none; }
     .nf-nav li + li { margin-top: .15rem; }

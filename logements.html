@@ -72,7 +72,7 @@
 
     /* ── 2. Disponibles : deux scènes pleine largeur, alternées ── */
     .lg-dispo { position: relative; overflow: hidden; padding-block: clamp(3rem, 5vw, 4.5rem);
-      background: var(--travertin) url("/fonds/travertin.webp") repeat 0 0 / 860px auto; background-blend-mode: multiply; }
+      background: var(--travertin); }
     .lg-dispo .dispo-head { margin-bottom: clamp(2rem, 3.5vw, 3rem); }
     .lg-dispo .dispo-head .script, .lg-cover .script { color: var(--terra-texte); }
     .lg-dispo .dispo-head .section-title { text-wrap: balance; }
@@ -110,17 +110,17 @@
 
     /* Jardins (pierre) | Stationnement (brun) : une seule bande, deux panneaux */
     .lg-band { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); overflow: hidden;
-      background: var(--pierre) url("/fonds/travertin.webp") repeat 0 0 / 860px auto; }
+      background: var(--pierre); }
     .lg-jardins { display: flex; flex-direction: column; justify-content: center; padding: clamp(2.8rem, 4.5vw, 4rem) clamp(2rem, 4vw, 4rem) clamp(2.8rem, 4.5vw, 4rem) var(--rg-gutter); }
     .lg-jardins .orn { width: clamp(110px, 11vw, 150px); --orn-color: var(--terra); --orn-opacity: .9; margin-bottom: 1.4rem; }
     .lg-jardins .section-title, .lg-park .section-title { font-size: clamp(2.2rem, 3.3vw, 3.1rem); line-height: 1.12; margin-bottom: 1rem; text-wrap: balance; }
     .lg-jardins .section-lead { max-width: 30rem; margin: 0 0 .9rem; font-size: clamp(1.1rem, 1.4vw, 1.3rem); line-height: 1.5; }
     .lg-park { border-radius: var(--arche) 0 0 0; padding: clamp(2.8rem, 4.5vw, 4rem) var(--rg-gutter) clamp(2.8rem, 4.5vw, 4rem) clamp(2.5rem, 5vw, 5rem); }
     .lg-facts { margin-top: 1.2rem; max-width: 32rem; }
-    .lg-facts li { padding: .8rem 0; border-top: 1px solid rgba(236, 201, 162, .24); }
-    .lg-facts li:last-child { border-bottom: 1px solid rgba(236, 201, 162, .24); }
-    .lg-facts strong { display: block; font-family: var(--font-serif); font-weight: 400; font-size: 1.55rem; line-height: 1.15; color: #fff; }
-    .lg-facts span { display: block; margin-top: .2rem; color: rgba(255, 255, 255, .8); line-height: 1.45; }
+    .lg-facts li { padding: .8rem 0; border-top: 1px solid var(--border); }
+    .lg-facts li:last-child { border-bottom: 1px solid var(--border); }
+    .lg-facts strong { display: block; font-family: var(--font-serif); font-weight: 400; font-size: 1.55rem; line-height: 1.15; color: var(--brun); }
+    .lg-facts span { display: block; margin-top: .2rem; color: var(--text-mid); line-height: 1.45; }
 
     /* ── 4. Les vues ── */
     .lg-vues.rg { padding-block: clamp(2.8rem, 4.5vw, 4rem); row-gap: clamp(1.5rem, 2.5vw, 2.2rem); }
@@ -467,7 +467,7 @@
         <p class="section-lead" data-lang-fr="Des jardins privatifs, de plain-pied ou à l'étage." data-lang-en="Private gardens, at ground level or on the upper floor.">Des jardins privatifs, de plain-pied ou à l'étage.</p>
         <p class="section-lead" data-lang-fr="Autour du bâtiment, des espaces communs plantés d'oliviers, d'amandiers, de pins et de lavande, selon le plan paysager." data-lang-en="Around the building, shared spaces planted with olive trees, almond trees, pines and lavender, according to the landscape plan.">Autour du bâtiment, des espaces communs plantés d'oliviers, d'amandiers, de pins et de lavande, selon le plan paysager.</p>
       </section>
-      <section class="lg-park fond-brun-pierre" id="stationnement" aria-labelledby="t-stationnement">
+      <section class="lg-park fond-pierre" id="stationnement" aria-labelledby="t-stationnement">
         <h2 class="section-title" id="t-stationnement" data-lang-fr="Stationnement en sous-sol, accès de plain-pied" data-lang-en="Underground parking, street-level access">Stationnement en sous-sol, accès de plain-pied</h2>
         <ul class="lg-facts">
           <li><strong data-lang-fr="Un niveau de parking enterré" data-lang-en="One underground parking level">Un niveau de parking enterré</strong><span data-lang-fr="Accessible de plain-pied depuis l'avenue Paul Cézanne." data-lang-en="Reached at street level from avenue Paul Cézanne.">Accessible de plain-pied depuis l'avenue Paul Cézanne.</span></li>

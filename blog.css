@@ -39,10 +39,10 @@
   --blog-wide-w: 1100px;                        /* figures et en-tête sur grand écran */
   --blog-r: clamp(2.25rem, 4.2vw, 3.75rem);     /* grand rayon des encarts et des cartes (un seul angle) */
   /* Fonds : texture sous voile, pour que le texte garde son contraste partout (voir calculs ci-dessus) */
-  --blog-fond-lecture: linear-gradient(rgba(246, 241, 231, 0.72), rgba(246, 241, 231, 0.72)), url("/fonds/travertin.webp");
-  --blog-fond-hero: linear-gradient(rgba(228, 214, 189, 0.58), rgba(228, 214, 189, 0.58)), url("/fonds/travertin.webp");
-  --blog-fond-panneau: linear-gradient(rgba(236, 226, 207, 0.62), rgba(236, 226, 207, 0.62)), url("/fonds/travertin.webp");
-  --blog-fond-bande: linear-gradient(rgba(228, 214, 189, 0.7), rgba(228, 214, 189, 0.7)), url("/fonds/travertin.webp");
+  --blog-fond-lecture: none;
+  --blog-fond-hero: none;
+  --blog-fond-panneau: none;
+  --blog-fond-bande: none;
 }
 /* Marge latérale de .container. Déclarée sur .blog-page seulement : les cartes (.post-card) l'héritent ainsi du
    bon réglage (1,25 rem sous 420 px) au lieu de la redéfinir à 2 rem et de déborder sur mobile. */
