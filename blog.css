@@ -87,9 +87,25 @@
 
 /* ─── 2. En-tête d'article ─────────────────────────────────── */
 .post-hero {
-  background: linear-gradient(180deg, var(--beige) 0%, var(--creme) 100%);
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  background: #f6f1e7 url("/fonds/travertin.webp") repeat 0 0 / 860px auto;   /* pierre de la plaquette (page 1) */
   border-bottom: 1px solid var(--border);
   padding: clamp(1.75rem, 4vw, 3rem) 0 clamp(2.5rem, 6vw, 4.5rem);
+}
+.post-hero::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  pointer-events: none;
+  right: -3%;
+  bottom: 4%;
+  width: min(58%, 820px);
+  aspect-ratio: 2033 / 367;
+  bottom: -2%;
+  background: url("/fonds/montagne-ligne.png") no-repeat right bottom / contain;   /* tracé de la Sainte-Victoire */
+  opacity: 0.38;
 }
 
 /* L'en-tête et la grille de lecture partagent la largeur « large » des figures */
@@ -1406,3 +1422,19 @@
   .blog-card { margin-bottom: 1rem; }
   .blog-card-media { max-width: 40%; }
 }
+
+
+/* Bandeau « couverture » du hub : travertin + tracé de la Sainte-Victoire (plaquette page 1), texte sombre. */
+.blog-hero--cover { background: #f6f1e7 url("/fonds/travertin.webp") repeat 0 0 / 860px auto; color: #7b4538; min-height: clamp(22rem, 52vh, 32rem); }
+.blog-hero--cover::after {
+  inset: auto; right: -3%; bottom: -3%; width: min(68%, 960px); aspect-ratio: 2033 / 367;
+  background: url("/fonds/montagne-ligne.png") no-repeat right bottom / contain; opacity: 0.5;
+}
+.blog-hero--cover .blog-hero-title { color: #7b4538; text-shadow: none; }
+.blog-hero--cover .blog-hero-sub { color: #6b5a50; }
+.blog-hero--cover .post-breadcrumb,
+.blog-hero--cover .post-breadcrumb li,
+.blog-hero--cover .post-breadcrumb li + li::before,
+.blog-hero--cover .post-breadcrumb a { color: #7b4538; }
+.blog-hero--cover .post-breadcrumb a { text-decoration-color: rgba(123, 69, 56, 0.45); }
+.blog-hero--cover .post-breadcrumb [aria-current="page"] { color: #4a2a22; }
