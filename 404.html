@@ -28,25 +28,40 @@
   <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
 
   <link rel="stylesheet" href="/style.css" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="/fonts/cormorant-garamond-latin.woff2" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="/fonts/lato-400-latin.woff2" />
   <style>
-    /* Page 404 : styles propres à la page */
-    .nf { background: var(--dark); color: var(--white); padding: calc(var(--nav-height) + 4rem) 1.5rem 5rem; position: relative; overflow: hidden; border-bottom: 1px solid rgba(255,255,255,.1); }
-    .nf::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse 80% 60% at 50% 30%, rgba(201,169,110,.07) 0%, transparent 70%); pointer-events: none; }
-    .nf-inner { position: relative; max-width: 760px; margin: 0 auto; text-align: center; }
-    .nf-code { font-family: var(--font-serif); font-size: clamp(6rem, 16vw, 10rem); font-weight: 300; line-height: 1; letter-spacing: -.02em; color: rgba(201,169,110,.2); margin-bottom: .4rem; }
-    .nf .eyebrow { justify-content: center; margin-bottom: .9rem; }
-    .nf h1 { font-family: var(--font-serif); font-size: clamp(1.8rem, 4vw, 2.7rem); font-weight: 300; line-height: 1.25; color: var(--white); }
-    .nf h1 em { font-style: italic; color: var(--or-light); }
-    .nf-lead { font-size: 1rem; line-height: 1.8; color: rgba(255,255,255,.78); max-width: 520px; margin: 1.3rem auto 0; }
-    .nf-nav { display: grid; grid-template-columns: 1fr 1fr; gap: 2.5rem; text-align: left; margin-top: 3rem; padding-top: 2.2rem; border-top: 1px solid rgba(255,255,255,.12); }
-    .nf-nav h2 { font-family: var(--font-sans); font-size: .72rem; font-weight: 700; letter-spacing: .25em; text-transform: uppercase; color: var(--or); margin-bottom: 1rem; }
+    /* Page 404 : couverture travertin (page 1 de la plaquette), grand logo « 59 Cézanne », tracé de la Sainte-Victoire dans une bande réservée */
+    .nf { position: relative; isolation: isolate; overflow: hidden; color: var(--text);
+      background-color: var(--travertin); background-image: linear-gradient(rgba(228,214,189,.58), rgba(228,214,189,.58)), url("/fonds/travertin.webp"); background-size: auto, 860px auto;
+      padding: calc(var(--nav-height) + 3rem) 0 clamp(7.5rem, 15vw, 12rem); }
+    .nf::after { content: ""; position: absolute; z-index: -1; pointer-events: none; left: -3%; bottom: clamp(1.25rem, 3vw, 2.5rem); width: min(66%, 860px); aspect-ratio: 2400 / 424;
+      background-color: var(--ocre); opacity: .78; -webkit-mask: url("/fonds/trace-1-mask.png") no-repeat left bottom / contain; mask: url("/fonds/trace-1-mask.png") no-repeat left bottom / contain; }
+    .nf-inner { max-width: calc(1100px + 4rem); margin: 0 auto; padding: 0 2rem; }
+    .nf-top { display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(0, .65fr); align-items: center; gap: clamp(2rem, 6vw, 5rem); }
+    .nf-logo { justify-self: center; width: clamp(150px, 21vw, 290px); height: auto; }
+    .nf .script { font-size: clamp(1.9rem, 1.5rem + 1.2vw, 2.5rem); color: var(--terra-texte); }
+    .nf h1 { font-family: var(--font-serif); font-size: clamp(2.2rem, 1.4rem + 3vw, 3.9rem); font-weight: 300; line-height: 1.12; color: var(--brun); text-wrap: balance; }
+    .nf h1 em { font-style: italic; }
+    .nf-lead { font-size: 1.1rem; line-height: 1.7; color: var(--text); max-width: 34rem; margin-top: 1.2rem; }
+    .nf-actions { display: flex; flex-wrap: wrap; gap: .9rem 1rem; margin-top: 2rem; }
+    .nf-actions .btn { min-height: 48px; }
+    .nf-nav { display: grid; grid-template-columns: 1fr 1fr; gap: 2.5rem; text-align: left; margin-top: clamp(2.5rem, 5vw, 4rem); padding: clamp(2rem, 4vw, 2.8rem) clamp(1.5rem, 4vw, 3rem);
+      background-color: var(--travertin); background-image: linear-gradient(rgba(236,226,207,.62), rgba(236,226,207,.62)), url("/fonds/travertin.webp"); background-size: auto, 860px auto; border-radius: var(--arche-s) 0 0 0; }
+    .nf-nav h2 { font-family: var(--font-serif); font-size: 1.6rem; font-style: italic; font-weight: 500; line-height: 1.2; color: var(--brun); margin-bottom: .6rem; }
     .nf-nav ul { list-style: none; }
     .nf-nav li + li { margin-top: .15rem; }
-    .nf-nav a { display: inline-block; padding: .4rem 0; color: rgba(255,255,255,.88); text-decoration: underline; text-decoration-color: rgba(255,255,255,.3); text-underline-offset: 4px; font-size: .98rem; }
-    .nf-nav a:hover, .nf-nav a:focus-visible { color: var(--or-light); text-decoration-color: var(--or-light); }
+    .nf-nav a { display: inline-block; padding: .4rem 0; color: var(--brun-profond); text-decoration: underline; text-decoration-color: rgba(59,35,29,.4); text-underline-offset: 4px; font-size: 1rem; }
+    .nf-nav a:hover, .nf-nav a:focus-visible { color: var(--terra-texte); text-decoration-color: currentColor; }
+    @media (max-width: 760px) {
+      .nf-top { grid-template-columns: minmax(0, 1fr); }
+      .nf-logo { justify-self: start; width: 110px; order: -1; }
+      .nf-nav { grid-template-columns: 1fr; gap: 1.8rem; }
+    }
     @media (max-width: 640px) {
-      .nf { padding-top: calc(var(--nav-height) + 2.5rem); padding-left: 1rem; padding-right: 1rem; padding-bottom: 3.5rem; }
-      .nf-nav { grid-template-columns: 1fr; gap: 2rem; }
+      .nf { padding-top: calc(var(--nav-height) + 1.5rem); }
+      .nf-inner { padding: 0 1.25rem; }
+      .nf-actions .btn { width: 100%; justify-content: center; }
     }
   </style>
 
@@ -63,7 +78,6 @@
     </a>
     <div class="nav-links">
       <a href="/" data-lang-fr="Accueil" data-lang-en="Home">Accueil</a>
-      <a href="/residence" data-lang-fr="La résidence" data-lang-en="The residence">La résidence</a>
       <a href="/logements" data-lang-fr="Logements" data-lang-en="Apartments">Logements</a>
             <a href="/localisation" data-lang-fr="Localisation" data-lang-en="Location">Localisation</a>
             <a href="/blog" data-lang-fr="Blog" data-lang-en="Blog">Blog</a>
@@ -82,7 +96,6 @@
 </nav>
 <div class="nav-mobile" id="mobileMenu">
   <a href="/" onclick="toggleMobile()" data-lang-fr="Accueil" data-lang-en="Home">Accueil</a>
-  <a href="/residence" onclick="toggleMobile()" data-lang-fr="La résidence" data-lang-en="The residence">La résidence</a>
   <a href="/logements" onclick="toggleMobile()" data-lang-fr="Logements" data-lang-en="Apartments">Logements</a>
     <a href="/localisation" onclick="toggleMobile()" data-lang-fr="Localisation" data-lang-en="Location">Localisation</a>
     <a href="/blog" onclick="toggleMobile()" data-lang-fr="Blog" data-lang-en="Blog">Blog</a>
@@ -95,13 +108,21 @@
 
 <main id="contenu">
 
-  <section class="nf on-dark" aria-labelledby="nf-h1">
+  <section class="nf" aria-labelledby="nf-h1">
     <div class="nf-inner">
 
-      <p class="nf-code" aria-hidden="true">404</p>
-      <p class="eyebrow" data-lang-fr="Erreur 404" data-lang-en="Error 404">Erreur 404</p>
-      <h1 id="nf-h1" data-lang-fr="Cette page n'existe pas <em>ou a été déplacée</em>" data-lang-en="This page does not exist <em>or has been moved</em>">Cette page n'existe pas <em>ou a été déplacée</em></h1>
-      <p class="nf-lead" data-lang-fr="L'adresse demandée est introuvable. Vous pouvez reprendre votre visite depuis l'un des liens ci-dessous." data-lang-en="The address you requested could not be found. You can pick up your visit from one of the links below.">L'adresse demandée est introuvable. Vous pouvez reprendre votre visite depuis l'un des liens ci-dessous.</p>
+      <div class="nf-top">
+        <div>
+          <p class="script" data-lang-fr="Erreur 404" data-lang-en="Error 404">Erreur 404</p>
+          <h1 id="nf-h1" data-lang-fr="Cette page n'existe pas <em>ou a été déplacée</em>" data-lang-en="This page does not exist <em>or has been moved</em>">Cette page n'existe pas <em>ou a été déplacée</em></h1>
+          <p class="nf-lead" data-lang-fr="L'adresse demandée est introuvable. Vous pouvez reprendre votre visite depuis l'un des liens ci-dessous." data-lang-en="The address you requested could not be found. You can pick up your visit from one of the links below.">L'adresse demandée est introuvable. Vous pouvez reprendre votre visite depuis l'un des liens ci-dessous.</p>
+          <p class="nf-actions">
+            <a class="btn btn-primary" href="tel:+33609204590" data-lang-fr="Appeler le 06 09 20 45 90" data-lang-en="Call 06 09 20 45 90">Appeler le 06 09 20 45 90</a>
+            <a class="btn btn-outline-dark" href="/" data-lang-fr="Retour à l'accueil" data-lang-en="Back to the home page">Retour à l'accueil</a>
+          </p>
+        </div>
+        <img class="nf-logo" src="/fonds/logo-59-cezanne.png" alt="" width="533" height="563" decoding="async" />
+      </div>
 
       <nav class="nf-nav" aria-label="Pages utiles" data-aria-label-fr="Pages utiles" data-aria-label-en="Useful pages">
         <div>
@@ -137,13 +158,12 @@
         <a href="/" class="nav-logo" style="margin-bottom:1rem;display:inline-block;" aria-label="59 Cézanne — accueil">
           <span class="logo-59">59</span><span class="logo-cez">Cézanne</span>
         </a>
-        <p style="font-size:0.82rem;color:rgba(255,255,255,0.45);line-height:1.7;max-width:240px;" data-lang-fr="Résidence de 8 appartements neufs à Aix-en-Provence, avenue Paul Cézanne." data-lang-en="Residence of 8 new apartments in Aix-en-Provence, avenue Paul Cézanne.">Résidence de 8 appartements neufs à Aix-en-Provence, avenue Paul Cézanne.</p>
+        <p style="font-size:0.82rem;color:rgba(255,255,255,0.45);line-height:1.7;max-width:240px;" data-lang-fr="Résidence neuve de standing à Aix-en-Provence, avenue Paul Cézanne." data-lang-en="New prestige residence in Aix-en-Provence, avenue Paul Cézanne.">Résidence neuve de standing à Aix-en-Provence, avenue Paul Cézanne.</p>
       </div>
       <nav class="footer-links" aria-label="Pied de page — navigation">
-        <h4 data-lang-fr="Navigation" data-lang-en="Navigation">Navigation</h4>
+        <h3 data-lang-fr="Navigation" data-lang-en="Navigation">Navigation</h3>
         <ul>
           <li><a href="/" data-lang-fr="Accueil" data-lang-en="Home">Accueil</a></li>
-          <li><a href="/residence" data-lang-fr="La résidence" data-lang-en="The residence">La résidence</a></li>
           <li><a href="/logements" data-lang-fr="Logements" data-lang-en="Apartments">Logements</a></li>
           <li><a href="/localisation" data-lang-fr="Localisation" data-lang-en="Location">Localisation</a></li>
           <li><a href="/blog" data-lang-fr="Blog" data-lang-en="Blog">Blog</a></li>
@@ -151,18 +171,18 @@
         </ul>
       </nav>
       <nav class="footer-links" aria-label="Pied de page — guides">
-        <h4 data-lang-fr="Guides" data-lang-en="Guides">Guides</h4>
+        <h3 data-lang-fr="Guides" data-lang-en="Guides">Guides</h3>
         <ul>
-          <li><a href="/blog/acheter-appartement-neuf-aix-en-provence">Acheter un appartement neuf à Aix</a></li>
-          <li><a href="/blog/quartier-des-lauves-aix-en-provence">Le quartier des Lauves</a></li>
-          <li><a href="/blog/appartement-vue-sainte-victoire-aix-en-provence">Vue Sainte-Victoire</a></li>
-          <li><a href="/blog/appartement-jardin-prive-aix-en-provence">Appartement avec jardin privatif</a></li>
-          <li><a href="/blog/vefa-achat-sur-plan-etapes-garanties">VEFA : étapes et garanties</a></li>
-          <li><a href="/blog/frais-de-notaire-neuf-tva-taxe-fonciere">Frais de notaire dans le neuf</a></li>
+          <li><a lang="fr" href="/blog/acheter-appartement-neuf-aix-en-provence">Acheter un appartement neuf à Aix</a></li>
+          <li><a lang="fr" href="/blog/quartier-des-lauves-aix-en-provence">Le quartier des Lauves</a></li>
+          <li><a lang="fr" href="/blog/appartement-vue-sainte-victoire-aix-en-provence">Vue Sainte-Victoire</a></li>
+          <li><a lang="fr" href="/blog/appartement-jardin-prive-aix-en-provence">Appartement avec jardin privatif</a></li>
+          <li><a lang="fr" href="/blog/vefa-achat-sur-plan-etapes-garanties">VEFA : étapes et garanties</a></li>
+          <li><a lang="fr" href="/blog/frais-de-notaire-neuf-tva-taxe-fonciere">Frais de notaire dans le neuf</a></li>
         </ul>
       </nav>
       <div class="footer-contact">
-        <h4 data-lang-fr="Contact" data-lang-en="Contact">Contact</h4>
+        <h3 data-lang-fr="Contact" data-lang-en="Contact">Contact</h3>
         <p>Ponthieu Développement Holding</p>
         <p>418 Ancienne Route des Alpes<br/>13100 Aix-en-Provence</p>
         <p><a href="tel:+33609204590">06 09 20 45 90</a></p>

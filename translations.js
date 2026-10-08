@@ -6,6 +6,7 @@
    - data-lang-fr / data-lang-en       → innerHTML de l'élément
    - data-placeholder-fr / -en         → attribut placeholder
    - data-aria-label-fr / -en          → attribut aria-label (optionnel)
+   - data-alt-fr / -en                 → attribut alt des images (optionnel)
    - <html lang> mis à jour ; boutons .lang-btn : classe .active + aria-pressed
    - langue mémorisée dans sessionStorage ('59cezanne-lang'), pour la session seulement
    - <html data-lang-lock> (pages de blog : français seul, ou anglais natif) :
@@ -84,6 +85,12 @@
     var labelled = document.querySelectorAll('[data-aria-label-' + lang + ']');
     for (var k = 0; k < labelled.length; k++) {
       labelled[k].setAttribute('aria-label', labelled[k].getAttribute('data-aria-label-' + lang));
+    }
+
+    // 3b. alt des images (data-alt-fr / data-alt-en) : le texte alternatif suit la langue de l'interface
+    var alts = document.querySelectorAll('[data-alt-' + lang + ']');
+    for (var m = 0; m < alts.length; m++) {
+      alts[m].setAttribute('alt', alts[m].getAttribute('data-alt-' + lang));
     }
 
     // 4. <html lang>

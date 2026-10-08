@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Appartements T2, T3 duplex, T4 neufs à Aix | 59 Cézanne</title>
-  <meta name="description" content="T4 d'environ 100 à 138 m², T3 duplex d'environ 104 m², T2 de 45 m² : 8 appartements neufs à Aix-en-Provence, avec jardin privatif jusqu'à 312 m²." />
+  <title>Appartement 138 m² et duplex 216 m² neufs à Aix | 59 Cézanne</title>
+  <meta name="description" content="Deux logements neufs disponibles à Aix-en-Provence : un 4 pièces de 138 m² avec jardin de 82 m² et un duplex de 216 m² avec ascenseur privatif." />
   <link rel="canonical" href="https://59-cezanne.com/logements" />
   <meta name="robots" content="index,follow,max-image-preview:large" />
   <meta name="author" content="Ponthieu Développement Holding" />
@@ -13,8 +13,8 @@
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="59 Cézanne" />
   <meta property="og:locale" content="fr_FR" />
-  <meta property="og:title" content="Appartements neufs T2, T3 duplex et T4 avec jardin à Aix-en-Provence | 59 Cézanne" />
-  <meta property="og:description" content="8 appartements neufs avenue Paul Cézanne : T4, T3 duplex et T2, chacun avec son jardin privatif (jusqu'à 312 m²). Surfaces, niveaux, orientations et prestations." />
+  <meta property="og:title" content="Un appartement-villa de 138 m² et un duplex de 216 m² à Aix-en-Provence | 59 Cézanne" />
+  <meta property="og:description" content="Dernières disponibilités avenue Paul Cézanne : un 4 pièces de 138 m² avec 82 m² de jardin, un duplex de 216 m² avec ascenseur privatif, piscine chauffée et parking en sous-sol." />
   <meta property="og:url" content="https://59-cezanne.com/logements" />
   <meta property="og:image" content="https://59-cezanne.com/og/og-logements.jpg" />
   <meta property="og:image:width" content="1200" />
@@ -28,124 +28,142 @@
   <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
 
   <link rel="stylesheet" href="/style.css" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="/fonts/cormorant-garamond-latin.woff2" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="/fonts/lato-400-latin.woff2" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="/fonts/whisper-400-latin.woff2" />
+  <link rel="preload" as="image" crossorigin href="/fonds/logo-59-cezanne-mask.png" />
+  <link rel="preload" as="image" crossorigin href="/fonds/trace-1-mask.png" />
+
   <style>
-    /* ── Hero ── */
-    .page-hero { height: clamp(520px, 86vh, 880px); min-height: 520px; }
-    .page-hero .hero-overlay { background: linear-gradient(to top, rgba(15,12,8,.82) 0%, rgba(15,12,8,.45) 50%, rgba(15,12,8,.16) 100%); }
-    .page-hero .hero-title { font-size: clamp(2.6rem, 6vw, 5.2rem); max-width: 1180px; }
-    .page-hero .hero-subtitle { max-width: 720px; color: rgba(255,255,255,.93); }
-    .lg-hero-legend {
-      position: absolute; z-index: 3; right: 1rem; top: calc(var(--nav-height) + .9rem);
-      background: rgba(15,12,8,.62); color: #fff; font-size: .85rem; letter-spacing: .03em;
-      padding: .35rem .75rem; border-radius: 3px; max-width: calc(100% - 2rem);
+    /* ═══ Page Logements — couche locale (style.css n'est pas modifié) ═══ */
+    .lg-cover, .lg-dispo, .lg-res, .lg-band, .lg-vues, .lg-cta {
+      --rg-gutter: max(clamp(1.25rem, 4vw, 3rem), calc((100vw - var(--container)) / 2));
     }
-    .lg-breadcrumb { margin-bottom: 1.4rem; }
-    .lg-breadcrumb ol { display: flex; flex-wrap: wrap; gap: .4rem; font-size: .95rem; letter-spacing: .05em; color: rgba(255,255,255,.92); }
-    .lg-breadcrumb li + li::before { content: '›'; margin-right: .4rem; color: rgba(255,255,255,.7); }
-    .lg-breadcrumb a { text-decoration: underline; text-underline-offset: 3px; }
-    .lg-breadcrumb a:hover { color: #e8d5a3; }
+    #disponibles, #appartement-138, #duplex-216, #residence, #architecture, #piscine, #jardins, #stationnement, #vues { scroll-margin-top: 4.25rem; }
 
-    /* ── Accès direct aux 8 lots ── */
-    .lg-lots-nav { padding: 3.2rem 0 1rem; text-align: center; font-variant-numeric: lining-nums; }
-    .lg-intro { max-width: 36rem; margin: 0 auto 2rem; }
-    .lg-lots-nav ul { display: flex; flex-wrap: wrap; justify-content: center; gap: .7rem; }
-    .lg-lots-nav a { display: flex; flex-direction: column; align-items: center; justify-content: center; min-width: 5.6rem; min-height: 4.6rem; padding: .55rem 1rem; border: 1px solid var(--border); border-radius: var(--radius-md); background: var(--white); color: var(--text); transition: border-color var(--transition-fast), box-shadow var(--transition-fast); }
-    .lg-lots-nav a:hover, .lg-lots-nav a:focus-visible { border-color: var(--or-texte); box-shadow: var(--shadow-sm); }
-    .lj-n { font-family: var(--font-serif); font-size: 2.1rem; font-weight: 400; line-height: 1; color: var(--or-texte); }
-    .lj-t { margin-top: .25rem; font-size: .95rem; letter-spacing: .03em; color: var(--text-mid); white-space: nowrap; }
-    .lg-note { margin-top: 1.4rem; font-size: .95rem; color: var(--text-mid); }
+    /* ── 1. Couverture sans photo (page 1 de la plaquette) : logotype, tracé de la Sainte-Victoire ── */
+    .lg-cover {
+      grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+      grid-template-rows: auto 1fr;
+      align-content: stretch; align-items: center;
+      column-gap: clamp(2rem, 7vw, 7rem);
+      min-height: min(90vh, 800px);
+      padding-top: calc(64px + 1.2rem);
+      padding-bottom: calc(16.2vw + .5rem);
+    }
+    .lg-cover::after { content: none; }
+    .lg-breadcrumb { grid-column: 1 / -1; align-self: start; font-size: .95rem; color: var(--brun); }
+    .lg-breadcrumb ol { display: flex; flex-wrap: wrap; gap: .45rem; }
+    .lg-breadcrumb li + li::before { content: '›'; margin-right: .45rem; opacity: .6; }
+    .lg-breadcrumb a { text-decoration: underline; text-underline-offset: 3px; text-decoration-color: rgba(123, 69, 56, .4); }
+    .lg-breadcrumb a:hover { color: var(--terra-texte); }
+    .lg-mark { justify-self: end; align-self: center; }
+    .lg-mark .orn { width: clamp(170px, 25vw, 380px); --orn-color: var(--terra); }
+    .lg-cover h1 { max-width: none; font-size: clamp(3.1rem, 6.2vw, 6rem); }
+    .lg-cover .cover-lead { max-width: 34rem; font-size: clamp(1.1rem, 1.6vw, 1.35rem); text-wrap: balance; margin-top: 1.1rem; }
+    .lg-pill-row { display: flex; flex-wrap: wrap; align-items: center; gap: .6rem 1.2rem; margin-top: 1.4rem; }
+    .lg-pill { display: inline-flex; align-items: center; gap: .65rem; padding: .55rem 1.2rem .55rem 1rem; border: 1px solid var(--terra); border-radius: 999px; background: rgba(255, 255, 255, .38); color: var(--brun); font-size: .98rem; font-weight: 700; letter-spacing: .02em; }
+    .lg-pill::before { content: ""; flex: none; width: 8px; height: 8px; border-radius: 50%; background: var(--terra); }
+    .lg-pill-date { font-size: .92rem; color: var(--text-light); }
+    .lg-cover .cover-cta { margin-top: 1.5rem; }
+    .lg-trace { position: absolute; z-index: -1; left: -2%; bottom: -.5%; width: 104%; --orn-color: #ba8352; --orn-opacity: .95;
+      animation: lg-draw 2.6s cubic-bezier(.45, .05, .2, 1) .2s both; }
+    @keyframes lg-draw { from { clip-path: inset(0 100% 0 0); } to { clip-path: inset(0 0 0 0); } }
 
-    /* ── Scènes : images cliquables (lightbox) dans le système « rg » de style.css ── */
-    .rg .lg-zoom { position: absolute; inset: 0; display: block; width: 100%; height: 100%; padding: 0; border: 0; background: none; overflow: hidden; cursor: zoom-in; }
-    .rg .lg-zoom img { transition: transform .9s ease; }
-    .rg .lg-zoom:hover img { transform: scale(1.025); }
-    .rg .lg-zoom::after { content: '\2295'; position: absolute; top: .9rem; right: .9rem; width: 2.6rem; height: 2.6rem; display: flex; align-items: center; justify-content: center; border-radius: 50%; background: rgba(15,12,8,.58); color: #fff; font-size: 1.5rem; line-height: 1; }
-    .rg .lg-zoom:focus-visible { outline: none; box-shadow: inset 0 0 0 4px #fff, inset 0 0 0 8px var(--dark); }
-    .rg .img-tag { pointer-events: none; }
-    .rg-fig--contain .lg-zoom img { mix-blend-mode: multiply; }
-    .rg-fig--dark { background: #000; }
-    .rg-fig--dark .lg-zoom img { mix-blend-mode: normal; }
-    /* axonométries (3/2) : cadres adaptés pour ne pas laisser de grands vides */
-    .rg--petite-g .rg-fig--contain, .rg--petite-d .rg-fig--contain { aspect-ratio: 1 / 1; }
-    .rg--centre .rg-fig--contain { aspect-ratio: 3 / 2; }
-    .rg--grande .rg-fig--contain { aspect-ratio: 16 / 9; }
-    .rg--immense .rg-fig::after { pointer-events: none; background: linear-gradient(to top, rgba(15,12,8,.93) 0%, rgba(15,12,8,.78) 38%, rgba(15,12,8,.3) 70%, rgba(15,12,8,.06) 100%); }
-    .rg--immense .section-title em { color: var(--or-light); }
-    .rg-text .section-title { font-variant-numeric: lining-nums; }
+    /* ── 2. Disponibles : deux scènes pleine largeur, alternées ── */
+    .lg-dispo { position: relative; overflow: hidden; padding-block: clamp(3rem, 5vw, 4.5rem);
+      background: var(--travertin) url("/fonds/travertin.webp") repeat 0 0 / 860px auto; background-blend-mode: multiply; }
+    .lg-dispo .dispo-head { margin-bottom: clamp(2rem, 3.5vw, 3rem); }
+    .lg-dispo .dispo-head .script, .lg-cover .script { color: var(--terra-texte); }
+    .lg-dispo .dispo-head .section-title { text-wrap: balance; }
+    .lg-dispo .dispo-grid { grid-template-columns: minmax(0, 1fr); gap: clamp(3rem, 5vw, 4.5rem); max-width: none; margin: 0; }
+    .lg-dispo .dispo-card, .lg-dispo .dispo-card:nth-child(2) {
+      display: grid; align-items: center; column-gap: clamp(2rem, 5vw, 5.5rem);
+      grid-template-columns: minmax(0, 6.7fr) minmax(0, 5.3fr); grid-template-areas: "fig body";
+      background: none; border: 0; border-radius: 0; box-shadow: none; overflow: visible;
+    }
+    .lg-dispo .dispo-card:nth-child(2) { grid-template-columns: minmax(0, 5.3fr) minmax(0, 6.7fr); grid-template-areas: "body fig"; }
+    .lg-dispo .dispo-fig { grid-area: fig; overflow: hidden; background: var(--creme); box-shadow: var(--shadow); }
+    .lg-dispo .dispo-card:nth-child(1) .dispo-fig { margin-left: calc(-1 * var(--rg-gutter)); border-radius: 0 var(--arche) 0 0; }
+    .lg-dispo .dispo-card:nth-child(2) .dispo-fig { margin-right: calc(-1 * var(--rg-gutter)); border-radius: var(--arche) 0 0 0; background: #0f0c08; }
+    .lg-dispo .dispo-fig--plan img { mix-blend-mode: multiply; }
+    .lg-dispo .dispo-body { grid-area: body; padding: 0; gap: .85rem; }
+    .lg-dispo .dispo-list { gap: .4rem; }
+    .lg-dispo .dispo-cta { gap: .7rem; margin-top: .4rem; }
+    .lg-dispo .dispo-cta .btn { padding: 1rem 1.5rem; letter-spacing: .12em; }
+    .lg-dispo .dispo-type { font-weight: 300; font-size: clamp(2.4rem, 3.6vw, 3.5rem); line-height: 1.04; }
+    .lg-dispo .dispo-type small { color: var(--brun); margin-bottom: .55rem; }
+    .lg-dispo .dispo-pitch { font-family: var(--font-serif); font-size: clamp(1.35rem, 1.8vw, 1.65rem); line-height: 1.35; color: var(--brun); text-wrap: balance; }
+    .lg-dispo .dispo-list li { color: var(--text); }
+    .lg-dispo .dispo-note { margin-top: clamp(2rem, 3.5vw, 3rem); }
 
-    /* ── Faits du lot : grands chiffres ── */
-    .lf { display: flex; flex-wrap: wrap; gap: 1.5rem 3rem; margin: 1.8rem 0 0; font-variant-numeric: lining-nums; }
-    .lf > div { min-width: 0; }
-    .lf dt { margin-bottom: .35rem; font-size: .85rem; letter-spacing: .2em; text-transform: uppercase; color: var(--text-mid); }
-    .lf dd { margin: 0; font-family: var(--font-serif); font-size: 1.5rem; line-height: 1.2; color: var(--text); }
-    .lf .lf-big dd { font-size: clamp(3.2rem, 5.6vw, 4.8rem); font-weight: 300; line-height: 1; }
-    .lf .lf-u { font-size: .42em; margin-left: .1em; color: var(--text-mid); }
-    .lf .lf-garden dd { color: var(--or-texte); }
-    .lf .lf-garden .lf-u { color: var(--or-texte); }
-    .rg--centre .lf { justify-content: center; }
-    .rg--grande .rg-text .lf, .rg--duo .rg-text .lf { grid-column: 1 / -1; }
-    .rg--immense .lf dt { color: rgba(255,255,255,.78); }
-    .rg--immense .lf dd { color: #fff; }
-    .rg--immense .lf .lf-garden dd, .rg--immense .lf .lf-garden .lf-u { color: var(--or-light); }
-    .rg--immense .lf .lf-u { color: rgba(255,255,255,.8); }
-    /* colonne de texte étroite (moyenne) : deux grands chiffres, puis les autres faits en lignes */
-    .rg--moyenne-g .lf, .rg--moyenne-d .lf, .rg--petite-g .lf, .rg--petite-d .lf { display: grid; grid-template-columns: 1fr 1fr; gap: 1.4rem 1.5rem; }
-    .rg--petite-g .lf, .rg--petite-d .lf { max-width: 36rem; }
-    .rg--moyenne-g .lf-row, .rg--moyenne-d .lf-row, .rg--petite-g .lf-row, .rg--petite-d .lf-row { grid-column: 1 / -1; display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; padding-top: .8rem; border-top: 1px solid var(--border); }
-    .rg--moyenne-g .lf-row dt, .rg--moyenne-d .lf-row dt, .rg--petite-g .lf-row dt, .rg--petite-d .lf-row dt { margin: 0; }
-    .rg--moyenne-g .lf-row dd, .rg--moyenne-d .lf-row dd, .rg--petite-g .lf-row dd, .rg--petite-d .lf-row dd { text-align: right; }
-    .rg--centre .rg-text { max-width: 62rem; }
-    .rg--centre .lf { gap: 1.5rem 2.6rem; }
+    /* ── 3. La résidence ── */
+    .lg-res .rg { padding-block: clamp(2.5rem, 4vw, 3.6rem); }
+    .lg-res .rg::before { content: none !important; }          /* pas de tracé automatique sous le texte : l'ornement est l'arche des photos */
+    .lg-res .rg--immense { padding: 0; min-height: 0; height: clamp(500px, 66vh, 620px); }
+    .lg-res .rg--immense .rg-fig { height: 100%; min-height: 0; }
+    .lg-res .rg--immense .rg-fig img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 58%; }
+    .lg-res .rg--immense .rg-text .section-lead { max-width: 36rem; }
+    .lg-res .section-lead, .lg-jardins .section-lead { font-weight: 400; }
+    .lg-res .script { color: var(--terra-texte); }
+    .lg-res .rg--immense .script { color: #f1c9ae; }
 
-    /* ── Liens vers les autres pages et guides (une ligne chacun) ── */
-    .lg-more { padding: 3rem 0; background: var(--beige); text-align: center; }
-    .lg-more nav + nav { margin-top: 1.1rem; }
-    .lg-more p { display: flex; flex-wrap: wrap; justify-content: center; align-items: baseline; gap: .4rem 1.6rem; font-size: 1.05rem; }
-    .lg-more-label { font-size: .9rem; letter-spacing: .2em; text-transform: uppercase; color: var(--text-mid); }
-    .lg-more a { color: var(--or-texte); text-decoration: underline; text-underline-offset: 3px; }
-    .lg-more a:hover { color: var(--text); }
+    /* Jardins (pierre) | Stationnement (brun) : une seule bande, deux panneaux */
+    .lg-band { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); overflow: hidden;
+      background: var(--pierre) url("/fonds/travertin.webp") repeat 0 0 / 860px auto; }
+    .lg-jardins { display: flex; flex-direction: column; justify-content: center; padding: clamp(2.8rem, 4.5vw, 4rem) clamp(2rem, 4vw, 4rem) clamp(2.8rem, 4.5vw, 4rem) var(--rg-gutter); }
+    .lg-jardins .orn { width: clamp(110px, 11vw, 150px); --orn-color: var(--terra); --orn-opacity: .9; margin-bottom: 1.4rem; }
+    .lg-jardins .section-title, .lg-park .section-title { font-size: clamp(2.2rem, 3.3vw, 3.1rem); line-height: 1.12; margin-bottom: 1rem; text-wrap: balance; }
+    .lg-jardins .section-lead { max-width: 30rem; margin: 0 0 .9rem; font-size: clamp(1.1rem, 1.4vw, 1.3rem); line-height: 1.5; }
+    .lg-park { border-radius: var(--arche) 0 0 0; padding: clamp(2.8rem, 4.5vw, 4rem) var(--rg-gutter) clamp(2.8rem, 4.5vw, 4rem) clamp(2.5rem, 5vw, 5rem); }
+    .lg-facts { margin-top: 1.2rem; max-width: 32rem; }
+    .lg-facts li { padding: .8rem 0; border-top: 1px solid rgba(236, 201, 162, .24); }
+    .lg-facts li:last-child { border-bottom: 1px solid rgba(236, 201, 162, .24); }
+    .lg-facts strong { display: block; font-family: var(--font-serif); font-weight: 400; font-size: 1.55rem; line-height: 1.15; color: #fff; }
+    .lg-facts span { display: block; margin-top: .2rem; color: rgba(255, 255, 255, .8); line-height: 1.45; }
 
-    /* ── CTA final ── */
-    .lg-cta-title { max-width: 820px; margin: 0 auto 1rem; }
-    .lg-cta-lead { margin-bottom: 2.5rem; }
+    /* ── 4. Les vues ── */
+    .lg-vues.rg { padding-block: clamp(2.8rem, 4.5vw, 4rem); row-gap: clamp(1.5rem, 2.5vw, 2.2rem); }
+    .lg-vues.rg .rg-fig:nth-of-type(n) { align-self: end; margin-top: 0; background: transparent; }
+    .lg-vues .rg-text { align-items: end; }
+    .lg-vues .rg-text .script { color: var(--terra-texte); }
+    .lg-vues .rg-text .section-lead { max-width: 34rem; color: var(--text); font-weight: 400; }
+
+    /* ── 5. Appel final ── */
+    .lg-cta { position: relative; isolation: isolate; overflow: hidden; text-align: center; padding: clamp(3.2rem, 5vw, 4.5rem) var(--rg-gutter) clamp(3.2rem, 5vw, 4.5rem); }
+    .lg-cta .section-title { font-size: clamp(2.2rem, 3.8vw, 3.5rem); line-height: 1.1; margin-bottom: .3rem; }
+    .lg-tel { display: inline-block; margin: .3rem 0 1.5rem; padding: .05em .2em; font-family: var(--font-serif); font-weight: 300; font-size: clamp(2.9rem, 8.4vw, 7rem); line-height: 1.05; letter-spacing: .01em; color: var(--pierre); border-bottom: 1px solid rgba(236, 201, 162, .35); }
+    .lg-tel:hover { color: #fff; border-bottom-color: var(--or-light); }
+    .lg-cta-btns { display: flex; flex-wrap: wrap; justify-content: center; gap: .8rem; }
+    .lg-cta-links { display: flex; flex-wrap: wrap; justify-content: center; gap: .2rem 1.8rem; margin-top: 1.8rem; font-size: 1.02rem; }
+    .lg-cta-links a { color: rgba(255, 255, 255, .8); text-decoration: underline; text-underline-offset: 4px; text-decoration-color: rgba(255, 255, 255, .35); padding: .5rem 0; }
+    .lg-cta-links a:hover { color: #fff; }
 
     /* ── Responsive ── */
     @media (max-width: 900px) {
-      .lf { display: grid; grid-template-columns: 1fr 1fr; gap: 1.3rem 1.2rem; margin-top: 1.4rem; }
-      .lf .lf-row { grid-column: 1 / -1; display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; padding-top: .8rem; border-top: 1px solid var(--border); }
-      .lf .lf-row dt { margin: 0; font-size: .8rem; letter-spacing: .1em; }
-      .lf .lf-row dd { text-align: right; font-size: 1.3rem; }
-      .rg--immense .lf .lf-row { border-top-color: rgba(255,255,255,.25); }
-      .rg--petite-g .rg-fig--contain, .rg--petite-d .rg-fig--contain { width: 78%; }
-      .rg--duo .rg-fig:nth-of-type(2) { grid-column: 4 / -1; }
-      .rg--immense .rg-fig img { object-position: 60% 50% !important; }
-      .rg--centre .rg-text { width: 100%; }
+      .lg-cover { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto auto auto; row-gap: 1.6rem; padding-bottom: calc(22vw + 1rem); align-items: start; }
+      .lg-mark { justify-self: start; }
+      .lg-mark .orn { width: clamp(120px, 30vw, 200px); }
+      .lg-dispo .dispo-card, .lg-dispo .dispo-card:nth-child(2) { grid-template-columns: minmax(0, 1fr); grid-template-areas: "fig" "body"; row-gap: 1.75rem; }
+      .lg-dispo .dispo-card .dispo-fig, .lg-dispo .dispo-card:nth-child(n) .dispo-fig { margin-inline: calc(-1 * var(--rg-gutter)); border-radius: 0 var(--arche-s) 0 var(--arche-s); }
+      .lg-res .rg--immense { min-height: 78vh; }
+      .lg-band { grid-template-columns: minmax(0, 1fr); }
+      .lg-jardins { padding: 3.2rem var(--rg-gutter) 3.2rem; }
+      .lg-park { border-radius: var(--arche-s) 0 0 0; padding: 3.2rem var(--rg-gutter); }
     }
-    @media (max-width: 768px) {
-      .page-hero { height: auto; min-height: 88vh; }
-      .lg-hero-legend { top: calc(var(--nav-height) + .6rem); font-size: .8rem; }
-    }
-    @media (max-width: 560px) {
-      .lg-lots-nav .container { padding: 0 1rem; }
-      .lg-lots-nav ul { display: grid; grid-template-columns: repeat(4, 1fr); gap: .5rem; }
-      .lg-lots-nav a { min-width: 0; padding: .5rem .15rem; }
-      .lj-t { font-size: .8rem; letter-spacing: 0; }
-      .lf .lf-big dd { font-size: 3rem; }
-      .lf .lf-big dt { font-size: .74rem; letter-spacing: .08em; }
-      .lg-more .container { padding: 0 1rem; }
+    @media (max-width: 700px) {
+      .lg-pill { font-size: .88rem; padding: .5rem 1rem .5rem .9rem; }
+      .lg-cover .cover-cta .btn { width: 100%; justify-content: center; }
+      .lg-dispo .dispo-cta .btn { width: 100%; justify-content: center; }
+      .lg-cta-btns .btn { width: 100%; justify-content: center; }
+      .lg-tel { font-size: clamp(2.3rem, 11.5vw, 3.4rem); }
     }
 
-    /* Mouvement réduit */
+    /* Mouvement réduit : le tracé apparaît d'emblée */
     @media (prefers-reduced-motion: reduce) {
-      .reveal, .reveal-left, .reveal-right { opacity: 1 !important; transform: none !important; transition: none !important; }
-      .rg .lg-zoom img, .lg-lots-nav a { transition: none !important; }
-      .rg .lg-zoom:hover img { transform: none; }
-      html { scroll-behavior: auto; }
+      .lg-trace { animation: none; clip-path: none; }
     }
   </style>
-  <noscript><style>.reveal,.reveal-left,.reveal-right{opacity:1;transform:none}</style></noscript>
-
-  <link rel="preload" as="image" href="/Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_JARDIN_LOGEMENT-04_Panorama_St-Victoire.webp" imagesrcset="/Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_JARDIN_LOGEMENT-04_Panorama_St-Victoire-800w.webp 800w, /Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_JARDIN_LOGEMENT-04_Panorama_St-Victoire-1200w.webp 1200w, /Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_JARDIN_LOGEMENT-04_Panorama_St-Victoire.webp 2400w" imagesizes="100vw" fetchpriority="high" />
 
   <script type="application/ld+json">
 {
@@ -170,146 +188,118 @@
   <script type="application/ld+json">
 {
   "@context": "https://schema.org",
-  "@type": "ApartmentComplex",
-  "@id": "https://59-cezanne.com/#residence",
-  "name": "59 Cézanne",
-  "description": "Résidence de 8 appartements neufs (T2, T3 duplex et T4), chacun avec un jardin privatif, avenue Paul Cézanne à Aix-en-Provence.",
-  "url": "https://59-cezanne.com/logements",
-  "image": "https://59-cezanne.com/og/og-logements.jpg",
-  "address": {
-    "@type": "PostalAddress",
-    "streetAddress": "59 avenue Paul Cézanne",
-    "postalCode": "13100",
-    "addressLocality": "Aix-en-Provence",
-    "addressCountry": "FR",
-    "addressRegion": "Provence-Alpes-Côte d'Azur"
-  },
-  "numberOfAccommodationUnits": 8,
-  "amenityFeature": [
+  "@graph": [
     {
-      "@type": "LocationFeatureSpecification",
-      "name": "Jardin privatif",
-      "value": true
+      "@type": "WebPage",
+      "@id": "https://59-cezanne.com/logements#webpage",
+      "url": "https://59-cezanne.com/logements",
+      "name": "Appartement 138 m² et duplex 216 m² neufs à Aix | 59 Cézanne",
+      "description": "Deux logements neufs disponibles à Aix-en-Provence : un 4 pièces de 138 m² avec jardin de 82 m² et un duplex de 216 m² avec ascenseur privatif.",
+      "inLanguage": "fr-FR",
+      "dateModified": "2026-10-08",
+      "isPartOf": {
+        "@id": "https://59-cezanne.com/#website"
+      },
+      "about": {
+        "@id": "https://59-cezanne.com/#residence"
+      },
+      "publisher": {
+        "@id": "https://59-cezanne.com/#organization"
+      },
+      "primaryImageOfPage": {
+        "@type": "ImageObject",
+        "url": "https://59-cezanne.com/og/og-logements.jpg",
+        "width": 1200,
+        "height": 630
+      }
     },
     {
-      "@type": "LocationFeatureSpecification",
-      "name": "Piscine commune",
-      "value": true
-    },
-    {
-      "@type": "LocationFeatureSpecification",
-      "name": "Ascenseur",
-      "value": true
-    },
-    {
-      "@type": "LocationFeatureSpecification",
-      "name": "Parking en sous-sol",
-      "value": true
+      "@type": "ApartmentComplex",
+      "@id": "https://59-cezanne.com/#residence",
+      "name": "59 Cézanne",
+      "description": "Résidence neuve et confidentielle avec piscine commune chauffée, jardins et stationnement en sous-sol, avenue Paul Cézanne à Aix-en-Provence.",
+      "url": "https://59-cezanne.com/",
+      "image": "https://59-cezanne.com/og/og-logements.jpg",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "59 avenue Paul Cézanne",
+        "postalCode": "13100",
+        "addressLocality": "Aix-en-Provence",
+        "addressCountry": "FR",
+        "addressRegion": "Provence-Alpes-Côte d'Azur"
+      },
+      "amenityFeature": [
+        {
+          "@type": "LocationFeatureSpecification",
+          "name": "Piscine commune chauffée avec système de nage à contre-courant (notice descriptive du 8 avril 2025)",
+          "value": true
+        },
+        {
+          "@type": "LocationFeatureSpecification",
+          "name": "Jardins privatifs et espaces verts communs paysagers",
+          "value": true
+        },
+        {
+          "@type": "LocationFeatureSpecification",
+          "name": "Stationnement privatif en sous-sol",
+          "value": true
+        },
+        {
+          "@type": "LocationFeatureSpecification",
+          "name": "Local vélos clos et couvert",
+          "value": true
+        },
+        {
+          "@type": "LocationFeatureSpecification",
+          "name": "Ascenseur accessible aux personnes à mobilité réduite",
+          "value": true
+        }
+      ],
+      "containsPlace": [
+        {
+          "@type": "Apartment",
+          "@id": "https://59-cezanne.com/logements#appartement-138",
+          "url": "https://59-cezanne.com/logements#appartement-138",
+          "name": "Appartement 4 pièces de 138 m²",
+          "numberOfRooms": 4,
+          "numberOfBedrooms": 3,
+          "floorSize": {
+            "@type": "QuantitativeValue",
+            "value": 138,
+            "unitCode": "MTK"
+          },
+          "description": "Appartement-villa au premier et dernier étage : 3 chambres, jardin privatif de 82 m², triple exposition, vue dégagée sur la Sainte-Victoire côté Est, 2 places de stationnement en sous-sol et cave privative."
+        },
+        {
+          "@type": "Apartment",
+          "@id": "https://59-cezanne.com/logements#duplex-216",
+          "url": "https://59-cezanne.com/logements#duplex-216",
+          "name": "Duplex 4 pièces de 216 m²",
+          "numberOfRooms": 4,
+          "numberOfBedrooms": 3,
+          "floorSize": {
+            "@type": "QuantitativeValue",
+            "value": 216,
+            "unitCode": "MTK"
+          },
+          "description": "Duplex aux volumes d'une maison : 3 chambres dont une suite parentale, séjour de plus de 100 m² aux larges baies vitrées, ascenseur privatif depuis le sous-sol, terrasse et jardin privatif d'environ 56 m², 3 stationnements privatifs et grande cave."
+        }
+      ],
+      "geo": {
+        "@type": "GeoCoordinates",
+        "latitude": 43.5465,
+        "longitude": 5.4451
+      },
+      "hasMap": "https://www.openstreetmap.org/?mlat=43.5465&mlon=5.4451#map=17/43.5465/5.4451"
     }
-  ],
-  "containsPlace": [
-    {
-      "@type": "Apartment",
-      "name": "Lot 1 — T4",
-      "floorLevel": "Rez-de-jardin",
-      "floorSize": {
-        "@type": "QuantitativeValue",
-        "value": 125.3,
-        "unitCode": "MTK"
-      },
-      "description": "T4 au niveau « Rez-de-jardin », jardin privatif de 153,5 m², orientation Est, Ouest, Nord. Surface du lot principal selon la grille de pré-commercialisation de février 2025 ; document non contractuel."
-    },
-    {
-      "@type": "Apartment",
-      "name": "Lot 2 — T3 duplex",
-      "floorLevel": "Rez-de-jardin (duplex)",
-      "floorSize": {
-        "@type": "QuantitativeValue",
-        "value": 103.6,
-        "unitCode": "MTK"
-      },
-      "description": "T3 duplex au niveau « Rez-de-jardin (duplex) », jardin privatif de 28,3 m², orientation Est. Surface du lot principal selon la grille de pré-commercialisation de février 2025 ; document non contractuel."
-    },
-    {
-      "@type": "Apartment",
-      "name": "Lot 3 — T3 duplex",
-      "floorLevel": "Rez-de-jardin (duplex)",
-      "floorSize": {
-        "@type": "QuantitativeValue",
-        "value": 103.4,
-        "unitCode": "MTK"
-      },
-      "description": "T3 duplex au niveau « Rez-de-jardin (duplex) », jardin privatif de 28,6 m², orientation Est. Surface du lot principal selon la grille de pré-commercialisation de février 2025 ; document non contractuel."
-    },
-    {
-      "@type": "Apartment",
-      "name": "Lot 4 — T4",
-      "floorLevel": "Rez-de-jardin",
-      "floorSize": {
-        "@type": "QuantitativeValue",
-        "value": 100.5,
-        "unitCode": "MTK"
-      },
-      "description": "T4 au niveau « Rez-de-jardin », jardin privatif de 237,6 m², orientation Est, Sud, Ouest. Surface du lot principal selon la grille de pré-commercialisation de février 2025 ; document non contractuel."
-    },
-    {
-      "@type": "Apartment",
-      "name": "Lot 5 — T4",
-      "floorLevel": "R+1",
-      "floorSize": {
-        "@type": "QuantitativeValue",
-        "value": 108.9,
-        "unitCode": "MTK"
-      },
-      "description": "T4 au niveau « R+1 », jardin privatif de 311,6 m², orientation Est, Ouest, Nord. Surface du lot principal selon la grille de pré-commercialisation de février 2025 ; document non contractuel."
-    },
-    {
-      "@type": "Apartment",
-      "name": "Lot 6 — T2",
-      "floorLevel": "R+1",
-      "floorSize": {
-        "@type": "QuantitativeValue",
-        "value": 45.0,
-        "unitCode": "MTK"
-      },
-      "description": "T2 au niveau « R+1 », jardin privatif de 108,2 m², orientation Ouest. Surface du lot principal selon la grille de pré-commercialisation de février 2025 ; document non contractuel."
-    },
-    {
-      "@type": "Apartment",
-      "name": "Lot 7 — T2",
-      "floorLevel": "R+1",
-      "floorSize": {
-        "@type": "QuantitativeValue",
-        "value": 45.0,
-        "unitCode": "MTK"
-      },
-      "description": "T2 au niveau « R+1 », jardin privatif de 101,7 m², orientation Ouest. Surface du lot principal selon la grille de pré-commercialisation de février 2025 ; document non contractuel."
-    },
-    {
-      "@type": "Apartment",
-      "name": "Lot 8 — T4",
-      "floorLevel": "R+1",
-      "floorSize": {
-        "@type": "QuantitativeValue",
-        "value": 138.0,
-        "unitCode": "MTK"
-      },
-      "description": "T4 au niveau « R+1 », jardin privatif de 82,1 m², orientation Est, Ouest, Nord. Surface du lot principal selon la grille de pré-commercialisation de février 2025 ; document non contractuel."
-    }
-  ],
-  "geo": {
-    "@type": "GeoCoordinates",
-    "latitude": 43.5465,
-    "longitude": 5.4451
-  },
-  "hasMap": "https://www.openstreetmap.org/?mlat=43.5465&mlon=5.4451#map=17/43.5465/5.4451"
+  ]
 }
   </script>
 </head>
 <body>
 
 <a class="skip-link" href="#contenu" data-lang-fr="Aller au contenu" data-lang-en="Skip to content">Aller au contenu</a>
-<nav id="navbar" class="transparent" aria-label="Navigation principale">
+<nav id="navbar" class="scrolled" aria-label="Navigation principale">
   <div class="nav-inner">
     <a href="/" class="nav-logo" aria-label="59 Cézanne — Aix-en-Provence, accueil">
       <span class="logo-main">59 Cézanne</span>
@@ -317,7 +307,6 @@
     </a>
     <div class="nav-links">
       <a href="/" data-lang-fr="Accueil" data-lang-en="Home">Accueil</a>
-      <a href="/residence" data-lang-fr="La résidence" data-lang-en="The residence">La résidence</a>
       <a href="/logements" class="active" aria-current="page" data-lang-fr="Logements" data-lang-en="Apartments">Logements</a>
             <a href="/localisation" data-lang-fr="Localisation" data-lang-en="Location">Localisation</a>
             <a href="/blog" data-lang-fr="Blog" data-lang-en="Blog">Blog</a>
@@ -336,7 +325,6 @@
 </nav>
 <div class="nav-mobile" id="mobileMenu">
   <a href="/" onclick="toggleMobile()" data-lang-fr="Accueil" data-lang-en="Home">Accueil</a>
-  <a href="/residence" onclick="toggleMobile()" data-lang-fr="La résidence" data-lang-en="The residence">La résidence</a>
   <a href="/logements" class="active" aria-current="page" onclick="toggleMobile()" data-lang-fr="Logements" data-lang-en="Apartments">Logements</a>
     <a href="/localisation" onclick="toggleMobile()" data-lang-fr="Localisation" data-lang-en="Location">Localisation</a>
     <a href="/blog" onclick="toggleMobile()" data-lang-fr="Blog" data-lang-en="Blog">Blog</a>
@@ -350,117 +338,186 @@
 
 <main id="contenu">
 
-  <!-- ─── Hero (immense) ─── -->
-  <section class="page-hero" aria-labelledby="titre-page">
-    <div class="hero-bg">
-      <img src="/Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_JARDIN_LOGEMENT-04_Panorama_St-Victoire.webp" srcset="/Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_JARDIN_LOGEMENT-04_Panorama_St-Victoire-800w.webp 800w, /Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_JARDIN_LOGEMENT-04_Panorama_St-Victoire-1200w.webp 1200w, /Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_JARDIN_LOGEMENT-04_Panorama_St-Victoire.webp 2400w" sizes="100vw" width="1600" height="1024"
-        alt="Rendu 3D du jardin privatif du lot 4 : salon d'extérieur, transats et pelouse devant la façade, avec une montagne à l'horizon"
-        fetchpriority="high" decoding="async" />
-    </div>
-    <div class="hero-overlay"></div>
-    <div class="hero-content">
-      <nav class="lg-breadcrumb" aria-label="Fil d'Ariane" data-aria-label-fr="Fil d'Ariane" data-aria-label-en="Breadcrumb">
-        <ol>
-          <li><a href="/" data-lang-fr="Accueil" data-lang-en="Home">Accueil</a></li>
-          <li aria-current="page" data-lang-fr="Logements" data-lang-en="Apartments">Logements</li>
-        </ol>
-      </nav>
-      <h1 class="hero-title" id="titre-page" data-lang-fr="Appartements neufs avec jardin privatif à Aix-en-Provence" data-lang-en="New apartments with a private garden in Aix-en-Provence">Appartements neufs avec jardin privatif à Aix-en-Provence</h1>
-      <p class="hero-subtitle" data-lang-fr="Des espaces pensés pour l'excellence&amp;nbsp;: quatre T4, deux T3 duplex et deux T2, chacun avec son jardin privatif." data-lang-en="Spaces designed for excellence: four T4, two T3 duplexes and two T2, each with its own private garden.">Des espaces pensés pour l'excellence&nbsp;: quatre T4, deux T3 duplex et deux T2, chacun avec son jardin privatif.</p>
-    </div>
-  </section>
-
-  <!-- ─── Accès aux 8 lots ─── -->
-  <nav class="lg-lots-nav" aria-label="Les 8 appartements" data-aria-label-fr="Les 8 appartements" data-aria-label-en="The 8 apartments">
-    <div class="container">
-      <p class="section-lead lg-intro" data-lang-fr="Chaque appartement allie luxe, confort et fonctionnalité." data-lang-en="Each apartment combines luxury, comfort and functionality.">Chaque appartement allie luxe, confort et fonctionnalité.</p>
-      <ul>
-        <li><a href="#lot-1" aria-label="Lot 1, T4"><span class="lj-n">1</span><span class="lj-t">T4</span></a></li>
-        <li><a href="#lot-2" aria-label="Lot 2, T3 duplex"><span class="lj-n">2</span><span class="lj-t">T3 duplex</span></a></li>
-        <li><a href="#lot-3" aria-label="Lot 3, T3 duplex"><span class="lj-n">3</span><span class="lj-t">T3 duplex</span></a></li>
-        <li><a href="#lot-4" aria-label="Lot 4, T4"><span class="lj-n">4</span><span class="lj-t">T4</span></a></li>
-        <li><a href="#lot-5" aria-label="Lot 5, T4"><span class="lj-n">5</span><span class="lj-t">T4</span></a></li>
-        <li><a href="#lot-6" aria-label="Lot 6, T2"><span class="lj-n">6</span><span class="lj-t">T2</span></a></li>
-        <li><a href="#lot-7" aria-label="Lot 7, T2"><span class="lj-n">7</span><span class="lj-t">T2</span></a></li>
-        <li><a href="#lot-8" aria-label="Lot 8, T4"><span class="lj-n">8</span><span class="lj-t">T4</span></a></li>
-      </ul>
-      <p class="lg-note" data-lang-fr="Surfaces des lots principaux, document non contractuel." data-lang-en="Main-lot areas, non-contractual document.">Surfaces des lots principaux, document non contractuel.</p>
-    </div>
-  </nav>
-
-  <!-- ─── Les 8 lots : formats d'images variés (système « rg » de style.css) ─── -->
-  <section class="rg rg--moyenne-g" id="lot-1" aria-labelledby="lot-1-titre">
-    <div class="rg-text"><h2 class="section-title" id="lot-1-titre" data-lang-fr="Lot 1 <em>T4 neuf</em>" data-lang-en="Lot 1 <em>New T4</em>">Lot 1 <em>T4 neuf</em></h2><p class="section-lead" data-lang-fr="Un séjour pensé pour allier confort et fonctionnalité, ouvert sur son jardin privatif. D'après le plan du lot (indicatif)&amp;nbsp;: pièce à vivre d'environ 53&amp;nbsp;m², trois chambres, deux salles de bains." data-lang-en="A living room designed to combine comfort and functionality, opening onto its private garden. Per the lot plan (indicative): a living area of about 53&amp;nbsp;m², three bedrooms, two bathrooms.">Un séjour pensé pour allier confort et fonctionnalité, ouvert sur son jardin privatif. D'après le plan du lot (indicatif)&nbsp;: pièce à vivre d'environ 53&nbsp;m², trois chambres, deux salles de bains.</p><dl class="lf"><div class="lf-big"><dt data-lang-fr="Surface" data-lang-en="Area">Surface</dt><dd><span data-lang-fr="125,3" data-lang-en="125.3">125,3</span><span class="lf-u">&nbsp;m²</span></dd></div><div class="lf-big lf-garden"><dt data-lang-fr="Jardin privatif" data-lang-en="Private garden">Jardin privatif</dt><dd><span data-lang-fr="153,5" data-lang-en="153.5">153,5</span><span class="lf-u">&nbsp;m²</span></dd></div><div class="lf-row"><dt data-lang-fr="Niveau" data-lang-en="Level">Niveau</dt><dd data-lang-fr="Rez-de-jardin" data-lang-en="Garden level">Rez-de-jardin</dd></div><div class="lf-row"><dt>Orientation</dt><dd data-lang-fr="Est · Ouest · Nord" data-lang-en="East · West · North">Est · Ouest · Nord</dd></div><div class="lf-row"><dt data-lang-fr="Vue" data-lang-en="View">Vue</dt><dd data-lang-fr="Sainte-Victoire" data-lang-en="Sainte-Victoire">Sainte-Victoire</dd></div></dl></div>
-    <figure class="rg-fig"><button type="button" class="lg-zoom" data-src="/Photo%2059%20C%C3%A9zanne/3D%20interieur/LOGEMENT_1_A_02.webp" data-caption="Lot 1 (T4), séjour, salle à manger et cuisine ouverte sur le jardin. Rendu 3D, illustration non contractuelle" data-caption-en="Lot 1 (T4), living room, dining area and open kitchen onto the garden. 3D rendering, non-contractual illustration" onclick="openLightbox(this,0)"><img src="/Photo%2059%20C%C3%A9zanne/3D%20interieur/LOGEMENT_1_A_02.webp" srcset="/Photo%2059%20C%C3%A9zanne/3D%20interieur/LOGEMENT_1_A_02-800w.webp 800w, /Photo%2059%20C%C3%A9zanne/3D%20interieur/LOGEMENT_1_A_02-1200w.webp 1200w, /Photo%2059%20C%C3%A9zanne/3D%20interieur/LOGEMENT_1_A_02.webp 2400w" sizes="(min-width: 901px) 58vw, 100vw" width="1600" height="960" alt="Rendu 3D du lot 1, T4 neuf : séjour, salle à manger et cuisine ouverte avec baies vitrées donnant sur le jardin privatif" loading="lazy" decoding="async" /></button></figure>
-  </section>
-
-  <section class="rg rg--immense" id="lot-2" aria-labelledby="lot-2-titre">
-    <div class="rg-text"><h2 class="section-title" id="lot-2-titre" data-lang-fr="Lot 2 <em>T3 duplex neuf</em>" data-lang-en="Lot 2 <em>New T3 duplex</em>">Lot 2 <em>T3 duplex neuf</em></h2><p class="section-lead" data-lang-fr="Deux niveaux au rez-de-jardin, pour un quotidien en toute intimité. Sur le rendu, un séjour aux grandes baies vitrées, ouvert sur le paysage." data-lang-en="Two levels at garden level, for everyday life in complete privacy. In the rendering, a living room with large glazed bays opening onto the landscape.">Deux niveaux au rez-de-jardin, pour un quotidien en toute intimité. Sur le rendu, un séjour aux grandes baies vitrées, ouvert sur le paysage.</p><dl class="lf"><div class="lf-big"><dt data-lang-fr="Surface" data-lang-en="Area">Surface</dt><dd><span data-lang-fr="103,6" data-lang-en="103.6">103,6</span><span class="lf-u">&nbsp;m²</span></dd></div><div class="lf-big lf-garden"><dt data-lang-fr="Jardin privatif" data-lang-en="Private garden">Jardin privatif</dt><dd><span data-lang-fr="28,3" data-lang-en="28.3">28,3</span><span class="lf-u">&nbsp;m²</span></dd></div><div class="lf-row"><dt data-lang-fr="Niveau" data-lang-en="Level">Niveau</dt><dd data-lang-fr="Rez-de-jardin (duplex)" data-lang-en="Garden level (duplex)">Rez-de-jardin (duplex)</dd></div><div class="lf-row"><dt>Orientation</dt><dd data-lang-fr="Est" data-lang-en="East">Est</dd></div><div class="lf-row"><dt data-lang-fr="Vue" data-lang-en="View">Vue</dt><dd data-lang-fr="Sainte-Victoire" data-lang-en="Sainte-Victoire">Sainte-Victoire</dd></div></dl></div>
-    <figure class="rg-fig"><button type="button" class="lg-zoom" data-src="/Photo%2059%20C%C3%A9zanne/3D%20interieur/LOGEMENT_2_02.webp" data-caption="Lot 2 (T3 duplex), séjour et salle à manger. Rendu 3D, illustration non contractuelle" data-caption-en="Lot 2 (T3 duplex), living and dining room. 3D rendering, non-contractual illustration" onclick="openLightbox(this,1)"><img src="/Photo%2059%20C%C3%A9zanne/3D%20interieur/LOGEMENT_2_02.webp" srcset="/Photo%2059%20C%C3%A9zanne/3D%20interieur/LOGEMENT_2_02-800w.webp 800w, /Photo%2059%20C%C3%A9zanne/3D%20interieur/LOGEMENT_2_02-1200w.webp 1200w, /Photo%2059%20C%C3%A9zanne/3D%20interieur/LOGEMENT_2_02.webp 2400w" sizes="100vw" width="1600" height="960" alt="Rendu 3D du lot 2, T3 duplex neuf : séjour et salle à manger avec grandes baies vitrées ouvrant sur la montagne" loading="lazy" decoding="async" style="object-position:58% 50%" /></button></figure>
-  </section>
-
-  <section class="rg rg--petite-d rg--b" id="lot-3" aria-labelledby="lot-3-titre">
-    <div class="rg-text"><h2 class="section-title" id="lot-3-titre" data-lang-fr="Lot 3 <em>T3 duplex neuf</em>" data-lang-en="Lot 3 <em>New T3 duplex</em>">Lot 3 <em>T3 duplex neuf</em></h2><p class="section-lead" data-lang-fr="Séjour et cuisine au niveau du jardin, chambres à l'étage, escalier intérieur&amp;nbsp;: d'après l'axonométrie du lot 2. Un petit jardin privatif, intime et verdoyant." data-lang-en="Living room and kitchen at garden level, bedrooms upstairs, internal staircase: per the axonometric view of lot 2. A small private garden, intimate and green.">Séjour et cuisine au niveau du jardin, chambres à l'étage, escalier intérieur&nbsp;: d'après l'axonométrie du lot 2. Un petit jardin privatif, intime et verdoyant.</p><dl class="lf"><div class="lf-big"><dt data-lang-fr="Surface" data-lang-en="Area">Surface</dt><dd><span data-lang-fr="103,4" data-lang-en="103.4">103,4</span><span class="lf-u">&nbsp;m²</span></dd></div><div class="lf-big lf-garden"><dt data-lang-fr="Jardin privatif" data-lang-en="Private garden">Jardin privatif</dt><dd><span data-lang-fr="28,6" data-lang-en="28.6">28,6</span><span class="lf-u">&nbsp;m²</span></dd></div><div class="lf-row"><dt data-lang-fr="Niveau" data-lang-en="Level">Niveau</dt><dd data-lang-fr="Rez-de-jardin (duplex)" data-lang-en="Garden level (duplex)">Rez-de-jardin (duplex)</dd></div><div class="lf-row"><dt>Orientation</dt><dd data-lang-fr="Est" data-lang-en="East">Est</dd></div><div class="lf-row"><dt data-lang-fr="Vue" data-lang-en="View">Vue</dt><dd data-lang-fr="Sainte-Victoire" data-lang-en="Sainte-Victoire">Sainte-Victoire</dd></div></dl></div>
-    <figure class="rg-fig rg-fig--contain"><button type="button" class="lg-zoom" data-src="/Photo%2059%20C%C3%A9zanne/Axonometrie/Logement%202/LOGEMENT_02_3D_FB.webp" data-caption="T3 duplex (lots 2 et 3), axonométrie du lot 2, niveau jardin et étage. Illustration non contractuelle" data-caption-en="T3 duplex (lots 2 and 3), axonometric view of lot 2, garden level and upper floor. Non-contractual illustration" onclick="openLightbox(this,2)"><img src="/Photo%2059%20C%C3%A9zanne/Axonometrie/Logement%202/LOGEMENT_02_3D_FB.webp" srcset="/Photo%2059%20C%C3%A9zanne/Axonometrie/Logement%202/LOGEMENT_02_3D_FB-800w.webp 800w, /Photo%2059%20C%C3%A9zanne/Axonometrie/Logement%202/LOGEMENT_02_3D_FB-1200w.webp 1200w, /Photo%2059%20C%C3%A9zanne/Axonometrie/Logement%202/LOGEMENT_02_3D_FB.webp 2400w" sizes="(min-width: 901px) 34vw, 64vw" width="1600" height="1067" alt="Perspective axonométrique du lot 2, T3 duplex neuf : séjour et cuisine au niveau du jardin avec escalier, chambres à l'étage, petit jardin" loading="lazy" decoding="async" /></button></figure>
-  </section>
-
-  <section class="rg rg--moyenne-d" id="lot-4" aria-labelledby="lot-4-titre">
-    <div class="rg-text"><h2 class="section-title" id="lot-4-titre" data-lang-fr="Lot 4 <em>T4 neuf</em>" data-lang-en="Lot 4 <em>New T4</em>">Lot 4 <em>T4 neuf</em></h2><p class="section-lead" data-lang-fr="Un jardin avec vue, une fenêtre ouverte sur l'infini. Sur l'axonométrie&amp;nbsp;: séjour, chambres et grand jardin de plain-pied, avec table d'extérieur et transats." data-lang-en="A garden with a view, a window open onto infinity. On the axonometric view: living room, bedrooms and a large garden at ground level, with outdoor table and sun loungers.">Un jardin avec vue, une fenêtre ouverte sur l'infini. Sur l'axonométrie&nbsp;: séjour, chambres et grand jardin de plain-pied, avec table d'extérieur et transats.</p><dl class="lf"><div class="lf-big"><dt data-lang-fr="Surface" data-lang-en="Area">Surface</dt><dd><span data-lang-fr="100,5" data-lang-en="100.5">100,5</span><span class="lf-u">&nbsp;m²</span></dd></div><div class="lf-big lf-garden"><dt data-lang-fr="Jardin privatif" data-lang-en="Private garden">Jardin privatif</dt><dd><span data-lang-fr="237,6" data-lang-en="237.6">237,6</span><span class="lf-u">&nbsp;m²</span></dd></div><div class="lf-row"><dt data-lang-fr="Niveau" data-lang-en="Level">Niveau</dt><dd data-lang-fr="Rez-de-jardin" data-lang-en="Garden level">Rez-de-jardin</dd></div><div class="lf-row"><dt>Orientation</dt><dd data-lang-fr="Est · Sud · Ouest" data-lang-en="East · South · West">Est · Sud · Ouest</dd></div><div class="lf-row"><dt data-lang-fr="Vue" data-lang-en="View">Vue</dt><dd data-lang-fr="Sainte-Victoire" data-lang-en="Sainte-Victoire">Sainte-Victoire</dd></div></dl></div>
-    <figure class="rg-fig rg-fig--contain"><button type="button" class="lg-zoom" data-src="/Photo%2059%20C%C3%A9zanne/Axonometrie/Logement%204/LOGEMENT_04_3D_FB.webp" data-caption="Lot 4 (T4), perspective axonométrique. Illustration non contractuelle" data-caption-en="Lot 4 (T4), axonometric view. Non-contractual illustration" onclick="openLightbox(this,3)"><img src="/Photo%2059%20C%C3%A9zanne/Axonometrie/Logement%204/LOGEMENT_04_3D_FB.webp" srcset="/Photo%2059%20C%C3%A9zanne/Axonometrie/Logement%204/LOGEMENT_04_3D_FB-800w.webp 800w, /Photo%2059%20C%C3%A9zanne/Axonometrie/Logement%204/LOGEMENT_04_3D_FB-1200w.webp 1200w, /Photo%2059%20C%C3%A9zanne/Axonometrie/Logement%204/LOGEMENT_04_3D_FB.webp 2400w" sizes="(min-width: 901px) 58vw, 100vw" width="1600" height="1067" alt="Perspective axonométrique du lot 4, T4 neuf avec jardin privatif : appartement complet et grand jardin avec table d'extérieur et transats" loading="lazy" decoding="async" /></button></figure>
-  </section>
-
-  <section class="rg rg--duo rg--b" id="lot-5" aria-labelledby="lot-5-titre">
-    <div class="rg-text"><h2 class="section-title" id="lot-5-titre" data-lang-fr="Lot 5 <em>T4 neuf</em>" data-lang-en="Lot 5 <em>New T4</em>">Lot 5 <em>T4 neuf</em></h2><p class="section-lead" data-lang-fr="Le plus grand jardin de la résidence, au niveau R+1&amp;nbsp;: l'harmonie parfaite entre prestige, nature et confort. Huit appartements seulement, pour une intimité rare." data-lang-en="The largest garden in the residence, at level R+1: the perfect harmony of prestige, nature and comfort. Only eight apartments, for rare privacy.">Le plus grand jardin de la résidence, au niveau R+1&nbsp;: l'harmonie parfaite entre prestige, nature et confort. Huit appartements seulement, pour une intimité rare.</p><dl class="lf"><div class="lf-big"><dt data-lang-fr="Surface" data-lang-en="Area">Surface</dt><dd><span data-lang-fr="108,9" data-lang-en="108.9">108,9</span><span class="lf-u">&nbsp;m²</span></dd></div><div class="lf-big lf-garden"><dt data-lang-fr="Jardin privatif" data-lang-en="Private garden">Jardin privatif</dt><dd><span data-lang-fr="311,6" data-lang-en="311.6">311,6</span><span class="lf-u">&nbsp;m²</span></dd></div><div class="lf-row"><dt data-lang-fr="Niveau" data-lang-en="Level">Niveau</dt><dd data-lang-fr="Étage (R+1)" data-lang-en="First floor (R+1)">Étage (R+1)</dd></div><div class="lf-row"><dt>Orientation</dt><dd data-lang-fr="Est · Ouest · Nord" data-lang-en="East · West · North">Est · Ouest · Nord</dd></div><div class="lf-row"><dt data-lang-fr="Vue" data-lang-en="View">Vue</dt><dd data-lang-fr="Sainte-Victoire" data-lang-en="Sainte-Victoire">Sainte-Victoire</dd></div></dl></div>
-    <figure class="rg-fig"><button type="button" class="lg-zoom" data-src="/Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_EXT_Panorama_St-Victoire.webp" data-caption="La résidence 59 Cézanne vue depuis l'avenue Paul Cézanne. Rendu 3D, illustration non contractuelle" data-caption-en="The 59 Cézanne residence seen from avenue Paul Cézanne. 3D rendering, non-contractual illustration" onclick="openLightbox(this,4)"><img src="/Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_EXT_Panorama_St-Victoire.webp" srcset="/Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_EXT_Panorama_St-Victoire-800w.webp 800w, /Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_EXT_Panorama_St-Victoire-1200w.webp 1200w, /Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_EXT_Panorama_St-Victoire.webp 2400w" sizes="(min-width: 901px) 58vw, 100vw" width="1600" height="960" alt="Rendu 3D de la résidence 59 Cézanne vue depuis l'avenue : façade en pierre claire sur deux niveaux, portail, jardins et piscine" loading="lazy" decoding="async" /></button></figure>
-    <figure class="rg-fig"><button type="button" class="lg-zoom" data-src="/Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_JARDIN_V2_LOGEMENT-04_Panorama_St-Victoire.webp" data-caption="Façade et jardin du lot 4 (T4). Rendu 3D, illustration non contractuelle" data-caption-en="Facade and garden of lot 4 (T4). 3D rendering, non-contractual illustration" onclick="openLightbox(this,5)"><img src="/Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_JARDIN_V2_LOGEMENT-04_Panorama_St-Victoire.webp" srcset="/Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_JARDIN_V2_LOGEMENT-04_Panorama_St-Victoire-800w.webp 800w, /Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_JARDIN_V2_LOGEMENT-04_Panorama_St-Victoire-1200w.webp 1200w, /Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_JARDIN_V2_LOGEMENT-04_Panorama_St-Victoire.webp 2400w" sizes="(min-width: 901px) 34vw, 64vw" width="1600" height="1024" alt="Rendu 3D de la façade d'un T4 en rez-de-jardin (lot 4) : salon d'extérieur, transats et pelouse, avec une montagne à l'horizon" loading="lazy" decoding="async" style="object-position:74% 50%" /></button></figure>
-  </section>
-
-  <section class="rg rg--petite-g" id="lot-6" aria-labelledby="lot-6-titre">
-    <div class="rg-text"><h2 class="section-title" id="lot-6-titre" data-lang-fr="Lot 6 <em>T2 neuf</em>" data-lang-en="Lot 6 <em>New T2</em>">Lot 6 <em>T2 neuf</em></h2><p class="section-lead" data-lang-fr="Séjour, chambre, terrasse et jardin, d'après l'axonométrie. Un T2 compact avec un grand jardin privatif de plus de 100&amp;nbsp;m²." data-lang-en="Living room, bedroom, terrace and garden, per the axonometric view. A compact T2 with a large private garden of over 100&amp;nbsp;m².">Séjour, chambre, terrasse et jardin, d'après l'axonométrie. Un T2 compact avec un grand jardin privatif de plus de 100&nbsp;m².</p><dl class="lf"><div class="lf-big"><dt data-lang-fr="Surface" data-lang-en="Area">Surface</dt><dd><span data-lang-fr="45,0" data-lang-en="45.0">45,0</span><span class="lf-u">&nbsp;m²</span></dd></div><div class="lf-big lf-garden"><dt data-lang-fr="Jardin privatif" data-lang-en="Private garden">Jardin privatif</dt><dd><span data-lang-fr="108,2" data-lang-en="108.2">108,2</span><span class="lf-u">&nbsp;m²</span></dd></div><div class="lf-row"><dt data-lang-fr="Niveau" data-lang-en="Level">Niveau</dt><dd data-lang-fr="Étage (R+1)" data-lang-en="First floor (R+1)">Étage (R+1)</dd></div><div class="lf-row"><dt>Orientation</dt><dd data-lang-fr="Ouest" data-lang-en="West">Ouest</dd></div><div class="lf-row"><dt data-lang-fr="Vue" data-lang-en="View">Vue</dt><dd data-lang-fr="Jardin" data-lang-en="Garden">Jardin</dd></div></dl></div>
-    <figure class="rg-fig rg-fig--contain"><button type="button" class="lg-zoom" data-src="/Photo%2059%20C%C3%A9zanne/Axonometrie/Logement%206/LOGEMENT_06_3D_FB.webp" data-caption="Lot 6 (T2), séjour, chambre, terrasse et jardin. Perspective axonométrique, illustration non contractuelle" data-caption-en="Lot 6 (T2), living room, bedroom, terrace and garden. Axonometric view, non-contractual illustration" onclick="openLightbox(this,6)"><img src="/Photo%2059%20C%C3%A9zanne/Axonometrie/Logement%206/LOGEMENT_06_3D_FB.webp" srcset="/Photo%2059%20C%C3%A9zanne/Axonometrie/Logement%206/LOGEMENT_06_3D_FB-800w.webp 800w, /Photo%2059%20C%C3%A9zanne/Axonometrie/Logement%206/LOGEMENT_06_3D_FB-1200w.webp 1200w, /Photo%2059%20C%C3%A9zanne/Axonometrie/Logement%206/LOGEMENT_06_3D_FB.webp 2400w" sizes="(min-width: 901px) 34vw, 64vw" width="1600" height="1067" alt="Perspective axonométrique du lot 6, T2 neuf : séjour, chambre, terrasse avec parasol et jardin" loading="lazy" decoding="async" /></button></figure>
-  </section>
-
-  <section class="rg rg--centre rg--b" id="lot-7" aria-labelledby="lot-7-titre">
-    <div class="rg-text"><h2 class="section-title" id="lot-7-titre" data-lang-fr="Lot 7 <em>T2 neuf</em>" data-lang-en="Lot 7 <em>New T2</em>">Lot 7 <em>T2 neuf</em></h2><p class="section-lead" data-lang-fr="Même typologie, même niveau et même orientation que le lot 6, avec un jardin de plus de 100&amp;nbsp;m². Une atmosphère intimiste et raffinée." data-lang-en="Same type, level and orientation as lot 6, with a garden of over 100&amp;nbsp;m². An intimate, refined atmosphere.">Même typologie, même niveau et même orientation que le lot 6, avec un jardin de plus de 100&nbsp;m². Une atmosphère intimiste et raffinée.</p><dl class="lf"><div class="lf-big"><dt data-lang-fr="Surface" data-lang-en="Area">Surface</dt><dd><span data-lang-fr="45,0" data-lang-en="45.0">45,0</span><span class="lf-u">&nbsp;m²</span></dd></div><div class="lf-big lf-garden"><dt data-lang-fr="Jardin privatif" data-lang-en="Private garden">Jardin privatif</dt><dd><span data-lang-fr="101,7" data-lang-en="101.7">101,7</span><span class="lf-u">&nbsp;m²</span></dd></div><div class="lf-row"><dt data-lang-fr="Niveau" data-lang-en="Level">Niveau</dt><dd data-lang-fr="Étage (R+1)" data-lang-en="First floor (R+1)">Étage (R+1)</dd></div><div class="lf-row"><dt>Orientation</dt><dd data-lang-fr="Ouest" data-lang-en="West">Ouest</dd></div><div class="lf-row"><dt data-lang-fr="Vue" data-lang-en="View">Vue</dt><dd data-lang-fr="Jardin" data-lang-en="Garden">Jardin</dd></div></dl></div>
-    <figure class="rg-fig rg-fig--contain rg-fig--dark"><button type="button" class="lg-zoom" data-src="/Photo%2059%20C%C3%A9zanne/Axonometrie/Logement%206/LOGEMENT_06_3D_FN.webp" data-caption="T2 (lots 6 et 7), axonométrie du lot 6. Perspective axonométrique, illustration non contractuelle" data-caption-en="T2 (lots 6 and 7), axonometric view of lot 6. Axonometric view, non-contractual illustration" onclick="openLightbox(this,7)"><img src="/Photo%2059%20C%C3%A9zanne/Axonometrie/Logement%206/LOGEMENT_06_3D_FN.webp" srcset="/Photo%2059%20C%C3%A9zanne/Axonometrie/Logement%206/LOGEMENT_06_3D_FN-800w.webp 800w, /Photo%2059%20C%C3%A9zanne/Axonometrie/Logement%206/LOGEMENT_06_3D_FN-1200w.webp 1200w, /Photo%2059%20C%C3%A9zanne/Axonometrie/Logement%206/LOGEMENT_06_3D_FN.webp 2400w" sizes="(min-width: 901px) 1100px, 100vw" width="1600" height="1067" alt="Perspective axonométrique d'un T2 (axonométrie du lot 6) sur fond noir : séjour, chambre, terrasse avec parasol et jardin" loading="lazy" decoding="async" /></button></figure>
-  </section>
-
-  <section class="rg rg--grande" id="lot-8" aria-labelledby="lot-8-titre">
-    <div class="rg-text"><h2 class="section-title" id="lot-8-titre" data-lang-fr="Lot 8 <em>T4 neuf</em>" data-lang-en="Lot 8 <em>New T4</em>">Lot 8 <em>T4 neuf</em></h2><p class="section-lead" data-lang-fr="La plus grande surface de la résidence, pensée pour l'excellence. Sur l'axonométrie&amp;nbsp;: grand séjour, plusieurs chambres et salle à manger d'extérieur dans le jardin." data-lang-en="The largest floor area in the residence, designed for excellence. On the axonometric view: a large living room, several bedrooms and an outdoor dining area in the garden.">La plus grande surface de la résidence, pensée pour l'excellence. Sur l'axonométrie&nbsp;: grand séjour, plusieurs chambres et salle à manger d'extérieur dans le jardin.</p><dl class="lf"><div class="lf-big"><dt data-lang-fr="Surface" data-lang-en="Area">Surface</dt><dd><span data-lang-fr="138,0" data-lang-en="138.0">138,0</span><span class="lf-u">&nbsp;m²</span></dd></div><div class="lf-big lf-garden"><dt data-lang-fr="Jardin privatif" data-lang-en="Private garden">Jardin privatif</dt><dd><span data-lang-fr="82,1" data-lang-en="82.1">82,1</span><span class="lf-u">&nbsp;m²</span></dd></div><div class="lf-row"><dt data-lang-fr="Niveau" data-lang-en="Level">Niveau</dt><dd data-lang-fr="Étage (R+1)" data-lang-en="First floor (R+1)">Étage (R+1)</dd></div><div class="lf-row"><dt>Orientation</dt><dd data-lang-fr="Est · Ouest · Nord" data-lang-en="East · West · North">Est · Ouest · Nord</dd></div><div class="lf-row"><dt data-lang-fr="Vue" data-lang-en="View">Vue</dt><dd data-lang-fr="Sainte-Victoire" data-lang-en="Sainte-Victoire">Sainte-Victoire</dd></div></dl></div>
-    <figure class="rg-fig rg-fig--contain"><button type="button" class="lg-zoom" data-src="/Photo%2059%20C%C3%A9zanne/Axonometrie/Logement%208/LOGEMENT_08_3D_FB.webp" data-caption="Lot 8 (T4), perspective axonométrique. Illustration non contractuelle" data-caption-en="Lot 8 (T4), axonometric view. Non-contractual illustration" onclick="openLightbox(this,8)"><img src="/Photo%2059%20C%C3%A9zanne/Axonometrie/Logement%208/LOGEMENT_08_3D_FB.webp" srcset="/Photo%2059%20C%C3%A9zanne/Axonometrie/Logement%208/LOGEMENT_08_3D_FB-800w.webp 800w, /Photo%2059%20C%C3%A9zanne/Axonometrie/Logement%208/LOGEMENT_08_3D_FB-1200w.webp 1200w, /Photo%2059%20C%C3%A9zanne/Axonometrie/Logement%208/LOGEMENT_08_3D_FB.webp 2400w" sizes="(min-width: 1372px) 1320px, 100vw" width="1600" height="1067" alt="Perspective axonométrique du lot 8, T4 neuf : grand appartement avec jardin et salle à manger d'extérieur" loading="lazy" decoding="async" /></button></figure>
-  </section>
-
-  <!-- ─── Autres pages et guides ─── -->
-  <div class="lg-more">
-    <div class="container">
-      <nav aria-label="Autres pages du programme" data-aria-label-fr="Autres pages du programme" data-aria-label-en="Other programme pages">
-        <p>
-          <span class="lg-more-label" data-lang-fr="Voir aussi" data-lang-en="See also">Voir aussi</span>
-          <a href="/residence" data-lang-fr="La résidence : piscine, jardins, promoteur" data-lang-en="The residence: pool, gardens, developer">La résidence : piscine, jardins, promoteur</a>
-          <a href="/localisation" data-lang-fr="L'adresse et les accès" data-lang-en="Address and access">L'adresse et les accès</a>
-        </p>
-      </nav>
-      <nav aria-label="Nos guides" data-aria-label-fr="Nos guides" data-aria-label-en="Our guides">
-        <p>
-          <span class="lg-more-label" data-lang-fr="Nos guides" data-lang-en="Our guides (in French)">Nos guides</span>
-          <a href="/blog/appartement-jardin-prive-aix-en-provence" hreflang="fr" data-lang-fr="Appartement avec jardin privatif" data-lang-en="Private-garden apartments">Appartement avec jardin privatif</a>
-          <a href="/blog/appartement-vue-sainte-victoire-aix-en-provence" hreflang="fr" data-lang-fr="Vue Sainte-Victoire" data-lang-en="Sainte-Victoire view">Vue Sainte-Victoire</a>
-          <a href="/blog/acheter-appartement-neuf-aix-en-provence" hreflang="fr" data-lang-fr="Acheter un appartement neuf" data-lang-en="Buying a new apartment">Acheter un appartement neuf</a>
-        </p>
-      </nav>
-    </div>
-  </div>
-
-  <!-- ─── CTA ─── -->
-  <section class="section section-dark" aria-labelledby="cta-titre">
-    <div class="container text-center">
-      <h2 class="section-title lg-cta-title" id="cta-titre" data-lang-fr="Recevoir la plaquette et <em>les plans</em>" data-lang-en="Receive the brochure and <em>the plans</em>">Recevoir la plaquette et <em>les plans</em></h2>
-      <p class="section-lead lg-cta-lead" data-lang-fr="Prix, disponibilité des lots et calendrier de livraison&amp;nbsp;: nous contacter." data-lang-en="Prices, lot availability and delivery schedule: please contact us.">Prix, disponibilité des lots et calendrier de livraison&nbsp;: nous contacter.</p>
-      <div class="d-flex gap-3 align-center flex-wrap" style="justify-content:center;">
-        <a class="btn btn-primary" href="/contact" data-lang-fr="Nous contacter" data-lang-en="Contact us">Nous contacter</a>
-        <a href="tel:0609204590" class="btn btn-outline" aria-label="Appeler le 06 09 20 45 90" data-aria-label-fr="Appeler le 06 09 20 45 90" data-aria-label-en="Call 06 09 20 45 90">06 09 20 45 90</a>
+  <!-- ─── 1. Couverture sans photo : logotype, tracé de la Sainte-Victoire ─── -->
+  <section class="cover-hero deco-travertin lg-cover" aria-labelledby="titre-page">
+    <nav class="lg-breadcrumb" aria-label="Fil d'Ariane" data-aria-label-fr="Fil d'Ariane" data-aria-label-en="Breadcrumb">
+      <ol>
+        <li><a href="/" data-lang-fr="Accueil" data-lang-en="Home">Accueil</a></li>
+        <li aria-current="page" data-lang-fr="Logements" data-lang-en="Apartments">Logements</li>
+      </ol>
+    </nav>
+    <div class="lg-mark"><i class="orn orn--logo" aria-hidden="true"></i></div>
+    <div class="cover-inner">
+      <p class="script" data-lang-fr="Vivre à 59 Cézanne" data-lang-en="Living at 59 Cézanne">Vivre à 59 Cézanne</p>
+      <h1 id="titre-page" data-lang-fr="Les logements" data-lang-en="The apartments">Les logements</h1>
+      <p class="cover-lead" data-lang-fr="Deux grands logements neufs, encore disponibles, dans une résidence confidentielle d'Aix-en-Provence." data-lang-en="Two large new homes, still available, in an intimate residence in Aix-en-Provence.">Deux grands logements neufs, encore disponibles, dans une résidence confidentielle d'Aix-en-Provence.</p>
+      <p class="lg-pill-row">
+        <span class="lg-pill" data-lang-fr="Dernières disponibilités&nbsp;: 2 logements" data-lang-en="Last two homes available">Dernières disponibilités&nbsp;: 2 logements</span>
+        <span class="lg-pill-date"><span data-lang-fr="Disponibilités mises à jour en" data-lang-en="Availability updated in">Disponibilités mises à jour en</span> <time class="dispo-time" datetime="2026-10" data-lang-fr="octobre 2026" data-lang-en="October 2026">octobre 2026</time></span>
+      </p>
+      <div class="cover-cta">
+        <a class="btn btn-primary" href="tel:+33609204590" aria-label="Appeler le 06 09 20 45 90" data-aria-label-fr="Appeler le 06 09 20 45 90" data-aria-label-en="Call 06 09 20 45 90"><span data-lang-fr="Appeler le 06 09 20 45 90" data-lang-en="Call 06 09 20 45 90">Appeler le 06 09 20 45 90</span></a>
+        <a class="btn btn-outline-dark" href="#disponibles" data-lang-fr="Voir les deux logements" data-lang-en="See the two homes">Voir les deux logements</a>
       </div>
     </div>
+    <i class="orn orn--trace lg-trace" aria-hidden="true"></i>
+  </section>
+
+  <!-- ─── 2. Disponibles : les deux biens en grand ─── -->
+  <section class="dispo lg-dispo" id="disponibles" aria-labelledby="t-dispo">
+    <div class="dispo-head">
+      <p class="script" data-lang-fr="Deux façons d'habiter" data-lang-en="Two ways to live">Deux façons d'habiter</p>
+      <h2 class="section-title" id="t-dispo" data-lang-fr="Un appartement-villa et un duplex" data-lang-en="A villa-style apartment and a duplex">Un appartement-villa et un duplex</h2>
+      <p class="dispo-date"><span data-lang-fr="Disponibilités mises à jour en" data-lang-en="Availability updated in">Disponibilités mises à jour en</span> <time class="dispo-time" datetime="2026-10" data-lang-fr="octobre 2026" data-lang-en="October 2026">octobre 2026</time></p>
+    </div>
+
+    <div class="dispo-grid">
+
+      <article class="dispo-card" id="appartement-138" aria-labelledby="t-138">
+        <div class="dispo-body">
+          <h3 class="dispo-type" id="t-138"><small data-lang-fr="Appartement-villa" data-lang-en="Villa-style apartment">Appartement-villa</small><span data-lang-fr="4 pièces, 138&nbsp;m²" data-lang-en="4 rooms, 138&nbsp;m²">4 pièces, 138&nbsp;m²</span></h3>
+          <p class="dispo-pitch" data-lang-fr="Un appartement-villa au premier et dernier étage, avec 82&nbsp;m² de jardin et la Sainte-Victoire à l'Est." data-lang-en="A villa-style apartment on the first and top floor, with an 82&nbsp;m² garden and the Sainte-Victoire to the east.">Un appartement-villa au premier et dernier étage, avec 82&nbsp;m² de jardin et la Sainte-Victoire à l'Est.</p>
+          <ul class="dispo-list">
+            <li data-lang-fr="3 chambres sur un vaste plateau à concevoir sur mesure&nbsp;: séjour, cuisine ouverte, suite parentale, bureau, dressings" data-lang-en="3 bedrooms on a vast open floor plan designed to your needs: living room, open kitchen, master suite, study, dressing rooms">3 chambres sur un vaste plateau à concevoir sur mesure&nbsp;: séjour, cuisine ouverte, suite parentale, bureau, dressings</li>
+            <li data-lang-fr="Triple exposition, vue dégagée sur la Sainte-Victoire côté Est" data-lang-en="Triple aspect, open view of the Sainte-Victoire to the east">Triple exposition, vue dégagée sur la Sainte-Victoire côté Est</li>
+            <li data-lang-fr="2 places de stationnement en sous-sol et cave privative" data-lang-en="2 underground parking spaces and a private cellar">2 places de stationnement en sous-sol et cave privative</li>
+            <li data-lang-fr="Piscine chauffée de la résidence" data-lang-en="The residence's heated pool">Piscine chauffée de la résidence</li>
+          </ul>
+          <div class="dispo-cta">
+            <a class="btn btn-primary" href="tel:+33609204590" aria-label="Appeler le 06 09 20 45 90" data-aria-label-fr="Appeler le 06 09 20 45 90" data-aria-label-en="Call 06 09 20 45 90"><span data-lang-fr="Appeler le 06 09 20 45 90" data-lang-en="Call 06 09 20 45 90">Appeler le 06 09 20 45 90</span></a>
+            <a class="btn btn-outline-dark" href="/contact?bien=138" data-lang-fr="Demander une visite" data-lang-en="Request a visit">Demander une visite</a>
+          </div>
+        </div>
+        <figure class="dispo-fig dispo-fig--plan">
+          <img src="/Photo%2059%20C%C3%A9zanne/Axonometrie/Logement%208/LOGEMENT_08_3D_FB-1200w.webp" srcset="/Photo%2059%20C%C3%A9zanne/Axonometrie/Logement%208/LOGEMENT_08_3D_FB-800w.webp 800w, /Photo%2059%20C%C3%A9zanne/Axonometrie/Logement%208/LOGEMENT_08_3D_FB-1200w.webp 1200w, /Photo%2059%20C%C3%A9zanne/Axonometrie/Logement%208/LOGEMENT_08_3D_FB.webp 2400w" sizes="(min-width: 901px) 62vw, 100vw" width="2400" height="1600"
+            alt="Perspective axonométrique du 4 pièces de 138 m² : plateau intérieur et jardin avec table d'extérieur et transats"
+            data-alt-fr="Perspective axonométrique du 4 pièces de 138 m² : plateau intérieur et jardin avec table d'extérieur et transats"
+            data-alt-en="Axonometric view of the 138 m² 4-room apartment: interior floor plan and garden with outdoor table and sun loungers"
+            loading="lazy" decoding="async" />
+        </figure>
+      </article>
+
+      <article class="dispo-card" id="duplex-216" aria-labelledby="t-216">
+        <div class="dispo-body">
+          <h3 class="dispo-type" id="t-216"><small data-lang-fr="Duplex" data-lang-en="Duplex">Duplex</small><span data-lang-fr="4 pièces, 216&nbsp;m²" data-lang-en="4 rooms, 216&nbsp;m²">4 pièces, 216&nbsp;m²</span></h3>
+          <p class="dispo-pitch" data-lang-fr="Les volumes d'une maison&nbsp;: plus de 100&nbsp;m² de réception et un ascenseur privatif depuis le sous-sol." data-lang-en="The volumes of a house: over 100&nbsp;m² of reception space and a private lift from the basement.">Les volumes d'une maison&nbsp;: plus de 100&nbsp;m² de réception et un ascenseur privatif depuis le sous-sol.</p>
+          <ul class="dispo-list">
+            <li data-lang-fr="3 chambres, dont une suite parentale avec dressing et salle de bains privative" data-lang-en="3 bedrooms, including a master suite with dressing room and private bathroom">3 chambres, dont une suite parentale avec dressing et salle de bains privative</li>
+            <li data-lang-fr="Salon, salle à manger et cuisine aux larges baies vitrées vers la Sainte-Victoire" data-lang-en="Living room, dining room and kitchen with large glazed bays facing the Sainte-Victoire">Salon, salle à manger et cuisine aux larges baies vitrées vers la Sainte-Victoire</li>
+            <li data-lang-fr="Terrasse et jardin privatif d'environ 56&nbsp;m²" data-lang-en="Terrace and private garden of about 56&nbsp;m²">Terrasse et jardin privatif d'environ 56&nbsp;m²</li>
+            <li data-lang-fr="3 stationnements privatifs et grande cave en sous-sol" data-lang-en="3 private parking spaces and a large cellar, underground">3 stationnements privatifs et grande cave en sous-sol</li>
+            <li data-lang-fr="Piscine chauffée de la résidence" data-lang-en="The residence's heated pool">Piscine chauffée de la résidence</li>
+          </ul>
+          <div class="dispo-cta">
+            <a class="btn btn-primary" href="tel:+33609204590" aria-label="Appeler le 06 09 20 45 90" data-aria-label-fr="Appeler le 06 09 20 45 90" data-aria-label-en="Call 06 09 20 45 90"><span data-lang-fr="Appeler le 06 09 20 45 90" data-lang-en="Call 06 09 20 45 90">Appeler le 06 09 20 45 90</span></a>
+            <a class="btn btn-outline-dark" href="/contact?bien=duplex-216" data-lang-fr="Demander une visite" data-lang-en="Request a visit">Demander une visite</a>
+          </div>
+        </div>
+        <figure class="dispo-fig">
+          <img src="/Photo%2059%20C%C3%A9zanne/3D%20interieur/LOGEMENT_2_02-1200w.webp" srcset="/Photo%2059%20C%C3%A9zanne/3D%20interieur/LOGEMENT_2_02-800w.webp 800w, /Photo%2059%20C%C3%A9zanne/3D%20interieur/LOGEMENT_2_02-1200w.webp 1200w, /Photo%2059%20C%C3%A9zanne/3D%20interieur/LOGEMENT_2_02.webp 2400w" sizes="(min-width: 901px) 62vw, 100vw" width="2400" height="1440"
+            alt="Rendu 3D d'ambiance : vaste séjour avec salle à manger, grandes baies vitrées et relief à l'horizon"
+            data-alt-fr="Rendu 3D d'ambiance : vaste séjour avec salle à manger, grandes baies vitrées et relief à l'horizon"
+            data-alt-en="3D rendering: vast living space with dining area, large glazed bays and hills on the horizon"
+            loading="lazy" decoding="async" />
+        </figure>
+      </article>
+
+    </div>
+
+    <p class="dispo-note" data-lang-fr="Prestations personnalisables selon l'avancement du chantier. Frais de notaire réduits dans le neuf." data-lang-en="Finishes can be personalised depending on construction progress. Reduced notary fees on new builds.">Prestations personnalisables selon l'avancement du chantier. Frais de notaire réduits dans le neuf.</p>
+  </section>
+
+  <!-- ─── 3. La résidence : architecture, piscine, jardins, stationnement ─── -->
+  <div class="lg-res" id="residence" role="region" aria-label="La résidence" data-aria-label-fr="La résidence" data-aria-label-en="The residence">
+
+    <section class="rg rg--moyenne-g fond-pierre" id="architecture" aria-labelledby="t-architecture">
+      <div class="rg-text">
+        <p class="script" data-lang-fr="La résidence" data-lang-en="The residence">La résidence</p>
+        <h2 class="section-title" id="t-architecture" data-lang-fr="Une architecture contemporaine sur deux niveaux" data-lang-en="Contemporary architecture on two levels">Une architecture contemporaine sur deux niveaux</h2>
+        <p class="section-lead" data-lang-fr="Un seul bâtiment aux toits de tuiles canal, aux façades claires et aux grandes baies vitrées." data-lang-en="A single building with canal-tile roofs, light-coloured façades and large glazed openings.">Un seul bâtiment aux toits de tuiles canal, aux façades claires et aux grandes baies vitrées.</p>
+        <p class="section-lead" data-lang-fr="Le séjour s'ouvre largement sur le jardin ou la terrasse." data-lang-en="The living room opens wide onto the garden or terrace.">Le séjour s'ouvre largement sur le jardin ou la terrasse.</p>
+      </div>
+      <figure class="rg-fig">
+        <img src="/Photo%2059%20C%C3%A9zanne/3D%20Groove%20Architecture/Edited/Enscape_2023-03-10-15-39-22-enhanced-1200w.webp" srcset="/Photo%2059%20C%C3%A9zanne/3D%20Groove%20Architecture/Edited/Enscape_2023-03-10-15-39-22-enhanced-800w.webp 800w, /Photo%2059%20C%C3%A9zanne/3D%20Groove%20Architecture/Edited/Enscape_2023-03-10-15-39-22-enhanced-1200w.webp 1200w, /Photo%2059%20C%C3%A9zanne/3D%20Groove%20Architecture/Edited/Enscape_2023-03-10-15-39-22-enhanced.webp 2048w" sizes="(min-width: 901px) 62vw, 100vw" width="2048" height="1152"
+          alt="Rendu 3D de la résidence côté jardin : deux niveaux aux façades claires, grandes baies vitrées coulissantes, muret de pierre, pelouse et lavandes"
+          data-alt-fr="Rendu 3D de la résidence côté jardin : deux niveaux aux façades claires, grandes baies vitrées coulissantes, muret de pierre, pelouse et lavandes"
+          data-alt-en="3D rendering of the residence from the garden: two levels with light façades, large sliding glazed doors, low stone wall, lawn and lavender"
+          loading="lazy" decoding="async" />
+      </figure>
+    </section>
+
+    <section class="rg rg--immense" id="piscine" aria-labelledby="t-piscine">
+      <div class="rg-text">
+        <h2 class="section-title" id="t-piscine" data-lang-fr="Une piscine chauffée, au cœur des jardins" data-lang-en="A heated pool, in the heart of the gardens">Une piscine chauffée, au cœur des jardins</h2>
+        <p class="section-lead" data-lang-fr="Bassin chauffé avec nage à contre-courant, solarium aménagé de transats&nbsp;: prévus selon la notice descriptive du 8 avril 2025. Accès par badge." data-lang-en="Heated pool with counter-current swimming and a sun deck with loungers, as planned in the descriptive notice of 8 April 2025. Badge access.">Bassin chauffé avec nage à contre-courant, solarium aménagé de transats&nbsp;: prévus selon la notice descriptive du 8 avril 2025. Accès par badge.</p>
+      </div>
+      <figure class="rg-fig">
+        <img src="/Photo%2059%20C%C3%A9zanne/3D%20Groove%20Architecture/Edited/PISCINE-enhanced-1200w.webp" srcset="/Photo%2059%20C%C3%A9zanne/3D%20Groove%20Architecture/Edited/PISCINE-enhanced-800w.webp 800w, /Photo%2059%20C%C3%A9zanne/3D%20Groove%20Architecture/Edited/PISCINE-enhanced-1200w.webp 1200w, /Photo%2059%20C%C3%A9zanne/3D%20Groove%20Architecture/Edited/PISCINE-enhanced.webp 2048w" sizes="100vw" width="2048" height="1152"
+          alt="Rendu 3D de la piscine : bassin bordé de transats et de parasols, pelouse et façade de la résidence à l'arrière-plan"
+          data-alt-fr="Rendu 3D de la piscine : bassin bordé de transats et de parasols, pelouse et façade de la résidence à l'arrière-plan"
+          data-alt-en="3D rendering of the pool: basin lined with loungers and parasols, lawn and the residence façade in the background"
+          loading="lazy" decoding="async" />
+      </figure>
+    </section>
+
+    <div class="lg-band">
+      <section class="lg-jardins" id="jardins" aria-labelledby="t-jardins">
+        <i class="orn orn--olive" aria-hidden="true"></i>
+        <h2 class="section-title" id="t-jardins" data-lang-fr="Des jardins privatifs, des espaces paysagers" data-lang-en="Private gardens, landscaped spaces">Des jardins privatifs, des espaces paysagers</h2>
+        <p class="section-lead" data-lang-fr="Des jardins privatifs, de plain-pied ou à l'étage." data-lang-en="Private gardens, at ground level or on the upper floor.">Des jardins privatifs, de plain-pied ou à l'étage.</p>
+        <p class="section-lead" data-lang-fr="Autour du bâtiment, des espaces communs plantés d'oliviers, d'amandiers, de pins et de lavande, selon le plan paysager." data-lang-en="Around the building, shared spaces planted with olive trees, almond trees, pines and lavender, according to the landscape plan.">Autour du bâtiment, des espaces communs plantés d'oliviers, d'amandiers, de pins et de lavande, selon le plan paysager.</p>
+      </section>
+      <section class="lg-park fond-brun-pierre" id="stationnement" aria-labelledby="t-stationnement">
+        <h2 class="section-title" id="t-stationnement" data-lang-fr="Stationnement en sous-sol, accès de plain-pied" data-lang-en="Underground parking, street-level access">Stationnement en sous-sol, accès de plain-pied</h2>
+        <ul class="lg-facts">
+          <li><strong data-lang-fr="Un niveau de parking enterré" data-lang-en="One underground parking level">Un niveau de parking enterré</strong><span data-lang-fr="Accessible de plain-pied depuis l'avenue Paul Cézanne." data-lang-en="Reached at street level from avenue Paul Cézanne.">Accessible de plain-pied depuis l'avenue Paul Cézanne.</span></li>
+          <li><strong data-lang-fr="Ascenseur" data-lang-en="Lift">Ascenseur</strong><span data-lang-fr="Accessible aux personnes à mobilité réduite." data-lang-en="Accessible to people with reduced mobility.">Accessible aux personnes à mobilité réduite.</span></li>
+          <li><strong data-lang-fr="Local vélos" data-lang-en="Bicycle room">Local vélos</strong><span data-lang-fr="Clos et couvert." data-lang-en="Enclosed and covered.">Clos et couvert.</span></li>
+        </ul>
+      </section>
+    </div>
+
+  </div>
+
+  <!-- ─── 4. Les vues ─── -->
+  <section class="rg rg--duo rg--b lg-vues" id="vues" aria-labelledby="t-vues">
+    <div class="rg-text">
+      <div>
+        <p class="script" data-lang-fr="Face à la montagne" data-lang-en="Facing the mountain">Face à la montagne</p>
+        <h2 class="section-title" id="t-vues" data-lang-fr="La Sainte-Victoire depuis la résidence" data-lang-en="The Sainte-Victoire from the residence">La Sainte-Victoire depuis la résidence</h2>
+      </div>
+      <p class="section-lead" data-lang-fr="Des vues réelles, prises à l'emplacement même des logements&nbsp;: la montagne se dessine à l'horizon. Selon le logement, la vue s'ouvre sur la Sainte-Victoire ou sur le jardin." data-lang-en="Real views, taken at the very location of the homes: the mountain stands on the horizon. Depending on the home, the view opens onto the Sainte-Victoire or onto the garden.">Des vues réelles, prises à l'emplacement même des logements&nbsp;: la montagne se dessine à l'horizon. Selon le logement, la vue s'ouvre sur la Sainte-Victoire ou sur le jardin.</p>
+    </div>
+    <figure class="rg-fig">
+      <img src="/Photo%2059%20C%C3%A9zanne/Photo%20Vue%20depuis%20chaque%20appartement/Vue%20Lot%201%20Arbre%20coup%C3%A9-1200w.webp" srcset="/Photo%2059%20C%C3%A9zanne/Photo%20Vue%20depuis%20chaque%20appartement/Vue%20Lot%201%20Arbre%20coup%C3%A9-800w.webp 800w, /Photo%2059%20C%C3%A9zanne/Photo%20Vue%20depuis%20chaque%20appartement/Vue%20Lot%201%20Arbre%20coup%C3%A9-1200w.webp 1200w, /Photo%2059%20C%C3%A9zanne/Photo%20Vue%20depuis%20chaque%20appartement/Vue%20Lot%201%20Arbre%20coup%C3%A9.webp 2112w" sizes="(min-width: 901px) 62vw, 100vw" width="2112" height="1281"
+        alt="Photographie du terrain avant la construction : toit de tuiles et cyprès devant la forêt, avec la Sainte-Victoire à l'horizon"
+        data-alt-fr="Photographie du terrain avant la construction : toit de tuiles et cyprès devant la forêt, avec la Sainte-Victoire à l'horizon"
+        data-alt-en="Photograph of the site before construction: tiled roof and cypress trees in front of the forest, with the Sainte-Victoire on the horizon"
+        loading="lazy" decoding="async" />
+    </figure>
+    <figure class="rg-fig">
+      <img src="/Photo%2059%20C%C3%A9zanne/Photo%20Vue%20depuis%20chaque%20appartement/Vue%20Lot%208-1200w.webp" srcset="/Photo%2059%20C%C3%A9zanne/Photo%20Vue%20depuis%20chaque%20appartement/Vue%20Lot%208-800w.webp 800w, /Photo%2059%20C%C3%A9zanne/Photo%20Vue%20depuis%20chaque%20appartement/Vue%20Lot%208-1200w.webp 1200w, /Photo%2059%20C%C3%A9zanne/Photo%20Vue%20depuis%20chaque%20appartement/Vue%20Lot%208.webp 2400w" sizes="(min-width: 901px) 46vw, 100vw" width="2400" height="1800"
+        alt="Photographie du terrain avant la construction : cyprès et pins au premier plan, la Sainte-Victoire sur la ligne d'horizon"
+        data-alt-fr="Photographie du terrain avant la construction : cyprès et pins au premier plan, la Sainte-Victoire sur la ligne d'horizon"
+        data-alt-en="Photograph of the site before construction: cypress and pine trees in the foreground, the Sainte-Victoire on the skyline"
+        loading="lazy" decoding="async" />
+    </figure>
+  </section>
+
+  <!-- ─── 5. Appel final ─── -->
+  <section class="lg-cta fond-brun-pierre" aria-labelledby="cta-titre">
+    <p class="script script--blanc" data-lang-fr="Parlons-en" data-lang-en="Let's talk">Parlons-en</p>
+    <h2 class="section-title" id="cta-titre" data-lang-fr="Visitons ensemble votre futur logement" data-lang-en="Let's visit your future home together">Visitons ensemble votre futur logement</h2>
+    <a class="lg-tel" href="tel:+33609204590" aria-label="Appeler le 06 09 20 45 90" data-aria-label-fr="Appeler le 06 09 20 45 90" data-aria-label-en="Call 06 09 20 45 90">06 09 20 45 90</a>
+    <div class="lg-cta-btns">
+      <a class="btn btn-primary" href="/contact" data-lang-fr="Demander une visite" data-lang-en="Request a visit">Demander une visite</a>
+      <a class="btn btn-outline" href="https://wa.me/33609204590" target="_blank" rel="noopener" aria-label="Écrire sur WhatsApp au 06 09 20 45 90 (nouvelle fenêtre)" data-aria-label-fr="Écrire sur WhatsApp au 06 09 20 45 90 (nouvelle fenêtre)" data-aria-label-en="Message us on WhatsApp at 06 09 20 45 90 (new window)"><span data-lang-fr="Écrire sur WhatsApp" data-lang-en="Message us on WhatsApp">Écrire sur WhatsApp</span></a>
+    </div>
+    <nav class="lg-cta-links" aria-label="Pour aller plus loin" data-aria-label-fr="Pour aller plus loin" data-aria-label-en="Further reading">
+      <a href="/localisation" data-lang-fr="L'adresse et les accès" data-lang-en="Address and access">L'adresse et les accès</a>
+      <a href="/contact#promoteur" data-lang-fr="Le promoteur" data-lang-en="The developer">Le promoteur</a>
+      <a href="/blog/acheter-appartement-neuf-aix-en-provence" hreflang="fr" data-lang-fr="Le guide de l'achat dans le neuf" data-lang-en="Buying new: our guide (in French)">Le guide de l'achat dans le neuf</a>
+    </nav>
   </section>
 
 </main>
@@ -473,13 +530,12 @@
         <a href="/" class="nav-logo" style="margin-bottom:1rem;display:inline-block;" aria-label="59 Cézanne — accueil">
           <span class="logo-59">59</span><span class="logo-cez">Cézanne</span>
         </a>
-        <p style="font-size:0.82rem;color:rgba(255,255,255,0.45);line-height:1.7;max-width:240px;" data-lang-fr="Résidence de 8 appartements neufs à Aix-en-Provence, avenue Paul Cézanne." data-lang-en="Residence of 8 new apartments in Aix-en-Provence, avenue Paul Cézanne.">Résidence de 8 appartements neufs à Aix-en-Provence, avenue Paul Cézanne.</p>
+        <p style="font-size:0.82rem;color:rgba(255,255,255,0.45);line-height:1.7;max-width:240px;" data-lang-fr="Résidence neuve de standing à Aix-en-Provence, avenue Paul Cézanne." data-lang-en="New prestige residence in Aix-en-Provence, avenue Paul Cézanne.">Résidence neuve de standing à Aix-en-Provence, avenue Paul Cézanne.</p>
       </div>
       <nav class="footer-links" aria-label="Pied de page — navigation">
-        <h4 data-lang-fr="Navigation" data-lang-en="Navigation">Navigation</h4>
+        <h3 data-lang-fr="Navigation" data-lang-en="Navigation">Navigation</h3>
         <ul>
           <li><a href="/" data-lang-fr="Accueil" data-lang-en="Home">Accueil</a></li>
-          <li><a href="/residence" data-lang-fr="La résidence" data-lang-en="The residence">La résidence</a></li>
           <li><a href="/logements" data-lang-fr="Logements" data-lang-en="Apartments">Logements</a></li>
           <li><a href="/localisation" data-lang-fr="Localisation" data-lang-en="Location">Localisation</a></li>
           <li><a href="/blog" data-lang-fr="Blog" data-lang-en="Blog">Blog</a></li>
@@ -487,18 +543,18 @@
         </ul>
       </nav>
       <nav class="footer-links" aria-label="Pied de page — guides">
-        <h4 data-lang-fr="Guides" data-lang-en="Guides">Guides</h4>
+        <h3 data-lang-fr="Guides" data-lang-en="Guides">Guides</h3>
         <ul>
-          <li><a href="/blog/acheter-appartement-neuf-aix-en-provence">Acheter un appartement neuf à Aix</a></li>
-          <li><a href="/blog/quartier-des-lauves-aix-en-provence">Le quartier des Lauves</a></li>
-          <li><a href="/blog/appartement-vue-sainte-victoire-aix-en-provence">Vue Sainte-Victoire</a></li>
-          <li><a href="/blog/appartement-jardin-prive-aix-en-provence">Appartement avec jardin privatif</a></li>
-          <li><a href="/blog/vefa-achat-sur-plan-etapes-garanties">VEFA : étapes et garanties</a></li>
-          <li><a href="/blog/frais-de-notaire-neuf-tva-taxe-fonciere">Frais de notaire dans le neuf</a></li>
+          <li><a lang="fr" href="/blog/acheter-appartement-neuf-aix-en-provence">Acheter un appartement neuf à Aix</a></li>
+          <li><a lang="fr" href="/blog/quartier-des-lauves-aix-en-provence">Le quartier des Lauves</a></li>
+          <li><a lang="fr" href="/blog/appartement-vue-sainte-victoire-aix-en-provence">Vue Sainte-Victoire</a></li>
+          <li><a lang="fr" href="/blog/appartement-jardin-prive-aix-en-provence">Appartement avec jardin privatif</a></li>
+          <li><a lang="fr" href="/blog/vefa-achat-sur-plan-etapes-garanties">VEFA : étapes et garanties</a></li>
+          <li><a lang="fr" href="/blog/frais-de-notaire-neuf-tva-taxe-fonciere">Frais de notaire dans le neuf</a></li>
         </ul>
       </nav>
       <div class="footer-contact">
-        <h4 data-lang-fr="Contact" data-lang-en="Contact">Contact</h4>
+        <h3 data-lang-fr="Contact" data-lang-en="Contact">Contact</h3>
         <p>Ponthieu Développement Holding</p>
         <p>418 Ancienne Route des Alpes<br/>13100 Aix-en-Provence</p>
         <p><a href="tel:+33609204590">06 09 20 45 90</a></p>
@@ -522,43 +578,16 @@
   </a>
 </div>
 
-<div id="lightbox">
-  <button type="button" class="lightbox-close" onclick="closeLightbox()" aria-label="Fermer">✕</button>
-  <button type="button" class="lightbox-nav lightbox-prev" onclick="lightboxNav(-1)" aria-label="Image précédente">‹</button>
-  <div class="lightbox-img-wrap">
-    <img id="lightbox-img" src="" alt="" />
-    <div class="lightbox-caption" id="lightbox-caption"></div>
-    <div class="lightbox-counter" id="lightbox-counter"></div>
-  </div>
-  <button type="button" class="lightbox-nav lightbox-next" onclick="lightboxNav(1)" aria-label="Image suivante">›</button>
-</div>
-
 <script src="/animations.js" defer></script>
 <script src="/translations.js" defer></script>
 <script src="/cookie.js" defer></script>
 <script>
-/* Légendes de la visionneuse : suit le basculement FR/EN (événement émis par translations.js).
-   Écouteur posé avant animations.js : data-caption est à jour quand les libellés ARIA sont recalculés. */
+/* Texte alternatif des images : suit le basculement FR/EN (événement émis par translations.js). */
 document.addEventListener('59c:langchange', function (e) {
   var en = !!(e.detail && e.detail.lang === 'en');
-  document.querySelectorAll('[data-caption-en]').forEach(function (el) {
-    if (!el.hasAttribute('data-caption-fr')) el.setAttribute('data-caption-fr', el.getAttribute('data-caption') || '');
-    el.setAttribute('data-caption', el.getAttribute(en ? 'data-caption-en' : 'data-caption-fr'));
+  document.querySelectorAll('img[data-alt-en]').forEach(function (img) {
+    img.setAttribute('alt', img.getAttribute(en ? 'data-alt-en' : 'data-alt-fr') || '');
   });
-});
-
-/* Contournement : #lightbox passe de visibility:hidden à visible avec une transition, et le focus() immédiat
-   de openLightbox() échoue (le focus reste sur la vignette, derrière la visionneuse). On le place une fois visible. */
-document.addEventListener('DOMContentLoaded', function () {
-  var lb = document.getElementById('lightbox');
-  if (!lb || !window.MutationObserver) return;
-  new MutationObserver(function () {
-    if (!lb.classList.contains('open')) return;
-    setTimeout(function () {
-      var close = lb.querySelector('.lightbox-close');
-      if (close && lb.classList.contains('open') && !lb.contains(document.activeElement)) close.focus();
-    }, 80);
-  }).observe(lb, { attributes: true, attributeFilter: ['class'] });
 });
 </script>
 </body>

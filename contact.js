@@ -6,9 +6,10 @@
    - consentement RGPD transmis avec la demande (case non pré-cochée, texte et date) ;
    - anti-spam : champ piège « _gotcha » + délai minimal avant envoi ;
    - contexte transmis : page d'origine, page de contact, langue, type de projet ;
+   - /contact?bien=138 ou ?bien=duplex-216 : présélectionne le bien et préremplit le message
+     (aucune donnée personnelle dans l'URL ; toute autre valeur est ignorée) ;
    - événement de succès (generate_lead) UNIQUEMENT si un outil de mesure a déjà été
-     chargé après consentement (window.gtag) : ce script ne charge rien lui-même ;
-   - carte Google Maps chargée seulement après un clic.
+     chargé après consentement (window.gtag) : ce script ne charge rien lui-même.
    Sans JavaScript, le <form action="https://formspree.io/f/…" method="POST"> du HTML
    prend le relais (voir contact.html).
    ============================================================ */
@@ -23,7 +24,22 @@
   var REQUEST_TIMEOUT_MS = 20000;  // abandon de la requête au-delà
   var REDIRECT_DELAY_MS = 700;     // laisse le temps d'annoncer le succès et d'envoyer la mesure
   var CONSENT_VERSION = 'mentions-legales-2026-10';
-  var MAP_SRC = 'https://maps.google.com/maps?q=418+Ancienne+Route+des+Alpes+13100+Aix-en-Provence&t=&z=15&ie=UTF8&iwloc=&output=embed';
+
+  /* Biens proposés dans le sélecteur (valeur de l'option → message poli, FR et EN). */
+  var BIENS = {
+    '138': {
+      fr: 'Bonjour, je souhaite visiter le 4 pièces de 138 m². Pourriez-vous me recontacter pour convenir d\u2019un rendez-vous ? Merci.',
+      en: 'Hello, I would like to visit the 4-room, 138 m\u00b2 apartment. Could you please get back to me to arrange an appointment? Thank you.'
+    },
+    'duplex-216': {
+      fr: 'Bonjour, je souhaite visiter le duplex 4 pièces de 216 m². Pourriez-vous me recontacter pour convenir d\u2019un rendez-vous ? Merci.',
+      en: 'Hello, I would like to visit the 4-room, 216 m\u00b2 duplex. Could you please get back to me to arrange an appointment? Thank you.'
+    }
+  };
+
+  function hasBien(key) {
+    return Object.prototype.hasOwnProperty.call(BIENS, key);
+  }
 
   /* ─── Utilitaires ────────────────────────────────────────── */
   function $(id) { return document.getElementById(id); }
@@ -112,6 +128,47 @@
       input.removeAttribute('aria-invalid');
       removeDescribedBy(input, f.err);
     }
+  }
+
+  /* ─── Bien concerné : /contact?bien=138 ou ?bien=duplex-216 ──────
+     Présélectionne l'option du sélecteur et préremplit poliment le message. Seules les clés de BIENS
+     sont reconnues ; toute autre valeur est ignorée. Le message n'est jamais écrasé s'il a été modifié. */
+  function initBien() {
+    var select = $('typology');
+    var message = $('message');
+    if (!select || !message) return;
+
+    var prefill = '';   // dernier texte posé par ce script
+
+    function textFor(key) {
+      return hasBien(key) ? BIENS[key][lang()] : '';
+    }
+
+    function apply(key) {
+      if (message.value.trim() !== '' && message.value !== prefill) return;   // saisie de la personne : on n'y touche pas
+      prefill = textFor(key);
+      message.value = prefill;
+    }
+
+    var wanted = '';
+    try {
+      wanted = (new URLSearchParams(window.location.search).get('bien') || '').trim().toLowerCase();
+    } catch (e) { wanted = ''; }
+
+    if (hasBien(wanted)) {
+      select.value = wanted;
+      apply(wanted);
+    }
+
+    select.addEventListener('change', function () { apply(select.value); });
+
+    // Changement de langue : le préremplissage suit, tant qu'il n'a pas été modifié
+    document.addEventListener('59c:langchange', function () {
+      if (prefill && message.value === prefill) {
+        prefill = textFor(select.value);
+        message.value = prefill;
+      }
+    });
   }
 
   /* ─── Initialisation ─────────────────────────────────────── */
@@ -362,25 +419,7 @@
       }
     });
 
-    /* — Carte Google Maps : chargée au clic seulement — */
-    var mapBtn = $('mapLoad');
-    var mapBox = $('mapBox');
-    if (mapBtn && mapBox) {
-      mapBtn.hidden = false; // sans JS, seul le lien « Ouvrir dans Google Maps » est proposé
-      mapBtn.addEventListener('click', function () {
-        var iframe = document.createElement('iframe');
-        iframe.src = MAP_SRC;
-        iframe.title = lang() === 'en'
-          ? 'Map: Ponthieu Développement Holding, 418 Ancienne Route des Alpes, Aix-en-Provence'
-          : 'Carte : Ponthieu Développement Holding, 418 Ancienne Route des Alpes, Aix-en-Provence';
-        iframe.loading = 'lazy';
-        iframe.referrerPolicy = 'no-referrer-when-downgrade';
-        iframe.setAttribute('allowfullscreen', '');
-        mapBox.textContent = '';
-        mapBox.appendChild(iframe);
-        iframe.focus();
-      });
-    }
+    initBien();
   }
 
   if (document.readyState === 'loading') {

@@ -4,23 +4,23 @@
    et des cartes « À lire aussi » des articles.
 
    Principes
-   - Se charge APRÈS /style.css et n'utilise que ses variables
-     (--creme, --beige, --or, --stone…, polices serif/sans, .btn, .container).
+   - Se charge APRÈS /style.css et utilise ses jetons, dont la couche « IDENTITÉ 59 CÉZANNE »
+     (--pierre, --travertin, --brun, --brun-profond, --terra-texte, --ocre, --arche, --arche-s, .fond-brun, .has-trait).
      Rappel : html { font-size: 18px } dans style.css, donc 1 rem = 18 px.
-   - Tout sélecteur est scopé (.blog-*, .post-*) : la feuille est
-     inoffensive sur une page produit.
-   - Le doré --or (#C9A96E) est trop pâle pour du texte sur fond clair
-     (2,2:1 sur blanc). Texte doré = --blog-gold-text (= --or-texte de
-     style.css, repli #7F6422) : ≥ 4,5:1 sur --creme, --beige, --stone-light.
+   - Tout sélecteur est scopé (.blog-*, .post-*) : la feuille est inoffensive sur une autre page.
    - Aucun JavaScript requis (sommaire = liste d'ancres, FAQ = details).
 
-   Mise en page des articles (refonte « lecture confortable »)
-   - Colonne de lecture étroite et centrée (≈ 62 caractères par ligne,
-     texte ≈ 1,3 rem, interligne 1,62).
-   - Les figures sortent de la colonne et varient par rang (immense, moyenne,
-     petite décalée, grande : voir §5). Les tableaux sont un peu plus larges
-     que le texte. Rien n'est modifié dans le HTML des articles.
-   - Hub /blog : grille asymétrique de cartes de tailles variées (§8).
+   Identité de la plaquette, appliquée au blog
+   - Rythme des fonds, de haut en bas : en-tête travertin (tracé de la Sainte-Victoire dans une bande réservée,
+     coin bas-droit très arrondi) → colonne de lecture sur pierre sous voile de travertin → encarts travertin à un seul
+     angle arrondi → bloc d'appel .fond-brun (coin haut-gauche très arrondi, tracé clair dans sa bande réservée)
+     → « À lire aussi » travertin → pied de page brun.
+   - Un tracé ou une texture ne passe JAMAIS sous un paragraphe : les tracés ont une bande de padding réservée,
+     le sprig d'olivier de la marge n'apparaît que là où la colonne de lecture laisse de la place.
+   - Contrastes (calculés sur le point le plus sombre de fonds/travertin.webp, sous voile) : texte courant --text
+     ≥ 9:1 ; liens --or-texte ≥ 4,8:1 sur la pierre ; sur travertin les liens passent en --brun-profond.
+   - Figures d'articles en grand format, jamais recadrées, sans vide à côté (voir §5).
+   - Hub /blog : grille asymétrique de cartes de tailles variées, un seul angle très arrondi par photo (§8).
    ============================================================ */
 
 
@@ -30,13 +30,19 @@
 .post-cards,
 .post-card,
 .post-cta {
-  --blog-gold-text: var(--or-texte, #7F6422);   /* texte doré (jeton de style.css), ≥ 4,5:1 sur fonds clairs */
-  --blog-gold-hover: #5C4513;                   /* survol des liens dorés */
-  --blog-focus: var(--focus-ring, #7F6422);     /* anneau de focus sur fond clair */
+  --blog-gold-text: var(--or-texte, #8f4b36);   /* texte coloré : ≥ 4,5:1 sur la pierre ; --or sur fond brun (.fond-brun) */
+  --blog-gold-hover: var(--brun-profond, #3b231d);
+  --blog-focus: var(--focus-ring, #7b4538);     /* anneau de focus : brun sur fond clair, or clair sur .fond-brun */
   --blog-nav-h: 64px;                           /* hauteur de la barre fixe sur les pages blog */
-  --blog-text-w: 39.5rem;                       /* colonne de lecture : ≈ 65 caractères par ligne (30 em de large) */
+  --blog-text-w: 39.5rem;                       /* colonne de lecture : ≈ 65 caractères par ligne */
   --blog-table-w: 52rem;                        /* tableaux : plus larges que le texte, moins que les figures */
   --blog-wide-w: 1100px;                        /* figures et en-tête sur grand écran */
+  --blog-r: clamp(2.25rem, 4.2vw, 3.75rem);     /* grand rayon des encarts et des cartes (un seul angle) */
+  /* Fonds : texture sous voile, pour que le texte garde son contraste partout (voir calculs ci-dessus) */
+  --blog-fond-lecture: linear-gradient(rgba(246, 241, 231, 0.72), rgba(246, 241, 231, 0.72)), url("/fonds/travertin.webp");
+  --blog-fond-hero: linear-gradient(rgba(228, 214, 189, 0.58), rgba(228, 214, 189, 0.58)), url("/fonds/travertin.webp");
+  --blog-fond-panneau: linear-gradient(rgba(236, 226, 207, 0.62), rgba(236, 226, 207, 0.62)), url("/fonds/travertin.webp");
+  --blog-fond-bande: linear-gradient(rgba(228, 214, 189, 0.7), rgba(228, 214, 189, 0.7)), url("/fonds/travertin.webp");
 }
 /* Marge latérale de .container. Déclarée sur .blog-page seulement : les cartes (.post-card) l'héritent ainsi du
    bon réglage (1,25 rem sous 420 px) au lieu de la redéfinir à 2 rem et de déborder sur mobile. */
@@ -51,7 +57,7 @@
 /* Le hero est clair : la barre reste pleine et sombre (classe « scrolled » posée dans le HTML,
    conservée par animations.js). Filet de sécurité si « transparent » était ajouté. */
 .blog-page #navbar.transparent {
-  background: rgba(26, 23, 20, 0.97);
+  background: rgba(43, 28, 24, 0.97);
 }
 
 /* Décalage sous la barre fixe (64 px, hauteur de #navbar.scrolled) */
@@ -62,14 +68,6 @@
 /* Les ancres ne passent pas sous la barre fixe */
 .blog-page [id] {
   scroll-margin-top: calc(var(--blog-nav-h) + 1.5rem);
-}
-
-/* De 769 à 1180 px, huit liens + le logo ne tiennent pas sur une ligne (la barre de style.css
-   ne passe au burger qu'à 768 px) : sur les pages blog on bascule plus tôt.
-   À supprimer d'ici quand le point de rupture de style.css aura été relevé (demande au coordinateur). */
-@media (min-width: 769px) and (max-width: 1180px) {
-  .blog-page .nav-links { display: none; }
-  .blog-page .nav-burger { display: flex; }
 }
 
 /* Boutons : anneau de focus décalé, lisible sur fond clair */
@@ -85,27 +83,37 @@
 }
 
 
-/* ─── 2. En-tête d'article ─────────────────────────────────── */
-.post-hero {
+/* ─── 2. En-tête d'article et couverture du hub ────────────── */
+/* Couverture travertin (page 1 de la plaquette) : le tracé de la Sainte-Victoire occupe une BANDE RÉSERVÉE en bas
+   à gauche (padding-bas), le coin bas-droit est très arrondi et recouvre la colonne de lecture (marge négative). */
+.post-hero,
+.blog-hero {
   position: relative;
+  z-index: 2;
   isolation: isolate;
   overflow: hidden;
-  background: #f6f1e7 url("/fonds/travertin.webp") repeat 0 0 / 860px auto;   /* pierre de la plaquette (page 1) */
-  border-bottom: 1px solid var(--border);
-  padding: clamp(1.75rem, 4vw, 3rem) 0 clamp(2.5rem, 6vw, 4.5rem);
+  background-color: var(--travertin);
+  background-image: var(--blog-fond-hero);
+  background-size: auto, 860px auto;
+  background-repeat: repeat;
+  border-radius: 0 0 var(--arche) 0;
+  margin-bottom: calc(-1 * var(--arche));
+  padding: clamp(1.75rem, 4vw, 3rem) 0 clamp(7.5rem, 15.5vw, 12.5rem);
 }
-.post-hero::after {
+.post-hero::after,
+.blog-hero::after {
   content: "";
   position: absolute;
   z-index: -1;
   pointer-events: none;
-  right: -3%;
-  bottom: 4%;
-  width: min(58%, 820px);
-  aspect-ratio: 2033 / 367;
-  bottom: -2%;
-  background: url("/fonds/montagne-ligne.png") no-repeat right bottom / contain;   /* tracé de la Sainte-Victoire */
-  opacity: 0.38;
+  left: -3%;
+  bottom: clamp(1.25rem, 3vw, 2.5rem);
+  width: min(66%, 860px);
+  aspect-ratio: 2400 / 424;
+  background-color: var(--ocre);
+  opacity: 0.78;
+  -webkit-mask: url("/fonds/trace-1-mask.png") no-repeat left bottom / contain;
+          mask: url("/fonds/trace-1-mask.png") no-repeat left bottom / contain;   /* tracé de la Sainte-Victoire */
 }
 
 /* L'en-tête et la grille de lecture partagent la largeur « large » des figures */
@@ -140,7 +148,7 @@
   text-decoration: underline;
   text-decoration-thickness: 1px;
   text-underline-offset: 0.2em;
-  text-decoration-color: rgba(90, 85, 80, 0.4);
+  text-decoration-color: rgba(92, 74, 66, 0.45);
 }
 .post-breadcrumb a:hover {
   color: var(--text);
@@ -156,37 +164,30 @@
   font-weight: 700;
 }
 
-/* Étiquette de pilier (eyebrow) */
+/* Étiquette de pilier : petit trait manuscrit de la plaquette (script italique, sans capitales) */
 .post-pillar {
-  display: flex;
-  align-items: center;
-  gap: 0.8rem;
-  margin-bottom: 1.1rem;
-  font-family: var(--font-sans);
-  font-size: 0.8rem;
-  font-weight: 700;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: var(--blog-gold-text);
-}
-.post-pillar::before {
-  content: "";
-  flex: none;
-  width: 32px;
-  height: 1px;
-  background: currentColor;
+  display: block;
+  margin-bottom: 0.35rem;
+  font-family: var(--font-serif);
+  font-size: clamp(1.45rem, 1.2rem + 0.8vw, 1.9rem);
+  font-style: italic;
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--terra-texte);
 }
 
 /* Titre H1 */
 .post-title {
   max-width: 19em;
   font-family: var(--font-serif);
-  font-size: clamp(2.15rem, 1.4rem + 3.6vw, 4.2rem);
+  font-size: clamp(2.15rem, 1.4rem + 3.2vw, 3.9rem);
   font-weight: 400;
   line-height: 1.08;
   letter-spacing: -0.01em;
   font-variant-numeric: lining-nums;
-  color: var(--text);
+  color: var(--brun);
   text-wrap: balance;
 }
 
@@ -199,12 +200,12 @@
   color: var(--text-mid);
 }
 .post-meta a {
-  color: var(--blog-gold-text);
+  color: var(--brun-profond);
   text-decoration: underline;
   text-decoration-thickness: 1px;
   text-underline-offset: 0.2em;
 }
-.post-meta a:hover { color: var(--blog-gold-hover); }
+.post-meta a:hover { color: var(--terra-texte); }
 .post-meta a:focus-visible {
   outline: 2px solid var(--blog-focus);
   outline-offset: 3px;
@@ -212,31 +213,68 @@
 }
 
 
-/* ─── 3. Grille de lecture : sommaire discret + corps ───────── */
+/* ─── 3. Colonne de lecture : pierre sous voile de travertin, sommaire en encart ─── */
 .container.post-layout {
+  position: relative;
+  isolation: isolate;
   display: block;
-  padding-top: clamp(2rem, 4vw, 3.25rem);
-  padding-bottom: clamp(3.5rem, 7vw, 6rem);
+  padding-top: calc(var(--arche) + clamp(1.5rem, 3vw, 2.5rem));
+  padding-bottom: calc(var(--arche) + clamp(2.5rem, 5vw, 4rem));
+}
+/* Bande pleine largeur derrière la colonne (le tracé et la texture n'y passent jamais sous le texte : voile 72 %) */
+.container.post-layout::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 100vw;
+  transform: translateX(-50%);
+  background-color: var(--pierre);
+  background-image: var(--blog-fond-lecture);
+  background-size: auto, 860px auto;
+  background-repeat: repeat;
+}
+/* Brin d'olivier de la plaquette, dans la marge gauche, seulement là où la colonne laisse de la place */
+@media (min-width: 1280px) {
+  .container.post-layout::after {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    pointer-events: none;
+    top: calc(var(--arche) + 3.5rem);
+    right: calc(50% + var(--blog-text-w) / 2 + 2rem);
+    width: clamp(150px, 15vw, 230px);
+    aspect-ratio: 600 / 231;
+    background-color: var(--ocre);
+    opacity: 0.6;
+    -webkit-mask: url("/fonds/olivier-mask.png") no-repeat center / contain;
+            mask: url("/fonds/olivier-mask.png") no-repeat center / contain;
+    transform: rotate(-8deg);
+  }
 }
 
-/* Sommaire : liste d'ancres compacte, sans cadre, à la largeur du texte */
+/* Sommaire : encart travertin, un seul angle arrondi */
 .post-toc {
   max-width: var(--blog-text-w);
   margin: 0 auto clamp(2.25rem, 4vw, 3rem);
-  padding: 1rem 0 1.1rem;
-  border-top: 1px solid var(--border);
-  border-bottom: 1px solid var(--border);
+  padding: clamp(1.7rem, 3vw, 2.3rem) clamp(1.5rem, 3vw, 2.25rem) clamp(1.2rem, 2.4vw, 1.7rem);
+  background-color: var(--travertin);
+  background-image: var(--blog-fond-panneau);
+  background-size: auto, 860px auto;
+  border-radius: var(--blog-r) 0 0 0;
   font-size: 0.95rem;
   line-height: 1.4;
 }
 .post-toc-title {
-  margin-bottom: 0.45rem;
-  font-family: var(--font-sans);
-  font-size: 0.74rem;
-  font-weight: 700;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  color: var(--text-mid);
+  margin-bottom: 0.5rem;
+  font-family: var(--font-serif);
+  font-size: 1.6rem;
+  font-style: italic;
+  font-weight: 500;
+  line-height: 1.2;
+  color: var(--brun);
 }
 .post-toc ol {
   margin: 0;
@@ -247,10 +285,10 @@
 .post-toc a {
   display: block;
   padding: 0.3rem 0;
-  color: var(--text-mid);
+  color: var(--text);
   transition: color var(--transition-fast);
 }
-.post-toc a:hover { color: var(--text); text-decoration: underline; text-underline-offset: 0.2em; }
+.post-toc a:hover { color: var(--terra-texte); text-decoration: underline; text-underline-offset: 0.2em; }
 .post-toc a:focus-visible {
   outline: 2px solid var(--blog-focus);
   outline-offset: 2px;
@@ -266,10 +304,7 @@
   .post-toc {
     margin-left: calc(-1 * var(--blog-pad));
     margin-right: calc(-1 * var(--blog-pad));
-    padding: 0.85rem var(--blog-pad) 0.95rem;
-    border-top: 0;
-    border-left: 0;
-    border-right: 0;
+    padding: 1.5rem var(--blog-pad) 1.1rem;
   }
   .post-toc ol {
     display: flex;
@@ -285,10 +320,10 @@
   .post-toc ol::-webkit-scrollbar { display: none; }
   .post-toc li { flex: none; scroll-snap-align: start; }
   .post-toc a {
-    padding: 0.5rem 0.95rem;
-    border: 1px solid var(--stone);
-    border-radius: 50px;
-    background: var(--white);
+    padding: 0.55rem 1rem;
+    border: 1px solid rgba(123, 69, 56, 0.35);
+    border-radius: 999px;
+    background: rgba(246, 241, 231, 0.85);
     white-space: nowrap;
     color: var(--text);
   }
@@ -299,7 +334,7 @@
 .post-body {
   min-width: 0;
   font-family: var(--font-sans);
-  font-size: clamp(1.15rem, 1.07rem + 0.35vw, 1.3rem);  /* 20,7 px mobile → 23,4 px (18 px de base) ou 24,7 px (19 px de base) */
+  font-size: clamp(1.15rem, 1.07rem + 0.35vw, 1.3rem);  /* 20,7 px mobile → 23,4 px (18 px de base) */
   font-weight: 400;
   line-height: 1.62;
   color: var(--text);
@@ -346,7 +381,7 @@
   line-height: 1.14;
   letter-spacing: -0.005em;
   font-variant-numeric: lining-nums;
-  color: var(--text);
+  color: var(--brun);
   text-wrap: balance;
 }
 .post-body h2::before {
@@ -355,7 +390,7 @@
   width: 2.25rem;
   height: 2px;
   margin-bottom: 1.1rem;
-  background: var(--or);
+  background: var(--ocre);
 }
 .post-body h3 {
   margin-block: 2.5rem 0.8rem;
@@ -369,11 +404,10 @@
 }
 .post-body h4 {
   margin-block: 2rem 0.6rem;
-  font-size: 0.85rem;
+  font-size: 0.95rem;
   font-weight: 700;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--text-mid);
+  letter-spacing: 0.04em;
+  color: var(--brun);
 }
 
 /* Liens dans le texte : soulignés (jamais la couleur seule) */
@@ -381,7 +415,7 @@
   color: var(--blog-gold-text);
   text-decoration: underline;
   text-decoration-thickness: 1px;
-  text-decoration-color: rgba(127, 100, 34, 0.5);
+  text-decoration-color: rgba(143, 75, 54, 0.5);
   text-underline-offset: 0.2em;
   transition: color var(--transition-fast), text-decoration-color var(--transition-fast);
 }
@@ -403,7 +437,7 @@
 .post-body ol { list-style: decimal outside; }
 .post-body li { margin-bottom: 0.5em; padding-left: 0.3em; }
 .post-body li:last-child { margin-bottom: 0; }
-.post-body ul li::marker { color: var(--or); }
+.post-body ul li::marker { color: var(--terra); }
 .post-body ol li::marker {
   font-family: var(--font-sans);
   font-size: 0.95em;
@@ -429,8 +463,8 @@
   top: 0.45em;
   width: 0.95rem;
   height: 0.55rem;
-  border-left: 2px solid var(--blog-gold-text);
-  border-bottom: 2px solid var(--blog-gold-text);
+  border-left: 2px solid var(--terra-texte);
+  border-bottom: 2px solid var(--terra-texte);
   transform: rotate(-45deg);
 }
 
@@ -447,7 +481,7 @@
 .post-body blockquote {
   margin-block: 2.5rem;
   padding: 0.25rem 0 0.25rem 1.5rem;
-  border-left: 3px solid var(--or);
+  border-left: 3px solid var(--terra);
   font-family: var(--font-serif);
   font-size: 1.55rem;
   font-style: italic;
@@ -474,124 +508,79 @@
 
 /* ─── 5. Figures, tableaux, encarts, FAQ, mentions ─────────── */
 
-/* Figures : RYTHME par rang (nth-of-type parmi les <figure> enfants de .post-body, le HTML ne change pas).
-     1re · immense  : pleine largeur d'écran, recadrée en bandeau
-     2e  · moyenne  : à la largeur du texte (≈ 760 px), centrée
-     3e  · petite   : ≈ 480 px, décalée à DROITE, légende à gauche de l'image
-     4e  · grande   : ≈ 1100 px (format par défaut)
-     5e  · petite   : ≈ 480 px, décalée à GAUCHE, légende à droite
-     6e  · moyenne ; au-delà : grande.
-   Les images 2 et 3 gardent leur format d'origine (les axonométries ne sont jamais recadrées).
-   Mobile (≤ 700 px) : immense et grande débordent jusqu'aux bords de l'écran, la moyenne prend la colonne,
-   la petite fait 64 % de la largeur, alignée à droite ou à gauche. */
+/* Figures : GRAND FORMAT, jamais recadrées, jamais de vide à côté. Le rang (nth-of-type parmi les <figure> du corps)
+   fait alterner les formats sans toucher au HTML ; chaque photo a UN seul angle très arrondi (--arche) :
+     1       · immense : pleine largeur d'écran, angle haut-gauche
+     2 et 6  · déborde à DROITE : part du bord gauche de la colonne de lecture, va jusqu'au bord de l'écran
+     3 et 5  · déborde à GAUCHE : part du bord de l'écran, s'arrête au bord droit de la colonne de lecture
+     4 et +  · grande : 1100 px, centrée
+   Mobile (≤ 800 px) : toutes les figures vont d'un bord à l'autre de l'écran, un angle arrondi en alternance.
+   Les axonométries (fond blanc) sont fondues dans la pierre (multiply) : pas de rectangle blanc nu. */
 .post-body > .post-figure {
   max-width: var(--blog-wide-w);
-  margin-block: clamp(2.5rem, 6vw, 4rem);
+  margin-block: clamp(2.75rem, 6vw, 4.5rem);
 }
 .post-figure img {
+  display: block;
   width: 100%;
   height: auto;
   background: var(--stone-light);
 }
-.post-caption {
-  margin-top: 0.65rem;
+.post-figure img[src*="Axonometrie"] {
+  background: transparent;
+  mix-blend-mode: multiply;
+}
+.post-note {
+  margin-top: 1rem;
   font-family: var(--font-sans);
-  font-size: 0.82rem;
+  font-size: 0.85rem;
   font-style: italic;
   line-height: 1.5;
   letter-spacing: 0.01em;
-  color: var(--text-light);
+  color: var(--text-mid);
 }
-@media (min-width: 1172px) {
-  .post-figure img { border-radius: var(--radius); }
-}
-/* En dessous de la largeur « large », la figure grande déborde sur les marges et prend toute la largeur de l'écran */
-@media (max-width: 1171px) {
-  .post-body > .post-figure {
-    max-width: none;
-    margin-left: calc(-1 * var(--blog-pad));
-    margin-right: calc(-1 * var(--blog-pad));
-  }
-  .post-figure .post-caption {
-    box-sizing: border-box;
-    max-width: calc(var(--blog-text-w) + 2 * var(--blog-pad));
-    margin-left: auto;
-    margin-right: auto;
-    padding-inline: var(--blog-pad);
-  }
-}
+.post-body > .post-figure:nth-of-type(n+4) img { border-radius: 0 0 var(--arche) 0; }
 
 /* 1 · immense : pleine largeur d'écran (le .container est centré, 50 % − 50 vw ramène au bord de l'écran) */
 .post-body > .post-figure:nth-of-type(1) {
   max-width: none;
   margin-left: calc(50% - 50vw);
   margin-right: calc(50% - 50vw);
-  margin-block: clamp(2.5rem, 6vw, 4.5rem);
 }
-.post-figure:nth-of-type(1) img {
-  /* proportions d'origine : aucun recadrage */
-  height: auto;
-  border-radius: 0;
-}
-.post-figure:nth-of-type(1) .post-caption {
-  box-sizing: border-box;
-  max-width: calc(var(--blog-text-w) + 2 * var(--blog-pad));
-  margin-left: auto;
-  margin-right: auto;
-  padding-inline: var(--blog-pad);
-}
+.post-figure:nth-of-type(1) img { border-radius: var(--arche) 0 0 0; }
 
-/* 2 et 6 · moyenne : à la largeur du texte, centrée */
-.post-body > .post-figure:nth-of-type(2),
-.post-body > .post-figure:nth-of-type(6) {
-  max-width: var(--blog-text-w);
-  margin-left: auto;
-  margin-right: auto;
-}
-.post-figure:nth-of-type(2) img,
-.post-figure:nth-of-type(6) img { border-radius: var(--radius); }
-.post-figure:nth-of-type(2) .post-caption,
-.post-figure:nth-of-type(6) .post-caption {
-  max-width: none;
-  padding-inline: 0;
-}
-
-/* 3 (à droite) et 5 (à gauche) · petite : ≈ 480 px, légende à côté */
-.post-body > .post-figure:nth-of-type(3),
-.post-body > .post-figure:nth-of-type(5) {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) min(480px, 62%);
-  column-gap: clamp(1.25rem, 3vw, 2.5rem);
-  align-items: end;
-  max-width: var(--blog-wide-w);
-  margin-left: auto;
-  margin-right: auto;
-}
-.post-body > .post-figure:nth-of-type(5) { grid-template-columns: min(480px, 62%) minmax(0, 1fr); }
-.post-figure:nth-of-type(3) img,
-.post-figure:nth-of-type(5) img { grid-row: 1; border-radius: var(--radius); }
-.post-figure:nth-of-type(3) img { grid-column: 2; }
-.post-figure:nth-of-type(5) img { grid-column: 1; }
-.post-figure:nth-of-type(3) .post-caption,
-.post-figure:nth-of-type(5) .post-caption {
-  grid-row: 1;
-  max-width: 17rem;
-  margin: 0;
-  padding: 0;
-}
-.post-figure:nth-of-type(3) .post-caption { grid-column: 1; justify-self: end; text-align: right; }
-.post-figure:nth-of-type(5) .post-caption { grid-column: 2; justify-self: start; text-align: left; }
-
-@media (max-width: 700px) {
+@media (min-width: 801px) {
+  /* 2 et 6 · déborde à droite */
   .post-body > .post-figure:nth-of-type(2),
-  .post-body > .post-figure:nth-of-type(6) { max-width: none; }
+  .post-body > .post-figure:nth-of-type(6) {
+    max-width: none;
+    margin-left: max(0px, calc((100% - var(--blog-text-w)) / 2));
+    margin-right: calc(50% - 50vw);
+  }
+  .post-figure:nth-of-type(2) img,
+  .post-figure:nth-of-type(6) img { border-radius: 0 0 0 var(--arche); }
+  /* 3 et 5 · déborde à gauche */
   .post-body > .post-figure:nth-of-type(3),
-  .post-body > .post-figure:nth-of-type(5) { display: block; }
+  .post-body > .post-figure:nth-of-type(5) {
+    max-width: none;
+    margin-left: calc(50% - 50vw);
+    margin-right: max(0px, calc((100% - var(--blog-text-w)) / 2));
+  }
   .post-figure:nth-of-type(3) img,
-  .post-figure:nth-of-type(5) img { width: 64%; }
-  .post-figure:nth-of-type(3) img { margin-left: auto; }
-  .post-figure:nth-of-type(3) .post-caption,
-  .post-figure:nth-of-type(5) .post-caption { max-width: none; margin-top: 0.65rem; }
+  .post-figure:nth-of-type(5) img { border-radius: 0 var(--arche) 0 0; }
+}
+@media (max-width: 800px) {
+  .post-body > .post-figure {
+    max-width: none;
+    margin-left: calc(-1 * var(--blog-pad));
+    margin-right: calc(-1 * var(--blog-pad));
+  }
+  .post-figure:nth-of-type(1) img { border-radius: var(--arche-s) 0 0 0; }
+  .post-figure:nth-of-type(2) img,
+  .post-figure:nth-of-type(6) img { border-radius: 0 0 0 var(--arche-s); }
+  .post-figure:nth-of-type(3) img,
+  .post-figure:nth-of-type(5) img { border-radius: 0 var(--arche-s) 0 0; }
+  .post-body > .post-figure:nth-of-type(n+4) img { border-radius: 0 0 var(--arche-s) 0; }
 }
 
 /* Tableau de données (utiliser <caption>, <thead>, <th scope>) */
@@ -600,10 +589,10 @@
   margin-block: 2.5rem;
   border-collapse: separate;
   border-spacing: 0;
-  border: 1px solid var(--stone-light);
-  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+  border-radius: 0 var(--blog-r) 0 0;
   overflow: hidden;
-  background: var(--white);
+  background: rgba(255, 255, 255, 0.4);
   font-size: 1rem;
   line-height: 1.5;
   font-variant-numeric: tabular-nums;
@@ -617,23 +606,24 @@
   line-height: 1.3;
   text-align: left;
   font-variant-numeric: lining-nums;
-  color: var(--text);
+  color: var(--brun);
 }
 .post-table th,
 .post-table td {
   padding: 0.85rem 1.1rem;
   text-align: left;
   vertical-align: top;
-  border-bottom: 1px solid var(--stone-light);
+  border-bottom: 1px solid rgba(123, 69, 56, 0.16);
 }
 .post-table thead th {
-  background: var(--beige);
-  font-size: 0.78rem;
+  background-color: var(--travertin);
+  background-image: var(--blog-fond-panneau);
+  background-size: auto, 860px auto;
+  font-size: 0.82rem;
   font-weight: 700;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--text-mid);
-  border-bottom: 1px solid var(--stone);
+  letter-spacing: 0.06em;
+  color: var(--brun-profond);
+  border-bottom: 1px solid rgba(123, 69, 56, 0.3);
 }
 .post-table tbody th {
   font-weight: 700;
@@ -641,7 +631,7 @@
 }
 .post-table tbody tr:last-child th,
 .post-table tbody tr:last-child td { border-bottom: 0; }
-.post-table tbody tr:nth-child(even) { background: rgba(245, 240, 232, 0.45); }
+.post-table tbody tr:nth-child(even) { background: rgba(236, 226, 207, 0.42); }
 
 /* Les tableaux sont un peu plus larges que la colonne de texte */
 .post-body > .post-table,
@@ -688,77 +678,69 @@
   }
   .post-body > .post-table th,
   .post-body > .post-table td { min-width: 8.5rem; }
-  .post-body > .post-table thead th { border-top: 1px solid var(--stone); }
+  .post-body > .post-table thead th { border-top: 1px solid rgba(123, 69, 56, 0.3); }
   .post-table caption {
     width: calc(100vw - 2 * var(--blog-pad));
     font-size: 1.25rem;
   }
   .post-table th,
   .post-table td { padding: 0.7rem 0.85rem; font-size: 0.95rem; }
-  .post-table thead th { font-size: 0.74rem; }
+  .post-table thead th { font-size: 0.8rem; }
 }
 
-/* Encart (général) */
+/* Encarts : travertin, un seul angle très arrondi, texte sombre (pas d'ornement dessous) */
 .post-callout {
   margin-block: 2.75rem;
-  padding: 1.5rem 1.75rem;
-  background: var(--beige);
-  border: 1px solid var(--border);
-  border-left: 3px solid var(--or);
-  border-radius: var(--radius-md);
+  padding: clamp(1.75rem, 3.2vw, 2.4rem) clamp(1.5rem, 3.2vw, 2.4rem);
+  background-color: var(--travertin);
+  background-image: var(--blog-fond-panneau);
+  background-size: auto, 860px auto;
+  border: 0;
+  border-radius: 0 var(--blog-r) 0 0;
   font-size: 1.05rem;
   line-height: 1.65;
+  color: var(--text);
 }
 .post-callout > :last-child { margin-bottom: 0; }
 .post-callout p { margin-bottom: 0.9em; }
 .post-callout .post-callout-title {
   margin: 0 0 0.7rem;
   font-family: var(--font-serif);
-  font-size: clamp(1.45rem, 1.3rem + 0.5vw, 1.7rem);
+  font-size: clamp(1.55rem, 1.35rem + 0.55vw, 1.85rem);
+  font-style: italic;
   font-weight: 500;
   line-height: 1.25;
+  letter-spacing: 0;
+  text-transform: none;
   font-variant-numeric: lining-nums;
-  color: var(--text);
+  color: var(--brun);
 }
 .post-callout .post-callout-title::before { display: none; }
 .post-callout .btn { margin-top: 0.35rem; }
+.post-callout a:not(.btn) { color: var(--brun-profond); text-decoration: underline; text-underline-offset: 0.2em; }
+.post-callout a:not(.btn):hover { color: var(--terra-texte); }
 
-/* Encart « Le programme 59 Cézanne » : sobre, sans cadre ni ombre, texte réduit.
-   Un filet haut et bas, un petit intitulé, la suite en gris moyen. */
+/* Encart « Le programme 59 Cézanne » : même travertin, texte un peu plus petit, coin opposé.
+   Il vient APRÈS l'information utile et ne doit pas ressembler à de la publicité. */
 .post-body > .post-callout--programme {
   margin-block: clamp(3rem, 6vw, 4.5rem) 0;
-  padding: 1.35rem 0 1.5rem;
-  background: none;
-  border: 0;
-  border-top: 1px solid var(--stone);
-  border-bottom: 1px solid var(--stone);
-  border-radius: 0;
-  box-shadow: none;
+  border-radius: var(--blog-r) 0 0 0;
   font-size: 1rem;
   line-height: 1.6;
-  color: var(--text-mid);
+  color: var(--text);
 }
-.post-callout--programme .post-callout-title {
-  margin-bottom: 0.7rem;
-  font-family: var(--font-sans);
-  font-size: 0.78rem;
-  font-weight: 700;
-  letter-spacing: 0.2em;
-  line-height: 1.4;
-  text-transform: uppercase;
-  color: var(--blog-gold-text);
-}
+.post-callout--programme .post-callout-title { margin-bottom: 0.7rem; }
 .post-callout--programme p { margin-bottom: 0.75em; }
 .post-callout--programme p:last-child { margin-bottom: 0; }
 .post-callout--programme strong { color: var(--text); }
 .post-callout--programme .btn { margin-top: 0.5rem; }
 
-/* Boutons « outline » sur fond clair : survol lisible (le doré pâle ne l'est pas) */
+/* Boutons « outline » sur fond clair : survol lisible */
 .post-callout .btn-outline-dark:hover,
 .post-body .btn-outline-dark:hover,
 .post-related .btn-outline-dark:hover {
-  border-color: var(--blog-gold-text);
-  color: var(--blog-gold-hover);
+  border-color: var(--terra-texte);
+  color: var(--terra-texte);
 }
 
 /* FAQ en details/summary : compacte (intertitre plus petit, questions et réponses resserrées) */
@@ -794,7 +776,7 @@
 }
 .post-faq summary::-webkit-details-marker { display: none; }
 .post-faq summary::marker { content: ""; }
-.post-faq summary:hover { color: var(--blog-gold-text); }
+.post-faq summary:hover { color: var(--terra-texte); }
 .post-faq summary:focus-visible {
   outline: 2px solid var(--blog-focus);
   outline-offset: 4px;
@@ -806,17 +788,17 @@
   flex: none;
   width: 1.5rem;
   height: 1.5rem;
-  border: 1px solid var(--blog-gold-text);
+  border: 1px solid var(--terra-texte);
   border-radius: 50%;
   background:
-    linear-gradient(var(--blog-gold-text), var(--blog-gold-text)) center / 0.6rem 1.5px no-repeat,
-    linear-gradient(var(--blog-gold-text), var(--blog-gold-text)) center / 1.5px 0.6rem no-repeat;
+    linear-gradient(var(--terra-texte), var(--terra-texte)) center / 0.6rem 1.5px no-repeat,
+    linear-gradient(var(--terra-texte), var(--terra-texte)) center / 1.5px 0.6rem no-repeat;
   transition: background-size var(--transition-fast), background-color var(--transition-fast);
 }
 .post-faq details[open] summary::after {
   background-size: 0.6rem 1.5px, 1.5px 0;
 }
-.post-faq summary:hover::after { background-color: rgba(201, 169, 110, 0.14); }
+.post-faq summary:hover::after { background-color: rgba(184, 98, 72, 0.14); }
 .post-faq details > :not(summary) {
   padding-right: 2.25rem;
   font-size: 1rem;
@@ -840,8 +822,8 @@
 .post-body > .post-disclaimer {
   margin-block: 2.25rem 0;
   padding: 0.85rem 1.1rem;
-  background: rgba(245, 240, 232, 0.6);
-  border-left: 2px solid var(--stone);
+  background: rgba(236, 226, 207, 0.5);
+  border-left: 2px solid var(--ocre);
   border-radius: 0 var(--radius) var(--radius) 0;
   font-size: 0.9rem;
   line-height: 1.55;
@@ -860,13 +842,13 @@
 .post-sources li {
   margin: 0;
   padding: 0.45rem 0;
-  border-bottom: 1px solid var(--stone-light);
+  border-bottom: 1px solid rgba(123, 69, 56, 0.16);
   font-size: 0.9rem;
   line-height: 1.45;
   color: var(--text-mid);
   overflow-wrap: anywhere;
 }
-.post-sources li:first-child { border-top: 1px solid var(--stone-light); }
+.post-sources li:first-child { border-top: 1px solid rgba(123, 69, 56, 0.16); }
 .post-sources a[target="_blank"]::after {
   content: "\00A0\2197";
   content: "\00A0\2197" / "";
@@ -876,23 +858,25 @@
 }
 
 
-/* ─── 6. Bande d'appel à l'action ──────────────────────────── */
+/* ─── 6. Bloc d'appel final : brun, coin haut-gauche très arrondi, tracé clair dans sa bande réservée ─── */
+/* Le HTML porte .fond-brun .has-trait (couche d'identité de style.css) ; le tracé (::before) est en bas, à droite,
+   sous une bande de padding réservée : il ne passe jamais sous un texte. */
 .post-cta {
   position: relative;
-  padding: clamp(3.5rem, 8vw, 5.5rem) 0;
-  background: var(--dark);
-  color: var(--white);
+  z-index: 2;
+  margin-top: calc(-1 * var(--arche));
+  padding: clamp(4rem, 8vw, 6rem) 0 clamp(7.5rem, 15vw, 12rem);
+  border-radius: var(--arche) 0 0 0;
   text-align: center;
+  --trait-w: min(88%, 980px);
+  --trait-op: 0.22;
+  --trait-img: url("/fonds/trace-1-mask.png");   /* dessin complet de la plaquette (montagne-ligne.png est rognée à gauche) */
+  --trait-ratio: 2400 / 424;
 }
-.post-cta::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 50%;
-  width: 4rem;
-  height: 2px;
-  background: var(--or);
-  transform: translateX(-50%);
+.post-cta.has-trait::before { bottom: clamp(0.75rem, 2vw, 1.75rem); right: -2%; }
+.post-cta .script {
+  font-size: clamp(1.9rem, 1.5rem + 1.4vw, 2.7rem);
+  margin-bottom: 0.1rem;
 }
 .post-cta h2 {
   max-width: 24ch;
@@ -902,7 +886,7 @@
   font-weight: 300;
   line-height: 1.15;
   font-variant-numeric: lining-nums;
-  color: var(--white);
+  color: #fff;
   text-wrap: balance;
 }
 .post-cta p {
@@ -910,45 +894,82 @@
   margin: 0 auto 1.25rem;
   font-size: 1.05rem;
   line-height: 1.65;
-  color: rgba(255, 255, 255, 0.8);
+  color: rgba(255, 255, 255, 0.84);
 }
-.post-cta .container > p:last-child {
+/* Disponibilités : une phrase, désirable, sans prix, datée (la date se met à jour avec docs/set_dispo_date.py) */
+.post-cta .post-cta-dispo {
+  max-width: 40rem;
+  margin: 1.6rem auto 0;
+  font-family: var(--font-serif);
+  font-size: clamp(1.35rem, 1.15rem + 0.8vw, 1.7rem);
+  font-style: italic;
+  font-weight: 500;
+  line-height: 1.4;
+  color: #f6e3d0;
+  text-wrap: balance;
+}
+.post-cta .post-cta-dispo time { font-style: normal; white-space: nowrap; }
+.post-cta .post-cta-actions {
   display: flex;
   flex-wrap: wrap;
+  align-items: center;
   justify-content: center;
   gap: 0.9rem 1rem;
-  margin-top: 2rem;
-  margin-bottom: 0;
   max-width: none;
+  margin: 2rem 0 0;
 }
+.post-cta .btn { min-height: 48px; }
 .post-cta .btn-outline-dark {
-  border-color: rgba(255, 255, 255, 0.5);
-  color: var(--white);
+  border-color: rgba(255, 255, 255, 0.55);
+  color: #fff;
 }
 .post-cta .btn-outline-dark:hover {
-  border-color: var(--or);
-  color: var(--or);
+  border-color: var(--or-light);
+  color: var(--or-light);
 }
+.post-cta .post-cta-link {
+  padding: 0.6rem 0.4rem;
+  color: #f1dcc6;
+  font-size: 1rem;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.25em;
+}
+.post-cta .post-cta-link:hover { color: #fff; text-decoration-thickness: 2px; }
 .post-cta a:focus-visible {
-  outline: 2px solid var(--or);
+  outline: 2px solid var(--or-light);
   outline-offset: 3px;
 }
+/* Les boutons du bloc d'appel gardent un anneau clair (la règle « .blog-page .btn:focus-visible » plus haut le rendait brun, invisible sur brun / terracotta) */
+.post-cta .btn:focus-visible { outline-color: var(--or-light); }
+.post-cta.fond-terracotta a:focus-visible,
+.post-cta.fond-terracotta .btn:focus-visible { outline-color: #fff; }
+/* Hub : le pied de page est brun lui aussi ; le bloc d'appel y passe en terracotta (jamais deux bruns d'affilée) */
+.post-cta.fond-terracotta .btn-primary { background: #fff; color: var(--brun-profond); box-shadow: 0 4px 20px rgba(59, 35, 29, 0.25); }
+.post-cta.fond-terracotta .btn-primary:hover { background: var(--travertin); color: var(--brun-profond); }
+.post-cta.fond-terracotta .post-cta-dispo { color: #fff; }
+.post-cta.fond-terracotta .post-cta-link { color: #fff; }
+.post-cta.fond-terracotta p { color: rgba(255, 255, 255, 0.92); }
 
 
 /* ─── 7. « À lire aussi » + cartes ─────────────────────────── */
 .post-related {
-  padding: clamp(3rem, 7vw, 5rem) 0;
-  background: var(--beige);
+  position: relative;
+  z-index: 1;
+  padding: clamp(3.5rem, 7vw, 5.5rem) 0;
+  background-color: var(--sable);
+  background-image: var(--blog-fond-bande);
+  background-size: auto, 860px auto;
 }
 .post-related h2 {
-  margin: 0 0 clamp(1.75rem, 4vw, 2.5rem);
+  margin: 0 0 clamp(1.75rem, 4vw, 2.75rem);
   font-family: var(--font-serif);
   font-size: clamp(1.9rem, 1.4rem + 1.8vw, 2.6rem);
   font-weight: 400;
   line-height: 1.2;
   font-variant-numeric: lining-nums;
-  text-align: center;
-  color: var(--text);
+  text-align: left;
+  color: var(--brun);
 }
 
 .post-cards {
@@ -962,52 +983,44 @@
 
 .post-card {
   position: relative;
-  background: var(--white);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-md);
-  box-shadow: var(--shadow-sm);
-  transition: transform var(--transition), box-shadow var(--transition), border-color var(--transition);
+  background: var(--pierre);
+  border: 1px solid rgba(123, 69, 56, 0.16);
+  border-radius: var(--blog-r) 0 0 0;
+  box-shadow: none;
+  transition: background-color var(--transition-fast), border-color var(--transition-fast);
 }
+.post-card:nth-child(3n+2) { border-radius: 0 var(--blog-r) 0 0; }
+.post-card:nth-child(3n+3) { border-radius: 0 0 var(--blog-r) 0; }
 .post-card:hover {
-  transform: translateY(-4px);
-  box-shadow: var(--shadow);
-  border-color: var(--or);
+  background: #fff;
+  border-color: rgba(123, 69, 56, 0.4);
 }
 
 /* Forme simple : <li class="post-card"><a><span pillar><span title></a></li> */
 .post-card > a {
   display: flex;
   flex-direction: column;
-  gap: 0.6rem;
+  gap: 0.45rem;
   height: 100%;
-  padding: 1.6rem 1.75rem;
+  padding: 2.1rem 1.75rem 1.7rem;
   color: inherit;
-  border-radius: var(--radius-md);
+  border-radius: inherit;
 }
-.post-card > a::after {
-  content: "\2192";
-  content: "\2192" / "";
-  margin-top: auto;
-  padding-top: 0.4rem;
-  font-size: 1.25rem;
-  line-height: 1;
-  color: var(--blog-gold-text);
-  transition: transform var(--transition-fast);
-}
-.post-card > a:hover::after { transform: translateX(4px); }
 .post-card > a:focus-visible {
   outline: 2px solid var(--blog-focus);
   outline-offset: 3px;
 }
 
+/* Étiquette de pilier : trait manuscrit (italique, sans capitales) */
 .post-card-pillar {
   display: block;
-  font-family: var(--font-sans);
-  font-size: 0.74rem;
-  font-weight: 700;
-  letter-spacing: 0.18em;
-  line-height: 1.5;
-  text-transform: uppercase;
+  font-family: var(--font-serif);
+  font-size: 1.2rem;
+  font-style: italic;
+  font-weight: 500;
+  letter-spacing: 0;
+  line-height: 1.3;
+  text-transform: none;
   color: var(--blog-gold-text);
 }
 .post-card-title {
@@ -1021,7 +1034,7 @@
   text-wrap: balance;
   transition: color var(--transition-fast);
 }
-.post-card:hover .post-card-title { color: var(--blog-gold-hover); }
+.post-card:hover .post-card-title { color: var(--terra-texte); }
 
 /* Forme « lien étendu » : titre <h2>/<h3> avec <a> dont la zone couvre toute la carte */
 .post-card-title > a {
@@ -1033,7 +1046,7 @@
   position: absolute;
   inset: 0;
   z-index: 1;
-  border-radius: var(--radius-md);
+  border-radius: inherit;
 }
 .post-card-title > a:focus-visible { outline: none; }
 .post-card-title > a:focus-visible::after {
@@ -1043,103 +1056,51 @@
 
 
 /* ─── 8. Hub /blog ─────────────────────────────────────────── */
-/* Budget de texte : un titre, une phrase, 14 cartes (pilier + titre), une question. */
+/* Budget de texte : un trait manuscrit, un titre, une phrase, 14 cartes (pilier + titre + extrait), un appel. */
 
-/* Héros photographique */
-.blog-hero {
-  position: relative;
-  isolation: isolate;
-  display: flex;
-  align-items: flex-end;
-  min-height: clamp(25rem, 62vh, 38rem);
-  overflow: hidden;
-  background: var(--dark);
-  color: var(--white);
-}
-.blog-hero-bg {
-  position: absolute;
-  inset: 0;
-  z-index: -2;
-}
-.blog-hero-bg img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: center 45%;
-}
-.blog-hero::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  background: linear-gradient(
-    to top,
-    rgba(15, 12, 8, 0.88) 0%,
-    rgba(15, 12, 8, 0.62) 50%,
-    rgba(15, 12, 8, 0.5) 100%
-  );
-}
-/* Grand écran : le texte est à gauche, l'image respire à droite */
-@media (min-width: 900px) {
-  .blog-hero::after {
-    background:
-      linear-gradient(90deg, rgba(15, 12, 8, 0.86) 0%, rgba(15, 12, 8, 0.66) 45%, rgba(15, 12, 8, 0.2) 80%, rgba(15, 12, 8, 0.1) 100%),
-      linear-gradient(to top, rgba(15, 12, 8, 0.5) 0%, rgba(15, 12, 8, 0) 45%);
-  }
-}
+/* Couverture : mêmes règles que l'en-tête d'article (§2). Ici le texte est plus grand. */
 .blog-hero-inner {
   width: 100%;
-  padding-top: clamp(1.5rem, 3vw, 2.25rem);
-  padding-bottom: clamp(2.25rem, 5vw, 4rem);
+  padding-top: clamp(0.25rem, 1vw, 0.75rem);
 }
-.blog-hero .post-breadcrumb,
-.blog-hero .post-breadcrumb li,
-.blog-hero .post-breadcrumb li + li::before,
-.blog-hero .post-breadcrumb a {
-  color: rgba(255, 255, 255, 0.88);
-}
-.blog-hero .post-breadcrumb a { text-decoration-color: rgba(255, 255, 255, 0.45); }
-.blog-hero .post-breadcrumb a:hover { color: var(--or-light); text-decoration-color: currentColor; }
-.blog-hero .post-breadcrumb [aria-current="page"] { color: var(--white); }
-.blog-hero .post-breadcrumb a:focus-visible,
-.blog-hero a:focus-visible { outline-color: var(--or); }
+.blog-hero-script { font-size: clamp(1.9rem, 1.4rem + 1.4vw, 2.7rem); margin-bottom: 0.2rem; color: var(--terra-texte); }
 .blog-hero-title {
   max-width: 14em;
   font-family: var(--font-serif);
-  font-size: clamp(2.8rem, 1.2rem + 5.6vw, 5.6rem);
+  font-size: clamp(2.8rem, 1.2rem + 5.6vw, 5.4rem);
   font-weight: 300;
   line-height: 1.06;
   letter-spacing: -0.01em;
   font-variant-numeric: lining-nums;
-  color: var(--white);
+  color: var(--brun);
   text-wrap: balance;
 }
 .blog-hero-sub {
   max-width: 34rem;
   margin-top: 1.25rem;
   font-size: clamp(1.2rem, 1.1rem + 0.5vw, 1.5rem);
-  font-weight: 300;
+  font-weight: 400;
   line-height: 1.5;
   letter-spacing: 0.01em;
-  color: rgba(255, 255, 255, 0.9);
-}
-/* Légende « Illustration non contractuelle » : petite et discrète */
-.blog-hero-note {
-  margin-top: 1.5rem;
-  font-size: 0.75rem;
-  letter-spacing: 0.04em;
-  color: rgba(255, 255, 255, 0.7);
+  color: var(--text-mid);
 }
 
-/* Grille unique de cartes de TAILLES VARIÉES.
+/* Grille unique de cartes de TAILLES VARIÉES, sur pierre sous voile de travertin.
    Bureau (≥ 900 px) : 12 colonnes, motif de 14 cartes (nth-child 14n+k, il se répète si l'on ajoute des guides) :
    grande carte haute, petites décalées, carte large, « immense » (texte sur l'image), portraits, panoramas.
+   Chaque photo a UN seul angle très arrondi (--rad), alterné d'une carte à l'autre ; jamais recadrée.
    Mobile : une colonne, mais largeur et format d'image changent d'une carte à l'autre (cycle de 4). */
 .blog-grid {
-  padding-top: clamp(2.5rem, 6vw, 5rem);
-  padding-bottom: clamp(3.5rem, 8vw, 6.5rem);
+  position: relative;
+  isolation: isolate;
+  background-color: var(--pierre);
+  background-image: var(--blog-fond-lecture);
+  background-size: auto, 860px auto;
+  padding-top: calc(var(--arche) + clamp(1.5rem, 3vw, 2.5rem));
+  padding-bottom: calc(var(--arche) + clamp(2.5rem, 5vw, 4rem));
 }
 .blog-list {
+  position: relative;
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   gap: clamp(2.5rem, 8vw, 3.75rem) 0;
@@ -1151,7 +1112,7 @@
 /* Empêche la coupure d'un nom propre composé (Aix-en-Provence) dans un titre */
 .blog-nowrap { white-space: nowrap; }
 
-/* Carte : image, étiquette de pilier, titre, un court extrait. Sans cadre ni date. */
+/* Carte : image, trait de pilier, titre, un court extrait. Sans cadre ni date. */
 .blog-card {
   --ts-l: clamp(2.1rem, 1.3rem + 1.8vw, 2.9rem);
   --ts-m: clamp(1.75rem, 1.15rem + 1.2vw, 2.2rem);
@@ -1165,8 +1126,7 @@
   box-shadow: none;
 }
 .blog-card:hover {
-  transform: none;
-  box-shadow: none;
+  background: none;
   border-color: transparent;
 }
 .blog-card-media {
@@ -1174,36 +1134,24 @@
   width: var(--mw, 100%);
   margin: 0 0 0 var(--ml, 0);
   overflow: hidden;
-  border-radius: var(--radius);
+  border-radius: var(--rad, 0 0 0 0);
   background: var(--stone-light);
 }
 .blog-card-media img {
   display: block;
   width: 100%;
   height: auto;
-  transition: transform 0.9s ease;
 }
-.blog-card:hover .blog-card-media img { transform: scale(1.035); }
-.blog-card-note {
-  position: absolute;
-  left: 0.75rem;
-  bottom: 0.75rem;
-  max-width: calc(100% - 1.5rem);
-  padding: 0.15rem 0.65rem;
-  border-radius: 50px;
-  background: rgba(26, 23, 20, 0.68);
-  font-size: 0.72rem;
-  letter-spacing: 0.04em;
-  line-height: 1.5;
-  color: rgba(255, 255, 255, 0.92);
-}
+/* Axonométries (fond blanc) : fondues dans la pierre, pas de rectangle blanc */
+.blog-card-media img[src*="Axonometrie"] { mix-blend-mode: multiply; }
+.blog-card-media:has(img[src*="Axonometrie"]) { background: transparent; }
 .blog-card-body {
   display: flex;
   flex-direction: column;
-  gap: 0.55rem;
+  gap: 0.4rem;
   padding: 0 0.1rem;
 }
-.blog-card-body .post-card-pillar { font-size: 0.78rem; }
+.blog-card-body .post-card-pillar { font-size: 1.28rem; }
 .blog-card-body .post-card-title {
   font-size: var(--ts, var(--ts-m));
   font-weight: 500;
@@ -1219,31 +1167,33 @@
   display: inline-block;
   margin-left: 0.6rem;
   padding: 0.05rem 0.65rem;
-  border: 1px solid var(--blog-gold-text);
+  border: 1px solid var(--terra-texte);
   border-radius: 50px;
-  font-size: 0.72rem;
-  letter-spacing: 0.1em;
-  color: var(--blog-gold-text);
-  vertical-align: 0.05em;
+  font-family: var(--font-sans);
+  font-size: 0.78rem;
+  font-style: normal;
+  letter-spacing: 0.06em;
+  color: var(--terra-texte);
+  vertical-align: 0.1em;
 }
-.blog-card .post-card-title > a::after { border-radius: var(--radius); }
+.blog-card .post-card-title > a::after { border-radius: 0; }
+.blog-card .post-card-title > a:hover { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 0.18em; }
 
 /* Mobile et tablette (< 900 px) : cycle de 4 cartes — pleine largeur d'écran / portrait à droite / pleine colonne / petit carré à gauche */
 @media (max-width: 899px) {
   .blog-card:nth-child(4n+1) { --ts: var(--ts-l); }
   .blog-card:nth-child(4n+1) .blog-card-media {
-    --r: 4 / 3;
     width: auto;
     margin-left: calc(-1 * var(--blog-pad));
     margin-right: calc(-1 * var(--blog-pad));
-    border-radius: 0;
+    --rad: var(--arche-s) 0 0 0;
   }
   .blog-card:nth-child(4n+2) { --ts: var(--ts-m); }
-  .blog-card:nth-child(4n+2) .blog-card-media { --r: 4 / 5; --mw: 80%; --ml: auto; }
+  .blog-card:nth-child(4n+2) .blog-card-media { --mw: 84%; --ml: auto; --rad: 0 0 0 var(--arche-s); }
   .blog-card:nth-child(4n+3) { --ts: var(--ts-m); }
-  .blog-card:nth-child(4n+3) .blog-card-media { --r: 3 / 2; }
+  .blog-card:nth-child(4n+3) .blog-card-media { --rad: 0 var(--arche-s) 0 0; }
   .blog-card:nth-child(4n+4) { --ts: var(--ts-s); }
-  .blog-card:nth-child(4n+4) .blog-card-media { --r: 1 / 1; --mw: 66%; }
+  .blog-card:nth-child(4n+4) .blog-card-media { --mw: 72%; --rad: 0 0 var(--arche-s) 0; }
 }
 
 /* Bureau (≥ 900 px) : 12 colonnes asymétriques */
@@ -1260,54 +1210,68 @@
     margin-top: var(--mt, 0);
   }
 
+  /* Cercle-montagne de la plaquette (p. 6) dans le vide laissé à droite de la grande carte (rangée 1) */
+  .blog-list::before {
+    content: "";
+    position: absolute;
+    pointer-events: none;
+    top: 0.5rem;
+    right: 1%;
+    width: clamp(150px, 15vw, 220px);
+    aspect-ratio: 900 / 687;
+    background-color: var(--ocre);
+    opacity: 0.6;
+    -webkit-mask: url("/fonds/trace-2-mask.png") no-repeat center / contain;
+            mask: url("/fonds/trace-2-mask.png") no-repeat center / contain;
+  }
+
   /* 1 · grande carte large et haute */
   .blog-card:nth-child(14n+1)  { --c: 1 / span 8;  --ts: var(--ts-l); }
-  .blog-card:nth-child(14n+1)  .blog-card-media { --r: 4 / 3; }
+  .blog-card:nth-child(14n+1)  .blog-card-media { --rad: var(--arche) 0 0 0; }
   /* 2 · petit portrait, posé en bas de la rangée */
   .blog-card:nth-child(14n+2)  { --c: 9 / span 4;  --ts: var(--ts-s); --self: end; }
-  .blog-card:nth-child(14n+2)  .blog-card-media { --r: 4 / 5; --op: 62% center; }
+  .blog-card:nth-child(14n+2)  .blog-card-media { --rad: 0 0 0 var(--arche-s); }
   /* 3 · moyenne carrée */
   .blog-card:nth-child(14n+3)  { --c: 1 / span 5;  --ts: var(--ts-m); }
-  .blog-card:nth-child(14n+3)  .blog-card-media { --r: 1 / 1; }
+  .blog-card:nth-child(14n+3)  .blog-card-media { --rad: 0 var(--arche) 0 0; }
   /* 4 · moyenne large, décalée vers le bas */
   .blog-card:nth-child(14n+4)  { --c: 6 / span 7;  --ts: var(--ts-m); --mt: 5rem; }
-  .blog-card:nth-child(14n+4)  .blog-card-media { --r: 16 / 10; }
+  .blog-card:nth-child(14n+4)  .blog-card-media { --rad: 0 0 var(--arche) 0; }
   /* 5-7 · trois petites, trois formats, trois hauteurs */
   .blog-card:nth-child(14n+5)  { --c: 1 / span 4;  --ts: var(--ts-s); }
-  .blog-card:nth-child(14n+5)  .blog-card-media { --r: 3 / 4; }
+  .blog-card:nth-child(14n+5)  .blog-card-media { --rad: var(--arche-s) 0 0 0; }
   .blog-card:nth-child(14n+6)  { --c: 5 / span 4;  --ts: var(--ts-s); --mt: 6rem; }
-  .blog-card:nth-child(14n+6)  .blog-card-media { --r: 1 / 1; }
+  .blog-card:nth-child(14n+6)  .blog-card-media { --rad: 0 var(--arche-s) 0 0; }
   .blog-card:nth-child(14n+7)  { --c: 9 / span 4;  --ts: var(--ts-s); --mt: 2rem; }
-  .blog-card:nth-child(14n+7)  .blog-card-media { --r: 3 / 2; }
+  .blog-card:nth-child(14n+7)  .blog-card-media { --rad: 0 0 0 var(--arche-s); }
   /* 8 · immense : toute la largeur, texte sur l'image */
   .blog-card:nth-child(14n+8)  { --c: 1 / -1; }
-  .blog-card:nth-child(14n+8)  .blog-card-media { --r: 21 / 9; }
+  .blog-card:nth-child(14n+8)  .blog-card-media { --rad: 0 0 0 var(--arche); }
   /* 9 · moyenne large */
   .blog-card:nth-child(14n+9)  { --c: 1 / span 7;  --ts: var(--ts-m); }
-  .blog-card:nth-child(14n+9)  .blog-card-media { --r: 3 / 2; }
+  .blog-card:nth-child(14n+9)  .blog-card-media { --rad: 0 var(--arche) 0 0; }
   /* 10 · portrait moyen, décalé */
   .blog-card:nth-child(14n+10) { --c: 8 / span 5;  --ts: var(--ts-m); --mt: 4rem; }
-  .blog-card:nth-child(14n+10) .blog-card-media { --r: 4 / 5; }
+  .blog-card:nth-child(14n+10) .blog-card-media { --rad: var(--arche) 0 0 0; }
   /* 11 · petite, paysage */
   .blog-card:nth-child(14n+11) { --c: 1 / span 4;  --ts: var(--ts-s); }
-  .blog-card:nth-child(14n+11) .blog-card-media { --r: 4 / 3; }
+  .blog-card:nth-child(14n+11) .blog-card-media { --rad: 0 0 var(--arche-s) 0; }
   /* 12 · panorama large et bas */
   .blog-card:nth-child(14n+12) { --c: 5 / span 8;  --ts: var(--ts-l); --mt: 3rem; }
-  .blog-card:nth-child(14n+12) .blog-card-media { --r: 2 / 1; }
+  .blog-card:nth-child(14n+12) .blog-card-media { --rad: 0 0 var(--arche) 0; }
   /* 13-14 · deux moyennes décalées pour finir */
   .blog-card:nth-child(14n+13) { --c: 2 / span 5;  --ts: var(--ts-m); }
-  .blog-card:nth-child(14n+13) .blog-card-media { --r: 4 / 3; }
+  .blog-card:nth-child(14n+13) .blog-card-media { --rad: var(--arche-s) 0 0 0; }
   .blog-card:nth-child(14n+14) { --c: 8 / span 5;  --ts: var(--ts-m); --self: end; }
-  .blog-card:nth-child(14n+14) .blog-card-media { --r: 1 / 1; }
+  .blog-card:nth-child(14n+14) .blog-card-media { --rad: 0 var(--arche-s) 0 0; }
 
   /* Carte « immense » : le texte se pose sur le bas de l'image (le lien étendu reste au-dessus, donc toute la carte clique) */
   .blog-card:nth-child(14n+8) .blog-card-media::after {
     content: "";
     position: absolute;
     inset: 0;
-    background: linear-gradient(to top, rgba(15, 12, 8, 0.93) 0%, rgba(15, 12, 8, 0.74) 38%, rgba(15, 12, 8, 0.34) 72%, rgba(15, 12, 8, 0.12) 100%);
+    background: linear-gradient(to top, rgba(26, 17, 14, 0.93) 0%, rgba(26, 17, 14, 0.74) 38%, rgba(26, 17, 14, 0.34) 72%, rgba(26, 17, 14, 0.12) 100%);
   }
-  .blog-card:nth-child(14n+8) .blog-card-note { top: 0.9rem; bottom: auto; }
   .blog-card:nth-child(14n+8) .blog-card-body {
     position: absolute;
     left: clamp(1.5rem, 3.5vw, 3.5rem);
@@ -1319,19 +1283,18 @@
     align-items: end;
     padding: 0;
   }
-  .blog-card:nth-child(14n+8) .post-card-pillar { grid-column: 1; color: var(--or-light); }
-  .blog-card:nth-child(14n+8) .post-card-title { grid-column: 1; font-size: clamp(2.2rem, 1.3rem + 2.2vw, 3.2rem); color: var(--white); text-shadow: 0 2px 24px rgba(0, 0, 0, 0.4); }
-  .blog-card:nth-child(14n+8):hover .post-card-title { color: var(--or-light); }
-  .blog-card:nth-child(14n+8) .blog-card-excerpt { grid-column: 2; grid-row: 1 / span 2; color: rgba(255, 255, 255, 0.88); }
+  .blog-card:nth-child(14n+8) .post-card-pillar { grid-column: 1; color: #f1c9ae; }
+  .blog-card:nth-child(14n+8) .post-card-title { grid-column: 1; font-size: clamp(2.2rem, 1.3rem + 2.2vw, 3.2rem); color: #fff; text-shadow: 0 2px 24px rgba(0, 0, 0, 0.4); }
+  .blog-card:nth-child(14n+8):hover .post-card-title { color: #f1c9ae; }
+  .blog-card:nth-child(14n+8) .blog-card-excerpt { grid-column: 2; grid-row: 1 / span 2; color: rgba(255, 255, 255, 0.92); }
 }
 
 
 /* ─── 9. Mouvements réduits ────────────────────────────────── */
-/* style.css neutralise déjà transitions et animations ; on retire ici les décalages de survol. */
+/* style.css neutralise déjà transitions et animations. */
 @media (prefers-reduced-motion: reduce) {
-  .post-card:hover,
-  .blog-card:hover .blog-card-media img,
-  .post-card > a:hover::after { transform: none; }
+  .post-card,
+  .post-card-title { transition: none; }
 }
 
 
@@ -1357,16 +1320,22 @@
   .post-hero,
   .blog-hero {
     padding: 0 0 1rem;
+    margin-bottom: 0;
     background: none;
     border: 0;
+    border-radius: 0;
     min-height: 0;
     color: #000;
   }
+  .post-hero::after,
   .blog-hero::after,
-  .blog-hero-bg { display: none; }
+  .container.post-layout::before,
+  .container.post-layout::after,
+  .blog-list::before { display: none; }
+  .container.post-layout { padding-top: 1rem; padding-bottom: 0; }
   .post-title,
   .blog-hero-title { color: #000; font-size: 24pt; max-width: none; }
-  .blog-hero-sub, .blog-hero-note { color: #000; border-color: #000; }
+  .blog-hero-sub { color: #000; }
   .post-pillar { color: #000; }
   .post-meta { color: #000; max-width: none; }
 
@@ -1383,7 +1352,7 @@
     color: #000;
   }
   .post-body > * { max-width: none; margin-left: 0; margin-right: 0; }
-  .post-body h2 { font-size: 16pt; margin-top: 1.5rem; break-after: avoid; }
+  .post-body h2 { font-size: 16pt; margin-top: 1.5rem; break-after: avoid; color: #000; }
   .post-body h2::before { display: none; }
   .post-body h3 { font-size: 13pt; break-after: avoid; }
   .post-lead { font-size: 13pt; }
@@ -1397,7 +1366,7 @@
   }
 
   .post-body > .post-figure { margin-left: 0; margin-right: 0; max-width: none; }
-  .post-figure .post-caption { padding-inline: 0; }
+  .post-figure img { border-radius: 0 !important; }
   .post-figure,
   .post-table,
   .post-callout,
@@ -1405,7 +1374,7 @@
   .post-sources li,
   .blog-card { break-inside: avoid; }
   .post-callout,
-  .post-callout--programme { background: none; box-shadow: none; }
+  .post-callout--programme { background: none; box-shadow: none; border-radius: 0; border: 1px solid #999; }
   .post-callout .btn { display: none; }
   .post-faq details > :not(summary),
   .post-faq summary { color: #000; }
@@ -1418,23 +1387,8 @@
   .post-faq summary::after { display: none; }
 
   /* Hub */
+  .blog-grid { background: none; padding: 0; }
   .blog-list { display: block; }
   .blog-card { margin-bottom: 1rem; }
-  .blog-card-media { max-width: 40%; }
+  .blog-card-media { max-width: 40%; border-radius: 0; }
 }
-
-
-/* Bandeau « couverture » du hub : travertin + tracé de la Sainte-Victoire (plaquette page 1), texte sombre. */
-.blog-hero--cover { background: #f6f1e7 url("/fonds/travertin.webp") repeat 0 0 / 860px auto; color: #7b4538; min-height: clamp(22rem, 52vh, 32rem); }
-.blog-hero--cover::after {
-  inset: auto; right: -3%; bottom: -3%; width: min(68%, 960px); aspect-ratio: 2033 / 367;
-  background: url("/fonds/montagne-ligne.png") no-repeat right bottom / contain; opacity: 0.5;
-}
-.blog-hero--cover .blog-hero-title { color: #7b4538; text-shadow: none; }
-.blog-hero--cover .blog-hero-sub { color: #6b5a50; }
-.blog-hero--cover .post-breadcrumb,
-.blog-hero--cover .post-breadcrumb li,
-.blog-hero--cover .post-breadcrumb li + li::before,
-.blog-hero--cover .post-breadcrumb a { color: #7b4538; }
-.blog-hero--cover .post-breadcrumb a { text-decoration-color: rgba(123, 69, 56, 0.45); }
-.blog-hero--cover .post-breadcrumb [aria-current="page"] { color: #4a2a22; }

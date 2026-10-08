@@ -9,13 +9,22 @@
 /actualites.html   /blog   301
 
 # Alias plausibles (URLs que des visiteurs ou des liens externes peuvent essayer)
-/appartements      /logements       301
-/espaces-communs   /residence       301
+/appartements        /logements   301
+/appartements.html   /logements   301
 
-# Regroupement (07/10/2026) : présentation + espaces communs + promoteur -> une seule page /residence
-/presentation        /residence   301
-/presentation.html   /residence   301
-/exterieurs          /residence   301
-/exterieurs.html     /residence   301
-/promoteur           /residence   301
-/promoteur.html      /residence   301
+# Regroupement n°2 (08/10/2026) : la page « La résidence » est fusionnée dans /logements (sections #architecture #piscine #jardins #stationnement).
+# Les anciennes URLs de la résidence, de la présentation, des extérieurs et des espaces communs pointent donc toutes vers /logements.
+# ATTENTION : une redirection _redirects ne transmet pas d'ancre (#…) ; l'ancre éventuellement saisie par le visiteur est conservée par le navigateur,
+# mais on ne peut pas viser /logements#architecture depuis ce fichier : la 301 arrive en haut de la page /logements.
+/residence           /logements   301
+/residence.html      /logements   301
+/presentation        /logements   301
+/presentation.html   /logements   301
+/exterieurs          /logements   301
+/exterieurs.html     /logements   301
+/espaces-communs     /logements   301
+/espaces-communs.html /logements  301
+
+# Le promoteur est désormais une section de /contact (id="promoteur") ; même remarque : la 301 arrive en haut de /contact.
+/promoteur           /contact     301
+/promoteur.html      /contact     301

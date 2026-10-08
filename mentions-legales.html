@@ -28,13 +28,24 @@
   <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
 
   <link rel="stylesheet" href="/style.css" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="/fonts/cormorant-garamond-latin.woff2" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="/fonts/lato-400-latin.woff2" />
   <style>
     /* Mentions légales : styles propres à la page */
-    .legal-hero { background: var(--dark); color: var(--white); padding: calc(var(--nav-height) + 4rem) 0 3.5rem; }
-    .legal-hero h1 { font-family: var(--font-serif); font-size: clamp(2.2rem, 4.5vw, 3.4rem); font-weight: 300; line-height: 1.15; color: var(--white); margin-top: .4rem; }
-    .legal-hero .legal-updated { color: rgba(255,255,255,.72); font-size: .9rem; margin-top: .8rem; }
-    .legal-content { max-width: 820px; margin: 0 auto; padding: 4rem 0 var(--section-py); }
-    .legal-content h2 { font-family: var(--font-serif); font-variant-numeric: lining-nums; font-size: 1.6rem; font-weight: 400; line-height: 1.25; color: var(--text); margin: 3.2rem 0 1rem; padding-bottom: .55rem; border-bottom: 1px solid var(--border); }
+    /* Identité de la plaquette, en discret : couverture travertin (tracé de la Sainte-Victoire dans une bande réservée,
+       coin bas-droit arrondi), corps sur pierre sous voile de travertin, sommaire en encart travertin. */
+    .legal-hero { position: relative; z-index: 2; isolation: isolate; overflow: hidden; color: var(--text);
+      background-color: var(--travertin); background-image: linear-gradient(rgba(228,214,189,.58), rgba(228,214,189,.58)), url("/fonds/travertin.webp"); background-size: auto, 860px auto;
+      border-radius: 0 0 var(--arche) 0; margin-bottom: calc(-1 * var(--arche));
+      padding: calc(var(--nav-height) + 3.5rem) 0 clamp(7rem, 14vw, 11rem); }
+    .legal-hero::after { content: ""; position: absolute; z-index: -1; pointer-events: none; left: -3%; bottom: clamp(1.25rem, 3vw, 2.5rem); width: min(62%, 780px); aspect-ratio: 2400 / 424;
+      background-color: var(--ocre); opacity: .78; -webkit-mask: url("/fonds/trace-1-mask.png") no-repeat left bottom / contain; mask: url("/fonds/trace-1-mask.png") no-repeat left bottom / contain; }
+    .legal-hero .script { font-size: clamp(1.9rem, 1.5rem + 1vw, 2.4rem); color: var(--terra-texte); }
+    .legal-hero h1 { font-family: var(--font-serif); font-size: clamp(2.2rem, 4.5vw, 3.4rem); font-weight: 300; line-height: 1.15; color: var(--brun); margin-top: 0; }
+    .legal-hero .legal-updated { color: var(--text-mid); font-size: .95rem; margin-top: .8rem; }
+    .legal-body { position: relative; background-color: var(--pierre); background-image: linear-gradient(rgba(246,241,231,.72), rgba(246,241,231,.72)), url("/fonds/travertin.webp"); background-size: auto, 860px auto; }
+    .legal-content { max-width: 820px; margin: 0 auto; padding: calc(var(--arche) + 2.5rem) 0 var(--section-py); }
+    .legal-content h2 { font-family: var(--font-serif); font-variant-numeric: lining-nums; font-size: 1.6rem; font-weight: 400; line-height: 1.25; color: var(--brun); margin: 3.2rem 0 1rem; padding-bottom: .55rem; border-bottom: 1px solid var(--border); }
     .legal-content h2:first-of-type { margin-top: 0; }
     .legal-content h3 { font-family: var(--font-serif); font-size: 1.2rem; font-weight: 500; line-height: 1.3; color: var(--text); margin: 1.9rem 0 .5rem; }
     .legal-content p, .legal-content li, .legal-content dd, .legal-content dt { font-size: .95rem; color: var(--text-mid); line-height: 1.8; }
@@ -42,29 +53,28 @@
     .legal-content ul { list-style: disc; padding-left: 1.4rem; margin: .5rem 0 .8rem; }
     .legal-content li { margin: .3rem 0; padding-left: .2rem; }
     .legal-content a { color: var(--or-texte); text-decoration: underline; text-underline-offset: 3px; }
-    .legal-content a:hover { color: var(--text); }
+    .legal-content a:hover { color: var(--brun-profond); }
     .legal-content strong { color: var(--text); font-weight: 700; }
     .legal-content code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: .85em; background: var(--beige); border-radius: 3px; padding: .08em .35em; color: var(--text); overflow-wrap: anywhere; }
-    .legal-dl { margin: .8rem 0 1rem; border: 1px solid var(--border); border-radius: var(--radius-md); background: var(--white); }
+    .legal-dl { margin: .8rem 0 1rem; border: 1px solid var(--border); border-radius: 0 clamp(1.5rem, 3vw, 2.5rem) 0 0; overflow: hidden; background: rgba(255,255,255,.45); }
     .legal-dl > div { display: grid; grid-template-columns: 13rem 1fr; gap: .25rem 1.5rem; padding: .75rem 1.2rem; }
     .legal-dl > div + div { border-top: 1px solid var(--border); }
     .legal-dl dt { font-weight: 700; color: var(--text); }
     .legal-dl dd { margin: 0; overflow-wrap: anywhere; }
-    .legal-toc { background: var(--beige); border-radius: var(--radius-md); padding: 1.5rem 2rem; margin-bottom: 3rem; }
-    .legal-toc .legal-toc-title { font-size: .8rem; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--text-mid); margin: 0 0 .7rem; }
+    .legal-toc { background-color: var(--travertin); background-image: linear-gradient(rgba(236,226,207,.62), rgba(236,226,207,.62)), url("/fonds/travertin.webp"); background-size: auto, 860px auto; border-radius: clamp(2.25rem, 4.2vw, 3.75rem) 0 0 0; padding: 2.2rem 2.2rem 1.5rem; margin-bottom: 3rem; }
+    .legal-toc .legal-toc-title { font-family: var(--font-serif); font-size: 1.6rem; font-style: italic; font-weight: 500; line-height: 1.2; color: var(--brun); margin: 0 0 .6rem; }
     .legal-toc ol { list-style: none; margin: 0; padding: 0; }
-    .legal-toc a { display: block; font-size: .95rem; color: var(--text-mid); padding: .3rem 0; text-decoration: none; }
-    .legal-toc a:hover, .legal-toc a:focus-visible { color: var(--or-texte); text-decoration: underline; }
-    .legal-toc a::before { content: '\2192\00a0'; color: var(--or-texte); }
+    .legal-toc a { display: block; font-size: .95rem; color: var(--text); padding: .3rem 0; text-decoration: none; }
+    .legal-toc a:hover, .legal-toc a:focus-visible { color: var(--terra-texte); text-decoration: underline; text-underline-offset: 3px; }
     .legal-actions { margin: 1rem 0 .5rem; }
     .legal-actions .btn { cursor: pointer; background: none; border: 1px solid var(--or-texte); color: var(--text); }
     .legal-actions .btn:hover { color: var(--or-texte); }
     @media (max-width: 640px) {
-      .legal-hero { padding: calc(var(--nav-height) + 2.5rem) 0 2.5rem; }
-      .legal-content { padding-top: 2.5rem; }
+      .legal-hero { padding: calc(var(--nav-height) + 2rem) 0 6.5rem; }
+      .legal-content { padding-top: calc(var(--arche) + 1.5rem); }
       .legal-content h2 { font-size: 1.4rem; }
       .legal-dl > div { grid-template-columns: 1fr; gap: 0; padding: .7rem 1rem; }
-      .legal-toc { padding: 1.2rem 1.2rem; }
+      .legal-toc { padding: 1.7rem 1.2rem 1rem; }
     }
   </style>
 
@@ -101,7 +111,6 @@
     </a>
     <div class="nav-links">
       <a href="/" data-lang-fr="Accueil" data-lang-en="Home">Accueil</a>
-      <a href="/residence" data-lang-fr="La résidence" data-lang-en="The residence">La résidence</a>
       <a href="/logements" data-lang-fr="Logements" data-lang-en="Apartments">Logements</a>
             <a href="/localisation" data-lang-fr="Localisation" data-lang-en="Location">Localisation</a>
             <a href="/blog" data-lang-fr="Blog" data-lang-en="Blog">Blog</a>
@@ -120,7 +129,6 @@
 </nav>
 <div class="nav-mobile" id="mobileMenu">
   <a href="/" onclick="toggleMobile()" data-lang-fr="Accueil" data-lang-en="Home">Accueil</a>
-  <a href="/residence" onclick="toggleMobile()" data-lang-fr="La résidence" data-lang-en="The residence">La résidence</a>
   <a href="/logements" onclick="toggleMobile()" data-lang-fr="Logements" data-lang-en="Apartments">Logements</a>
     <a href="/localisation" onclick="toggleMobile()" data-lang-fr="Localisation" data-lang-en="Location">Localisation</a>
     <a href="/blog" onclick="toggleMobile()" data-lang-fr="Blog" data-lang-en="Blog">Blog</a>
@@ -134,15 +142,15 @@
 <main id="contenu">
 
   <!-- ─── Bandeau ──────────────────────────────────────────────── -->
-  <section class="legal-hero on-dark" aria-labelledby="legal-h1">
+  <section class="legal-hero" aria-labelledby="legal-h1">
     <div class="container">
-      <p class="eyebrow" data-lang-fr="Informations légales" data-lang-en="Legal information">Informations légales</p>
+      <p class="script" data-lang-fr="Informations légales" data-lang-en="Legal information">Informations légales</p>
       <h1 id="legal-h1" data-lang-fr="Mentions légales" data-lang-en="Legal notice">Mentions légales</h1>
       <p class="legal-updated" data-lang-fr="Dernière mise à jour : octobre 2026" data-lang-en="Last updated: October 2026">Dernière mise à jour : octobre 2026</p>
     </div>
   </section>
 
-  <section>
+  <section class="legal-body">
     <div class="container">
       <div class="legal-content">
 
@@ -293,13 +301,12 @@
         <a href="/" class="nav-logo" style="margin-bottom:1rem;display:inline-block;" aria-label="59 Cézanne — accueil">
           <span class="logo-59">59</span><span class="logo-cez">Cézanne</span>
         </a>
-        <p style="font-size:0.82rem;color:rgba(255,255,255,0.45);line-height:1.7;max-width:240px;" data-lang-fr="Résidence de 8 appartements neufs à Aix-en-Provence, avenue Paul Cézanne." data-lang-en="Residence of 8 new apartments in Aix-en-Provence, avenue Paul Cézanne.">Résidence de 8 appartements neufs à Aix-en-Provence, avenue Paul Cézanne.</p>
+        <p style="font-size:0.82rem;color:rgba(255,255,255,0.45);line-height:1.7;max-width:240px;" data-lang-fr="Résidence neuve de standing à Aix-en-Provence, avenue Paul Cézanne." data-lang-en="New prestige residence in Aix-en-Provence, avenue Paul Cézanne.">Résidence neuve de standing à Aix-en-Provence, avenue Paul Cézanne.</p>
       </div>
       <nav class="footer-links" aria-label="Pied de page — navigation">
-        <h4 data-lang-fr="Navigation" data-lang-en="Navigation">Navigation</h4>
+        <h3 data-lang-fr="Navigation" data-lang-en="Navigation">Navigation</h3>
         <ul>
           <li><a href="/" data-lang-fr="Accueil" data-lang-en="Home">Accueil</a></li>
-          <li><a href="/residence" data-lang-fr="La résidence" data-lang-en="The residence">La résidence</a></li>
           <li><a href="/logements" data-lang-fr="Logements" data-lang-en="Apartments">Logements</a></li>
           <li><a href="/localisation" data-lang-fr="Localisation" data-lang-en="Location">Localisation</a></li>
           <li><a href="/blog" data-lang-fr="Blog" data-lang-en="Blog">Blog</a></li>
@@ -307,18 +314,18 @@
         </ul>
       </nav>
       <nav class="footer-links" aria-label="Pied de page — guides">
-        <h4 data-lang-fr="Guides" data-lang-en="Guides">Guides</h4>
+        <h3 data-lang-fr="Guides" data-lang-en="Guides">Guides</h3>
         <ul>
-          <li><a href="/blog/acheter-appartement-neuf-aix-en-provence">Acheter un appartement neuf à Aix</a></li>
-          <li><a href="/blog/quartier-des-lauves-aix-en-provence">Le quartier des Lauves</a></li>
-          <li><a href="/blog/appartement-vue-sainte-victoire-aix-en-provence">Vue Sainte-Victoire</a></li>
-          <li><a href="/blog/appartement-jardin-prive-aix-en-provence">Appartement avec jardin privatif</a></li>
-          <li><a href="/blog/vefa-achat-sur-plan-etapes-garanties">VEFA : étapes et garanties</a></li>
-          <li><a href="/blog/frais-de-notaire-neuf-tva-taxe-fonciere">Frais de notaire dans le neuf</a></li>
+          <li><a lang="fr" href="/blog/acheter-appartement-neuf-aix-en-provence">Acheter un appartement neuf à Aix</a></li>
+          <li><a lang="fr" href="/blog/quartier-des-lauves-aix-en-provence">Le quartier des Lauves</a></li>
+          <li><a lang="fr" href="/blog/appartement-vue-sainte-victoire-aix-en-provence">Vue Sainte-Victoire</a></li>
+          <li><a lang="fr" href="/blog/appartement-jardin-prive-aix-en-provence">Appartement avec jardin privatif</a></li>
+          <li><a lang="fr" href="/blog/vefa-achat-sur-plan-etapes-garanties">VEFA : étapes et garanties</a></li>
+          <li><a lang="fr" href="/blog/frais-de-notaire-neuf-tva-taxe-fonciere">Frais de notaire dans le neuf</a></li>
         </ul>
       </nav>
       <div class="footer-contact">
-        <h4 data-lang-fr="Contact" data-lang-en="Contact">Contact</h4>
+        <h3 data-lang-fr="Contact" data-lang-en="Contact">Contact</h3>
         <p>Ponthieu Développement Holding</p>
         <p>418 Ancienne Route des Alpes<br/>13100 Aix-en-Provence</p>
         <p><a href="tel:+33609204590">06 09 20 45 90</a></p>

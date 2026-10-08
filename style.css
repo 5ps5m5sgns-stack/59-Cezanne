@@ -522,7 +522,6 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
   background-position: center;
   background-repeat: no-repeat;
   transform-origin: center;
-  will-change: transform;
 }
 
 .hero-bg img {
@@ -1747,6 +1746,9 @@ body > footer,
 .footer-col h4,
 .footer-links h4,
 .footer-contact h4,
+.footer-col h3,
+.footer-links h3,
+.footer-contact h3,
 .footer-title {
   font-family: var(--font-sans);
   font-size: 0.68rem;
@@ -1774,7 +1776,7 @@ body > footer,
 .footer-col ul li a:hover,
 .footer-links ul li a:hover { color: var(--or); }
 
-/* Bloc contact du pied de page canonique (<div class="footer-contact"><h4>…</h4><p>…</p>) */
+/* Bloc contact du pied de page canonique (<div class="footer-contact"><h3>…</h3><p>…</p>) */
 .footer-contact p {
   font-size: 0.85rem;
   line-height: 1.7;
@@ -2425,7 +2427,7 @@ html[data-lang-lock] .lang-btn { display: none !important; }
    Balisage (le texte vient AVANT l'image dans le DOM : titre d'abord pour le SEO et la lecture d'écran) :
      <section class="rg rg--moyenne-g [rg--b]" aria-labelledby="t1">
        <div class="rg-text"><h2 class="section-title" id="t1">…</h2><p class="section-lead">…</p><a class="scene-link">…</a></div>
-       <figure class="rg-fig"><img …><span class="img-tag">Illustration non contractuelle</span></figure>
+       <figure class="rg-fig"><img …></figure>
      </section>
    duo = deux <figure class="rg-fig"> ; axonométries/plans sur fond blanc : <figure class="rg-fig rg-fig--contain">.
    Les tailles d'écran : bureau = formats ci-dessous ; mobile (≤ 900 px) = une colonne mais les largeurs restent variées. */
@@ -2440,11 +2442,6 @@ html[data-lang-lock] .lang-btn { display: none !important; }
 .rg-fig img { display: block; width: 100%; height: auto; }
 .rg-fig--contain { background: var(--stone-light); }
 .rg-fig--contain img { object-fit: contain; }
-.rg-fig .img-tag {
-  position: absolute; left: 1rem; bottom: 1rem; z-index: 2; max-width: calc(100% - 2rem);
-  background: rgba(15,12,8,0.72); color: #fff; font-size: 0.78rem; letter-spacing: 0.03em; line-height: 1.4;
-  padding: 0.3rem 0.7rem; border-radius: 3px;
-}
 .rg-text .section-title { margin-bottom: 1rem; text-wrap: balance; }
 .rg-text .section-lead { margin: 0 0 1.2rem; max-width: 30rem; text-wrap: balance; }
 
@@ -2489,7 +2486,6 @@ html[data-lang-lock] .lang-btn { display: none !important; }
 .rg--immense .rg-text .section-title { color: #fff; text-shadow: 0 2px 18px rgba(0,0,0,0.35); }
 .rg--immense .rg-text .section-lead { color: rgba(255,255,255,0.94); }
 .rg--immense .rg-text .scene-link { color: var(--or-light); }
-.rg--immense .rg-fig .img-tag { left: auto; right: 1rem; }
 
 @media (max-width: 900px) {
   .rg--moyenne-g, .rg--moyenne-d, .rg--petite-g, .rg--petite-d { grid-template-columns: minmax(0, 1fr); grid-template-areas: "text" "fig"; row-gap: 1.75rem; }
@@ -2506,12 +2502,7 @@ html[data-lang-lock] .lang-btn { display: none !important; }
 .scene-link:hover { color: var(--text); }
 
 /* ─── Correctifs mobiles (07/10/2026) ─────────────────────────────────────────────── */
-/* Légendes « Illustration non contractuelle » : plus discrètes, surtout sur les petites images. */
-.rg--petite-g .rg-fig .img-tag, .rg--petite-d .rg-fig .img-tag, .rg--duo .rg-fig:nth-of-type(2) .img-tag {
-  font-size: 0.64rem; padding: 0.15rem 0.4rem; left: 0.4rem; bottom: 0.4rem; max-width: calc(100% - 0.8rem);
-}
 @media (max-width: 700px) {
-  .rg-fig .img-tag { font-size: 0.66rem; padding: 0.15rem 0.45rem; left: 0.5rem; bottom: 0.5rem; }
   /* Boutons d'appel / WhatsApp : barre fixe en bas (réserve sa place, ne masque plus le texte). */
   .floating-cta {
     left: 0; right: 0; bottom: 0; top: auto; flex-direction: row; gap: 0;
@@ -2575,3 +2566,250 @@ html[data-lang-lock] .lang-btn { display: none !important; }
 .cover-hero h1 em { color: #b86248; }
 .cover-hero .cover-lead { font-size: clamp(1.15rem, 1.8vw, 1.5rem); color: #6b5a50; max-width: 36rem; margin-top: 1.4rem; }
 @media (max-width: 700px) { .deco-travertin { background-size: 520px auto; } .deco-montagne::after { width: 110%; opacity: 0.4; } }
+
+
+/* ═══════════════════════════════════════════════════════════════════════════════════════════════════
+   IDENTITÉ 59 CÉZANNE — couche de design (08/10/2026) : palette, arches et tracés de la plaquette.
+   Cette couche est la DERNIÈRE du fichier : elle surcharge ce qui précède. Doc : docs/ASSETS-IDENTITE.md
+   ═══════════════════════════════════════════════════════════════════════════════════════════════════ */
+
+/* 1 ─ Palette de la plaquette. Les anciens jetons « or » deviennent l'ocre/terracotta de la plaquette :
+       tout le site (blog compris) change de ton d'un seul geste. Contrastes calculés :
+       --or-texte #8f4b36 = 5,8:1 sur pierre, 5,1:1 sur travertin ; --or #c98a52 = 5,7:1 sur --dark. */
+:root {
+  --terra: #b86248;          /* aplats, ornements, grands titres */
+  --terra-texte: #a4513a;    /* texte blanc dessus = 5,5:1 ; petit texte terracotta sur fond clair */
+  --brun: #7b4538;           /* titres, texte sur pierre = 6,8:1 */
+  --brun-profond: #3b231d;   /* fonds sombres (menu, pied de page, sections brunes) */
+  --ocre: #b07642;           /* tracés et filets */
+  --pierre: #f6f1e7;
+  --travertin: #ece2cf;
+  --sable: #e4d6bd;
+  --arche: clamp(4rem, 9.5vw, 9.5rem);      /* grand rayon des photos et onglets (page 2-12 de la plaquette) */
+  --arche-s: clamp(2.5rem, 5vw, 4.5rem);
+
+  --or: #c98a52;
+  --or-light: #ecc9a2;
+  --or-dark: #9a6030;
+  --or-texte: #8f4b36;
+  --beige: #f1e9da;
+  --creme: #f9f5ec;
+  --stone: #d9c9ad;
+  --stone-light: #ece2cf;
+  --dark: #2b1c18;
+  --text: #2f2420;
+  --text-mid: #5c4a42;
+  --text-light: #6b5850;
+  --border: rgba(123, 69, 56, 0.22);
+  --focus-ring: #7b4538;
+  --shadow-sm: 0 2px 12px rgba(59, 35, 29, 0.07);
+  --shadow: 0 6px 32px rgba(59, 35, 29, 0.12);
+  --shadow-lg: 0 16px 60px rgba(59, 35, 29, 0.18);
+}
+body { background-color: var(--pierre); color: var(--text); }
+.section-title { color: var(--brun); }
+.section-dark .section-title, .on-dark .section-title { color: #fff; }
+.btn-primary { background: var(--terra-texte); color: #fff; box-shadow: 0 4px 20px rgba(164, 81, 58, 0.30); }
+.btn-primary:hover { background: var(--brun); box-shadow: 0 6px 30px rgba(123, 69, 56, 0.40); }
+.btn-outline-dark { border-color: rgba(123, 69, 56, 0.45); color: var(--brun); }
+.btn-outline-dark:hover { border-color: var(--terra-texte); color: var(--terra-texte); }
+.btn { border-radius: 999px; }              /* pilule, comme les cartouches de la plaquette */
+
+/* Gouttière exprimée en vw : le même calcul sert au padding et aux photos qui débordent jusqu'au bord de l'écran. */
+.rg { --rg-gutter: max(clamp(1.25rem, 4vw, 3rem), calc((100vw - var(--container)) / 2)); }
+
+/* 2 ─ Fonds : plus jamais de grande surface blanche. Sections « scène » = pierre ; alternées = travertin. */
+.rg:not(.rg--immense) { background-color: var(--pierre); }
+.rg--b:not(.rg--immense) { background: var(--travertin) url("/fonds/travertin.webp") repeat 0 0 / 860px auto; background-blend-mode: multiply; }
+.section { background-color: var(--pierre); }
+.section-alt { background: var(--travertin) url("/fonds/travertin.webp") repeat 0 0 / 860px auto; background-blend-mode: multiply; }
+.fond-pierre { background: var(--pierre) url("/fonds/travertin.webp") repeat 0 0 / 860px auto; }
+.fond-brun { background: var(--brun-profond); color: rgba(255, 255, 255, 0.88); --or-texte: var(--or); --focus-ring: var(--or-light); --trait-color: #f1dcc6; --trait-op: 0.16; }
+.fond-brun .section-title, .fond-brun h2, .fond-brun h3 { color: #fff; }
+.fond-brun .section-lead { color: rgba(255, 255, 255, 0.78); }
+.fond-terracotta { background: var(--terra-texte); color: #fff; --or-texte: #fff; --trait-color: #fff; --trait-op: 0.22; }
+.fond-terracotta .section-title, .fond-terracotta h2, .fond-terracotta h3 { color: #fff; }
+@media (max-width: 700px) { .rg--b:not(.rg--immense), .section-alt, .fond-pierre { background-size: 520px auto; } }
+
+/* 3 ─ Tracés de la Sainte-Victoire (masque CSS : n'importe quelle couleur, opacité réglable).
+       <section class="has-trait [trait--gauche|trait--haut|trait--bas|trait--grand|trait--petit]" style="--trait-img:url(/fonds/xxx.png)">
+       Par défaut : trace-1-mask.png (plaquette p.1, p.11, p.12), à droite, en bas. Réglages : --trait-color, --trait-op, --trait-w, --trait-ratio. */
+.has-trait { position: relative; isolation: isolate; overflow: hidden; }
+.has-trait::before {
+  content: ""; position: absolute; z-index: -1; pointer-events: none;
+  right: -3%; bottom: 3%; left: auto; top: auto;
+  width: var(--trait-w, min(72%, 1000px)); aspect-ratio: var(--trait-ratio, 2400 / 424);
+  background-color: var(--trait-color, var(--ocre)); opacity: var(--trait-op, 0.34);
+  -webkit-mask: var(--trait-img, url("/fonds/trace-1-mask.png")) no-repeat center / contain;
+          mask: var(--trait-img, url("/fonds/trace-1-mask.png")) no-repeat center / contain;
+}
+.trait--gauche::before { right: auto; left: -3%; transform: scaleX(-1); }
+.trait--haut::before { bottom: auto; top: 4%; }
+.trait--bas::before { bottom: -1%; }
+.trait--grand::before { --trait-w: min(110%, 1500px); }
+.trait--petit::before { --trait-w: min(46%, 620px); }
+/* Rythme automatique : sur les scènes .rg, un tracé sur deux, en alternant les côtés (sans toucher au HTML). */
+.rg:not(.rg--immense) { position: relative; isolation: isolate; overflow: hidden; }
+.rg:not(.rg--immense):nth-of-type(3n+1)::before,
+.rg:not(.rg--immense):nth-of-type(3n+2)::before {
+  content: ""; position: absolute; z-index: -1; pointer-events: none;
+  width: min(66%, 900px); aspect-ratio: 2400 / 424;
+  background-color: var(--ocre); opacity: 0.28;
+  -webkit-mask: url("/fonds/trace-1-mask.png") no-repeat center / contain;
+          mask: url("/fonds/trace-1-mask.png") no-repeat center / contain;
+}
+.rg:not(.rg--immense):nth-of-type(3n+1)::before { right: -4%; bottom: 0; }
+.rg:not(.rg--immense):nth-of-type(3n+2)::before { left: -4%; bottom: 0; transform: scaleX(-1); }
+@media (max-width: 700px) { .has-trait::before, .rg:not(.rg--immense)::before { opacity: 0.2; } }
+
+/* 4 ─ Photos : plus grandes, jusqu'au bord de l'écran, avec le grand rayon de la plaquette. Jamais recadrées. */
+@media (min-width: 901px) {
+  .rg--moyenne-g, .rg--petite-g { grid-template-columns: minmax(0, 7.2fr) minmax(0, 4.8fr); column-gap: clamp(2rem, 5vw, 5.5rem); }
+  .rg--moyenne-d, .rg--petite-d { grid-template-columns: minmax(0, 4.8fr) minmax(0, 7.2fr); column-gap: clamp(2rem, 5vw, 5.5rem); }
+  .rg--moyenne-g .rg-fig, .rg--petite-g .rg-fig { width: auto; justify-self: stretch; margin-left: calc(-1 * var(--rg-gutter)); }
+  .rg--moyenne-d .rg-fig, .rg--petite-d .rg-fig { width: auto; justify-self: stretch; margin-right: calc(-1 * var(--rg-gutter)); }
+  .rg--moyenne-g .rg-fig { border-radius: 0 var(--arche) 0 0; }
+  .rg--moyenne-d .rg-fig { border-radius: var(--arche) 0 0 0; }
+  .rg--petite-g .rg-fig { border-radius: 0 0 var(--arche) 0; }
+  .rg--petite-d .rg-fig { border-radius: 0 0 0 var(--arche); }
+  .rg--duo .rg-fig:nth-of-type(1) { grid-column: 1 / 8; margin-left: calc(-1 * var(--rg-gutter)); border-radius: 0 var(--arche) 0 0; }
+  .rg--duo .rg-fig:nth-of-type(2) { grid-column: 8 / 13; margin-right: calc(-1 * var(--rg-gutter)); border-radius: var(--arche) 0 0 0; margin-top: clamp(1.5rem, 4vw, 4rem); }
+  .rg--grande .rg-fig { border-radius: var(--arche) 0 var(--arche) 0; }
+  .rg--centre .rg-fig { border-radius: var(--arche) var(--arche) 0 0; }
+}
+@media (max-width: 900px) {
+  .rg:not(.rg--immense) .rg-fig { margin-inline: calc(-1 * var(--rg-gutter)); width: auto; border-radius: 0 var(--arche-s) 0 var(--arche-s); }
+  .rg--duo .rg-fig:nth-of-type(n) { grid-column: 1 / -1; margin-top: 0; }
+  .rg--petite-g .rg-fig, .rg--petite-d .rg-fig { width: auto; }
+}
+.fig-arche { border-radius: var(--arche) var(--arche) 0 0 !important; }        /* fenêtre en arc : images en hauteur */
+.arrondi-hd { border-radius: 0 var(--arche) 0 0 !important; } .arrondi-hg { border-radius: var(--arche) 0 0 0 !important; }
+.arrondi-bd { border-radius: 0 0 var(--arche) 0 !important; } .arrondi-bg { border-radius: 0 0 0 var(--arche) !important; }
+
+/* 5 ─ Titres : un trait manuscrit au-dessus (police de la plaquette), tel que pages 5, 6, 7, 9, 10, 11. */
+.script { font-family: var(--font-script, 'Cormorant Garamond', Georgia, serif); font-style: italic; font-weight: 400; font-size: clamp(1.7rem, 2.6vw, 2.5rem); line-height: 1.1; color: var(--terra); display: block; margin-bottom: 0.15em; text-transform: none; letter-spacing: 0; }
+.script--blanc { color: #f1c9ae; }
+
+/* 6 ─ Onglet de la plaquette (pages 2 et 12) : pilule verticale en travertin, ou aplat terracotta aux angles arrondis. */
+.onglet { display: inline-flex; align-items: center; justify-content: center; background: var(--travertin) url("/fonds/travertin.webp") center / 520px auto; color: var(--terra); border-radius: 999px; padding: 1.2rem 0.9rem; box-shadow: 0 8px 24px rgba(59, 35, 29, 0.12); }
+.panneau-terra { background: var(--terra-texte); color: #fff; border-radius: var(--arche) 0 var(--arche-s) 0; padding: clamp(1.8rem, 4vw, 3.5rem); }
+
+/* 7 ─ Pied de page et menu : brun profond ; le tracé de la montagne ferme chaque page. */
+body > footer, .site-footer { position: relative; isolation: isolate; overflow: hidden; }
+body > footer::before, .site-footer::before {
+  content: ""; position: absolute; z-index: -1; pointer-events: none; left: -2%; bottom: 0; width: min(90%, 1300px); aspect-ratio: 2400 / 424;
+  background-color: #f1dcc6; opacity: 0.1;
+  -webkit-mask: url("/fonds/trace-1-mask.png") no-repeat left bottom / contain; mask: url("/fonds/trace-1-mask.png") no-repeat left bottom / contain;
+}
+
+/* 8 ─ Dernières disponibilités (accueil, logements, contact) : voir docs/BRIEF-IDENTITE.md pour le balisage. */
+.dispo { padding: clamp(3.5rem, 8vw, 7.5rem) var(--rg-gutter, clamp(1.25rem, 4vw, 3rem)); }
+.dispo-head { max-width: 46rem; margin: 0 auto clamp(2rem, 4vw, 3.5rem); text-align: center; }
+.dispo-head .section-title { font-size: clamp(2.5rem, 4.4vw, 4rem); line-height: 1.08; margin-bottom: 0.6rem; }
+.dispo-date { font-size: 0.92rem; color: var(--text-light); margin-top: 0.4rem; }
+.dispo-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(1.5rem, 3vw, 3rem); max-width: var(--container); margin: 0 auto; }
+.dispo-card { display: flex; flex-direction: column; background: rgba(255, 255, 255, 0.55); border: 1px solid var(--border); border-radius: var(--arche-s) var(--arche-s) var(--arche-s) 0; overflow: hidden; box-shadow: var(--shadow-sm); }
+.dispo-card:nth-child(2) { border-radius: var(--arche-s) var(--arche-s) 0 var(--arche-s); }
+.dispo-fig { margin: 0; background: var(--stone-light); }
+.dispo-fig img { display: block; width: 100%; height: auto; }
+.dispo-body { padding: clamp(1.4rem, 3vw, 2.4rem); display: grid; gap: 0.9rem; flex: 1; align-content: start; }
+.dispo-type { font-family: var(--font-serif); font-size: clamp(2.1rem, 3.2vw, 3rem); line-height: 1.05; color: var(--brun); }
+.dispo-type small { display: block; font-family: var(--font-sans); font-size: 0.8rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--terra-texte); margin-bottom: 0.35rem; }
+.dispo-pitch { font-size: 1.12rem; line-height: 1.55; color: var(--text); }
+.dispo-list { list-style: none; display: grid; gap: 0.5rem; margin: 0.2rem 0 0.4rem; }
+.dispo-list li { position: relative; padding-left: 1.6rem; line-height: 1.45; color: var(--text-mid); }
+.dispo-list li::before { content: ""; position: absolute; left: 0; top: 0.72em; width: 0.9rem; height: 1px; background: var(--terra); }
+.dispo-cta { display: flex; flex-wrap: wrap; gap: 0.8rem; margin-top: 0.6rem; }
+.dispo-note { max-width: var(--container); margin: clamp(1.5rem, 3vw, 2.5rem) auto 0; text-align: center; font-size: 0.9rem; color: var(--text-light); }
+@media (max-width: 900px) { .dispo-grid { grid-template-columns: minmax(0, 1fr); } .dispo-card, .dispo-card:nth-child(2) { border-radius: var(--arche-s) var(--arche-s) var(--arche-s) 0; } }
+
+/* Menu : brun profond de la plaquette (au lieu du noir). */
+#navbar.scrolled, #navbar { --nav-fond: rgba(43, 28, 24, 0.94); }
+#navbar.scrolled { background: var(--nav-fond); border-bottom: 1px solid rgba(236, 201, 162, 0.18); }
+.nav-mobile { background: var(--brun-profond); }
+
+/* 9 ─ Couvertures sans photo (page 1 de la plaquette) : travertin ou brun, tracé de la montagne, photo éventuelle en arche.
+       <header class="cover-hero deco-travertin [cover-hero--brun fond-brun] [cover-hero--split]"> (barre de navigation en class="scrolled")
+         <div class="cover-inner"><p class="script">…</p><h1>…</h1><p class="cover-lead">…</p><div class="cover-cta">…</div></div>
+         <figure class="cover-fig"><img …></figure>   (seulement avec --split) </header> */
+.cover-hero { --rg-gutter: max(clamp(1.25rem, 4vw, 3rem), calc((100vw - var(--container)) / 2)); padding-left: var(--rg-gutter); padding-right: var(--rg-gutter); }
+.cover-hero .cover-inner { max-width: 44rem; position: relative; z-index: 1; }
+.cover-hero .cover-cta { display: flex; flex-wrap: wrap; gap: 0.8rem; margin-top: 2rem; }
+.cover-hero .script { font-size: clamp(1.9rem, 3.2vw, 3rem); margin-bottom: 0.3rem; }
+.cover-hero--brun { background: var(--brun-profond); color: #fff; --or-texte: var(--or); --focus-ring: var(--or-light); }
+.cover-hero--brun h1 { color: #fff; }
+.cover-hero--brun h1 em { color: #f1c9ae; }
+.cover-hero--brun .cover-lead { color: rgba(255, 255, 255, 0.82); }
+.cover-hero--brun::after { background: #f1dcc6; opacity: 0.2; -webkit-mask: url("/fonds/trace-1-mask.png") no-repeat left bottom / contain; mask: url("/fonds/trace-1-mask.png") no-repeat left bottom / contain; }
+.cover-hero--split { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); column-gap: clamp(2rem, 5vw, 5rem); align-items: center; padding-right: 0; }
+.cover-hero--split .cover-fig { margin: 0; overflow: hidden; border-radius: var(--arche) 0 0 0; align-self: center; box-shadow: var(--shadow); }
+.cover-hero--split .cover-fig img { display: block; width: 100%; height: auto; }
+@media (max-width: 900px) {
+  .cover-hero--split { grid-template-columns: minmax(0, 1fr); padding-right: var(--rg-gutter); row-gap: 2rem; }
+  .cover-hero--split .cover-fig { margin-right: calc(-1 * var(--rg-gutter)); border-radius: var(--arche-s) 0 0 0; }
+}
+
+/* Polices de la plaquette : Cinzel (capitales de titres) et Whisper (équivalent libre, OFL, du script « Brittany Signature »). */
+@font-face{font-family:'Cinzel';font-style:normal;font-weight:400 900;font-display:swap;src:url('fonts/cinzel-latin-ext.woff2') format('woff2');unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C4,U+2113,U+2C60-2C7F,U+A720-A7FF;}
+@font-face{font-family:'Cinzel';font-style:normal;font-weight:400 900;font-display:swap;src:url('fonts/cinzel-latin.woff2') format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;}
+@font-face{font-family:'Whisper';font-style:normal;font-weight:400;font-display:swap;src:url('fonts/whisper-400-latin-ext.woff2') format('woff2');unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C4,U+2113,U+2C60-2C7F,U+A720-A7FF;}
+@font-face{font-family:'Whisper';font-style:normal;font-weight:400;font-display:swap;src:url('fonts/whisper-400-latin.woff2') format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;}
+:root { --font-script: 'Whisper', 'Cormorant Garamond', Georgia, serif; --font-caps: 'Cinzel', 'Cormorant Garamond', Georgia, serif; }
+.script { font-style: normal; font-size: clamp(2rem, 3.1vw, 3rem); line-height: 1.05; }
+.caps { font-family: var(--font-caps); font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; }
+.dispo-type small { font-family: var(--font-caps); font-weight: 600; letter-spacing: 0.14em; }
+
+/* Ornements recolorables de la plaquette (voir docs/ASSETS-IDENTITE.md) :
+   <i class="orn orn--olive" aria-hidden="true" style="--orn-color:#a59070; --orn-opacity:.5; width:110px"></i> */
+.orn { display: block; pointer-events: none; background-color: var(--orn-color, #bd6b53); opacity: var(--orn-opacity, 1);
+  -webkit-mask: var(--orn-img) no-repeat center / contain; mask: var(--orn-img) no-repeat center / contain; }
+.orn--trace  { --orn-img: url("/fonds/trace-1-mask.png");         aspect-ratio: 2400 / 424; }
+.orn--cercle { --orn-img: url("/fonds/trace-2-mask.png");         aspect-ratio: 900 / 687; }
+.orn--olive  { --orn-img: url("/fonds/olivier-mask.png");         aspect-ratio: 600 / 231; }
+.orn--logo   { --orn-img: url("/fonds/logo-59-cezanne-mask.png"); aspect-ratio: 800 / 844; }
+@media (forced-colors: active) { .orn { display: none; } }
+/* Pierres : veinée (arches/pilules), brune (sections sombres). */
+.fond-veine { background: var(--travertin) url("/fonds/travertin-veine.webp") repeat 0 0 / 1080px auto; }
+.fond-brun-pierre { background: var(--brun-profond) url("/fonds/travertin-brun.webp") repeat 0 0 / 1080px auto; color: rgba(255, 255, 255, 0.88); --or-texte: var(--or); --focus-ring: var(--or-light); --trait-color: #f1dcc6; --trait-op: 0.16; }
+.fond-brun-pierre .section-title, .fond-brun-pierre h2, .fond-brun-pierre h3 { color: #fff; }
+
+/* Correctifs de la couche d'identité (remontés par l'audit des pages) */
+.fond-brun-pierre .section-lead, .fond-terracotta .section-lead, .cover-hero--brun .section-lead { color: rgba(255, 255, 255, 0.82); }
+.fond-brun-pierre p, .fond-terracotta p { color: inherit; }
+.cover-hero--split h1 { max-width: none; font-size: clamp(2.5rem, 4.8vw, 4.6rem); }
+.cover-hero--split .cover-lead { max-width: 34rem; }
+
+/* ═══ Correctifs d'accessibilité et de contraste (contrôle qualité du 08/10/2026) ═══════════════════════
+   Mesures faites sur le rendu (pire pixel / 5e centile du fond sous chaque texte). */
+/* Sélecteur de langue actif ou survolé : or clair (l'or plein ne faisait que 4,2:1 sur la barre brune). */
+.lang-btn.active, .lang-btn[aria-pressed="true"], .lang-btn:hover { color: var(--or-light); }
+/* Barre transparente sur la photo d'accueil : texte plein (blanc / or clair) au lieu du blanc à 55-78 % ou de l'or,
+   pour tenir 4,5:1 sur le ciel clair de la photo. */
+#navbar.transparent .nav-links a,
+#navbar.transparent .lang-btn,
+#navbar.transparent .lang-btn.active,
+#navbar.transparent .nav-logo .logo-sub { color: #fff; }
+#navbar.transparent .nav-links a:hover,
+#navbar.transparent .nav-links a.active,
+#navbar.transparent .nav-links a[aria-current="page"],
+#navbar.transparent .nav-logo .logo-main { color: var(--or-light); }
+/* Dates de mise à jour et note des disponibilités : sur le travertin foncé (multiply), --text-light tombait à 3,9:1. */
+.dispo-date, .dispo-note { color: var(--text-mid); }
+/* Bouton WhatsApp flottant : le blanc sur #25D366 ne fait que 2:1 (pictogramme et libellé mobile) ; texte sombre = 8:1. */
+.float-btn-whatsapp { color: var(--dark); }
+/* Anneau de focus : scènes photo plein cadre (fond sombre) et boutons flottants (posés sur le pied de page brun foncé
+   en bas de page : l'anneau brun était invisible, 1,2:1). Anneau blanc + liseré sombre = visible sur tout fond. */
+.rg--immense { --focus-ring: var(--or-light); }
+.float-btn:focus-visible { outline: 2px solid var(--white); outline-offset: 2px; box-shadow: 0 0 0 2px var(--dark), var(--shadow); }
+@media (max-width: 700px) {
+  .floating-cta .float-btn:focus-visible { outline: 3px solid var(--dark); outline-offset: -6px; box-shadow: none; }
+  /* La barre Appeler / WhatsApp (54 px) ne doit jamais masquer l'élément qui reçoit le focus au clavier (WCAG 2.4.11). */
+  html { scroll-padding-bottom: 74px; }
+}
+.fond-terracotta { --focus-ring: #fff; }
+/* Liens légaux et bouton « Gérer les cookies » du bas de page : zone cliquable ≥ 24 px de haut (WCAG 2.5.8). */
+.footer-bottom a, .footer-cookie-btn { display: inline-block; padding-block: 0.35rem; }
+/* Scènes photo plein cadre sur mobile : voile plus dense derrière le titre (le texte blanc tombait à 2,5:1 sur 5 % des pixels). */
+@media (max-width: 900px) {
+  .rg--immense .rg-fig::after { background: linear-gradient(to top, rgba(15,12,8,0.92) 0%, rgba(15,12,8,0.78) 42%, rgba(15,12,8,0.5) 66%, rgba(15,12,8,0.12) 100%); }
+}
