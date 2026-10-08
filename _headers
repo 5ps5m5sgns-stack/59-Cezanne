@@ -20,11 +20,12 @@ https://:version.:project.pages.dev/*
 
 # --- Cache : le HTML garde le défaut Pages (public, max-age=0, must-revalidate) : ne rien ajouter ---
 
-# --- Cache : ressources NON versionnées (noms identiques d'un déploiement à l'autre) ---
+# --- Cache : CSS/JS référencés avec ?v=<empreinte> (docs/version_assets.py, à relancer après chaque modification) ;
+#     pas de stale-while-revalidate : un visiteur ne doit jamais recevoir un HTML neuf avec un ancien CSS ---
 /*.css
-  Cache-Control: public, max-age=3600, stale-while-revalidate=86400
+  Cache-Control: public, max-age=3600
 /*.js
-  Cache-Control: public, max-age=3600, stale-while-revalidate=86400
+  Cache-Control: public, max-age=3600
 /*.webp
   Cache-Control: public, max-age=2592000
 /*.png

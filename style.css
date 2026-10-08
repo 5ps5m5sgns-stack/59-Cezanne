@@ -7,88 +7,55 @@
    Plus aucun appel à Google Fonts. Sous-ensembles latin + latin-ext
    (unicode-range : le fichier latin-ext n'est téléchargé que si un
    caractère de cette plage est présent dans la page).
-   Cormorant Garamond = police variable (une seule graisse de fichier,
-   plage 300–600 en romain, 300–500 en italique, comme avant).
-   Lato = 3 graisses statiques (300, 400, 700).
+   Gilda Display = titres (une seule graisse, déclarée 100–900 pour éviter le faux gras).
+   Jost = texte courant (police variable, romain + italique).
    Préchargements recommandés (max. 2) : voir docs/css-tokens.md.        */
 @font-face {
-  font-family: 'Cormorant Garamond';
+  font-family: 'Gilda Display';
   font-style: normal;
-  font-weight: 300 600;
+  font-weight: 100 900;
   font-display: swap;
-  src: url('fonts/cormorant-garamond-latin-ext.woff2') format('woff2');
+  src: url('fonts/gilda-display-latin-ext.woff2') format('woff2');
   unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
 }
 @font-face {
-  font-family: 'Cormorant Garamond';
+  font-family: 'Gilda Display';
   font-style: normal;
-  font-weight: 300 600;
+  font-weight: 100 900;
   font-display: swap;
-  src: url('fonts/cormorant-garamond-latin.woff2') format('woff2');
+  src: url('fonts/gilda-display-latin.woff2') format('woff2');
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 @font-face {
-  font-family: 'Cormorant Garamond';
+  font-family: 'Jost';
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url('fonts/jost-latin-ext.woff2') format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'Jost';
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url('fonts/jost-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Jost';
   font-style: italic;
-  font-weight: 300 500;
+  font-weight: 100 900;
   font-display: swap;
-  src: url('fonts/cormorant-garamond-italic-latin-ext.woff2') format('woff2');
+  src: url('fonts/jost-italic-latin-ext.woff2') format('woff2');
   unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
 }
 @font-face {
-  font-family: 'Cormorant Garamond';
+  font-family: 'Jost';
   font-style: italic;
-  font-weight: 300 500;
+  font-weight: 100 900;
   font-display: swap;
-  src: url('fonts/cormorant-garamond-italic-latin.woff2') format('woff2');
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-}
-@font-face {
-  font-family: 'Lato';
-  font-style: normal;
-  font-weight: 300;
-  font-display: swap;
-  src: url('fonts/lato-300-latin-ext.woff2') format('woff2');
-  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
-}
-@font-face {
-  font-family: 'Lato';
-  font-style: normal;
-  font-weight: 300;
-  font-display: swap;
-  src: url('fonts/lato-300-latin.woff2') format('woff2');
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-}
-@font-face {
-  font-family: 'Lato';
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src: url('fonts/lato-400-latin-ext.woff2') format('woff2');
-  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
-}
-@font-face {
-  font-family: 'Lato';
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src: url('fonts/lato-400-latin.woff2') format('woff2');
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-}
-@font-face {
-  font-family: 'Lato';
-  font-style: normal;
-  font-weight: 700;
-  font-display: swap;
-  src: url('fonts/lato-700-latin-ext.woff2') format('woff2');
-  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
-}
-@font-face {
-  font-family: 'Lato';
-  font-style: normal;
-  font-weight: 700;
-  font-display: swap;
-  src: url('fonts/lato-700-latin.woff2') format('woff2');
+  src: url('fonts/jost-italic-latin.woff2') format('woff2');
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 
@@ -124,8 +91,8 @@
   --tap:          44px;      /* taille mini d'une cible tactile */
 
   /* Typography */
-  --font-serif:   'Cormorant Garamond', Georgia, serif;
-  --font-sans:    'Lato', 'Helvetica Neue', Arial, sans-serif;
+  --font-serif:   'Gilda Display', Georgia, 'Times New Roman', serif;
+  --font-sans:    'Jost', 'Helvetica Neue', Arial, sans-serif;
 
   /* Spacing */
   --section-py:   7rem;
@@ -2687,7 +2654,7 @@ body { background-color: var(--pierre); color: var(--text); }
 .arrondi-bd { border-radius: 0 0 var(--arche) 0 !important; } .arrondi-bg { border-radius: 0 0 0 var(--arche) !important; }
 
 /* 5 ─ Titres : un trait manuscrit au-dessus (police de la plaquette), tel que pages 5, 6, 7, 9, 10, 11. */
-.script { font-family: var(--font-script, 'Cormorant Garamond', Georgia, serif); font-style: italic; font-weight: 400; font-size: clamp(1.7rem, 2.6vw, 2.5rem); line-height: 1.1; color: var(--terra); display: block; margin-bottom: 0.15em; text-transform: none; letter-spacing: 0; }
+.script { font-family: var(--font-script, 'Whisper', Georgia, serif); font-style: italic; font-weight: 400; font-size: clamp(1.7rem, 2.6vw, 2.5rem); line-height: 1.1; color: var(--terra); display: block; margin-bottom: 0.15em; text-transform: none; letter-spacing: 0; }
 .script--blanc { color: #f1c9ae; }
 
 /* 6 ─ Onglet de la plaquette (pages 2 et 12) : pilule verticale en travertin, ou aplat terracotta aux angles arrondis. */
@@ -2754,7 +2721,7 @@ body > footer::before, .site-footer::before {
 @font-face{font-family:'Cinzel';font-style:normal;font-weight:400 900;font-display:swap;src:url('fonts/cinzel-latin.woff2') format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;}
 @font-face{font-family:'Whisper';font-style:normal;font-weight:400;font-display:swap;src:url('fonts/whisper-400-latin-ext.woff2') format('woff2');unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C4,U+2113,U+2C60-2C7F,U+A720-A7FF;}
 @font-face{font-family:'Whisper';font-style:normal;font-weight:400;font-display:swap;src:url('fonts/whisper-400-latin.woff2') format('woff2');unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;}
-:root { --font-script: 'Whisper', 'Cormorant Garamond', Georgia, serif; --font-caps: 'Cinzel', 'Cormorant Garamond', Georgia, serif; }
+:root { --font-script: 'Whisper', Georgia, serif; --font-caps: 'Cinzel', Georgia, serif; }
 .script { font-style: normal; font-size: clamp(2rem, 3.1vw, 3rem); line-height: 1.05; }
 .caps { font-family: var(--font-caps); font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; }
 .dispo-type small { font-family: var(--font-caps); font-weight: 600; letter-spacing: 0.14em; }
@@ -2827,3 +2794,13 @@ body { background-color: var(--pierre); }
 .onglet { background-image: none; }
 /* Bloc brun d'appel (un par page au plus) : aplat uni, couleur moyenne de l'ancienne texture, sans veines. */
 .fond-brun-pierre { background: #79483d; }
+
+/* ═══ Typographie (9/10/2026) : Gilda Display (titres) + Jost (texte) ═══════════════════════════════════
+   Demande de Gabriel : police « trop basique ». Gilda Display : empattements fins, chiffres alignés (le numéro de
+   téléphone se lit d'un coup, contrairement aux chiffres elzéviriens de Cormorant) ; Jost : sans-serif géométrique
+   léger, dans l'esprit des capitales de la plaquette. Les titres n'ont qu'une graisse : pas de faux gras ni de faux
+   italique (font-synthesis), les mots en <em> des titres restent droits et prennent la couleur d'accent. */
+html { font-synthesis: none; }
+body { font-weight: 400; letter-spacing: 0.005em; font-variant-numeric: lining-nums; }
+h1, h2, h3, .section-title { letter-spacing: 0; font-variant-numeric: lining-nums; }
+h1 em, h2 em, h3 em, .section-title em { font-style: normal; }
