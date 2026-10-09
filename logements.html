@@ -39,7 +39,7 @@
     .lg-cover, .lg-dispo, .lg-res, .lg-band, .lg-vues, .lg-cta {
       --rg-gutter: max(clamp(1.25rem, 4vw, 3rem), calc((100vw - var(--container)) / 2));
     }
-    #disponibles, #appartement-138, #duplex-216, #residence, #architecture, #piscine, #jardins, #stationnement, #vues { scroll-margin-top: 4.25rem; }
+    #disponibles, #appartement-138, #duplex-216, #residence, #architecture, #piscine, #jardins, #stationnement, #vues, #chantier { scroll-margin-top: 4.25rem; }
 
     /* ── 1. Couverture sans photo (page 1 de la plaquette) : logotype, tracé de la Sainte-Victoire ── */
     .lg-cover {
@@ -129,6 +129,42 @@
     .lg-vues .rg-text .script { color: var(--terra-texte); }
     .lg-vues .rg-text .section-lead { max-width: 34rem; color: var(--text); font-weight: 400; }
 
+
+    /* ── 4 bis. Le chantier : l'état d'octobre en grand, puis trois mois plus tôt (photo + vidéo dans une arche) ── */
+    #chantier { scroll-margin-top: 4.25rem; }
+    .lg-chantier { --rg-gutter: max(clamp(1.25rem, 4vw, 3rem), calc((100vw - var(--container)) / 2)); position: relative; isolation: isolate; overflow: hidden; display: grid; row-gap: clamp(3.5rem, 7vw, 7rem); padding: clamp(4rem, 8vw, 8rem) var(--rg-gutter) clamp(4.5rem, 9vw, 9rem); background: var(--blanc); }
+    .ch-row { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: clamp(1rem, 3vw, 2.8rem); row-gap: clamp(1.4rem, 3vw, 2.4rem); align-items: center; }
+    .ch-text { grid-column: 1 / -1; }
+    .ch-date { display: block; margin: 0 0 1rem; font-family: var(--font-caps); font-size: .78rem; font-weight: 500; letter-spacing: .24em; text-transform: uppercase; color: var(--terra-texte); }
+    .ch-text .script { color: var(--terra-texte); }
+    .ch-text .section-title { margin-bottom: 1rem; font-size: clamp(2.1rem, 3.3vw, 3.1rem); text-wrap: balance; }
+    .ch-past .ch-text .section-title { font-size: clamp(1.9rem, 2.8vw, 2.6rem); }
+    .ch-text .section-lead { max-width: 28rem; margin: 0; font-weight: 400; color: var(--text); }
+    .ch-fig { grid-column: 1 / -1; position: relative; margin: 0 calc(-1 * var(--rg-gutter)); overflow: hidden; background: var(--stone-light); border-radius: 0 var(--arche-s) 0 var(--arche-s); }
+    .ch-fig img { display: block; width: 100%; height: auto; }
+    .ch-video { grid-column: 1 / -1; justify-self: center; width: min(86%, 20rem); margin: 0; }
+    .ch-video-k { margin: 0 0 1.4rem; text-align: center; font-family: var(--font-caps); font-size: .78rem; font-weight: 500; letter-spacing: .24em; text-transform: uppercase; color: var(--brun); }
+    .ch-video-k small { display: block; margin-top: .45rem; font-family: var(--font-serif); font-size: 1.15rem; letter-spacing: .01em; text-transform: none; color: var(--text); }
+    .ch-arch { position: relative; margin: 12px 12px 0; }
+    .ch-arch::before { content: ""; position: absolute; inset: -12px -12px 0 -12px; border: 1px solid rgba(176, 118, 66, .6); border-bottom: 0; border-radius: 999px 999px 0 0; pointer-events: none; }
+    .ch-frame { position: relative; aspect-ratio: 9 / 16; overflow: hidden; background: #1b1411; border-radius: 999px 999px 0 0; box-shadow: var(--shadow-lg); }
+    .ch-frame video { position: absolute; inset: 0; width: 100%; height: 100%; display: block; object-fit: contain; }
+    .ch-play { position: absolute; left: 50%; top: 50%; z-index: 2; display: grid; place-items: center; width: 5.2rem; height: 5.2rem; padding: 0; border: 0; border-radius: 50%; transform: translate(-50%, -50%); background: rgba(255, 255, 255, .94); color: var(--terra-texte); box-shadow: 0 10px 30px rgba(0, 0, 0, .35); cursor: pointer; transition: transform .3s ease, background .3s ease; }
+    .ch-play[hidden] { display: none; }
+    .ch-play:hover { transform: translate(-50%, -50%) scale(1.06); background: #fff; }
+    .ch-play:focus-visible { outline: 3px solid #fff; outline-offset: 4px; box-shadow: 0 0 0 7px var(--brun); }
+    .ch-play svg { width: 1.9rem; height: 1.9rem; margin-left: .22rem; fill: currentColor; }
+    .ch-dl { display: block; margin-top: 1.5rem; text-align: center; font-size: 1rem; color: var(--brun); text-decoration: underline; text-underline-offset: 4px; text-decoration-color: rgba(123, 69, 56, .45); padding: .6rem 0; }
+    .ch-dl:hover { color: var(--terra-texte); }
+    @media (min-width: 901px) {
+      .ch-now .ch-text { grid-column: 1 / 6; }
+      .ch-now .ch-fig { grid-column: 6 / 13; margin: 0 calc(-1 * var(--rg-gutter)) 0 0; border-radius: var(--arche) 0 0 0; }
+      .ch-past { row-gap: clamp(1.6rem, 3vw, 2.6rem); align-items: end; }
+      .ch-past .ch-text { grid-column: 1 / 8; grid-row: 1; align-self: end; }
+      .ch-past .ch-fig { grid-column: 1 / 8; grid-row: 2; margin: 0 0 0 calc(-1 * var(--rg-gutter)); border-radius: 0 var(--arche) 0 0; }
+      .ch-past .ch-video { grid-column: 9 / 13; grid-row: 1 / 3; align-self: end; width: min(100%, 21rem); }
+    }
+
     /* ── 5. Appel final ── */
     .lg-cta { position: relative; isolation: isolate; overflow: hidden; text-align: center; padding: clamp(3.2rem, 5vw, 4.5rem) var(--rg-gutter) clamp(3.2rem, 5vw, 4.5rem); }
     .lg-cta .section-title { font-size: clamp(2.2rem, 3.8vw, 3.5rem); line-height: 1.1; margin-bottom: .3rem; }
@@ -196,7 +232,7 @@
       "name": "Appartement 138 m² et duplex 216 m² neufs à Aix | 59 Cézanne",
       "description": "Deux logements neufs disponibles à Aix-en-Provence : un 4 pièces de 138 m² avec jardin de 82 m² et un duplex de 216 m² avec ascenseur privatif.",
       "inLanguage": "fr-FR",
-      "dateModified": "2026-10-08",
+      "dateModified": "2026-10-09",
       "isPartOf": {
         "@id": "https://59-cezanne.com/#website"
       },
@@ -211,6 +247,20 @@
         "url": "https://59-cezanne.com/og/og-logements.jpg",
         "width": 1200,
         "height": 630
+      }
+    },
+    {
+      "@type": "VideoObject",
+      "@id": "https://59-cezanne.com/logements#chantier-video",
+      "name": "Le chantier de 59 Cézanne vu du ciel, début juillet 2026",
+      "description": "Survol en drone du chantier de la résidence 59 Cézanne, avenue Paul Cézanne à Aix-en-Provence, le 6 juillet 2026.",
+      "thumbnailUrl": "https://59-cezanne.com/chantier/video-poster.webp",
+      "uploadDate": "2026-10-09",
+      "duration": "PT20S",
+      "contentUrl": "https://59-cezanne.com/chantier/chantier-juillet-2026.mp4",
+      "inLanguage": "fr-FR",
+      "isPartOf": {
+        "@id": "https://59-cezanne.com/logements#webpage"
       }
     },
     {
@@ -504,6 +554,53 @@
     </figure>
   </section>
 
+  <!-- ─── 4 bis. Le chantier : photos et vidéo de drone (6 juillet et 8 octobre 2026) ─── -->
+  <section class="lg-chantier" id="chantier" aria-labelledby="t-chantier">
+    <div class="ch-row ch-now">
+      <div class="ch-text">
+        <time class="ch-date" datetime="2026-10-08" data-lang-fr="8 octobre 2026" data-lang-en="8 October 2026">8 octobre 2026</time>
+        <p class="script" data-lang-fr="Le chantier avance" data-lang-en="Work in progress">Le chantier avance</p>
+        <h2 class="section-title" id="t-chantier" data-lang-fr="Les murs en béton sortent de terre" data-lang-en="The concrete walls rise from the ground">Les murs en béton sortent de terre</h2>
+        <p class="section-lead" data-lang-fr="Vue de drone du chantier&nbsp;: la structure, la grue à tour et la Sainte-Victoire à l'horizon." data-lang-en="Drone view of the site: the structure, the tower crane and Mont Sainte-Victoire on the horizon.">Vue de drone du chantier&nbsp;: la structure, la grue à tour et la Sainte-Victoire à l'horizon.</p>
+      </div>
+      <figure class="ch-fig">
+      <picture>
+        <source media="(max-width: 700px)" srcset="/chantier/octobre-2026-portrait-600w.webp 600w, /chantier/octobre-2026-portrait-900w.webp 900w, /chantier/octobre-2026-portrait.webp 1350w" sizes="100vw" width="1350" height="1800">
+        <img src="/chantier/octobre-2026-1200w.webp" srcset="/chantier/octobre-2026-800w.webp 800w, /chantier/octobre-2026-1200w.webp 1200w, /chantier/octobre-2026.webp 2400w" sizes="(min-width: 901px) 66vw, 100vw" width="2400" height="1800" loading="lazy" decoding="async"
+             alt="Le chantier vu du ciel le 8 octobre 2026 : les murs en béton de la structure, la grue à tour et, à l'horizon, la Sainte-Victoire" data-alt-fr="Le chantier vu du ciel le 8 octobre 2026 : les murs en béton de la structure, la grue à tour et, à l'horizon, la Sainte-Victoire" data-alt-en="The site seen from the sky on 8 October 2026: the concrete walls of the structure, the tower crane and, on the horizon, Mont Sainte-Victoire" />
+      </picture>
+      </figure>
+    </div>
+
+    <div class="ch-row ch-past">
+      <div class="ch-text">
+        <time class="ch-date" datetime="2026-07-06" data-lang-fr="6 juillet 2026" data-lang-en="6 July 2026">6 juillet 2026</time>
+        <h3 class="section-title" data-lang-fr="Trois mois plus tôt" data-lang-en="Three months earlier">Trois mois plus tôt</h3>
+        <p class="section-lead" data-lang-fr="Début juillet&nbsp;: la fouille est terrassée et le ferraillage des fondations avance." data-lang-en="Early July: the excavation is dug and the foundation reinforcement is under way.">Début juillet&nbsp;: la fouille est terrassée et le ferraillage des fondations avance.</p>
+      </div>
+      <figure class="ch-fig">
+      <picture>
+        <source media="(max-width: 700px)" srcset="/chantier/juillet-2026-portrait-600w.webp 600w, /chantier/juillet-2026-portrait-900w.webp 900w, /chantier/juillet-2026-portrait.webp 1350w" sizes="100vw" width="1350" height="1800">
+        <img src="/chantier/juillet-2026-1200w.webp" srcset="/chantier/juillet-2026-800w.webp 800w, /chantier/juillet-2026-1200w.webp 1200w, /chantier/juillet-2026.webp 2400w" sizes="(min-width: 901px) 66vw, 100vw" width="2400" height="1800" loading="lazy" decoding="async"
+             alt="Le chantier vu du ciel le 6 juillet 2026 : la fouille terrassée, le ferraillage des fondations, une grue mobile jaune et le mât de la grue à tour, avec la Sainte-Victoire à l'horizon" data-alt-fr="Le chantier vu du ciel le 6 juillet 2026 : la fouille terrassée, le ferraillage des fondations, une grue mobile jaune et le mât de la grue à tour, avec la Sainte-Victoire à l'horizon" data-alt-en="The site seen from the sky on 6 July 2026: the dug excavation, the foundation reinforcement, a yellow mobile crane and the tower crane mast, with Mont Sainte-Victoire on the horizon" />
+      </picture>
+      </figure>
+      <figure class="ch-video">
+        <p class="ch-video-k"><span data-lang-fr="Le survol en vidéo" data-lang-en="The flyover on video">Le survol en vidéo</span><small data-lang-fr="20 secondes" data-lang-en="20 seconds">20 secondes</small></p>
+        <div class="ch-arch">
+          <div class="ch-frame">
+            <video controls preload="none" playsinline poster="/chantier/video-poster-720w.webp" width="1080" height="1920" aria-label="Vidéo : survol du chantier par drone, le 6 juillet 2026 (20 secondes)" data-aria-label-fr="Vidéo : survol du chantier par drone, le 6 juillet 2026 (20 secondes)" data-aria-label-en="Video: drone flyover of the site on 6 July 2026 (20 seconds)">
+              <source src="/chantier/chantier-juillet-2026.mp4" type="video/mp4">
+              <a href="/chantier/chantier-juillet-2026.mp4" data-lang-fr="Télécharger la vidéo (MP4)" data-lang-en="Download the video (MP4)">Télécharger la vidéo (MP4)</a>
+            </video>
+            <button type="button" class="ch-play" hidden aria-label="Lire la vidéo du chantier (20 secondes)" data-aria-label-fr="Lire la vidéo du chantier (20 secondes)" data-aria-label-en="Play the site video (20 seconds)"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M7 4.5v15a1 1 0 0 0 1.5.86l12.4-7.5a1 1 0 0 0 0-1.72L8.5 3.64A1 1 0 0 0 7 4.5z"/></svg></button>
+          </div>
+        </div>
+        <a class="ch-dl" href="/chantier/chantier-juillet-2026.mp4" download data-lang-fr="Télécharger la vidéo (MP4, 7,6&nbsp;Mo)" data-lang-en="Download the video (MP4, 7.6&nbsp;MB)">Télécharger la vidéo (MP4, 7,6&nbsp;Mo)</a>
+      </figure>
+    </div>
+  </section>
+
   <!-- ─── 5. Appel final ─── -->
   <section class="lg-cta fond-brun-pierre" aria-labelledby="cta-titre">
     <p class="script script--blanc" data-lang-fr="Parlons-en" data-lang-en="Let's talk">Parlons-en</p>
@@ -581,6 +678,7 @@
 <script src="/animations.js?v=62025150" defer></script>
 <script src="/translations.js?v=9c66aeea" defer></script>
 <script src="/cookie.js?v=80f178f3" defer></script>
+<script src="/chantier.js?v=9c2e535b" defer></script>
 <script>
 /* Texte alternatif des images : suit le basculement FR/EN (événement émis par translations.js). */
 document.addEventListener('59c:langchange', function (e) {

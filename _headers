@@ -32,6 +32,8 @@ https://:version.:project.pages.dev/*
   Cache-Control: public, max-age=2592000
 /*.ico
   Cache-Control: public, max-age=2592000
+/*.mp4
+  Cache-Control: public, max-age=2592000
 /*.woff2
   Cache-Control: public, max-age=31536000, immutable
 /*.jpg
