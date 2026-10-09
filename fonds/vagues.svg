@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 270" fill="none" stroke="#000" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round">
+  <!-- horizon, interrompu par la coque du voilier et par le soleil -->
+  <path d="M18 151 C70 148 118 153 156 151"/>
+  <path d="M300 151 C400 147 500 154 590 150"/>
+  <path d="M716 150 C744 147 772 151 788 149"/>
+  <!-- soleil levant : deux demi-cercles -->
+  <path d="M598 150 A54 54 0 0 1 706 150"/>
+  <path d="M622 150 A30 30 0 0 1 682 150"/>
+  <!-- voilier : grand-voile, foc, coque -->
+  <path d="M220 140 C220 118 220 100 220 78 C253 95 272 118 278 140 Z"/>
+  <path d="M210 140 C210 122 205 106 196 93 C187 110 182 126 180 140"/>
+  <path d="M166 148 C178 168 250 170 296 148"/>
+  <!-- mouettes -->
+  <path d="M430 74 C441 62 452 63 458 73 C464 63 475 62 486 74"/>
+  <path d="M500 44 C507 36 514 37 518 43 C522 37 529 36 536 44"/>
+  <!-- vagues -->
+  <path d="M34 192 C84 179 128 205 180 192 S276 179 328 192"/>
+  <path d="M388 198 C438 185 482 211 534 198 S630 185 682 198"/>
+  <path d="M110 230 C160 217 204 243 256 230 S352 217 404 230"/>
+  <path d="M474 236 C524 223 568 249 620 236 S716 223 768 236"/>
+  <path d="M18 258 C60 250 98 266 142 258"/>
+  <path d="M300 262 C340 254 378 270 420 262"/>
+</svg>

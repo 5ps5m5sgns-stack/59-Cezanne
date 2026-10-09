@@ -51,11 +51,6 @@
     .nw { white-space: nowrap; }
     .hero-title .nw { display: inline; }
     .hero-subtitle { max-width: 40rem; margin-top: 1.1rem; line-height: 1.6; color: rgba(255,255,255,0.95); text-shadow: 0 1px 12px rgba(0,0,0,0.45); }
-    .hero-dispo { display: flex; flex-wrap: wrap; align-items: center; gap: 0.7rem 1.2rem; margin-top: 1.7rem; animation: heroFadeUp 0.7s ease 0.42s both; }
-    .dispo-pill { display: inline-flex; align-items: center; gap: 0.7rem; padding: 0.55rem 1.3rem 0.55rem 1.05rem; border: 1.5px solid var(--terra); border-radius: 999px; background: rgba(250,247,242,0.95); color: var(--brun); font-size: 0.95rem; font-weight: 700; line-height: 1.3; }
-    .dispo-pill::before { content: ""; flex: none; width: 8px; height: 8px; border-radius: 50%; background: var(--terra); }
-    .dispo-pill:hover { background: #fff; }
-    .hero-maj { font-size: 0.92rem; color: rgba(255,255,255,0.88); text-shadow: 0 1px 8px rgba(0,0,0,0.5); }
     .hero-cta-wrap { margin-top: 1.7rem; gap: 1rem; }
     .hero-cta-wrap .btn { font-size: 0.82rem; padding: 1.1rem 2.2rem; }
     .hero-emblem { position: absolute; z-index: 1; right: clamp(2rem, 7vw, 7rem); bottom: clamp(3rem, 10vh, 6.5rem); width: clamp(170px, 18vw, 290px); }
@@ -118,11 +113,9 @@
     }
     @media (max-width: 700px) {
       .hero-overlay { background: linear-gradient(to top, rgba(15,12,8,0.94) 0%, rgba(15,12,8,0.82) 50%, rgba(15,12,8,0.62) 78%, rgba(15,12,8,0.5) 100%); }
-      .dispo-pill { font-size: 0.82rem; gap: 0.55rem; padding: 0.5rem 1rem 0.5rem 0.9rem; }
       .dispo-head .section-title { font-size: clamp(2rem, 8.6vw, 2.4rem); }
       .hero-emblem { display: none; }
       .hero-content { padding-inline: 1.25rem; }
-      .hero-dispo { margin-top: 1.3rem; }
       .hero-cta-wrap { margin-top: 1.3rem; }
       .hero-cta-wrap .btn { width: 100%; justify-content: center; padding: 1rem 1rem; letter-spacing: 0.09em; }
       .dispo-cta .btn { width: 100%; justify-content: center; }
@@ -298,10 +291,6 @@
     <div class="hero-content">
       <h1 class="hero-title"><span data-lang-fr="59 Cézanne," data-lang-en="59 Cézanne,">59 Cézanne,</span> <em data-lang-fr="appartements neufs de prestige à &lt;span class=&quot;nw&quot;&gt;Aix-en-Provence&lt;/span&gt;" data-lang-en="new prestige apartments in &lt;span class=&quot;nw&quot;&gt;Aix-en-Provence&lt;/span&gt;">appartements neufs de prestige à <span class="nw">Aix-en-Provence</span></em></h1>
       <p class="hero-subtitle" data-lang-fr="L'harmonie parfaite entre prestige, nature et confort. Résidence confidentielle, jardins privatifs, piscine chauffée." data-lang-en="The perfect harmony of prestige, nature and comfort. A confidential residence, private gardens, heated pool.">L'harmonie parfaite entre prestige, nature et confort. Résidence confidentielle, jardins privatifs, piscine chauffée.</p>
-      <div class="hero-dispo">
-        <a class="dispo-pill" href="#disponibles" data-lang-fr="Dernières disponibilités : 2 logements" data-lang-en="Last two homes available">Dernières disponibilités : 2 logements</a>
-        <span class="hero-maj"><span data-lang-fr="Mis à jour en" data-lang-en="Updated in">Mis à jour en</span> <time class="dispo-time" datetime="2026-10" data-lang-fr="octobre 2026" data-lang-en="October 2026">octobre 2026</time></span>
-      </div>
       <div class="hero-cta-wrap">
         <a href="tel:+33609204590" class="btn btn-primary"><svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" focusable="false"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81 19.79 19.79 0 01.01 1.18 2 2 0 012 0h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg><span data-lang-fr="Appeler le 06 09 20 45 90" data-lang-en="Call 06 09 20 45 90">Appeler le 06 09 20 45 90</span></a>
         <a href="/logements#disponibles" class="btn btn-outline"><span data-lang-fr="Voir les logements" data-lang-en="View the apartments">Voir les logements</span></a>
