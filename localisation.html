@@ -88,7 +88,7 @@
     .lx-tablewrap { grid-column: 1 / -1; }
     .lx-bus, .lx-near { padding-top: clamp(1.6rem, 2.6vw, 2.4rem); border-top: 1px solid var(--lx-line); }
 
-    .lx-h { display: flex; align-items: center; gap: .9rem; margin: 0 0 1.5rem; font-family: var(--font-serif); font-size: clamp(1.55rem, 2.1vw, 1.9rem); font-weight: 600; line-height: 1.15; color: var(--brun); }
+    .lx-h { display: flex; align-items: center; gap: .9rem; margin: 0 0 1.5rem; font-family: var(--font-serif); font-size: clamp(1.55rem, 2.1vw, 1.9rem); font-weight: 400; line-height: 1.15; color: var(--brun); }
     .lx-h-ico { flex: none; width: 46px; height: 46px; padding: 8px; border: 1px solid rgba(176, 118, 66, .7); border-radius: 50%; fill: none; stroke: var(--terra-texte); stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
 
     /* Le centre-ville : trois arches de pierre veinée (voiture, bus, à pied) */
@@ -102,8 +102,8 @@
     .lx-mode-ico { width: clamp(38px, 3.6vw, 52px); height: clamp(38px, 3.6vw, 52px); margin-bottom: .7rem; fill: none; stroke: var(--brun-profond); stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
     .lx-big { display: flex; flex-direction: column; align-items: center; line-height: 1; }
     .lx-n { font-family: var(--font-serif); font-size: clamp(2.8rem, 4.6vw, 4.2rem); font-weight: 500; line-height: .95; color: var(--terra-texte); font-variant-numeric: lining-nums; }
-    .lx-u { margin-top: .3rem; font-size: .92rem; font-weight: 700; letter-spacing: .02em; color: var(--brun-profond); }
-    .lx-d { display: block; margin-top: .15rem; font-size: 1rem; line-height: 1.35; color: var(--text); }
+    .lx-u { margin-top: .55rem; font-family: var(--font-caps); font-size: .72rem; font-weight: 500; letter-spacing: .22em; text-transform: uppercase; color: var(--brun); }
+    .lx-d { display: block; margin-top: .35rem; font-family: var(--font-serif); font-size: clamp(1.15rem, 1.45vw, 1.32rem); font-weight: 400; line-height: 1.3; letter-spacing: .01em; color: var(--text); }
     .lx-list .lx-u { color: var(--brun); }
 
     /* Autres trajets en voiture : un horaire à filets, les durées en grand */
@@ -112,22 +112,22 @@
     .lx-list .lx-big { flex-direction: row; align-items: baseline; gap: .4rem; }
     .lx-list .lx-n { font-size: clamp(2.3rem, 3.2vw, 3rem); }
     .lx-list .lx-u { margin: 0; }
-    .lx-list .lx-d { margin: 0; font-size: 1.05rem; }
+    .lx-list .lx-d { margin: 0; }
 
-    .lx-txt { margin: 0; font-size: 1.1rem; line-height: 1.9; color: var(--text); }
-    .lx-txt b { display: inline-block; padding: 0 .75em; border: 1px solid rgba(176, 118, 66, .75); border-radius: 999px; font-weight: 700; line-height: 1.55; white-space: nowrap; color: var(--brun); }
+    .lx-txt { margin: 0; font-family: var(--font-serif); font-size: clamp(1.15rem, 1.45vw, 1.32rem); line-height: 1.9; letter-spacing: .01em; color: var(--text); }
+    .lx-txt b { display: inline-block; padding: 0 .85em; border: 1px solid rgba(176, 118, 66, .75); border-radius: 999px; font-weight: 400; letter-spacing: .03em; line-height: 1.55; white-space: nowrap; color: var(--brun); }
     .lx-nearlist { list-style: none; display: grid; gap: .35rem; }
 
     /* Commerces et écoles : tableau à filets, durées en police des titres */
     .lx-table { width: 100%; border-collapse: collapse; }
-    .lx-table caption { caption-side: top; padding: 0 0 .6rem; text-align: left; font-family: var(--font-serif); font-size: clamp(1.7rem, 2.4vw, 2.2rem); font-weight: 600; line-height: 1.15; color: var(--brun); }
-    .lx-table thead th { width: 21%; padding: .9rem .3rem .8rem; vertical-align: bottom; text-align: center; font-size: .92rem; font-weight: 700; color: var(--brun); }
+    .lx-table caption { caption-side: top; padding: 0 0 .6rem; text-align: left; font-family: var(--font-serif); font-size: clamp(1.7rem, 2.4vw, 2.2rem); font-weight: 400; line-height: 1.15; color: var(--brun); }
+    .lx-table thead th { width: 21%; padding: .9rem .3rem .8rem; vertical-align: bottom; text-align: center; font-family: var(--font-caps); font-size: .72rem; font-weight: 500; letter-spacing: .2em; text-transform: uppercase; color: var(--brun); }
     .lx-table thead th:first-child { width: auto; }
     .lx-th-ico { display: block; width: 42px; height: 32px; margin: 0 auto .35rem; fill: none; stroke: var(--terra-texte); stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
     .lx-table tbody tr { border-top: 1px solid var(--lx-line); }
     .lx-table tbody tr:last-child { border-bottom: 1px solid var(--lx-line); }
     .lx-table tbody th { padding: .95rem 1rem .95rem 0; text-align: left; font-family: var(--font-serif); font-size: clamp(1.25rem, 1.7vw, 1.5rem); font-weight: 500; line-height: 1.2; color: var(--text); }
-    .lx-table td { padding: .6rem .3rem; text-align: center; font-size: .95rem; font-weight: 700; white-space: nowrap; color: var(--brun); }
+    .lx-table td { padding: .6rem .3rem; text-align: center; font-family: var(--font-caps); font-size: .7rem; font-weight: 500; letter-spacing: .16em; text-transform: uppercase; white-space: nowrap; color: var(--brun); }
     .lx-table td b { font-family: var(--font-serif); font-size: clamp(1.7rem, 2.4vw, 2.1rem); font-weight: 500; line-height: 1; color: var(--terra-texte); font-variant-numeric: lining-nums; }
     .lx-note { margin: 1.4rem 0 0; font-size: .92rem; color: var(--text-light); text-align: right; }
 
@@ -136,13 +136,26 @@
     .loc-dist { list-style: none; margin: 0; border-bottom: 1px solid var(--lx-line, rgba(123, 69, 56, .28)); }
     .loc-dist li { display: grid; grid-template-columns: minmax(5.8rem, auto) minmax(0, 1fr); column-gap: 1.3rem; align-items: start; padding: 1.15rem 0; border-top: 1px solid rgba(123, 69, 56, .28); }
     .loc-dist-n { font-family: var(--font-serif); font-size: clamp(2.5rem, 3.4vw, 3.2rem); font-weight: 500; line-height: 1; color: var(--terra-texte); font-variant-numeric: lining-nums; white-space: nowrap; }
-    .loc-dist-n small { display: block; margin-top: .4rem; font-family: var(--font-sans); font-size: .85rem; font-weight: 700; line-height: 1.2; color: var(--text-mid); }
-    .loc-dist-t { margin: 0; font-size: 1.1rem; line-height: 1.5; color: var(--text); }
-    .loc-dist-t strong { display: block; font-family: var(--font-serif); font-size: 1.45rem; font-weight: 600; line-height: 1.15; color: var(--brun); }
+    .loc-dist-n small { display: block; margin-top: .5rem; font-family: var(--font-caps); font-size: .68rem; font-weight: 500; letter-spacing: .2em; text-transform: uppercase; line-height: 1.2; color: var(--brun); }
+    .loc-dist-t { margin: 0; font-family: var(--font-serif); font-size: clamp(1.1rem, 1.35vw, 1.22rem); line-height: 1.5; letter-spacing: .01em; color: var(--text); }
+    .loc-dist-t strong { display: block; margin-bottom: .2rem; font-family: var(--font-serif); font-size: 1.55rem; font-weight: 400; line-height: 1.15; color: var(--brun); }
     .rg .rg-text .loc-dist-t { max-width: none; }
 
     /* ═══ 4 ─ Le quartier (duo) ═══ */
     .loc-aix .rg-text .section-lead { max-width: 34rem; }
+
+    /* ═══ 4 bis ─ Entre nature et mer : texte + grand cliché, puis trois vues de même format (jamais recadrées) ═══ */
+    .loc-mer { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: clamp(1rem, 2.4vw, 2.2rem); row-gap: clamp(1.2rem, 2.4vw, 2.2rem); align-items: center; padding-bottom: clamp(7rem, 13vw, 12rem); /* bande réservée au tracé de la montagne : il ne passe jamais sous une photo */ }
+    .loc-mer .rg-text { grid-column: 1 / -1; }
+    .loc-mer .rg-fig { grid-column: 1 / -1; }
+    .loc-mer .rg-text .section-lead { max-width: 27rem; }
+    @media (min-width: 901px) {
+      .loc-mer .rg-text { grid-column: 1 / 6; }
+      .loc-mer .mer-a { grid-column: 6 / 13; margin-right: calc(-1 * var(--rg-gutter)); border-radius: var(--arche) 0 0 0; }
+      .loc-mer .mer-b { grid-column: 1 / 5; align-self: start; border-radius: var(--arche-s) 0 0 0; }
+      .loc-mer .mer-c { grid-column: 5 / 9; align-self: start; border-radius: var(--arche-s) var(--arche-s) 0 0; }
+      .loc-mer .mer-d { grid-column: 9 / 13; align-self: start; border-radius: 0 var(--arche-s) 0 0; }
+    }
 
     /* ═══ 5 ─ La carte : statique d'abord (aucune requête tierce avant le clic), repères en pilules ═══ */
     .map-box [hidden], #mapLoad[hidden] { display: none !important; }
@@ -167,7 +180,7 @@
 
     /* ═══ 6 ─ Appel final : panneau brun, arche crème comme la page 12 de la plaquette ═══ */
     .loc-cta { padding-top: clamp(3rem, 7vw, 7rem); padding-bottom: clamp(2.5rem, 5vw, 4.5rem); padding-inline: var(--rg-gutter); }
-    .loc-panel { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, .9fr); column-gap: clamp(2rem, 5vw, 5rem); align-items: end; padding: clamp(2.5rem, 6vw, 6rem) clamp(1.75rem, 5vw, 5.5rem) 0; border-radius: var(--arche) 0 0 0; box-shadow: var(--shadow-lg); --trait-w: min(48%, 600px); }
+    .loc-panel { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, .9fr); column-gap: clamp(2rem, 5vw, 5rem); align-items: end; padding: clamp(2.5rem, 6vw, 6rem) clamp(1.75rem, 5vw, 5.5rem) 0; border-radius: var(--arche) var(--arche) 0 0; box-shadow: var(--shadow-lg); --trait-w: min(48%, 600px); }
     .loc-panel-text { padding-bottom: clamp(3rem, 8.5vw, 8rem); align-self: center; }
     .loc-panel .script { font-size: clamp(2.6rem, 4.4vw, 4rem); }
     .loc-panel .section-title { max-width: 14ch; margin-bottom: 1rem; font-size: clamp(2.4rem, 4vw, 3.6rem); }
@@ -214,7 +227,7 @@
   </style>
 
   <link rel="preload" as="font" type="font/woff2" href="/fonts/whisper-400-latin.woff2" crossorigin />
-  <link rel="preload" as="image" href="/Photo%2059%20C%C3%A9zanne/Photo%20Sainte-Victoire%20pour%20Boris/Drone/DJI_0876.webp" imagesrcset="/Photo%2059%20C%C3%A9zanne/Photo%20Sainte-Victoire%20pour%20Boris/Drone/DJI_0876-800w.webp 800w, /Photo%2059%20C%C3%A9zanne/Photo%20Sainte-Victoire%20pour%20Boris/Drone/DJI_0876-1200w.webp 1200w, /Photo%2059%20C%C3%A9zanne/Photo%20Sainte-Victoire%20pour%20Boris/Drone/DJI_0876.webp 2400w" imagesizes="(min-width: 901px) 58vw, 100vw" fetchpriority="high" />
+  <link rel="preload" as="image" href="/ambiance/aix-fontaine-rotonde.webp" imagesrcset="/ambiance/aix-fontaine-rotonde-800w.webp 800w, /ambiance/aix-fontaine-rotonde-1200w.webp 1200w, /ambiance/aix-fontaine-rotonde.webp 2400w" imagesizes="(min-width: 901px) 58vw, 100vw" fetchpriority="high" />
 
   <script type="application/ld+json">
 {
@@ -341,10 +354,10 @@
     <p class="cover-lead" data-lang-fr="Le centre-ville à environ 4 minutes en voiture, la Sainte-Victoire à l'horizon." data-lang-en="The city centre about 4 minutes away by car, Mont Sainte-Victoire on the horizon.">Le centre-ville à environ 4 minutes en voiture, la Sainte-Victoire à l'horizon.</p>
   </div>
   <figure class="cover-fig">
-    <img src="/Photo%2059%20C%C3%A9zanne/Photo%20Sainte-Victoire%20pour%20Boris/Drone/DJI_0876.webp"
-         srcset="/Photo%2059%20C%C3%A9zanne/Photo%20Sainte-Victoire%20pour%20Boris/Drone/DJI_0876-800w.webp 800w, /Photo%2059%20C%C3%A9zanne/Photo%20Sainte-Victoire%20pour%20Boris/Drone/DJI_0876-1200w.webp 1200w, /Photo%2059%20C%C3%A9zanne/Photo%20Sainte-Victoire%20pour%20Boris/Drone/DJI_0876.webp 2400w"
-         sizes="(min-width: 901px) 58vw, 100vw" width="2400" height="1800" fetchpriority="high" decoding="async"
-         alt="Vue prise à l'emplacement de la résidence : cyprès, toits de tuiles, collines boisées et, au loin, la montagne Sainte-Victoire" data-alt-fr="Vue prise à l'emplacement de la résidence : cyprès, toits de tuiles, collines boisées et, au loin, la montagne Sainte-Victoire" data-alt-en="View taken at the residence's location: cypress trees, tiled roofs, wooded hills and, in the distance, Mont Sainte-Victoire" />
+    <img src="/ambiance/aix-fontaine-rotonde.webp"
+         srcset="/ambiance/aix-fontaine-rotonde-800w.webp 800w, /ambiance/aix-fontaine-rotonde-1200w.webp 1200w, /ambiance/aix-fontaine-rotonde.webp 2400w"
+         sizes="(min-width: 901px) 58vw, 100vw" width="2400" height="1600" fetchpriority="high" decoding="async"
+         alt="La fontaine de la Rotonde à Aix-en-Provence, sous un ciel bleu, entourée de platanes" data-alt-fr="La fontaine de la Rotonde à Aix-en-Provence, sous un ciel bleu, entourée de platanes" data-alt-en="The Rotonde fountain in Aix-en-Provence, under a blue sky and surrounded by plane trees" />
   </figure>
 </header>
 
@@ -450,10 +463,10 @@
     </ul>
   </div>
   <figure class="rg-fig">
-    <img src="/Photo%2059%20C%C3%A9zanne/Photo%20Sainte-Victoire%20pour%20Boris/Drone/DJI_0874.webp"
-         srcset="/Photo%2059%20C%C3%A9zanne/Photo%20Sainte-Victoire%20pour%20Boris/Drone/DJI_0874-800w.webp 800w, /Photo%2059%20C%C3%A9zanne/Photo%20Sainte-Victoire%20pour%20Boris/Drone/DJI_0874-1200w.webp 1200w, /Photo%2059%20C%C3%A9zanne/Photo%20Sainte-Victoire%20pour%20Boris/Drone/DJI_0874.webp 2400w"
-         sizes="(min-width: 901px) 62vw, 100vw" width="2400" height="1800" loading="lazy" decoding="async"
-         alt="Vue aérienne prise à l'emplacement de la résidence : une rue bordée de villas à toits de tuiles, des cyprès, des collines boisées et, à l'horizon, la montagne Sainte-Victoire" data-alt-fr="Vue aérienne prise à l'emplacement de la résidence : une rue bordée de villas à toits de tuiles, des cyprès, des collines boisées et, à l'horizon, la montagne Sainte-Victoire" data-alt-en="Aerial view taken at the residence's location: a street lined with tile-roofed villas, cypress trees, wooded hills and, on the horizon, Mont Sainte-Victoire" />
+    <img src="/ambiance/cezanne-sainte-victoire.webp"
+         srcset="/ambiance/cezanne-sainte-victoire-800w.webp 800w, /ambiance/cezanne-sainte-victoire-1200w.webp 1200w, /ambiance/cezanne-sainte-victoire.webp 1440w"
+         sizes="(min-width: 901px) 62vw, 100vw" width="1440" height="950" loading="lazy" decoding="async"
+         alt="Peinture de Paul Cézanne : la montagne Sainte-Victoire au-dessus des toits et des jardins" data-alt-fr="Peinture de Paul Cézanne : la montagne Sainte-Victoire au-dessus des toits et des jardins" data-alt-en="Painting by Paul Cézanne: Mont Sainte-Victoire above rooftops and gardens" />
   </figure>
 </section>
 
@@ -475,10 +488,43 @@
          alt="Vue aérienne oblique d'un quartier de villas avec piscines, la ville d'Aix-en-Provence et la plaine à l'arrière-plan" data-alt-fr="Vue aérienne oblique d'un quartier de villas avec piscines, la ville d'Aix-en-Provence et la plaine à l'arrière-plan" data-alt-en="Oblique aerial view of a villa district with swimming pools, the city of Aix-en-Provence and the plain in the background" />
   </figure>
   <figure class="rg-fig">
-    <img src="/Photo%2059%20C%C3%A9zanne/3D%20Groove%20Architecture/Edited/insertion-est.webp"
-         srcset="/Photo%2059%20C%C3%A9zanne/3D%20Groove%20Architecture/Edited/insertion-est-800w.webp 800w, /Photo%2059%20C%C3%A9zanne/3D%20Groove%20Architecture/Edited/insertion-est-1200w.webp 1200w, /Photo%2059%20C%C3%A9zanne/3D%20Groove%20Architecture/Edited/insertion-est.webp 2048w"
-         sizes="(min-width: 901px) 46vw, 100vw" width="2048" height="1536" loading="lazy" decoding="async"
-         alt="Vue aérienne du dessus d'un quartier résidentiel d'Aix-en-Provence : villas à toits de tuiles, piscines, oliveraie et routes" data-alt-fr="Vue aérienne du dessus d'un quartier résidentiel d'Aix-en-Provence : villas à toits de tuiles, piscines, oliveraie et routes" data-alt-en="Overhead aerial view of a residential district of Aix-en-Provence: tile-roofed villas, swimming pools, olive grove and roads" />
+    <img src="/ambiance/aix-cours-mirabeau.webp"
+         srcset="/ambiance/aix-cours-mirabeau-800w.webp 800w, /ambiance/aix-cours-mirabeau-1200w.webp 1200w, /ambiance/aix-cours-mirabeau.webp 2400w"
+         sizes="(min-width: 901px) 46vw, 100vw" width="2400" height="1600" loading="lazy" decoding="async"
+         alt="Le cours Mirabeau à Aix-en-Provence : une allée de platanes, une fontaine moussue et des promeneurs" data-alt-fr="Le cours Mirabeau à Aix-en-Provence : une allée de platanes, une fontaine moussue et des promeneurs" data-alt-en="The Cours Mirabeau in Aix-en-Provence: a tree-lined avenue, a moss-covered fountain and strollers" />
+  </figure>
+</section>
+
+<!-- ═══ 4 bis · Entre nature et mer : un grand cliché, trois vues (calanque, Cassis, Marseille) ═══ -->
+<section class="rg loc-mer" id="mer" aria-labelledby="t-mer">
+  <div class="rg-text">
+    <h2 class="section-title" id="t-mer" data-lang-fr="Un cadre idyllique entre nature et mer" data-lang-en="An idyllic setting between nature and sea">Un cadre idyllique entre nature et mer</h2>
+    <p class="section-lead" data-lang-fr="Aix-en-Provence est bordée de parcs et d'espaces naturels." data-lang-en="Aix-en-Provence is bordered by parks and natural spaces.">Aix-en-Provence est bordée de parcs et d'espaces naturels.</p>
+    <p class="section-lead" data-lang-fr="La Méditerranée, les calanques, Cassis et Marseille sont à portée de route." data-lang-en="The Mediterranean, the calanques, Cassis and Marseille are within easy reach by road.">La Méditerranée, les calanques, Cassis et Marseille sont à portée de route.</p>
+  </div>
+  <figure class="rg-fig mer-a">
+    <img src="/ambiance/calanque-en-vau.webp"
+         srcset="/ambiance/calanque-en-vau-800w.webp 800w, /ambiance/calanque-en-vau-1200w.webp 1200w, /ambiance/calanque-en-vau.webp 2400w"
+         sizes="(min-width: 901px) 58vw, 100vw" width="2400" height="1800" loading="lazy" decoding="async"
+         alt="La calanque d'En-Vau : falaises blanches, pins et eau turquoise" data-alt-fr="La calanque d'En-Vau : falaises blanches, pins et eau turquoise" data-alt-en="The En-Vau calanque: white cliffs, pine trees and turquoise water" />
+  </figure>
+  <figure class="rg-fig mer-b">
+    <img src="/ambiance/calanque-sormiou.webp"
+         srcset="/ambiance/calanque-sormiou-800w.webp 800w, /ambiance/calanque-sormiou-1200w.webp 1200w, /ambiance/calanque-sormiou.webp 2400w"
+         sizes="(min-width: 901px) 31vw, 100vw" width="2400" height="1600" loading="lazy" decoding="async"
+         alt="Vue sur la calanque de Sormiou, ses falaises claires et la Méditerranée" data-alt-fr="Vue sur la calanque de Sormiou, ses falaises claires et la Méditerranée" data-alt-en="View of the Sormiou calanque, its pale cliffs and the Mediterranean" />
+  </figure>
+  <figure class="rg-fig mer-c">
+    <img src="/ambiance/cassis-cap-canaille.webp"
+         srcset="/ambiance/cassis-cap-canaille-800w.webp 800w, /ambiance/cassis-cap-canaille-1200w.webp 1200w, /ambiance/cassis-cap-canaille.webp 2400w"
+         sizes="(min-width: 901px) 31vw, 100vw" width="2400" height="1607" loading="lazy" decoding="async"
+         alt="Le port de Cassis au soleil couchant : barques bleues et falaise du cap Canaille" data-alt-fr="Le port de Cassis au soleil couchant : barques bleues et falaise du cap Canaille" data-alt-en="The port of Cassis at sunset: blue boats and the Cap Canaille cliff" />
+  </figure>
+  <figure class="rg-fig mer-d">
+    <img src="/ambiance/marseille-vieux-port.webp"
+         srcset="/ambiance/marseille-vieux-port-800w.webp 800w, /ambiance/marseille-vieux-port-1200w.webp 1200w, /ambiance/marseille-vieux-port.webp 2400w"
+         sizes="(min-width: 901px) 31vw, 100vw" width="2400" height="1600" loading="lazy" decoding="async"
+         alt="Le Vieux-Port de Marseille, ses bateaux et la basilique Notre-Dame-de-la-Garde sur la colline" data-alt-fr="Le Vieux-Port de Marseille, ses bateaux et la basilique Notre-Dame-de-la-Garde sur la colline" data-alt-en="The Old Port of Marseille, its boats and the Notre-Dame-de-la-Garde basilica on the hill" />
   </figure>
 </section>
 

@@ -866,7 +866,7 @@
   z-index: 2;
   margin-top: calc(-1 * var(--arche));
   padding: clamp(4rem, 8vw, 6rem) 0 clamp(7.5rem, 15vw, 12rem);
-  border-radius: var(--arche) 0 0 0;
+  border-radius: var(--arche) var(--arche) 0 0;
   text-align: center;
   --trait-w: min(88%, 980px);
   --trait-op: 0.22;
