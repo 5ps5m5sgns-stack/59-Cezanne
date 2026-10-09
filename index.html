@@ -6,6 +6,9 @@
   <title>Appartement de luxe neuf à Aix-en-Provence | 59 Cézanne</title>
   <meta name="description" content="Appartements neufs de luxe à Aix-en-Provence, avenue Paul Cézanne : jardins privatifs, piscine chauffée. Visites : 06 09 20 45 90." />
   <link rel="canonical" href="https://59-cezanne.com/" />
+  <link rel="alternate" hreflang="fr" href="https://59-cezanne.com/" />
+  <link rel="alternate" hreflang="en" href="https://59-cezanne.com/en" />
+  <link rel="alternate" hreflang="x-default" href="https://59-cezanne.com/" />
   <meta name="robots" content="index,follow,max-image-preview:large" />
   <meta name="author" content="Ponthieu Développement Holding" />
   <meta name="google-site-verification" content="SNN8bzDLw_qboNi81MOuw3SOY2NjIguz_KnPd8e9eUk" />
@@ -30,7 +33,7 @@
   <link rel="icon" type="image/png" sizes="192x192" href="/favicon-192.png" />
   <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
 
-  <link rel="stylesheet" href="/style.css?v=935cb114" />
+  <link rel="stylesheet" href="/style.css?v=6e5d4729" />
   <link rel="preload" as="font" type="font/woff2" crossorigin href="/fonts/gilda-display-latin.woff2" />
 
   <link rel="preload" as="image" href="/Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_EXT_Panorama_St-Victoire.webp" imagesrcset="/Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_EXT_Panorama_St-Victoire-800w.webp 800w, /Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_EXT_Panorama_St-Victoire-1200w.webp 1200w, /Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_EXT_Panorama_St-Victoire-1600w.webp 1600w, /Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_EXT_Panorama_St-Victoire.webp 2400w" imagesizes="100vw" fetchpriority="high" />
@@ -93,6 +96,23 @@
     .gl-label { font-family: var(--font-serif); font-size: 1.5rem; font-style: italic; color: var(--brun); }
     .guides-line a { display: inline-block; padding: 0.6rem 0; font-size: 1.02rem; color: var(--text); text-decoration: underline; text-underline-offset: 5px; text-decoration-color: var(--terra); }
     .guides-line a:hover { color: var(--terra-texte); }
+
+    /* ── Texte d'accueil et questions fréquentes ── */
+    .home-faq { --rg-gutter: max(clamp(1.25rem, 4vw, 3rem), calc((100vw - var(--container)) / 2)); padding: clamp(3.5rem, 7vw, 6.5rem) var(--rg-gutter); background: var(--blanc); }
+    .home-faq-in { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); column-gap: clamp(2rem, 6vw, 6rem); align-items: start; }
+    .home-faq .script { color: var(--terra-texte); }
+    .home-faq .section-title { margin-bottom: 1.1rem; font-size: clamp(2rem, 3.2vw, 3rem); text-wrap: balance; }
+    .home-faq-intro p:not(.script) { max-width: 31rem; font-size: 1.08rem; line-height: 1.75; color: var(--text); }
+    .home-faq details { padding: 1.15rem 0; border-top: 1px solid rgba(123, 69, 56, .28); }
+    .home-faq details:last-child { border-bottom: 1px solid rgba(123, 69, 56, .28); }
+    .home-faq summary { display: flex; align-items: baseline; justify-content: space-between; gap: 1.2rem; cursor: pointer; list-style: none; font-family: var(--font-serif); font-size: clamp(1.2rem, 1.7vw, 1.45rem); line-height: 1.3; color: var(--brun); }
+    .home-faq summary::-webkit-details-marker { display: none; }
+    .home-faq summary::after { content: "+"; flex: none; font-family: var(--font-sans); font-size: 1.5rem; font-weight: 300; line-height: 1; color: var(--terra-texte); }
+    .home-faq details[open] summary::after { content: "\2212"; }
+    .home-faq details p { max-width: 38rem; margin: .9rem 0 0; font-size: 1.04rem; line-height: 1.7; color: var(--text); }
+    .home-faq details a { color: var(--brun); text-decoration: underline; text-underline-offset: 4px; text-decoration-color: rgba(123, 69, 56, .45); }
+    .home-faq details a:hover { color: var(--terra-texte); }
+    @media (max-width: 900px) { .home-faq-in { grid-template-columns: minmax(0, 1fr); row-gap: 2rem; } }
 
     /* ── Bloc final : brun, logo en pilule de pierre suspendue (plaquette p. 2 et 12), numéro en grand ── */
     .home-end { position: relative; text-align: center; padding: clamp(7.5rem, 12vw, 10.5rem) var(--rg-gutter, 2rem) clamp(4.5rem, 8vw, 7rem); }
@@ -231,6 +251,61 @@
         "longitude": 5.4451
       },
       "hasMap": "https://www.openstreetmap.org/?mlat=43.5465&mlon=5.4451#map=17/43.5465/5.4451"
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "https://59-cezanne.com/#faq",
+      "inLanguage": "fr-FR",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Où se trouve 59 Cézanne ?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Au 59 avenue Paul Cézanne, à Aix-en-Provence (13100), dans le quartier des Lauves. Le centre-ville est à environ 4 minutes en voiture et l'autoroute A51 à environ 3 minutes, selon la plaquette. Voir la localisation."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Quels logements sont disponibles ?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Un 4 pièces de 138 m² avec jardin privatif de 82 m², et un duplex de 216 m² avec ascenseur privatif. Voir les logements."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Y a-t-il une piscine ?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Une piscine chauffée avec nage à contre-courant est prévue selon la notice descriptive du 8 avril 2025. Pour savoir quoi vérifier avant d'acheter, lisez notre guide de l'appartement avec piscine."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Comment visiter ou recevoir la plaquette ?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Appelez le 06 09 20 45 90 ou écrivez-nous depuis la page Contact : les visites se font sur rendez-vous et la plaquette du programme est envoyée sur demande."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Peut-on suivre l'avancement du chantier ?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Oui : des photos et une vidéo de drone du chantier sont publiées sur la page Logements."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Pourquoi acheter un appartement neuf à Aix-en-Provence ?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Frais de notaire réduits, normes récentes, prestations choisies sur plan : notre guide de l'achat dans le neuf détaille les étapes, les garanties légales et les coûts, avec des sources officielles."
+          }
+        }
+      ]
     }
   ]
 }
@@ -396,6 +471,43 @@
   </section>
 
   <!-- ─── Nos guides (une ligne discrète) ─────────────────────── -->
+  <!-- ─── Texte et questions fréquentes : appartement de luxe neuf à Aix-en-Provence ─────────────────── -->
+  <section class="home-faq" id="questions" aria-labelledby="questions-titre">
+    <div class="home-faq-in">
+      <div class="home-faq-intro">
+        <p class="script" data-lang-fr="Avenue Paul Cézanne" data-lang-en="Avenue Paul Cézanne">Avenue Paul Cézanne</p>
+        <h2 class="section-title" id="questions-titre" data-lang-fr="Un appartement de luxe neuf, avenue Paul Cézanne" data-lang-en="A new luxury apartment on avenue Paul Cézanne">Un appartement de luxe neuf, avenue Paul Cézanne</h2>
+        <p data-lang-fr="59 Cézanne est une résidence confidentielle d&#x27;appartements neufs de standing à Aix-en-Provence, avenue Paul Cézanne, dans le quartier des Lauves&amp;nbsp;: jardins privatifs, piscine chauffée et stationnement en sous-sol, avec la Sainte-Victoire à l&#x27;horizon. Les derniers logements disponibles sont un 4 pièces de 138&amp;nbsp;m² avec jardin privatif et un duplex de 216&amp;nbsp;m² avec ascenseur privatif." data-lang-en="59 Cézanne is a confidential residence of new prestige apartments in Aix-en-Provence, on avenue Paul Cézanne in the Lauves district: private gardens, a heated pool and underground parking, with the Sainte-Victoire on the horizon. The last homes available are a 138 m² four-room apartment with a private garden and a 216 m² duplex with a private lift.">59 Cézanne est une résidence confidentielle d'appartements neufs de standing à Aix-en-Provence, avenue Paul Cézanne, dans le quartier des Lauves&nbsp;: jardins privatifs, piscine chauffée et stationnement en sous-sol, avec la Sainte-Victoire à l'horizon. Les derniers logements disponibles sont un 4 pièces de 138&nbsp;m² avec jardin privatif et un duplex de 216&nbsp;m² avec ascenseur privatif.</p>
+      </div>
+      <div class="home-faq-list">
+      <details>
+        <summary data-lang-fr="Où se trouve 59 Cézanne&amp;nbsp;?" data-lang-en="Where is 59 Cézanne?">Où se trouve 59 Cézanne&nbsp;?</summary>
+        <p data-lang-fr="Au 59 avenue Paul Cézanne, à Aix-en-Provence (13100), dans le quartier des Lauves. Le centre-ville est à environ 4 minutes en voiture et l&#x27;autoroute A51 à environ 3 minutes, selon la plaquette. &lt;a href=&quot;/localisation&quot;&gt;Voir la localisation&lt;/a&gt;." data-lang-en="At 59 avenue Paul Cézanne, Aix-en-Provence (13100), in the Lauves district. The city centre is about 4 minutes away by car and the A51 motorway about 3 minutes, according to the brochure. &lt;a href=&quot;/localisation&quot;&gt;See the location&lt;/a&gt;.">Au 59 avenue Paul Cézanne, à Aix-en-Provence (13100), dans le quartier des Lauves. Le centre-ville est à environ 4 minutes en voiture et l'autoroute A51 à environ 3 minutes, selon la plaquette. <a href="/localisation">Voir la localisation</a>.</p>
+      </details>
+      <details>
+        <summary data-lang-fr="Quels logements sont disponibles&amp;nbsp;?" data-lang-en="Which homes are available?">Quels logements sont disponibles&nbsp;?</summary>
+        <p data-lang-fr="Un 4 pièces de 138&amp;nbsp;m² avec jardin privatif de 82&amp;nbsp;m², et un duplex de 216&amp;nbsp;m² avec ascenseur privatif. &lt;a href=&quot;/logements#disponibles&quot;&gt;Voir les logements&lt;/a&gt;." data-lang-en="A 138 m² four-room apartment with an 82 m² private garden, and a 216 m² duplex with a private lift. &lt;a href=&quot;/logements#disponibles&quot;&gt;See the homes&lt;/a&gt;.">Un 4 pièces de 138&nbsp;m² avec jardin privatif de 82&nbsp;m², et un duplex de 216&nbsp;m² avec ascenseur privatif. <a href="/logements#disponibles">Voir les logements</a>.</p>
+      </details>
+      <details>
+        <summary data-lang-fr="Y a-t-il une piscine&amp;nbsp;?" data-lang-en="Is there a swimming pool?">Y a-t-il une piscine&nbsp;?</summary>
+        <p data-lang-fr="Une piscine chauffée avec nage à contre-courant est prévue selon la notice descriptive du 8 avril 2025. Pour savoir quoi vérifier avant d&#x27;acheter, lisez notre &lt;a href=&quot;/blog/appartement-piscine-aix-en-provence&quot;&gt;guide de l&#x27;appartement avec piscine&lt;/a&gt;." data-lang-en="A heated pool with a counter-current swimming system is planned according to the descriptive notice of 8 April 2025. To know what to check before buying, read our &lt;a href=&quot;/blog/appartement-piscine-aix-en-provence&quot;&gt;guide to apartments with a pool&lt;/a&gt; (in French).">Une piscine chauffée avec nage à contre-courant est prévue selon la notice descriptive du 8 avril 2025. Pour savoir quoi vérifier avant d'acheter, lisez notre <a href="/blog/appartement-piscine-aix-en-provence">guide de l'appartement avec piscine</a>.</p>
+      </details>
+      <details>
+        <summary data-lang-fr="Comment visiter ou recevoir la plaquette&amp;nbsp;?" data-lang-en="How can I visit or receive the brochure?">Comment visiter ou recevoir la plaquette&nbsp;?</summary>
+        <p data-lang-fr="Appelez le &lt;a href=&quot;tel:+33609204590&quot;&gt;06 09 20 45 90&lt;/a&gt; ou écrivez-nous depuis la &lt;a href=&quot;/contact&quot;&gt;page Contact&lt;/a&gt;&amp;nbsp;: les visites se font sur rendez-vous et la plaquette du programme est envoyée sur demande." data-lang-en="Call &lt;a href=&quot;tel:+33609204590&quot;&gt;06 09 20 45 90&lt;/a&gt; or write to us from the &lt;a href=&quot;/contact&quot;&gt;Contact page&lt;/a&gt;: visits are by appointment and the programme brochure is sent on request.">Appelez le <a href="tel:+33609204590">06 09 20 45 90</a> ou écrivez-nous depuis la <a href="/contact">page Contact</a>&nbsp;: les visites se font sur rendez-vous et la plaquette du programme est envoyée sur demande.</p>
+      </details>
+      <details>
+        <summary data-lang-fr="Peut-on suivre l&#x27;avancement du chantier&amp;nbsp;?" data-lang-en="Can I follow the progress of the works?">Peut-on suivre l'avancement du chantier&nbsp;?</summary>
+        <p data-lang-fr="Oui&amp;nbsp;: des photos et une vidéo de drone du chantier sont publiées sur la &lt;a href=&quot;/logements#chantier&quot;&gt;page Logements&lt;/a&gt;." data-lang-en="Yes: drone photos and a drone video of the site are published on the &lt;a href=&quot;/logements#chantier&quot;&gt;Apartments page&lt;/a&gt;.">Oui&nbsp;: des photos et une vidéo de drone du chantier sont publiées sur la <a href="/logements#chantier">page Logements</a>.</p>
+      </details>
+      <details>
+        <summary data-lang-fr="Pourquoi acheter un appartement neuf à Aix-en-Provence&amp;nbsp;?" data-lang-en="Why buy a new apartment in Aix-en-Provence?">Pourquoi acheter un appartement neuf à Aix-en-Provence&nbsp;?</summary>
+        <p data-lang-fr="Frais de notaire réduits, normes récentes, prestations choisies sur plan&amp;nbsp;: notre &lt;a href=&quot;/blog/acheter-appartement-neuf-aix-en-provence&quot;&gt;guide de l&#x27;achat dans le neuf&lt;/a&gt; détaille les étapes, les garanties légales et les coûts, avec des sources officielles." data-lang-en="Reduced notary fees, recent standards, finishes chosen from the plans: our &lt;a href=&quot;/blog/acheter-appartement-neuf-aix-en-provence&quot;&gt;guide to buying new&lt;/a&gt; (in French) sets out the steps, the legal guarantees and the costs, with official sources.">Frais de notaire réduits, normes récentes, prestations choisies sur plan&nbsp;: notre <a href="/blog/acheter-appartement-neuf-aix-en-provence">guide de l'achat dans le neuf</a> détaille les étapes, les garanties légales et les coûts, avec des sources officielles.</p>
+      </details>
+      </div>
+    </div>
+  </section>
+
   <nav class="guides-line" aria-label="Nos guides">
     <div class="container">
       <ul>
@@ -406,6 +518,8 @@
       
         <li><a href="/blog/appartement-piscine-aix-en-provence" data-lang-fr="Appartement avec piscine" data-lang-en="Apartment with a pool">Appartement avec piscine</a></li>
         <li><a href="/blog/duplex-aix-en-provence-ascenseur-prive" data-lang-fr="Duplex avec ascenseur privatif" data-lang-en="Duplex with a private lift">Duplex avec ascenseur privatif</a></li>
+      
+        <li><a href="/blog/prix-immobilier-neuf-aix-en-provence" data-lang-fr="Prix de l'immobilier neuf à Aix" data-lang-en="New-build prices in Aix">Prix de l'immobilier neuf à Aix</a></li>
       </ul>
     </div>
   </nav>

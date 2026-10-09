@@ -2331,9 +2331,9 @@ main:focus-visible,
 }
 
 /* ─── Pages à langue figée (<html data-lang-lock>, blog) : pas de sélecteur FR/EN ─── */
-html[data-lang-lock] .lang-toggle,
-html[data-lang-lock] .nav-mobile-lang,
-html[data-lang-lock] .lang-btn { display: none !important; }
+html[data-lang-lock]:not([data-lang-pair]) .lang-toggle,
+html[data-lang-lock]:not([data-lang-pair]) .nav-mobile-lang,
+html[data-lang-lock]:not([data-lang-pair]) .lang-btn { display: none !important; }
 
 /* ─── Sans JavaScript : le contenu animé au défilement reste visible ─── */
 @media (scripting: none) {
@@ -2815,3 +2815,6 @@ h1 em, h2 em, h3 em, .section-title em { font-style: normal; }
 .cover-hero h1 { font-size: clamp(2.4rem, 5.2vw, 4.6rem); }
 .cover-hero--split h1 { font-size: clamp(2.1rem, 3.9vw, 3.7rem); }
 .cover-hero .cover-lead { font-size: clamp(1.02rem, 1.4vw, 1.2rem); }
+
+/* Pages anglaises indexables /en/… (html[data-lang-pair]) : le sélecteur FR / EN est fait de deux liens vers la page jumelle */
+a.lang-btn { display: inline-flex; align-items: center; justify-content: center; text-decoration: none; }

@@ -1,0 +1,122 @@
+ 
+ Accueil 
+ Blog 
+ Après le Pinel : le dispositif Jeanbrun
+ Investir et patrimoine
+ Après le Pinel : le dispositif Jeanbrun (« Relance logement ») expliqué
+ Par Ponthieu Développement Holding ·
+ Publié le 7 octobre 2026 ·
+ Mis à jour le 7 octobre 2026 ·
+ 10 min de lecture 
+ Sommaire
+ Le Pinel s'est arrêté 
+ Qu'est-ce que le dispositif Jeanbrun ? 
+ Les conditions : logement, location, locataire 
+ Les montants publiés 
+ L'engagement : durée, rupture, revente 
+ Jeanbrun et LMNP : deux logiques 
+ Pour un programme haut de gamme : lot par lot 
+ Et à Aix-en-Provence ? 
+ Un texte déjà en cours de modification 
+ Questions fréquentes 
+ Sources 
+ Le Pinel n'est plus ouvert aux nouveaux investissements depuis le 1er janvier 2025. La loi de finances pour 2026 (article 47) a créé un autre dispositif, appelé « Jeanbrun » ou « Relance logement » : l'amortissement d'un logement loué nu, pour les acquisitions réalisées entre le 21 février 2026 et le 31 décembre 2028, en contrepartie d'un engagement de location de neuf ans et de plafonds de loyers et de ressources. Synthèse à la date de rédaction (octobre 2026), d'après les sources officielles consultées le 7 octobre 2026.
+ Le Pinel s'est arrêté : ce que disent les sources
+ Le Pinel (article 199 novovicies du code général des impôts) était une réduction d'impôt liée à la location d'un logement. L'ANIL (Agence nationale pour l'information sur le logement), dans son analyse de la loi de finances pour 2026 mise à jour le 20 février 2026, écrit que le dispositif « n'ayant pas été prorogé, les investisseurs privés ne peuvent plus opter pour cette option depuis le 1er janvier 2025 ». Le formulaire d'engagement de location de l'administration fiscale (2044 EB) précise de son côté que le Pinel « concerne les investissements réalisés du 1er septembre 2014 au 31 décembre 2024 ».
+ Les investisseurs qui ont acheté avant cette date restent tenus par leurs engagements de location, de six ou neuf ans, qui suivent leurs propres règles.
+ Qu'est-ce que le dispositif Jeanbrun ?
+ Le dispositif est issu de l'article 47 de la loi n° 2026-103 du 19 février 2026 de finances pour 2026. Il est inscrit aux i et j du 1° du I de l'article 31 du code général des impôts. Service-public.gouv.fr le présente sous l'intitulé « Relance logement – Jeanbrun ».
+ Sa logique diffère du Pinel. Il ne s'agit pas d'une réduction d'impôt mais d'une déduction : le propriétaire qui loue un logement nu amortit une fraction de son prix d'acquisition, et cet amortissement vient en déduction de ses revenus fonciers (service-public.gouv.fr). L'ANIL précise que seuls les propriétaires soumis au régime réel d'imposition des revenus fonciers y sont éligibles.
+ Le texte s'applique aux acquisitions de logements ou, pour un logement que le contribuable fait construire, aux demandes de permis de construire déposées « entre le lendemain de la publication de la loi […] et le 31 décembre 2028 ». La loi ayant été publiée au Journal officiel du 20 février 2026, le dispositif est entré en vigueur le 21 février 2026 (ANIL ; service-public.gouv.fr).
+ Les conditions : le logement, la location, le locataire
+ Le logement
+ Un immeuble collectif. Le logement doit être situé en France, dans un bâtiment d'habitation collectif au sens du 6° de l'article L. 111-1 du code de la construction et de l'habitation (article 47). Les maisons individuelles sont donc hors du champ du texte en vigueur.
+ Neuf, ou ancien avec travaux. Le « i » vise les logements « acquis neufs ou en état futur d'achèvement » (VEFA). Le « j » vise l'ancien : les travaux d'amélioration doivent représenter au moins 30 % du prix d'acquisition (article 47), et service-public.gouv.fr ajoute une classe énergétique A ou B à atteindre après travaux. Cet article se concentre sur le neuf.
+ La location
+ Une location nue. Le logement est loué non meublé, à usage de résidence principale du locataire, « de manière effective et continue », pendant au moins neuf ans (article 47 ; service-public.gouv.fr).
+ Un locataire extérieur au cercle familial. Il ne peut être ni membre du foyer fiscal du propriétaire, ni son parent ou allié jusqu'au deuxième degré inclus (article 47). Un projet de loi propose de modifier cette règle (voir plus bas).
+ Un début de location rapide. La location doit commencer dans les douze mois de l'achèvement de l'immeuble, ou de son acquisition si elle est postérieure (service-public.gouv.fr).
+ Les plafonds de loyers et de ressources
+ Le loyer, comme les ressources du locataire appréciées à la date de conclusion du bail, ne doit pas dépasser des plafonds. Pour la location « intermédiaire », l'article 47 renvoie au III de l'article 199 novovicies, l'article du Pinel ; pour la location sociale ou très sociale, au 3° du A du I de l'article 199 tricies (dispositif Loc'Avantages). Service-public.gouv.fr indique que ces plafonds sont listés par zone géographique (A bis, A, B1, B2, C) et renvoie au simulateur Loc'Avantages de l'Anah (Agence nationale de l'habitat) pour les consulter.
+ Nous ne reproduisons aucun montant : ils dépendent de la zone et se vérifient sur les outils officiels.
+ Les montants publiés : taux d'amortissement et plafonds
+ Les chiffres ci-dessous sont ceux du texte, tels que publiés par l'ANIL et service-public.gouv.fr. Ils décrivent un mécanisme, pas un avantage : aucune économie d'impôt n'est chiffrée ici, car elle dépend de la situation de chaque contribuable.
+ Taux annuel d'amortissement selon le niveau de loyer (article 31 du code général des impôts, i et j) 
+ Niveau de location 
+ Logement neuf ou en VEFA (i) 
+ Ancien avec travaux (j) 
+ Intermédiaire 3,5 % 3 % 
+ Sociale 4,5 % (+ 1 point) 3,5 % (+ 0,5 point) 
+ Très sociale 5,5 % (+ 2 points) 4 % (+ 1 point) 
+ Le taux s'applique à une base qui exclut le foncier : « L'amortissement ne peut être pratiqué sur la valeur du foncier, lequel est estimé forfaitairement à 20 % du prix d'acquisition net de frais » (article 47). La base peut donc aller jusqu'à 80 % du prix (service-public.gouv.fr).
+ Les déductions sont plafonnées : « La somme des déductions au titre des amortissements […] ne peut excéder 8 000 € par an et par foyer fiscal » (article 47). Ce plafond est majoré de 2 000 € lorsque 50 % au moins des revenus issus des logements amortis relèvent de la location sociale, et de 4 000 € pour la location très sociale (service-public.gouv.fr), d'où la mention « jusqu'à 12 000 euros d'amortissement par an » sur le site du ministère de la Transition écologique.
+ Le dispositif s'articule avec le régime du déficit foncier : selon service-public.gouv.fr, la part du déficit qui résulte des dépenses autres que les intérêts d'emprunt est déductible du revenu global dans la limite de 10 700 €, montant que le ministère de la Transition écologique cite parmi les avantages du dispositif. Les conditions d'imputation, notamment pour la part née de l'amortissement, sont techniques : à faire vérifier.
+ L'engagement : durée, rupture, revente
+ L'engagement porte sur neuf ans de location effective et continue, dans le respect des plafonds. Service-public.gouv.fr rappelle que le non-respect de l'un des engagements (durée de location, niveau de loyer, etc.) « implique la remise en cause de l'avantage fiscal ». Concrètement, « le revenu net foncier de l'année au cours de laquelle l'un des engagements […] n'est pas respecté est majoré du montant des amortissements déduits » (article 47) : les amortissements déjà déduits sont repris. Le texte écarte cette reprise en cas d'invalidité (deuxième ou troisième catégorie), de licenciement ou de décès du contribuable ou de l'un des époux soumis à imposition commune.
+ L'option est irrévocable pour le logement considéré (article 47). Trois contraintes méritent d'être pesées avant d'acheter :
+ Les plafonds. Le loyer ne peut dépasser le plafond applicable pendant toute la durée de l'engagement, quel que soit le niveau du marché.
+ La vacance. L'engagement vise une location « effective et continue » : une période sans locataire n'est pas neutre, et ses conséquences se vérifient auprès d'un professionnel. Elle ne suspend pas non plus les charges : la taxe foncière est due par le propriétaire au 1er janvier (service-public.gouv.fr). Pour la taxe foncière dans le neuf, dont l'exonération temporaire de deux ans, voir notre article sur les frais de notaire, la TVA et la taxe foncière .
+ La revente. Le prix d'acquisition retenu pour calculer le gain imposable est minoré du montant des amortissements déduits (service-public.gouv.fr ; ANIL) : l'amortissement réduit le revenu imposable pendant la détention mais augmente mécaniquement le gain imposable à la revente. Le régime général de ce gain, avec ses abattements pour durée de détention, est présenté dans notre article sur la résidence principale, secondaire ou l'investissement .
+ Jeanbrun et LMNP : deux logiques à ne pas confondre
+ Le Jeanbrun s'applique à la location nue et relève des revenus fonciers. La location meublée non professionnelle (LMNP) relève des bénéfices industriels et commerciaux ; au régime réel, elle permet elle aussi de déduire « l'amortissement du prix d'achat des biens (logement et meubles) », selon la formulation de service-public.gouv.fr (page vérifiée le 15 avril 2026). Les deux régimes ne se superposent pas sur un même bail : le Jeanbrun exige une location nue.
+ Dans les deux cas, l'amortissement a une contrepartie à la revente. Pour le LMNP, l'administration fiscale indique que, pour les cessions réalisées à compter du 15 février 2025, les amortissements pratiqués au régime réel sont réintégrés dans le calcul du gain imposable (impots.gouv.fr, page modifiée le 10 juillet 2026). L'amortissement réduit le revenu imposable pendant la location ; il ne constitue pas une exonération définitive.
+ Pour un programme haut de gamme : vérifier lot par lot
+ Le dispositif encadre le loyer et les ressources du locataire quel que soit le standing du logement. Avant de retenir un appartement, quatre points se vérifient pour le lot concerné, avec un notaire ou un conseiller en gestion de patrimoine :
+ La date d'acquisition retenue. Pour une vente sur plan, la date à prendre en compte (réservation ou acte de vente) se confirme auprès du notaire ; les étapes sont détaillées dans notre article sur la VEFA .
+ Le plafond de loyer applicable au lot (zone, niveau de location, caractéristiques du logement), à comparer aux loyers constatés pour des logements comparables.
+ Les ressources du locataire , plafonnées et appréciées à la date du bail : le profil des locataires possibles s'en trouve encadré.
+ Le calendrier et la base amortissable. La location doit débuter dans les douze mois de l'achèvement de l'immeuble, ou de son acquisition si elle est postérieure ; l'amortissement porte sur le prix d'acquisition hors foncier (20 % forfaitaires).
+ Cet article ne dit rien de l'éligibilité d'un logement précis du programme, ni du niveau de loyer qui lui serait applicable. Les caractéristiques des appartements figurent sur la page des logements du programme .
+ Et à Aix-en-Provence ?
+ Le dispositif n'est pas réservé à certaines villes : le ministère de la Transition écologique parle de logements situés « partout en France », et l'article 47 ne fixe pas de liste de zones. Le zonage intervient pour les plafonds de loyers et de ressources, qui varient selon la zone.
+ À la date de rédaction, Aix-en-Provence figure en zone A : l'arrêté du 5 septembre 2025, qui modifie l'arrêté du 1er août 2014, la classe dans le tableau A (département 13, code INSEE 13001). À la date de consultation, l'arrêté modificatif le plus récent que nous ayons identifié, du 23 juin 2026, ne concerne que la commune d'Alfortville. Le zonage se vérifie sur le simulateur officiel de service-public.gouv.fr (« Connaître la zone de sa commune »), les plafonds correspondants sur le simulateur Loc'Avantages.
+ Un texte déjà en cours de modification
+ Une réforme en cours d'examen
+ Un projet de loi « visant la relance et la décentralisation du logement » a été déposé au Sénat le 25 juin 2026 et adopté par le Sénat le 8 juillet 2026. Transmis à l'Assemblée nationale, il n'est pas adopté définitivement à la date de rédaction : le texte de la commission y a été mis en ligne le 2 octobre 2026.
+ Dans la version votée par le Sénat, l'article 4 modifie les i et j de l'article 31 du code général des impôts. Ses clauses de compensation évoquent notamment l'inclusion des locations consenties aux parents ou alliés jusqu'au deuxième degré et la suppression de la quotité de travaux nécessaires dans l'ancien. Ce texte peut encore évoluer : seules les règles en vigueur sont décrites dans cet article.
+ Le programme 59 Cézanne
+ Résidence neuve et confidentielle au 59 avenue Paul Cézanne, à Aix-en-Provence, dans le quartier des Lauves, proposée en vente en l'état futur d'achèvement, selon le contrat de réservation.
+ Aucun engagement n'est pris ici sur l'éligibilité d'un logement du programme à un dispositif fiscal : elle s'examine lot par lot avec un notaire ou un conseiller en gestion de patrimoine. Pour les caractéristiques des appartements, les modalités d'acquisition ou le calendrier de livraison, contactez-nous.
+ Voir les appartements 
+ Questions fréquentes
+ Qu'est-ce que la loi Jeanbrun ? 
+ C'est le nom courant du dispositif d'amortissement créé par l'article 47 de la loi de finances pour 2026 (loi du 19 février 2026), aussi appelé « Relance logement ». Le propriétaire qui loue un logement nu, dans un immeuble collectif, déduit de ses revenus fonciers un amortissement, en contrepartie d'un engagement de location de neuf ans au moins et de plafonds de loyers et de ressources. Il vise les acquisitions réalisées du 21 février 2026 au 31 décembre 2028.
+ La loi Jeanbrun s'applique-t-elle au neuf ou à l'ancien ? 
+ Aux deux, à des conditions différentes. Le logement acquis neuf ou en l'état futur d'achèvement ouvre un taux d'amortissement de 3,5 % en location intermédiaire. L'ancien suppose des travaux d'au moins 30 % du prix d'acquisition, avec un taux de 3 % en location intermédiaire. Un projet de loi en discussion pourrait modifier les conditions applicables à l'ancien.
+ Existe-t-il encore une loi Pinel à Aix-en-Provence ? 
+ Pas pour un nouvel investissement. Le Pinel n'a pas été prorogé : il concerne les investissements réalisés jusqu'au 31 décembre 2024 (ANIL ; formulaire 2044 EB). Le dispositif en vigueur est le Jeanbrun, qui s'applique partout en France, y compris à Aix-en-Provence.
+ Quels sont les plafonds de loyers du dispositif Jeanbrun ? 
+ Ils dépendent de la zone et du niveau de location. L'article 47 renvoie, pour la location intermédiaire, au III de l'article 199 novovicies du code général des impôts et, pour la location sociale ou très sociale, au 3° du A du I de l'article 199 tricies (Loc'Avantages). Les montants ne sont pas reproduits ici : le simulateur Loc'Avantages de l'Anah, cité par service-public.gouv.fr, permet de les consulter.
+ Dispositif Jeanbrun et Aix-en-Provence : quelles conditions ? 
+ Les mêmes qu'ailleurs en France : logement dans un immeuble collectif, acquis neuf ou en l'état futur d'achèvement entre le 21 février 2026 et le 31 décembre 2028, location nue en résidence principale pendant neuf ans au moins, plafonds de loyers et de ressources. Seuls les plafonds varient avec la zone ; Aix-en-Provence figure en zone A dans l'arrêté du 5 septembre 2025. L'éligibilité d'un logement précis se vérifie avec un notaire ou un conseiller en gestion de patrimoine.
+ Voir aussi : Prix de l'immobilier neuf à Aix-en-Provence .
+ Information générale, à la date de rédaction (octobre 2026). Elle ne constitue pas un conseil fiscal, juridique ou financier personnalisé : rapprochez-vous d'un notaire ou d'un conseiller en gestion de patrimoine.
+ Sources
+ Loi n° 2026-103 du 19 février 2026 de finances pour 2026, article 47 — Légifrance, loi publiée au Journal officiel du 20 février 2026, consultée le 7 octobre 2026.
+ Code général des impôts, article 31 (version en vigueur depuis le 21 février 2026) — Légifrance, consulté le 7 octobre 2026.
+ Investissement locatif Relance logement – Jeanbrun (déduction des revenus fonciers) — service-public.gouv.fr, page vérifiée le 21 juillet 2026, consultée le 7 octobre 2026.
+ Relance logement : de nouvelles réductions fiscales pour certains propriétaires bailleurs — service-public.gouv.fr, actualité du 24 février 2026, consultée le 7 octobre 2026.
+ Dispositif Jeanbrun — ministère de la Transition écologique (l'adresse de la page contient la graphie « dispostif »), page mise à jour le 18 septembre 2026, consultée le 7 octobre 2026.
+ Analyse juridique : loi de finances pour 2026 — ANIL, page mise à jour le 20 février 2026, consultée le 7 octobre 2026.
+ Statut du bailleur privé – engagement de location (formulaire 2044 EB n° 11639*26) — impots.gouv.fr, consulté le 7 octobre 2026.
+ Vente d'un bien donné en location meublée : calcul du gain imposable — impots.gouv.fr (questions-réponses), page modifiée le 10 juillet 2026, consultée le 7 octobre 2026.
+ Impôt sur le revenu : revenus d'une location meublée — service-public.gouv.fr, page vérifiée le 15 avril 2026, consultée le 7 octobre 2026.
+ Taxe foncière sur les propriétés bâties (TFPB) — service-public.gouv.fr, page vérifiée le 25 septembre 2026, consultée le 7 octobre 2026.
+ Arrêté du 5 septembre 2025 modifiant l'arrêté du 1er août 2014 (zonage A, B, C) — Légifrance, consulté le 7 octobre 2026.
+ Arrêté du 23 juin 2026 modifiant l'arrêté du 1er août 2014 (zonage A, B, C) — Légifrance, Journal officiel du 25 juin 2026, consulté le 7 octobre 2026.
+ Connaître la zone de sa commune : A, A bis, B1, B2 ou C — service-public.gouv.fr (simulateur), page vérifiée le 4 février 2026, consultée le 7 octobre 2026.
+ Projet de loi visant la relance et la décentralisation du logement : dossier législatif — Sénat, consulté le 7 octobre 2026.
+ Relance et décentralisation du logement : texte adopté n° 157 (2025-2026) — Sénat, texte adopté le 8 juillet 2026, consulté le 7 octobre 2026.
+ La relance et la décentralisation du logement : dossier législatif — Assemblée nationale, consulté le 7 octobre 2026.
+ Parlons-en
+ Une question sur la résidence 59 Cézanne ?
+ Caractéristiques des appartements, calendrier de livraison, modalités d'acquisition : nous répondons sur le programme. L'éligibilité à un dispositif fiscal relève d'un examen personnalisé avec un notaire ou un conseiller en gestion de patrimoine.
+ Dernières disponibilités : un 4 pièces de 138 m² avec jardin et un duplex de 216 m² avec ascenseur privatif .
+ Appeler le 06 09 20 45 90 
+ Voir les disponibilités 
+ Demander la plaquette du programme 
+ À lire aussi
+ Investir et patrimoine Résidence principale, secondaire ou investissement : acheter à Aix-en-Provence selon votre projet 
+ Budget, financement, fiscalité Frais de notaire, TVA, taxe foncière : ce que coûte l'achat d'un appartement neuf 
+ Acheter dans le neuf VEFA : acheter sur plan, les étapes et les garanties à connaître 
+ 

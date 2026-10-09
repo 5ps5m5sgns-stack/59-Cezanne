@@ -1,0 +1,121 @@
+ 
+ Accueil 
+ Blog 
+ Financer un appartement neuf
+ Budget, financement, fiscalité
+ Financer un appartement neuf : apport, prêt, PTZ et appels de fonds
+ Par Ponthieu Développement Holding ·
+ Publié le 7 octobre 2026 ·
+ Mis à jour le 7 octobre 2026 ·
+ 9 min de lecture 
+ Sommaire
+ Le financement d'une VEFA 
+ Les questions à poser à sa banque 
+ Le PTZ dans le neuf 
+ PTZ : qui est concerné 
+ Le prêt relais 
+ Le dossier de financement 
+ Questions fréquentes 
+ Sources 
+ Financer un appartement neuf sur plan se distingue de l'ancien par deux mécanismes : le prix se règle par appels de fonds au fil du chantier, dans des plafonds fixés par le code de la construction et de l'habitation, et le PTZ est ouvert au neuf, sous des plafonds de ressources et de coût qui limitent sa portée pour un achat de prestige. Sources officielles consultées le 6 octobre 2026.
+ Le financement d'une VEFA : un décaissement progressif
+ Dans l'ancien, le prix est réglé en une fois chez le notaire. Dans une vente en l'état futur d'achèvement (VEFA), il est payé par étapes, selon l'avancement des travaux, et le prêt est débloqué de la même manière. Pour le déroulé complet d'un achat sur plan (réservation, rétractation, acte, réception), voir notre guide de la VEFA .
+ Les appels de fonds et leurs plafonds
+ L'article R261-14 du code de la construction et de l'habitation (version en vigueur depuis le 1er septembre 2019) fixe des plafonds cumulés pour les paiements en cours de chantier.
+ Plafonds de paiement en VEFA avant la remise du logement (article R261-14 du code de la construction et de l'habitation) 
+ Stade d'avancement 
+ Total cumulé exigible, au plus 
+ Achèvement des fondations 35 % du prix 
+ Mise hors d'eau 70 % du prix 
+ Achèvement de l'immeuble 95 % du prix 
+ Mise à disposition du logement à l'acquéreur Le solde, qui peut être consigné en cas de contestation sur la conformité avec le contrat 
+ Le même article précise que les sommes sont exigibles soit par versements périodiques constants, soit par versements déterminés en fonction de l'avancement des travaux, et que la pénalité de retard de paiement éventuellement prévue au contrat ne peut excéder 1 % par mois.
+ Ces chiffres sont des plafonds, pas un calendrier : un contrat peut prévoir davantage d'étapes ou des pourcentages inférieurs. L'échéancier applicable à un logement figure dans le contrat de réservation, puis dans l'acte de vente, qui doit mentionner les conditions de paiement (service-public.gouv.fr).
+ Comment la banque débloque les fonds
+ Le prêt d'une VEFA est à déblocage successif : à chaque stade atteint, le vendeur adresse un appel de fonds et la banque verse la somme correspondante directement au vendeur (fourez.notaires.fr, 1er août 2024). L'emprunteur paie des intérêts intercalaires, en plus de l'assurance : les mensualités augmentent donc au fur et à mesure des déblocages. Un différé d'amortissement peut limiter les sorties d'argent pendant le chantier ; il a un coût, que la banque doit chiffrer.
+ Apport, durée, garanties : les questions à poser à sa banque
+ Ni l'apport demandé, ni la durée, ni le coût du crédit ne se déduisent d'une règle générale : ils dépendent du dossier et de l'établissement. Voici les points à faire préciser par écrit. Aucun taux d'intérêt n'est cité ici, car il varie avec le marché.
+ L'apport. Quel montant la banque attend-elle, et quelles dépenses doit-il couvrir (frais d'acquisition, garantie du prêt, options) ? Les frais d'acquisition sont détaillés dans notre article sur les frais de notaire, la TVA et la taxe foncière dans le neuf . À la réservation, le dépôt de garantie ne peut excéder 5 % du prix prévisionnel si la vente est réalisée dans l'année, 2 % si le délai va jusqu'à deux ans ; aucun dépôt ne peut être exigé au-delà (article R261-28 du code de la construction et de l'habitation).
+ Le taux d'endettement. L'ensemble des mensualités de crédit et d'assurance ne doit pas dépasser 35 % du revenu mensuel, selon une décision du Haut Conseil de stabilité financière du 29 septembre 2021 (service-public.gouv.fr).
+ La durée. 25 ans au plus en règle générale (service-public.gouv.fr). Demandez comment la banque traite la période de chantier et si un différé d'amortissement est proposé.
+ La garantie du prêt. Caution, hypothèque conventionnelle ou privilège de prêteur de deniers : les coûts diffèrent. Une caution coûte plus cher à la souscription, peut être en partie restituée en fin de prêt et évite les frais de mainlevée en cas de vente (service-public.gouv.fr).
+ L'assurance emprunteur. Vous choisissez l'assureur, à garanties équivalentes, et pouvez en changer à tout moment après la signature du crédit. Pour un emprunt important ou un prêt au-delà de 60 ans, un questionnaire de santé peut être demandé, à remplir de bonne foi (service-public.gouv.fr).
+ La condition suspensive et l'offre de prêt. Le contrat de réservation prévoit en principe une condition d'obtention du prêt, assortie d'un délai : lisez-la avant de signer (fourez.notaires.fr). Une fois l'offre reçue, un délai de réflexion de 10 jours s'impose ; comparez les offres sur le TAEG (taux annuel effectif global), qui regroupe les frais obligatoires (service-public.gouv.fr).
+ Un courtier ou un notaire peut simuler plusieurs scénarios. Cet article ne délivre aucun conseil personnalisé.
+ Le PTZ dans le neuf : ce qui est en vigueur
+ Le prêt à taux zéro (PTZ) est un prêt sans intérêts accordé sous conditions aux primo-accédants. Limité jusqu'au 31 mars 2025 aux appartements des zones A bis, A et B1, il couvre depuis le 1er avril 2025 l'achat d'un logement neuf, appartement ou maison, sur l'ensemble du territoire (ecologie.gouv.fr, service-public.gouv.fr). À la date de rédaction (octobre 2026), ses principales conditions sont les suivantes.
+ Être primo-accédant  : ne pas avoir été propriétaire de sa résidence principale au cours des deux dernières années, avec quelques exceptions listées par service-public.gouv.fr.
+ Acheter une résidence principale  : le logement doit le devenir au plus tard un an après l'achat ou la fin des travaux, ou à partir du départ à la retraite de l'emprunteur, qui doit intervenir au plus tard six ans après l'achat ou la fin des travaux. Le PTZ ne finance ni une résidence secondaire ni un investissement locatif ; ces projets sont comparés dans notre article sur la résidence principale, secondaire ou l'investissement .
+ Compléter un autre prêt  : le PTZ vient en complément d'un ou plusieurs autres prêts de plus de deux ans, et son montant ne doit pas dépasser le leur (avec une marge de 25 % pour la première tranche de revenus).
+ Une quotité de 20 à 50 %  : pour un appartement neuf, il finance entre 20 et 50 % du montant de l'opération, selon les revenus, calculé sur un coût plafonné (voir ci-dessous). Il se rembourse sur 25 ans au plus.
+ Selon service-public.gouv.fr (actualité mise à jour le 1er avril 2025), cette extension au neuf s'applique jusqu'au 31 décembre 2027. Une loi de finances peut modifier le dispositif : vérifiez les conditions en vigueur à la date de votre demande.
+ PTZ : qui est concerné, et qui ne l'est pas
+ Deux plafonds jouent : un plafond de ressources, qui détermine l'éligibilité, et un plafond de coût, qui limite la base de calcul du prêt. Ils dépendent de la zone du logement et du nombre de personnes du foyer. Aix-en-Provence figure en zone A dans l'arrêté du 5 septembre 2025 (Journal officiel du 6 septembre 2025).
+ PTZ dans le neuf, zones A bis et A, offre de prêt émise à partir d'avril 2025 : plafonds selon la taille du foyer 
+ Personnes dans le foyer 
+ Plafond de ressources 
+ Coût d'opération maximal retenu pour calculer le PTZ 
+ 1 49 000 € 150 000 € 
+ 2 73 500 € 225 000 € 
+ 3 88 200 € 270 000 € 
+ 4 102 900 € 315 000 € 
+ 5 et plus 117 600 € 360 000 € 
+ Source : service-public.gouv.fr, page vérifiée le 15 septembre 2026. Ces montants évoluent avec la réglementation : le simulateur officiel fait foi.
+ Le revenu pris en compte est le plus élevé de deux montants : le revenu fiscal de référence du foyer de l'année N-2, ou le coût total TTC de l'opération divisé par 9. Pour un foyer de deux personnes en zone A, le plafond de 73 500 € est donc dépassé, quels que soient les revenus, dès que l'opération coûte plus d'environ 660 000 € (73 500 × 9).
+ Même pour un foyer éligible, le PTZ est calculé sur le coût plafonné. Illustration, par calcul à partir du tableau (ce n'est pas un prix du programme) : pour deux personnes en zone A, le coût retenu est plafonné à 225 000 € ; avec une quotité de 20 à 50 %, le PTZ ne peut pas dépasser 45 000 à 112 500 €, quel que soit le prix réel du logement.
+ Pour un foyer aux revenus élevés ou une opération au coût élevé, le PTZ est donc écarté ou limité à une part réduite du financement. Ce n'est pas un outil central pour acheter un appartement de prestige, et il ne concerne pas la résidence secondaire. Si votre situation entre dans ces limites, le simulateur de l'ANIL (lien indiqué par ecologie.gouv.fr) calcule votre éventuel PTZ.
+ Le prêt relais : acheter avant de vendre
+ Pour un acquéreur qui doit vendre son logement actuel, le prêt relais permet d'acheter avant d'avoir vendu. Notaires.fr décrit une formule courante : un prêt relais, qui avance 60 à 80 % de la valeur du bien à vendre selon les estimations, associé à un prêt amortissable classique. Sa durée va d'un mois à deux ans ; si le bien n'est pas vendu au bout de deux ans, la banque convertit le relais en crédit principal (article publié le 7 juin 2023). Point de vigilance : la durée du relais doit être confrontée au calendrier d'appels de fonds et de livraison, que seul le contrat précise.
+ Constituer son dossier de financement
+ D'après un office notarial (fourez.notaires.fr, 6 juin 2023), les pièces les plus souvent demandées sont :
+ une pièce d'identité ;
+ des justificatifs de revenus : bulletins de salaire, contrat de travail ;
+ les déclarations d'impôts ;
+ les relevés de comptes bancaires des derniers mois ;
+ des informations sur le bien immobilier.
+ Mettre plusieurs établissements en concurrence, directement ou par l'intermédiaire d'un courtier, permet de comparer les offres. Pour les conditions de paiement et de financement applicables à un logement du programme, contactez-nous .
+ Le programme 59 Cézanne
+ Résidence neuve et confidentielle au 59 avenue Paul Cézanne, à Aix-en-Provence, dans le quartier des Lauves, proposée en vente en l'état futur d'achèvement, selon le contrat de réservation.
+ Les modalités de paiement et de prêt applicables à un logement figurent dans le contrat de réservation. Aucun prix n'est publié sur ce site : pour le prix ou le calendrier de livraison, contactez-nous.
+ Voir les appartements 
+ Questions fréquentes
+ Le PTZ s'applique-t-il à un appartement neuf ? 
+ Oui. Depuis le 1er avril 2025, le PTZ finance un appartement neuf ou une maison neuve sur tout le territoire, pour un primo-accédant qui en fait sa résidence principale, sous plafonds de ressources, à hauteur de 20 à 50 % du coût retenu pour un appartement. Selon service-public.gouv.fr, cette extension s'applique jusqu'au 31 décembre 2027.
+ Quelles conditions de ressources pour le PTZ neuf ? 
+ Le plafond dépend de la zone et du nombre de personnes : en zone A, 73 500 € pour deux personnes. Le revenu pris en compte est le plus élevé du revenu fiscal de référence de l'année N-2 et du coût total TTC de l'opération divisé par 9 (service-public.gouv.fr, page vérifiée le 15 septembre 2026).
+ Le PTZ dépend-il de la zone ? 
+ Plus pour l'accès au neuf, ouvert sur tout le territoire depuis le 1er avril 2025. La zone reste déterminante pour les plafonds de ressources et de coût ; Aix-en-Provence figure en zone A dans l'arrêté du 5 septembre 2025.
+ Comment fonctionnent les appels de fonds en VEFA ? 
+ Le prix est payé par étapes. L'article R261-14 du code de la construction et de l'habitation plafonne les paiements cumulés à 35 % du prix à l'achèvement des fondations, 70 % à la mise hors d'eau et 95 % à l'achèvement ; le solde est payable à la mise à disposition du logement. Le calendrier exact figure dans le contrat.
+ Peut-on acheter un appartement neuf sans apport ? 
+ La décision appartient à la banque, qui examine notamment le taux d'endettement, plafonné à 35 % selon service-public.gouv.fr. Le montant à financer comprend aussi les frais d'acquisition et le coût de la garantie du prêt ; l'apport réduit la part empruntée. Demandez une simulation écrite à un courtier ou à votre banque.
+ Voir aussi : Prix de l'immobilier neuf à Aix-en-Provence .
+ Information générale, à la date de rédaction (octobre 2026). Elle ne constitue pas un conseil fiscal, juridique ou financier personnalisé : rapprochez-vous d'un notaire, d'un courtier ou d'un conseiller en gestion de patrimoine.
+ Sources
+ Article R261-14 du code de la construction et de l'habitation — Légifrance, version en vigueur depuis le 1er septembre 2019, consulté le 6 octobre 2026.
+ Article R261-28 du code de la construction et de l'habitation — Légifrance, version en vigueur depuis le 1er septembre 2019, consulté le 6 octobre 2026.
+ Arrêté du 5 septembre 2025 modifiant l'arrêté du 1er août 2014 (zonage A, B, C) — Légifrance, JORF n° 0207 du 6 septembre 2025, consulté le 6 octobre 2026.
+ Prêt à taux zéro (PTZ ou PTZ+) — service-public.gouv.fr, page vérifiée le 15 septembre 2026, consultée le 6 octobre 2026.
+ Achat immobilier : prêt à taux zéro, quelles nouveautés ? — service-public.gouv.fr, publiée le 7 mars 2025 et mise à jour le 1er avril 2025, consultée le 6 octobre 2026.
+ Acheter votre premier logement avec le prêt à taux zéro — ecologie.gouv.fr, publiée le 21 août 2026 et mise à jour le 18 septembre 2026, consultée le 6 octobre 2026.
+ Le décret sur le prêt à taux zéro (PTZ) publié, une avancée pour les primo-accédants — ecologie.gouv.fr, 31 mars 2025, consulté le 6 octobre 2026.
+ Acte de vente d'un logement en l'état futur d'achèvement (Vefa) — service-public.gouv.fr, page vérifiée le 18 septembre 2026, consultée le 6 octobre 2026.
+ Je veux obtenir un crédit immobilier — service-public.gouv.fr, page vérifiée le 5 avril 2024, consultée le 6 octobre 2026.
+ Faut-il avoir une caution pour obtenir un crédit immobilier ? — service-public.gouv.fr, page vérifiée le 26 décembre 2024, consultée le 6 octobre 2026.
+ Assurance emprunteur d'un prêt immobilier — service-public.gouv.fr, consultée le 6 octobre 2026.
+ Modalités de financement d'un achat en VEFA — office notarial (notaires.fr), 1er août 2024, consultée le 6 octobre 2026.
+ Achat sur plan : décryptage du contrat de réservation — office notarial (notaires.fr), 1er août 2024, consultée le 6 octobre 2026.
+ 6 étapes clés pour obtenir un prêt immobilier — office notarial (notaires.fr), 6 juin 2023, consultée le 6 octobre 2026.
+ Prêt relais — immobilier.notaires.fr, article publié le 7 juin 2023, consulté le 6 octobre 2026.
+ Parlons-en
+ Une question sur la résidence 59 Cézanne ?
+ Conditions de paiement, calendrier de livraison, documents du programme : nous vous répondons sur les modalités applicables à un logement précis.
+ Dernières disponibilités : un 4 pièces de 138 m² avec jardin et un duplex de 216 m² avec ascenseur privatif .
+ Appeler le 06 09 20 45 90 
+ Voir les disponibilités 
+ Demander la plaquette du programme 
+ À lire aussi
+ Budget, financement, fiscalité Frais de notaire, TVA, taxe foncière : ce que coûte l'achat d'un appartement neuf 
+ Acheter dans le neuf VEFA : acheter sur plan, les étapes et les garanties à connaître 
+ Investir et patrimoine Résidence principale, secondaire ou investissement : acheter à Aix-en-Provence selon votre projet 
+ 
