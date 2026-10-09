@@ -1,6 +1,13 @@
 /* ============================================================
    59 CÉZANNE — cookie.js
-   Consentement aux traceurs de mesure d'audience (Google Analytics 4, facultatif).
+   Consentement à la mesure d'audience et de performance : Cloudflare Web Analytics (actif, chargé
+   seulement après « Tout accepter ») et Google Analytics 4 (facultatif, désactivé).
+
+   ── CLOUDFLARE WEB ANALYTICS (10/2026) ────────────────────────────────────
+   Le site Web Analytics « 59-cezanne.com » du compte Cloudflare est réglé sans injection automatique
+   (auto_install = false) : la balise ci-dessous est la SEULE qui peut envoyer des mesures, et elle n'est
+   insérée dans la page qu'après consentement. Le jeton (CF_TOKEN) est public par nature (balise de
+   mesure). Retirer le consentement : la mesure s'arrête à partir de la page suivante.
 
    ── CE QUE FAIT CE FICHIER ────────────────────────────────────────────────
    • Aucun traceur, aucun script ni aucune ressource tierce n'est chargé AVANT le choix du
@@ -60,6 +67,7 @@
 
   /* ═══ CONFIGURATION ═══════════════════════════════════════════════════════ */
   var GA_ID = 'G-XXXXXXXXXX';                    // ← ID de mesure GA4 (voir l'en-tête)
+  var CF_TOKEN = '4f01575ac4084851b392ae2fbd0e2452';                 // jeton Cloudflare Web Analytics du site 59-cezanne.com
   var POLICY_URL = '/mentions-legales';          // politique de confidentialité
   var STORAGE_KEY = '59cezanne-cookie-consent';
   var CONSENT_MAX_DAYS = 182;                    // 6 mois maximum
@@ -72,11 +80,13 @@
 
   var doc = document;
   var GA_CONFIGURED = /^G-[A-Z0-9]{6,14}$/.test(GA_ID) && !/^G-X+$/i.test(GA_ID);
+  var CF_CONFIGURED = /^[0-9a-f]{32}$/.test(CF_TOKEN);
+  var MEASURE_CONFIGURED = GA_CONFIGURED || CF_CONFIGURED;   // y a-t-il quelque chose à consentir ?
 
   var TEXTS = {
     fr: {
       title: 'Vos choix concernant les cookies',
-      desc: "Avec votre accord, nous mesurons l'audience du site (Google Analytics) pour l'améliorer. Sans votre accord, aucun traceur de mesure n'est déposé. Votre choix est conservé 6 mois ; vous pouvez le modifier à tout moment via « Gérer les cookies » en bas de page.",
+      desc: "Avec votre accord, nous mesurons la fréquentation et la vitesse d'affichage du site (Cloudflare Web Analytics, sans cookie) pour l'améliorer. Sans votre accord, aucune mesure n'est lancée. Votre choix est conservé 6 mois ; vous pouvez le modifier à tout moment via « Gérer les cookies » en bas de page.",
       policy: 'Politique de confidentialité',
       refuse: 'Tout refuser',
       accept: 'Tout accepter',
@@ -92,7 +102,7 @@
     },
     en: {
       title: 'Your cookie choices',
-      desc: 'With your consent, we measure site audience (Google Analytics) to improve the site. Without your consent, no measurement tracker is set. Your choice is kept for 6 months; you can change it at any time via “Cookie settings” at the bottom of the page.',
+      desc: 'With your consent, we measure site traffic and loading speed (Cloudflare Web Analytics, no cookie) to improve the site. Without your consent, no measurement is started. Your choice is kept for 6 months; you can change it at any time via “Cookie settings” at the bottom of the page.',
       policy: 'Privacy policy',
       refuse: 'Reject all',
       accept: 'Accept all',
@@ -161,6 +171,19 @@
     var s = doc.createElement('script');
     s.async = true;
     s.src = 'https://www.googletagmanager.com/gtag/js?id=' + encodeURIComponent(GA_ID);
+    doc.head.appendChild(s);
+  }
+
+  /* ─── Cloudflare Web Analytics : uniquement avec consentement ─── */
+  var cfLoaded = false;
+
+  function loadCF() {
+    if (!CF_CONFIGURED || cfLoaded) return;
+    cfLoaded = true;
+    var s = doc.createElement('script');
+    s.type = 'module';
+    s.src = 'https://static.cloudflareinsights.com/beacon.min.js';
+    s.setAttribute('data-cf-beacon', JSON.stringify({ token: CF_TOKEN }));
     doc.head.appendChild(s);
   }
 
@@ -309,6 +332,7 @@
     writeConsent(analytics);
     if (analytics) {
       loadGA();
+      loadCF();
     } else if (wasAccepted || gaLoaded) {
       disableGA();                                   // retrait du consentement : GA coupé + cookies supprimés
     }
@@ -323,15 +347,15 @@
   function openCookieSettings() {
     var active = doc.activeElement;
     opener = (active && active !== doc.body) ? active : null;
-    show(GA_CONFIGURED ? 'settings' : 'info');
+    show(MEASURE_CONFIGURED ? 'settings' : 'info');
   }
   window.openCookieSettings = openCookieSettings;
 
   /* ─── Initialisation ─── */
   function init() {
     var rec = readConsent();
-    if (rec && rec.analytics) loadGA();
-    if (!rec && (GA_CONFIGURED || !BANNER_ONLY_IF_GA_CONFIGURED)) show('auto');
+    if (rec && rec.analytics) { loadGA(); loadCF(); }
+    if (!rec && (MEASURE_CONFIGURED || !BANNER_ONLY_IF_GA_CONFIGURED)) show('auto');
   }
 
   // Bandeau et textes suivent la langue choisie dans l'en-tête
