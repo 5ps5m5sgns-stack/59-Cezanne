@@ -55,7 +55,7 @@
     .loc-cover .script, .lx-title .script { color: var(--terra-texte); }
     .loc-cover .cover-fig { --loc-r: calc(var(--arche) * 1.55); border-radius: var(--loc-r) 0 0 0; box-shadow: var(--shadow-lg); }
     @media (min-width: 901px) {
-      .cover-hero.loc-cover { grid-template-columns: minmax(0, 4.6fr) minmax(0, 7.4fr); column-gap: clamp(2rem, 4.5vw, 4.5rem); padding-bottom: clamp(8rem, 12.5vw, 12rem); }
+      .cover-hero.loc-cover { grid-template-columns: minmax(0, 4.6fr) minmax(0, 7.4fr); column-gap: clamp(2rem, 4.5vw, 4.5rem); padding-bottom: calc(min(84%, 1250px) / 5.66 + 3.5rem); /* bande réservée au tracé de la montagne (84 % de large, ratio 5,66) : il ne passe jamais sous le texte */ }
     }
     @media (max-width: 900px) {
       .cover-hero.loc-cover { min-height: 0; padding-top: calc(var(--nav-height) + 1.5rem); padding-bottom: 4.5rem; }
