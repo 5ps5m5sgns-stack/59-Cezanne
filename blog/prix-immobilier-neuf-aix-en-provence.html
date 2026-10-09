@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="fr" data-lang-lock>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Prix immobilier neuf Aix-en-Provence : données | 59 Cézanne</title>
+  <meta name="description" content="Prix immobilier neuf Aix-en-Provence : prix au m² de l&#x27;ancien calculé sur 9 028 ventes (DVF 2021-2025), repère officiel du neuf, méthode et limites." />
+  <link rel="canonical" href="https://59-cezanne.com/blog/prix-immobilier-neuf-aix-en-provence" />
+  <meta name="robots" content="index,follow,max-image-preview:large" />
+  <meta name="author" content="Ponthieu Développement Holding" />
+
+  <meta property="og:type" content="article" />
+  <meta property="og:site_name" content="59 Cézanne" />
+  <meta property="og:locale" content="fr_FR" />
+  <meta property="og:title" content="Prix immobilier neuf à Aix-en-Provence : ce que disent les données publiques" />
+  <meta property="og:description" content="Prix immobilier neuf Aix-en-Provence : prix au m² de l&#x27;ancien calculé sur 9 028 ventes (DVF 2021-2025), repère officiel du neuf, méthode et limites." />
+  <meta property="og:url" content="https://59-cezanne.com/blog/prix-immobilier-neuf-aix-en-provence" />
+  <meta property="og:image" content="https://59-cezanne.com/og/og-prix-immobilier-neuf-aix-en-provence.jpg" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="Vue aérienne du cours Mirabeau et des toits du centre ancien d'Aix-en-Provence" />
+  <meta property="article:published_time" content="2026-10-09" />
+  <meta property="article:modified_time" content="2026-10-09" />
+  <meta property="article:section" content="Budget, financement, fiscalité" />
+  <meta name="twitter:card" content="summary_large_image" />
+
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+  <link rel="icon" type="image/png" sizes="192x192" href="/favicon-192.png" />
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+  <link rel="stylesheet" href="/style.css?v=935cb114" />
+  <link rel="stylesheet" href="/blog.css?v=539fe0b8" />
+  <style>
+    /* Styles propres à cet article : graphiques SVG, colonnes numériques, crédits photographiques */
+    .post-body > .post-chart { margin-block: 2.5rem; max-width: 42rem; }
+    .post-chart-title { margin: 0 0 0.7rem; font-family: var(--font-serif); font-size: 1.25rem; font-weight: 500; line-height: 1.3; color: var(--brun); }
+    .post-chart .post-note { margin-top: 0.6rem; }
+    .chart-svg { display: block; width: 100%; height: auto; overflow: visible; }
+    .chart-svg text { font-family: var(--font-sans); fill: var(--text-mid); }
+    .chart-svg .c-grid { stroke: rgba(123, 69, 56, 0.16); stroke-width: 1; }
+    .chart-svg .c-axis { stroke: rgba(123, 69, 56, 0.5); stroke-width: 1.2; }
+    .chart-svg .c-tick { font-size: 13px; }
+    .chart-svg .c-year { font-size: 14px; fill: var(--text); }
+    .chart-svg .c-band { fill: rgba(184, 98, 72, 0.17); }
+    .chart-svg .c-edge { fill: none; stroke: rgba(164, 81, 58, 0.85); stroke-width: 1; }
+    .chart-svg .c-med { fill: none; stroke: var(--terra); stroke-width: 2.5; stroke-linejoin: round; stroke-linecap: round; }
+    .chart-svg .c-d9 { fill: none; stroke: var(--brun); stroke-width: 1.75; stroke-dasharray: 6 4; }
+    .chart-svg .c-dot-med { fill: var(--terra); stroke: var(--pierre); stroke-width: 2; }
+    .chart-svg .c-dot-d9 { fill: var(--brun); stroke: var(--pierre); stroke-width: 2; }
+    .chart-svg .c-val { font-size: 13.5px; font-weight: 600; fill: var(--text); }
+    .chart-svg .c-lab { font-size: 13px; }
+    .chart-svg .c-lab-med { fill: var(--terra-texte); font-weight: 600; }
+    .chart-svg .c-labv { font-size: 14px; font-weight: 600; fill: var(--text); }
+    .chart-svg .c-unit { font-size: 12.5px; }
+    .chart-svg .c-rowlab { font-size: 14px; font-weight: 600; fill: var(--text); }
+    .chart-svg .c-rowsub { font-size: 12px; }
+    .chart-svg .c-bar { fill: rgba(184, 98, 72, 0.24); stroke: rgba(164, 81, 58, 0.85); stroke-width: 1; }
+    .chart-svg .c-whisker { stroke: var(--brun); stroke-width: 1.5; stroke-dasharray: 4 3; }
+    .chart-svg .c-medtick { stroke: var(--terra); stroke-width: 4; stroke-linecap: round; }
+    .post-table th.num, .post-table td.num { text-align: right; }
+    .post-table td strong { color: var(--brun-profond); }
+    .post-credits { margin: 1.1rem 0 0; font-size: 0.85rem; line-height: 1.6; color: var(--text-mid); overflow-wrap: anywhere; }
+    @media (max-width: 700px) {
+      .post-table-wrap .post-table th, .post-table-wrap .post-table td { min-width: 0; }
+      .post-table-wrap .post-table tbody th { white-space: nowrap; }
+      .post-table-wrap .post-table thead th { min-width: 5.2rem; }
+      .post-table-wrap .post-table thead th:first-child { min-width: 0; }
+    }
+    @media (max-width: 640px) {
+      .chart-svg .c-tick { font-size: 16px; }
+      .chart-svg .c-year, .chart-svg .c-val, .chart-svg .c-labv, .chart-svg .c-rowlab { font-size: 16.5px; }
+      .chart-svg .c-lab { font-size: 15px; }
+      .chart-svg .c-unit { font-size: 14.5px; }
+      .chart-svg .c-rowsub { font-size: 14px; }
+    }
+  </style>
+
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "BlogPosting",
+      "@id": "https://59-cezanne.com/blog/prix-immobilier-neuf-aix-en-provence#article",
+      "headline": "Prix immobilier neuf à Aix-en-Provence : ce que disent les données publiques",
+      "description": "Prix immobilier neuf Aix-en-Provence : prix au m² de l'ancien calculé sur 9 028 ventes (DVF 2021-2025), repère officiel du neuf, méthode et limites.",
+      "datePublished": "2026-10-09",
+      "dateModified": "2026-10-09",
+      "inLanguage": "fr-FR",
+      "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://59-cezanne.com/blog/prix-immobilier-neuf-aix-en-provence"
+      },
+      "image": "https://59-cezanne.com/og/og-prix-immobilier-neuf-aix-en-provence.jpg",
+      "author": {
+        "@type": "Organization",
+        "name": "Ponthieu Développement Holding",
+        "url": "https://59-cezanne.com/contact"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "Ponthieu Développement Holding",
+        "url": "https://59-cezanne.com/"
+      }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Accueil",
+          "item": "https://59-cezanne.com/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Blog",
+          "item": "https://59-cezanne.com/blog"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": "Prix immobilier neuf à Aix-en-Provence",
+          "item": "https://59-cezanne.com/blog/prix-immobilier-neuf-aix-en-provence"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Quel est le prix du m² d'un appartement à Aix-en-Provence ?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Pour les appartements anciens vendus en 2025, la médiane est de 4 818 €/m² selon notre calcul sur les données DVF : la moitié des ventes se situe entre 3 928 et 5 810 €/m², et une vente sur dix dépasse 6 877 €/m². Le prix dépend d'abord de la taille du logement et de sa localisation."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Quel est le prix au m² du neuf à Aix-en-Provence ?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Les données ouvertes ne permettent pas de le calculer pour la commune : les ventes sur plan n'y portent presque jamais de surface. Le repère officiel (enquête ECLN du ministère) est départemental : en moyenne 5 178 €/m² en 2025 pour les logements collectifs neufs réservés dans les Bouches-du-Rhône, TTC, hors frais de notaire et hors parking."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Le neuf est-il plus cher que l'ancien à Aix-en-Provence ?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Les deux repères officiels ne se soustraient pas : ils portent sur des territoires, des dates et des périmètres différents. À prix égal, le neuf se distingue surtout par ses frais de notaire réduits (2 à 3 % du prix, contre environ 7 à 8 % dans l'ancien, selon notaires.fr) et par ses prestations, qui se comparent notice par notice."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Combien coûte un appartement de luxe à Aix-en-Provence ?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Les données publiques ne contiennent aucune mention de luxe. On ne peut observer que le haut de la distribution : sur 2024-2025, une vente sur vingt dépasse 7 792 €/m² et une sur cent 10 182 €/m². Un prix élevé n'est pas un critère de standing : les critères qualitatifs se vérifient bien par bien."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Quel budget prévoir pour un trois-pièces à Aix-en-Provence ?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Sur 2024-2025, le prix inscrit à l'acte d'un trois-pièces ancien a une médiane d'environ 300 000 € pour une surface médiane de 65 m². Cette valeur peut inclure parking et cave. Elle décrit le marché de l'ancien, pas le prix d'un logement neuf."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Pourquoi les prix au m² diffèrent-ils d'un site à l'autre ?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Les sites n'utilisent pas la même période (douze, vingt-quatre mois ou davantage), la même statistique (moyenne ou médiane), les mêmes filtres de valeurs aberrantes ni le même périmètre (avec ou sans parkings, ventes groupées, maisons). Un écart de quelques pour cent est normal ; c'est pourquoi nous détaillons la méthode et la sensibilité."
+          }
+        }
+      ]
+    }
+  ]
+}
+  </script>
+</head>
+<body class="blog-page">
+
+<a class="skip-link" href="#contenu">Aller au contenu</a>
+
+<nav id="navbar" class="scrolled" aria-label="Navigation principale">
+  <div class="nav-inner">
+    <a href="/" class="nav-logo" aria-label="59 Cézanne — Aix-en-Provence, accueil">
+      <span class="logo-main">59 Cézanne</span>
+      <span class="logo-sub">Aix-en-Provence</span>
+    </a>
+    <div class="nav-links">
+      <a href="/">Accueil</a>
+      <a href="/logements">Logements</a>
+            <a href="/localisation">Localisation</a>
+            <a href="/blog" class="active" aria-current="page">Blog</a>
+      <a href="/contact">Contact</a>
+    </div>
+    <div class="d-flex align-center gap-2">
+      <button type="button" class="nav-burger" id="burger" aria-label="Ouvrir le menu" aria-expanded="false" aria-controls="mobileMenu" onclick="toggleMobile()">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+</nav>
+<div class="nav-mobile" id="mobileMenu">
+  <a href="/" onclick="toggleMobile()">Accueil</a>
+  <a href="/logements" onclick="toggleMobile()">Logements</a>
+    <a href="/localisation" onclick="toggleMobile()">Localisation</a>
+    <a href="/blog" onclick="toggleMobile()">Blog</a>
+  <a href="/contact" onclick="toggleMobile()">Contact</a>
+</div>
+
+<main id="contenu">
+
+  <header class="post-hero">
+    <div class="container post-hero-inner">
+      <nav class="post-breadcrumb" aria-label="Fil d'Ariane">
+        <ol>
+          <li><a href="/">Accueil</a></li>
+          <li><a href="/blog">Blog</a></li>
+          <li aria-current="page">Prix immobilier neuf à Aix-en-Provence</li>
+        </ol>
+      </nav>
+      <p class="post-pillar">Budget, financement, fiscalité</p>
+      <h1 class="post-title">Prix immobilier neuf à <span class="blog-nowrap">Aix-en-Provence</span>&nbsp;: ce que disent les données publiques</h1>
+      <p class="post-meta">
+        Par <a href="/contact#promoteur">Ponthieu Développement Holding</a> ·
+        Publié le <time datetime="2026-10-09">9 octobre 2026</time> ·
+        Mis à jour le <time datetime="2026-10-09">9 octobre 2026</time> ·
+        <span>14 min de lecture</span>
+      </p>
+    </div>
+  </header>
+
+  <div class="container post-layout">
+
+    <aside class="post-toc" aria-label="Sommaire">
+      <p class="post-toc-title">Sommaire</p>
+      <ol>
+        <li><a href="#en-bref">L'essentiel en quatre points</a></li>
+        <li><a href="#donnees">D'où viennent les chiffres</a></li>
+        <li><a href="#ancien-aix">Prix de l'ancien à Aix, 2021-2025</a></li>
+        <li><a href="#par-taille">Prix au m² selon le nombre de pièces</a></li>
+        <li><a href="#neuf-dvf">Neuf : ce que DVF ne mesure pas</a></li>
+        <li><a href="#neuf-ecln">Le repère officiel sur le neuf</a></li>
+        <li><a href="#lire-fourchette">Comment lire une fourchette de prix</a></li>
+        <li><a href="#luxe">Combien coûte un appartement de luxe ?</a></li>
+        <li><a href="#methode">Méthode, contrôles et sensibilité</a></li>
+        <li><a href="#faq">Questions fréquentes</a></li>
+        <li><a href="#sources">Sources</a></li>
+      </ol>
+    </aside>
+
+    <article class="post-body">
+
+      <p class="post-lead">Les données publiques ne permettent pas de calculer un prix au m² du neuf propre à Aix-en-Provence&nbsp;: dans les actes de vente sur plan, 98&nbsp;% des lignes ne décrivent ni le type de bien, ni sa surface, ni son nombre de pièces. Nous avons donc calculé ce qui se mesure, le prix au m² de 9&nbsp;028 ventes d'appartements anciens à Aix de 2021 à 2025, par taille, et nous le rapprochons du seul repère officiel sur le neuf, valable pour les Bouches-du-Rhône.</p>
+
+      <figure class="post-figure">
+        <img src="/articles-img/prix-immobilier-neuf-aix-en-provence/aix-cours-mirabeau-vue-aerienne.webp" srcset="/articles-img/prix-immobilier-neuf-aix-en-provence/aix-cours-mirabeau-vue-aerienne-800w.webp 800w, /articles-img/prix-immobilier-neuf-aix-en-provence/aix-cours-mirabeau-vue-aerienne-1200w.webp 1200w, /articles-img/prix-immobilier-neuf-aix-en-provence/aix-cours-mirabeau-vue-aerienne.webp 1600w" sizes="100vw" alt="Vue aérienne du centre ancien d'Aix-en-Provence&nbsp;: le cours Mirabeau bordé de platanes entre des toits de tuiles ocre et des façades jaunes" width="1600" height="900" fetchpriority="high" decoding="async" />
+      </figure>
+
+      <h2 id="en-bref">Prix immobilier neuf à <span class="blog-nowrap">Aix-en-Provence</span>&nbsp;: l'essentiel en quatre points</h2>
+      <ul>
+        <li><strong>Ancien à Aix, 2025&nbsp;:</strong> médiane de 4&nbsp;818&nbsp;€/m² pour un appartement&nbsp;; la moitié des ventes se situe entre 3&nbsp;928 et 5&nbsp;810&nbsp;€/m², une vente sur dix dépasse 6&nbsp;877&nbsp;€/m² (1&nbsp;820 ventes retenues).</li>
+        <li><strong>La taille change le prix au m²&nbsp;:</strong> médiane de 5&nbsp;433&nbsp;€/m² pour un 1 pièce, 4&nbsp;642 pour un 3 pièces, 4&nbsp;148 pour un 4 pièces.</li>
+        <li><strong>Neuf&nbsp;:</strong> DVF ne permet pas de calculer un prix au m² à Aix (30 appartements exploitables en vente sur plan en cinq ans). Repère officiel, départemental&nbsp;: 5&nbsp;178&nbsp;€/m² en moyenne en 2025 pour les logements collectifs neufs réservés dans les Bouches-du-Rhône (TTC, hors frais de notaire, hors parking).</li>
+        <li><strong>Portée&nbsp;:</strong> ces chiffres décrivent le marché, pas les prix d'un programme.</li>
+      </ul>
+
+      <h2 id="donnees">D'où viennent ces chiffres, et jusqu'à quelle date</h2>
+      <p>Le fichier «&nbsp;Demandes de valeurs foncières&nbsp;» (DVF), publié par la direction générale des finances publiques (DGFiP) sur data.gouv.fr, recense les transactions immobilières des cinq dernières années d'après les actes notariés, avec deux mises à jour par an (avril et octobre). Au 9 octobre 2026, la dernière diffusion date d'avril 2026 et couvre les actes enregistrés jusqu'au 31 décembre 2025. Nos chiffres s'arrêtent donc à fin 2025, et la prochaine diffusion pourra encore les compléter&nbsp;: la DGFiP indique que de nouvelles transactions peuvent être ajoutées à tous les millésimes.</p>
+      <p>Ce décalage est structurel&nbsp;: selon la DGFiP, une transaction enregistrée en août figure en principe dans la diffusion d'avril suivant, si bien qu'une vente signée en 2026 n'est pas encore visible. Nous avons utilisé la version retraitée «&nbsp;geo-DVF&nbsp;» par département, et contrôlé nos résultats sur les fichiers bruts de la DGFiP pour 2022 et 2025 (comptages identiques, médianes à moins de 0,3&nbsp;% près).</p>
+      <p>La «&nbsp;valeur foncière&nbsp;» de DVF est le prix déclaré à l'acte&nbsp;: elle inclut l'éventuelle TVA et les frais d'agence lorsqu'ils sont à la charge du vendeur&nbsp;; elle exclut les frais de notaire, les frais d'agence à la charge de l'acquéreur et le mobilier. La surface est la surface réelle du bâti, mesurée au sol entre les murs et arrondie au m² inférieur, dépendances exclues.</p>
+      <p>Pour le neuf, la seule source officielle chiffrée au m² est l'enquête sur la commercialisation des logements neufs (ECLN) du service statistique du ministère de la Transition écologique&nbsp;: elle interroge les promoteurs sur les programmes de cinq logements ou plus et publie des données par département jusqu'au 2e trimestre 2026 (derniers trimestres provisoires). Nous ne publions que des agrégats, sans adresse ni vente individuelle, conformément aux conditions de réutilisation de DVF.</p>
+
+      <h2 id="ancien-aix">Prix d'un appartement à <span class="blog-nowrap">Aix-en-Provence</span>&nbsp;: 9&nbsp;028 ventes de l'ancien, de 2021 à 2025</h2>
+      <figure class="post-figure">
+        <img src="/articles-img/prix-immobilier-neuf-aix-en-provence/aix-place-albertas-facade.webp" srcset="/articles-img/prix-immobilier-neuf-aix-en-provence/aix-place-albertas-facade-800w.webp 800w, /articles-img/prix-immobilier-neuf-aix-en-provence/aix-place-albertas-facade-1200w.webp 1200w, /articles-img/prix-immobilier-neuf-aix-en-provence/aix-place-albertas-facade.webp 1600w" sizes="(min-width: 801px) calc(50vw + 356px), 100vw" alt="Façade en pierre ocre d'un hôtel particulier de la place d'Albertas à Aix-en-Provence&nbsp;: trois hautes fenêtres grillagées, masques sculptés et balcons en fer forgé" width="1600" height="1067" loading="lazy" decoding="async" />
+      </figure>
+      <p>Nous avons retenu les ventes portant sur un seul appartement (hors ventes sur plan), soit 9&nbsp;028 ventes sur cinq ans. Le tableau donne, pour chaque année, la médiane (la moitié des ventes est en dessous), le 1er et le 3e quartile (la moitié centrale des ventes se situe entre les deux) et le 9e décile (une vente sur dix est au-dessus).</p>
+<div class="post-table-wrap" tabindex="0" role="region" aria-label="Tableau&nbsp;: prix au m² par année (défilement horizontal possible)">
+<table class="post-table">
+<caption>Prix au m² des appartements anciens à Aix-en-Provence, par année de vente (€/m²)</caption>
+<thead><tr><th scope="col">Année</th><th scope="col" class="num">Ventes retenues</th><th scope="col" class="num">1er quartile</th><th scope="col" class="num">Médiane</th><th scope="col" class="num">3e quartile</th><th scope="col" class="num">9e décile</th></tr></thead>
+<tbody>
+<tr><th scope="row">2021</th><td class="num">2&nbsp;030</td><td class="num">3&nbsp;736</td><td class="num"><strong>4&nbsp;519</strong></td><td class="num">5&nbsp;449</td><td class="num">6&nbsp;413</td></tr>
+<tr><th scope="row">2022</th><td class="num">2&nbsp;132</td><td class="num">3&nbsp;961</td><td class="num"><strong>4&nbsp;758</strong></td><td class="num">5&nbsp;773</td><td class="num">6&nbsp;904</td></tr>
+<tr><th scope="row">2023</th><td class="num">1&nbsp;618</td><td class="num">3&nbsp;991</td><td class="num"><strong>4&nbsp;933</strong></td><td class="num">5&nbsp;961</td><td class="num">6&nbsp;990</td></tr>
+<tr><th scope="row">2024</th><td class="num">1&nbsp;428</td><td class="num">3&nbsp;983</td><td class="num"><strong>4&nbsp;805</strong></td><td class="num">5&nbsp;808</td><td class="num">6&nbsp;911</td></tr>
+<tr><th scope="row">2025</th><td class="num">1&nbsp;820</td><td class="num">3&nbsp;928</td><td class="num"><strong>4&nbsp;818</strong></td><td class="num">5&nbsp;810</td><td class="num">6&nbsp;877</td></tr>
+</tbody>
+</table>
+</div>
+      <div class="post-chart">
+        <p class="post-chart-title">Prix au m² des appartements anciens à Aix-en-Provence, 2021-2025</p>
+<svg class="chart-svg" viewBox="0 0 480 344" role="img" aria-label="Graphique en lignes : prix au m² des appartements anciens vendus à Aix-en-Provence de 2021 à 2025, en euros par mètre carré. Médiane : 4 519, 4 758, 4 933, 4 805 puis 4 818. 1er quartile : 3 736, 3 961, 3 991, 3 983 puis 3 928. 3e quartile : 5 449, 5 773, 5 961, 5 808 puis 5 810. 9e décile : 6 413, 6 904, 6 990, 6 911 puis 6 877. Le tableau juste au-dessus donne les mêmes valeurs." focusable="false">
+<line class="c-grid" x1="52" x2="352" y1="288.0" y2="288.0"/>
+<text class="c-tick" x="46" y="292.5" text-anchor="end">3 000</text>
+<line class="c-grid" x1="52" x2="352" y1="227.1" y2="227.1"/>
+<text class="c-tick" x="46" y="231.6" text-anchor="end">4 000</text>
+<line class="c-grid" x1="52" x2="352" y1="166.2" y2="166.2"/>
+<text class="c-tick" x="46" y="170.7" text-anchor="end">5 000</text>
+<line class="c-grid" x1="52" x2="352" y1="105.3" y2="105.3"/>
+<text class="c-tick" x="46" y="109.8" text-anchor="end">6 000</text>
+<line class="c-grid" x1="52" x2="352" y1="44.4" y2="44.4"/>
+<text class="c-tick" x="46" y="48.9" text-anchor="end">7 000</text>
+<line class="c-axis" x1="52" x2="352" y1="288" y2="288"/>
+<polygon class="c-band" points="78,138.9 144,119.2 210,107.7 276,117.0 342,116.9 342,231.5 276,228.1 210,227.7 144,229.5 78,243.2"/>
+<polyline class="c-edge" points="78,138.9 144,119.2 210,107.7 276,117.0 342,116.9"/>
+<polyline class="c-edge" points="78,243.2 144,229.5 210,227.7 276,228.1 342,231.5"/>
+<polyline class="c-d9" points="78,80.2 144,50.3 210,45.1 276,49.9 342,51.9"/>
+<polyline class="c-med" points="78,195.5 144,181.0 210,170.3 276,178.1 342,177.3"/>
+<circle class="c-dot-d9" cx="78" cy="80.2" r="3.5"><title>2021 : 9e décile 6 413 €/m²</title></circle>
+<circle class="c-dot-med" cx="78" cy="195.5" r="5"><title>2021 : médiane 4 519 €/m² (2 030 ventes)</title></circle>
+<text class="c-year" x="78" y="310" text-anchor="middle">2021</text>
+<circle class="c-dot-d9" cx="144" cy="50.3" r="3.5"><title>2022 : 9e décile 6 904 €/m²</title></circle>
+<circle class="c-dot-med" cx="144" cy="181.0" r="5"><title>2022 : médiane 4 758 €/m² (2 132 ventes)</title></circle>
+<text class="c-year" x="144" y="310" text-anchor="middle">2022</text>
+<circle class="c-dot-d9" cx="210" cy="45.1" r="3.5"><title>2023 : 9e décile 6 990 €/m²</title></circle>
+<circle class="c-dot-med" cx="210" cy="170.3" r="5"><title>2023 : médiane 4 933 €/m² (1 618 ventes)</title></circle>
+<text class="c-year" x="210" y="310" text-anchor="middle">2023</text>
+<circle class="c-dot-d9" cx="276" cy="49.9" r="3.5"><title>2024 : 9e décile 6 911 €/m²</title></circle>
+<circle class="c-dot-med" cx="276" cy="178.1" r="5"><title>2024 : médiane 4 805 €/m² (1 428 ventes)</title></circle>
+<text class="c-year" x="276" y="310" text-anchor="middle">2024</text>
+<circle class="c-dot-d9" cx="342" cy="51.9" r="3.5"><title>2025 : 9e décile 6 877 €/m²</title></circle>
+<circle class="c-dot-med" cx="342" cy="177.3" r="5"><title>2025 : médiane 4 818 €/m² (1 820 ventes)</title></circle>
+<text class="c-year" x="342" y="310" text-anchor="middle">2025</text>
+<text class="c-val" x="78" y="183.5" text-anchor="middle">4 519</text>
+<text class="c-val" x="210" y="158.3" text-anchor="middle">4 933</text>
+<text class="c-lab" x="364" y="48.9">9e décile</text>
+<text class="c-labv" x="364" y="65.9">6 877</text>
+<text class="c-lab" x="364" y="113.9">3e quartile</text>
+<text class="c-labv" x="364" y="130.9">5 810</text>
+<text class="c-lab c-lab-med" x="364" y="174.3">Médiane</text>
+<text class="c-labv" x="364" y="191.3">4 818</text>
+<text class="c-lab" x="364" y="228.5">1er quartile</text>
+<text class="c-labv" x="364" y="245.5">3 928</text>
+<text class="c-unit" x="52" y="342" text-anchor="start">€/m², axe vertical à partir de 3 000</text>
+</svg>
+        <p class="post-note">Trait plein&nbsp;: médiane. Bande&nbsp;: du 1er au 3e quartile. Tirets&nbsp;: 9e décile. Les valeurs sont celles du tableau ci-dessus.</p>
+      </div>
+      <p>La médiane passe de 4&nbsp;519&nbsp;€/m² en 2021 à 4&nbsp;818&nbsp;€/m² en 2025 (+7&nbsp;%), avec un point haut en 2023 (4&nbsp;933&nbsp;€/m²). L'écart entre le 1er et le 3e quartile (1&nbsp;882&nbsp;€/m² en 2025) est six fois supérieur à la variation de la médiane en quatre ans (299&nbsp;€/m²)&nbsp;: à Aix, ce qui fait varier le prix au m² d'un appartement, c'est surtout lequel on achète, bien plus que l'année de la vente. Ce constat décrit le passé&nbsp;; il ne dit rien de l'avenir.</p>
+
+      <h2 id="par-taille">Prix au m² d'un appartement à <span class="blog-nowrap">Aix-en-Provence</span> selon le nombre de pièces</h2>
+      <p>Le prix au m² baisse quand la taille augmente. En 2025, un 1 pièce (surface médiane de 23&nbsp;m²) se vend à une médiane de 5&nbsp;433&nbsp;€/m², un 4 pièces (80&nbsp;m²) à 4&nbsp;148&nbsp;€/m², soit près d'un quart de moins au mètre carré. L'écart mêle plusieurs effets (équipements répartis sur moins de mètres carrés, localisation des petites surfaces, état du bien) que DVF ne permet pas de séparer.</p>
+<div class="post-table-wrap" tabindex="0" role="region" aria-label="Tableau&nbsp;: prix au m² selon le nombre de pièces en 2025 (défilement horizontal possible)">
+<table class="post-table">
+<caption>Prix au m² des appartements anciens à Aix-en-Provence selon le nombre de pièces, ventes de 2025 (€/m²)</caption>
+<thead><tr><th scope="col">Taille</th><th scope="col" class="num">Surface médiane (m²)</th><th scope="col" class="num">Ventes retenues</th><th scope="col" class="num">1er quartile</th><th scope="col" class="num">Médiane</th><th scope="col" class="num">3e quartile</th><th scope="col" class="num">9e décile</th></tr></thead>
+<tbody>
+<tr><th scope="row">1 pièce</th><td class="num">23</td><td class="num">434</td><td class="num">4&nbsp;607</td><td class="num"><strong>5&nbsp;433</strong></td><td class="num">6&nbsp;452</td><td class="num">7&nbsp;457</td></tr>
+<tr><th scope="row">2 pièces</th><td class="num">44</td><td class="num">414</td><td class="num">4&nbsp;314</td><td class="num"><strong>5&nbsp;138</strong></td><td class="num">5&nbsp;909</td><td class="num">6&nbsp;862</td></tr>
+<tr><th scope="row">3 pièces</th><td class="num">65</td><td class="num">515</td><td class="num">3&nbsp;859</td><td class="num"><strong>4&nbsp;642</strong></td><td class="num">5&nbsp;586</td><td class="num">6&nbsp;509</td></tr>
+<tr><th scope="row">4 pièces</th><td class="num">80</td><td class="num">352</td><td class="num">3&nbsp;430</td><td class="num"><strong>4&nbsp;148</strong></td><td class="num">5&nbsp;113</td><td class="num">6&nbsp;334</td></tr>
+<tr><th scope="row">5 pièces et plus</th><td class="num">97</td><td class="num">105</td><td class="num">3&nbsp;210</td><td class="num"><strong>4&nbsp;076</strong></td><td class="num">4&nbsp;658</td><td class="num">6&nbsp;239</td></tr>
+</tbody>
+</table>
+</div>
+      <div class="post-chart">
+        <p class="post-chart-title">Prix au m² selon le nombre de pièces, ventes de 2025</p>
+<svg class="chart-svg" viewBox="0 0 480 318" role="img" aria-label="Graphique en barres horizontales : prix au m² des appartements anciens vendus à Aix-en-Provence en 2025 selon le nombre de pièces, en euros par mètre carré. 1 pièce : médiane 5 433, de 4 607 à 6 452 entre le 1er et le 3e quartile, 9e décile 7 457 ; 2 pièces : médiane 5 138, de 4 314 à 5 909 entre le 1er et le 3e quartile, 9e décile 6 862 ; 3 pièces : médiane 4 642, de 3 859 à 5 586 entre le 1er et le 3e quartile, 9e décile 6 509 ; 4 pièces : médiane 4 148, de 3 430 à 5 113 entre le 1er et le 3e quartile, 9e décile 6 334 ; 5 pièces et plus : médiane 4 076, de 3 210 à 4 658 entre le 1er et le 3e quartile, 9e décile 6 239. Le tableau juste au-dessus donne les mêmes valeurs." focusable="false">
+<line class="c-grid" x1="132.0" x2="132.0" y1="26" y2="268"/>
+<text class="c-tick" x="132.0" y="288" text-anchor="middle">3 000</text>
+<line class="c-grid" x1="196.8" x2="196.8" y1="26" y2="268"/>
+<text class="c-tick" x="196.8" y="288" text-anchor="middle">4 000</text>
+<line class="c-grid" x1="261.6" x2="261.6" y1="26" y2="268"/>
+<text class="c-tick" x="261.6" y="288" text-anchor="middle">5 000</text>
+<line class="c-grid" x1="326.4" x2="326.4" y1="26" y2="268"/>
+<text class="c-tick" x="326.4" y="288" text-anchor="middle">6 000</text>
+<line class="c-grid" x1="391.2" x2="391.2" y1="26" y2="268"/>
+<text class="c-tick" x="391.2" y="288" text-anchor="middle">7 000</text>
+<line class="c-grid" x1="456.0" x2="456.0" y1="26" y2="268"/>
+<text class="c-tick" x="456.0" y="288" text-anchor="middle">8 000</text>
+<text class="c-rowlab" x="6" y="52">1 pièce</text>
+<text class="c-rowsub" x="6" y="69">23 m² · n = 434</text>
+<line class="c-whisker" x1="355.7" x2="420.8" y1="54" y2="54"/>
+<rect class="c-bar" x="236.1" y="44" width="119.6" height="20" rx="3"><title>1 pièce : de 4 607 à 6 452 €/m² (1er au 3e quartile)</title></rect>
+<line class="c-medtick" x1="289.7" x2="289.7" y1="39" y2="69"><title>1 pièce : médiane 5 433 €/m²</title></line>
+<circle class="c-dot-d9" cx="420.8" cy="54" r="4.5"><title>1 pièce : 9e décile 7 457 €/m²</title></circle>
+<text class="c-val" x="289.7" y="34" text-anchor="middle">5 433</text>
+<text class="c-rowlab" x="6" y="100">2 pièces</text>
+<text class="c-rowsub" x="6" y="117">44 m² · n = 414</text>
+<line class="c-whisker" x1="320.5" x2="382.3" y1="102" y2="102"/>
+<rect class="c-bar" x="217.1" y="92" width="103.4" height="20" rx="3"><title>2 pièces : de 4 314 à 5 909 €/m² (1er au 3e quartile)</title></rect>
+<line class="c-medtick" x1="270.5" x2="270.5" y1="87" y2="117"><title>2 pièces : médiane 5 138 €/m²</title></line>
+<circle class="c-dot-d9" cx="382.3" cy="102" r="4.5"><title>2 pièces : 9e décile 6 862 €/m²</title></circle>
+<text class="c-val" x="270.5" y="82" text-anchor="middle">5 138</text>
+<text class="c-rowlab" x="6" y="148">3 pièces</text>
+<text class="c-rowsub" x="6" y="165">65 m² · n = 515</text>
+<line class="c-whisker" x1="299.6" x2="359.4" y1="150" y2="150"/>
+<rect class="c-bar" x="187.7" y="140" width="111.9" height="20" rx="3"><title>3 pièces : de 3 859 à 5 586 €/m² (1er au 3e quartile)</title></rect>
+<line class="c-medtick" x1="238.4" x2="238.4" y1="135" y2="165"><title>3 pièces : médiane 4 642 €/m²</title></line>
+<circle class="c-dot-d9" cx="359.4" cy="150" r="4.5"><title>3 pièces : 9e décile 6 509 €/m²</title></circle>
+<text class="c-val" x="238.4" y="130" text-anchor="middle">4 642</text>
+<text class="c-rowlab" x="6" y="196">4 pièces</text>
+<text class="c-rowsub" x="6" y="213">80 m² · n = 352</text>
+<line class="c-whisker" x1="268.9" x2="348.0" y1="198" y2="198"/>
+<rect class="c-bar" x="159.9" y="188" width="109.1" height="20" rx="3"><title>4 pièces : de 3 430 à 5 113 €/m² (1er au 3e quartile)</title></rect>
+<line class="c-medtick" x1="206.4" x2="206.4" y1="183" y2="213"><title>4 pièces : médiane 4 148 €/m²</title></line>
+<circle class="c-dot-d9" cx="348.0" cy="198" r="4.5"><title>4 pièces : 9e décile 6 334 €/m²</title></circle>
+<text class="c-val" x="206.4" y="178" text-anchor="middle">4 148</text>
+<text class="c-rowlab" x="6" y="244">5 pièces et +</text>
+<text class="c-rowsub" x="6" y="261">97 m² · n = 105</text>
+<line class="c-whisker" x1="239.4" x2="341.9" y1="246" y2="246"/>
+<rect class="c-bar" x="145.6" y="236" width="93.8" height="20" rx="3"><title>5 pièces et plus : de 3 210 à 4 658 €/m² (1er au 3e quartile)</title></rect>
+<line class="c-medtick" x1="201.7" x2="201.7" y1="231" y2="261"><title>5 pièces et plus : médiane 4 076 €/m²</title></line>
+<circle class="c-dot-d9" cx="341.9" cy="246" r="4.5"><title>5 pièces et plus : 9e décile 6 239 €/m²</title></circle>
+<text class="c-val" x="201.7" y="226" text-anchor="middle">4 076</text>
+<text class="c-unit" x="132" y="312" text-anchor="start">€/m², ventes de 2025, axe à partir de 3 000</text>
+</svg>
+        <p class="post-note">Bande&nbsp;: du 1er au 3e quartile. Trait vertical&nbsp;: médiane. Point&nbsp;: 9e décile. Sous chaque taille&nbsp;: surface médiane et nombre de ventes retenues.</p>
+      </div>
+      <p>Chaque année, de 1 à 4 pièces, la médiane baisse à chaque palier&nbsp;; les 5 pièces et plus se situent au voisinage des 4 pièces. Tous les effectifs de ce tableau dépassent 70 ventes.</p>
+<div class="post-table-wrap" tabindex="0" role="region" aria-label="Tableau&nbsp;: médiane du prix au m² par taille et par année (défilement horizontal possible)">
+<table class="post-table">
+<caption>Médiane du prix au m² des appartements anciens à Aix-en-Provence, par taille et par année (€/m²)</caption>
+<thead><tr><th scope="col">Taille</th><th scope="col" class="num">2021</th><th scope="col" class="num">2022</th><th scope="col" class="num">2023</th><th scope="col" class="num">2024</th><th scope="col" class="num">2025</th></tr></thead>
+<tbody>
+<tr><th scope="row">1 pièce</th><td class="num">5&nbsp;115</td><td class="num">5&nbsp;536</td><td class="num">5&nbsp;585</td><td class="num">5&nbsp;425</td><td class="num">5&nbsp;433</td></tr>
+<tr><th scope="row">2 pièces</th><td class="num">4&nbsp;804</td><td class="num">5&nbsp;141</td><td class="num">5&nbsp;378</td><td class="num">5&nbsp;124</td><td class="num">5&nbsp;138</td></tr>
+<tr><th scope="row">3 pièces</th><td class="num">4&nbsp;303</td><td class="num">4&nbsp;641</td><td class="num">4&nbsp;716</td><td class="num">4&nbsp;625</td><td class="num">4&nbsp;642</td></tr>
+<tr><th scope="row">4 pièces</th><td class="num">3&nbsp;954</td><td class="num">4&nbsp;108</td><td class="num">4&nbsp;179</td><td class="num">4&nbsp;191</td><td class="num">4&nbsp;148</td></tr>
+<tr><th scope="row">5 pièces et plus</th><td class="num">4&nbsp;235</td><td class="num">4&nbsp;198</td><td class="num">4&nbsp;305</td><td class="num">4&nbsp;115</td><td class="num">4&nbsp;076</td></tr>
+</tbody>
+</table>
+</div>
+      <p>En euros plutôt qu'au m², le prix inscrit à l'acte a une médiane (2024-2025) d'environ 215&nbsp;000&nbsp;€ pour un 2 pièces (44&nbsp;m²), 300&nbsp;000&nbsp;€ pour un 3 pièces (65&nbsp;m²) et 325&nbsp;000&nbsp;€ pour un 4 pièces (80&nbsp;m²), parkings et caves compris lorsqu'ils figurent à l'acte.</p>
+      <p>Le code postal pèse autant que la taille&nbsp;: sur 2024-2025, la médiane est de 5&nbsp;114&nbsp;€/m² pour les ventes en 13100 (1&nbsp;808 ventes) contre 4&nbsp;379&nbsp;€/m² en 13090 (1&nbsp;273 ventes). Les trois autres codes postaux de la commune comptent chacun moins de 65 ventes sur la période, trop peu pour une lecture stable. Un code postal n'est pas un quartier&nbsp;: pour la géographie fine, notre article sur <a href="/blog/quartiers-aix-en-provence-ou-acheter">les quartiers d'Aix-en-Provence où acheter</a> prolonge cette lecture.</p>
+
+      <h2 id="neuf-dvf">Prix du neuf à <span class="blog-nowrap">Aix-en-Provence</span>&nbsp;: ce que DVF ne permet pas de mesurer</h2>
+      <p>DVF classe les ventes sur plan sous la nature «&nbsp;vente en l'état futur d'achèvement&nbsp;» (<a href="/blog/vefa-achat-sur-plan-etapes-garanties">VEFA</a>, détaillée dans notre guide des étapes d'un achat sur plan). À Aix-en-Provence, il en recense 2&nbsp;515 actes en cinq ans. Mais le type de bien, la surface et le nombre de pièces proviennent, selon la notice de la DGFiP, des données cadastrales&nbsp;: un logement pas encore construit n'y figure vraisemblablement pas. Le constat est net.</p>
+<div class="post-table-wrap" tabindex="0" role="region" aria-label="Tableau&nbsp;: contenu des ventes en état futur d'achèvement dans DVF à Aix-en-Provence (défilement horizontal possible)">
+<table class="post-table">
+<caption>Ce que contiennent les ventes sur plan (VEFA) d'Aix-en-Provence dans DVF, 2021-2025</caption>
+<thead><tr><th scope="col">Année</th><th scope="col" class="num">Actes de vente en VEFA</th><th scope="col" class="num">Lignes correspondantes</th><th scope="col" class="num">Lignes avec un type de bien</th><th scope="col" class="num">dont «&nbsp;appartement&nbsp;»</th><th scope="col" class="num">Appartements exploitables</th></tr></thead>
+<tbody>
+<tr><th scope="row">2021</th><td class="num">550</td><td class="num">1&nbsp;572</td><td class="num">20</td><td class="num">6</td><td class="num">2</td></tr>
+<tr><th scope="row">2022</th><td class="num">723</td><td class="num">1&nbsp;845</td><td class="num">40</td><td class="num">18</td><td class="num">8</td></tr>
+<tr><th scope="row">2023</th><td class="num">529</td><td class="num">1&nbsp;330</td><td class="num">20</td><td class="num">8</td><td class="num">4</td></tr>
+<tr><th scope="row">2024</th><td class="num">392</td><td class="num">1&nbsp;355</td><td class="num">13</td><td class="num">5</td><td class="num">5</td></tr>
+<tr><th scope="row">2025</th><td class="num">321</td><td class="num">1&nbsp;022</td><td class="num">29</td><td class="num">11</td><td class="num">11</td></tr>
+<tr><th scope="row"><strong>Total 2021-2025</strong></th><td class="num"><strong>2&nbsp;515</strong></td><td class="num"><strong>7&nbsp;124</strong></td><td class="num"><strong>122</strong></td><td class="num"><strong>48</strong></td><td class="num"><strong>30</strong></td></tr>
+</tbody>
+</table>
+</div>
+      <p>Sur 7&nbsp;124 lignes de ventes sur plan, 122 seulement portent un type de bien et 48 un «&nbsp;appartement&nbsp;». Après application de nos filtres (un seul appartement par acte, surface renseignée), 30 appartements seulement sont exploitables en cinq ans (2, 8, 4, 5, 11 selon les années). Nous ne savons pas pourquoi ces lignes sont renseignées&nbsp;: elles ne forment pas un échantillon représentatif des ventes sur plan, et nous n'en tirons aucun prix au m². Les fichiers bruts de la DGFiP (2022 et 2025) donnent les mêmes comptages&nbsp;: ce n'est pas un effet du retraitement.</p>
+      <p>Le prix de l'acte, lui, existe (TVA comprise), mais il porte parfois sur un appartement et ses annexes, ou sur plusieurs lots, sans surface pour le ramener au mètre carré. Les «&nbsp;prix du neuf à Aix&nbsp;» publiés ailleurs ne peuvent donc pas se déduire de DVF seul&nbsp;: leur méthode (estimation, annonces, listes de prix de promoteurs) est à vérifier au cas par cas.</p>
+
+      <h2 id="neuf-ecln">Le repère officiel sur le neuf&nbsp;: l'enquête ECLN pour les Bouches-du-Rhône</h2>
+      <p>L'ECLN publie, par département et par trimestre, le prix moyen au m² des logements collectifs neufs réservés par des particuliers. Il s'agit du prix à la réservation (avec dépôt d'arrhes), TTC, hors frais de notaire, hors parking, calculé comme la somme des prix divisée par la somme des surfaces. Nous en avons tiré un prix moyen par année, pondéré par les réservations de chaque trimestre.</p>
+<div class="post-table-wrap" tabindex="0" role="region" aria-label="Tableau&nbsp;: deux repères officiels sur le neuf et l'ancien (défilement horizontal possible)">
+<table class="post-table">
+<caption>Deux repères officiels, deux périmètres&nbsp;: prix moyen au m² (€/m²), à ne pas soustraire</caption>
+<thead><tr><th scope="col">Période</th><th scope="col" class="num">Neuf, Bouches-du-Rhône&nbsp;: logements collectifs réservés</th><th scope="col" class="num">Neuf, Bouches-du-Rhône&nbsp;: prix moyen</th><th scope="col" class="num">Ancien, Aix-en-Provence&nbsp;: prix moyen</th></tr></thead>
+<tbody>
+<tr><th scope="row">2021</th><td class="num">5&nbsp;361</td><td class="num"><strong>4&nbsp;525</strong></td><td class="num"><strong>4&nbsp;587</strong></td></tr>
+<tr><th scope="row">2022</th><td class="num">4&nbsp;096</td><td class="num"><strong>4&nbsp;687</strong></td><td class="num"><strong>4&nbsp;787</strong></td></tr>
+<tr><th scope="row">2023</th><td class="num">2&nbsp;502</td><td class="num"><strong>5&nbsp;038</strong></td><td class="num"><strong>4&nbsp;903</strong></td></tr>
+<tr><th scope="row">2024</th><td class="num">1&nbsp;894</td><td class="num"><strong>5&nbsp;161</strong></td><td class="num"><strong>4&nbsp;942</strong></td></tr>
+<tr><th scope="row">2025</th><td class="num">1&nbsp;773</td><td class="num"><strong>5&nbsp;178</strong></td><td class="num"><strong>4&nbsp;816</strong></td></tr>
+<tr><th scope="row">1er semestre 2026</th><td class="num">856</td><td class="num"><strong>5&nbsp;121</strong></td><td class="num">non publié</td></tr>
+</tbody>
+</table>
+</div>
+      <p>Le nombre de réservations de logements collectifs neufs dans le département est passé de 5&nbsp;361 en 2021 à 1&nbsp;773 en 2025, soit environ 3 fois moins&nbsp;: un indicateur de prix repose sur moins de transactions qu'il y a quatre ans. Dernier trimestre publié&nbsp;: 5&nbsp;094&nbsp;€/m² au 2e trimestre 2026, chiffre provisoire.</p>
+      <h3 id="pas-soustraire">Pourquoi ces deux colonnes ne se soustraient pas</h3>
+      <ul>
+        <li><strong>Le territoire&nbsp;:</strong> le neuf est mesuré sur tout le département (Marseille, Aix, les autres communes)&nbsp;; l'ancien sur la seule commune d'Aix.</li>
+        <li><strong>La date du prix&nbsp;:</strong> l'ECLN retient le prix à la réservation&nbsp;; DVF celui de l'acte authentique, signé plus tard.</li>
+        <li><strong>Le périmètre&nbsp;:</strong> programmes de cinq logements ou plus d'un côté, toutes les ventes d'appartements seuls de l'autre.</li>
+        <li><strong>Le stationnement&nbsp;:</strong> exclu du prix ECLN, inclus dans la valeur foncière DVF lorsqu'il figure à l'acte.</li>
+        <li><strong>Le mélange de tailles et de quartiers&nbsp;:</strong> il diffère entre les deux ensembles et pèse plus que l'écart de moyenne.</li>
+      </ul>
+      <p>Il faut donc lire chaque repère pour ce qu'il est&nbsp;: un ordre de grandeur de l'ancien à Aix, un ordre de grandeur du neuf à l'échelle du département.</p>
+      <h3 id="cout-total">Le coût d'acquisition ne se lit pas seulement au m²</h3>
+      <p>Le prix d'un logement neuf est stipulé TTC&nbsp;: à la date de rédaction (octobre 2026), la TVA est de 20&nbsp;% dans la majorité des cas, et de 5,5&nbsp;% pour une résidence principale en quartier prioritaire ou en zone ANRU, sous conditions de ressources (impots.gouv.fr). Les frais de notaire représentent 2 à 3&nbsp;% du prix dans le neuf, contre environ 7 à 8&nbsp;% dans l'ancien (notaires.fr)&nbsp;: sur 100&nbsp;000&nbsp;€, 2&nbsp;000 à 3&nbsp;000&nbsp;€ contre 7&nbsp;000 à 8&nbsp;000&nbsp;€ (illustration arithmétique). Nos articles détaillent <a href="/blog/frais-de-notaire-neuf-tva-taxe-fonciere">les frais de notaire, la TVA et la taxe foncière dans le neuf</a> et <a href="/blog/financer-appartement-neuf-ptz-appels-de-fonds">le financement (PTZ et appels de fonds)</a>&nbsp;; le <a href="/blog/acheter-appartement-neuf-aix-en-provence">guide pour acheter un appartement neuf à Aix-en-Provence</a> donne la démarche d'ensemble.</p>
+
+      <h2 id="lire-fourchette">Comment lire une fourchette de prix au m²</h2>
+      <p>Une fourchette n'est pas un prix&nbsp;: c'est la dispersion de ventes très différentes. Entre le 1er et le 3e quartile se trouve la moitié des ventes&nbsp;; au-delà du 9e décile, les ventes les plus chères. Ce qui explique la place d'un bien dans cette dispersion, DVF ne le dit pas.</p>
+      <h3>Surface et nombre de pièces</h3>
+      <p>Comparez toujours à taille égale&nbsp;: le tableau par nombre de pièces ci-dessus sert de première grille. Un petit logement affiche un prix au m² plus élevé qu'un grand, sans être plus «&nbsp;cher&nbsp;» en valeur.</p>
+      <h3>Étage, vue et extérieurs</h3>
+      <figure class="post-figure">
+        <img src="/articles-img/prix-immobilier-neuf-aix-en-provence/aix-toits-sainte-victoire.webp" srcset="/articles-img/prix-immobilier-neuf-aix-en-provence/aix-toits-sainte-victoire-800w.webp 800w, /articles-img/prix-immobilier-neuf-aix-en-provence/aix-toits-sainte-victoire-1200w.webp 1200w, /articles-img/prix-immobilier-neuf-aix-en-provence/aix-toits-sainte-victoire.webp 1600w" sizes="(min-width: 801px) calc(50vw + 356px), 100vw" alt="Toits de tuiles d'Aix-en-Provence avec un clocher ocre au premier plan, une colline boisée derrière et la montagne Sainte-Victoire à l'horizon" width="1600" height="698" loading="lazy" decoding="async" />
+      </figure>
+      <p>DVF ne contient ni l'étage, ni l'exposition, ni la vue, ni la surface des terrasses et jardins&nbsp;: ces éléments, qui font souvent l'écart entre deux logements de même taille, se jugent sur place et sur plan. Nous n'en chiffrons aucun effet, faute de donnée publique qui l'isole.</p>
+      <h3>Prestations, TVA, frais et stationnement</h3>
+      <p>Dans l'ancien, le prix dépend de l'état et des travaux à prévoir&nbsp;; dans le neuf, de la notice descriptive du vendeur&nbsp;: comparer deux prix revient à comparer deux listes de prestations. Vérifiez aussi ce que le prix contient (TTC ou non, parking inclus ou non, frais d'agence à la charge de qui) et ce qui s'y ajoute (frais de notaire)&nbsp;: un prix affiché peut être inférieur de plusieurs milliers d'euros au budget réel.</p>
+      <aside class="post-callout" aria-label="Portée de ces chiffres">
+        <p class="post-callout-title">Portée de ces chiffres</p>
+        <p>Ces chiffres décrivent le marché, pas les prix d'un programme. Ils ne disent rien du prix d'un logement précis, ni de 59 Cézanne ni d'aucun autre programme&nbsp;: l'étage, l'exposition, les extérieurs, le stationnement et les prestations fixent le prix propre de chaque bien.</p>
+      </aside>
+
+      <h2 id="luxe">Combien coûte un appartement de luxe à <span class="blog-nowrap">Aix-en-Provence</span>&nbsp;?</h2>
+      <p>DVF ne contient aucun champ «&nbsp;luxe&nbsp;»&nbsp;: ni classe de bien, ni prestations, ni vue. On peut seulement regarder le haut de la distribution. Sur 2024-2025 (3&nbsp;248 ventes retenues), le 9e décile est à 6&nbsp;902&nbsp;€/m², une vente sur vingt dépasse 7&nbsp;792&nbsp;€/m² et une sur cent 10&nbsp;182&nbsp;€/m². Au total, 33 ventes (1,0&nbsp;%) ont été conclues à 1&nbsp;million d'euros ou plus.</p>
+      <p>Un prix élevé n'est pas un signe de standing&nbsp;: un petit appartement du centre peut dépasser un grand appartement de bonne facture au mètre carré. Pour les critères qui définissent un bien haut de gamme, voyez notre article sur <a href="/blog/appartement-de-luxe-aix-en-provence-criteres">les critères d'un appartement de luxe à Aix-en-Provence</a>.</p>
+
+      <h2 id="methode">Méthode, contrôles et sensibilité</h2>
+      <p>Notre calcul de référence applique ces règles aux fichiers geo-DVF du département 13 (2021 à 2025), commune d'Aix-en-Provence (code INSEE 13001)&nbsp;:</p>
+      <ul>
+        <li>nature de la mutation «&nbsp;vente&nbsp;» (hors ventes sur plan, échanges, adjudications et terrains à bâtir)&nbsp;;</li>
+        <li>une seule ligne «&nbsp;appartement&nbsp;» par acte, aucune maison ni local d'activité dans le même acte, une seule disposition&nbsp;;</li>
+        <li>valeur foncière d'au moins 30&nbsp;000&nbsp;€, surface de 9 à 250&nbsp;m², au moins une pièce&nbsp;;</li>
+        <li>prix au m² compris entre 1&nbsp;000 et 15&nbsp;000&nbsp;€ (élimination des prix symboliques, ventes de droits partiels et lots groupés)&nbsp;; au total, ces filtres écartent 85 ventes sur 9&nbsp;113 (moins de 1&nbsp;%)&nbsp;;</li>
+        <li>médiane, 1er et 3e quartiles et 9e décile par interpolation linéaire&nbsp;;</li>
+        <li>aucune cellule publiée sous 30 observations.</li>
+      </ul>
+      <p>Un second calcul indépendant, réécrit en SQL avec d'autres filtres et d'autres définitions de quantiles, a servi de contrôle&nbsp;; un troisième recalcul sur les fichiers bruts de la DGFiP (2022 et 2025) donne des médianes à moins de 0,3&nbsp;% de l'écart.</p>
+<div class="post-table-wrap" tabindex="0" role="region" aria-label="Tableau&nbsp;: sensibilité des médianes annuelles à la méthode (défilement horizontal possible)">
+<table class="post-table">
+<caption>Sensibilité de la médiane annuelle (tous appartements) à la méthode de calcul</caption>
+<thead><tr><th scope="col">Variante du second calcul</th><th scope="col">Ce qui change</th><th scope="col" class="num">Écart sur la médiane annuelle</th></tr></thead>
+<tbody>
+<tr><th scope="row">Même règles, code différent (SQL) et quantiles «&nbsp;par rang&nbsp;»</th><td>Contrôle d'implémentation</td><td class="num">moins de 0,2&nbsp;%</td></tr>
+<tr><th scope="row">Bornes élargies (500 à 25 000&nbsp;€/m²) ou resserrées (1 500 à 12 000&nbsp;€/m²)</th><td>Seuil d'élimination des valeurs aberrantes</td><td class="num">moins de 0,5&nbsp;%</td></tr>
+<tr><th scope="row">Élimination statistique (écart à la médiane de plus de 3,5 écarts absolus médians)</th><td>Filtre robuste au lieu de bornes fixes</td><td class="num">−1,7 à −0,7&nbsp;%</td></tr>
+<tr><th scope="row">Ventes sans aucune dépendance (ni parking ni cave) dans l'acte</th><td>Périmètre des ventes</td><td class="num">+6,2 à +8,1&nbsp;%</td></tr>
+</tbody>
+</table>
+</div>
+      <p>Les niveaux sont donc fiables à environ 2&nbsp;% près sur le périmètre retenu, mais le périmètre lui-même déplace la médiane&nbsp;: en ne gardant que les ventes sans aucune dépendance, elle monte de 6 à 8&nbsp;%. Ce n'est pas l'effet d'un parking, mais d'une composition différente&nbsp;: ces ventes comptent 54&nbsp;% de 1 pièce, contre 12&nbsp;% pour les actes avec dépendance. Le profil d'une année à l'autre (hausse jusqu'en 2023, puis stabilisation) se retrouve dans toutes les variantes.</p>
+      <p><strong>Limites.</strong> DVF mélange les parkings, caves et autres dépendances inscrits à l'acte avec le logement. Il ne distingue pas le luxe, ni l'étage, ni la vue, ni l'état, ni les prestations. La surface DVF est la surface mesurée au sol entre les murs, arrondie au m² inférieur&nbsp;: elle diffère de la surface Carrez ou de la surface habitable annoncées à l'achat. L'année 2025 peut encore être complétée. Enfin, une statistique sur l'ancien ne dit rien d'un programme neuf.</p>
+
+      <figure class="post-figure">
+        <img src="/chantier/octobre-2026-1200w.webp" srcset="/chantier/octobre-2026-800w.webp 800w, /chantier/octobre-2026-1200w.webp 1200w, /chantier/octobre-2026.webp 2400w" sizes="(min-width: 801px) calc(50vw + 356px), 100vw" alt="Vue aérienne du chantier de la résidence 59 Cézanne&nbsp;: bâtiment en béton, grue à tour rouge et blanche, pins et collines boisées avec la Sainte-Victoire au loin" width="2400" height="1800" loading="lazy" decoding="async" />
+      </figure>
+      <aside class="post-callout post-callout--programme" aria-label="Le programme 59 Cézanne">
+        <p class="post-callout-title">Le programme 59 Cézanne</p>
+        <p>Le programme 59 Cézanne est situé au 59 avenue Paul Cézanne, dans le quartier des Lauves, à Aix-en-Provence. Il présente un 4 pièces de 138&nbsp;m² avec jardin et un duplex de 216&nbsp;m² avec ascenseur privatif, vendus en l'état futur d'achèvement, selon le contrat de réservation.</p>
+        <p>Les chiffres de cet article décrivent le marché, pas les prix d'un programme. Les conditions d'un logement précis se demandent directement à l'équipe commerciale. Des photographies et une vidéo du chantier sont publiées sur la page des logements.</p>
+        <p><a class="btn btn-outline-dark" href="/logements#chantier">Suivre l'avancement du chantier</a></p>
+      </aside>
+
+      <section class="post-faq" id="faq" aria-labelledby="faq-titre">
+  <h2 id="faq-titre">Questions fréquentes</h2>
+  <details>
+    <summary>Quel est le prix du m² d'un appartement à Aix-en-Provence&nbsp;?</summary>
+    <p>Pour les appartements anciens vendus en 2025, la médiane est de 4&nbsp;818&nbsp;€/m² selon notre calcul sur les données DVF&nbsp;: la moitié des ventes se situe entre 3&nbsp;928 et 5&nbsp;810&nbsp;€/m², et une vente sur dix dépasse 6&nbsp;877&nbsp;€/m². Le prix dépend d'abord de la taille du logement et de sa localisation.</p>
+  </details>
+  <details>
+    <summary>Quel est le prix au m² du neuf à Aix-en-Provence&nbsp;?</summary>
+    <p>Les données ouvertes ne permettent pas de le calculer pour la commune&nbsp;: les ventes sur plan n'y portent presque jamais de surface. Le repère officiel (enquête ECLN du ministère) est départemental&nbsp;: en moyenne 5&nbsp;178&nbsp;€/m² en 2025 pour les logements collectifs neufs réservés dans les Bouches-du-Rhône, TTC, hors frais de notaire et hors parking.</p>
+  </details>
+  <details>
+    <summary>Le neuf est-il plus cher que l'ancien à Aix-en-Provence&nbsp;?</summary>
+    <p>Les deux repères officiels ne se soustraient pas&nbsp;: ils portent sur des territoires, des dates et des périmètres différents. À prix égal, le neuf se distingue surtout par ses frais de notaire réduits (2 à 3&nbsp;% du prix, contre environ 7 à 8&nbsp;% dans l'ancien, selon notaires.fr) et par ses prestations, qui se comparent notice par notice.</p>
+  </details>
+  <details>
+    <summary>Combien coûte un appartement de luxe à Aix-en-Provence&nbsp;?</summary>
+    <p>Les données publiques ne contiennent aucune mention de luxe. On ne peut observer que le haut de la distribution&nbsp;: sur 2024-2025, une vente sur vingt dépasse 7&nbsp;792&nbsp;€/m² et une sur cent 10&nbsp;182&nbsp;€/m². Un prix élevé n'est pas un critère de standing&nbsp;: les critères qualitatifs se vérifient bien par bien.</p>
+  </details>
+  <details>
+    <summary>Quel budget prévoir pour un trois-pièces à Aix-en-Provence&nbsp;?</summary>
+    <p>Sur 2024-2025, le prix inscrit à l'acte d'un trois-pièces ancien a une médiane d'environ 300&nbsp;000&nbsp;€ pour une surface médiane de 65&nbsp;m². Cette valeur peut inclure parking et cave. Elle décrit le marché de l'ancien, pas le prix d'un logement neuf.</p>
+  </details>
+  <details>
+    <summary>Pourquoi les prix au m² diffèrent-ils d'un site à l'autre&nbsp;?</summary>
+    <p>Les sites n'utilisent pas la même période (douze, vingt-quatre mois ou davantage), la même statistique (moyenne ou médiane), les mêmes filtres de valeurs aberrantes ni le même périmètre (avec ou sans parkings, ventes groupées, maisons). Un écart de quelques pour cent est normal&nbsp;; c'est pourquoi nous détaillons la méthode et la sensibilité.</p>
+  </details>
+</section>
+
+      <p class="post-disclaimer">Information générale, à la date de rédaction (octobre 2026). Les statistiques ci-dessus sont des calculs de l'éditeur à partir de données publiques&nbsp;; elles décrivent des ventes passées et ne constituent ni une estimation de la valeur d'un bien, ni une prévision de prix, ni un conseil financier ou fiscal personnalisé&nbsp;: rapprochez-vous d'un notaire ou d'un conseiller pour une situation précise.</p>
+
+      <section class="post-sources" id="sources" aria-labelledby="sources-titre">
+        <h2 id="sources-titre">Sources</h2>
+        <ul>
+<li><a href="https://www.data.gouv.fr/datasets/demandes-de-valeurs-foncieres" rel="noopener" target="_blank">Demandes de valeurs foncières (DVF)</a> — direction générale des finances publiques, data.gouv.fr, consulté le 9 octobre 2026 (dernière mise à jour&nbsp;: 7 avril 2026 selon la page&nbsp;; licence ouverte 2.0).</li>
+<li><a href="https://static.data.gouv.fr/resources/demandes-de-valeurs-foncieres/20221017-153319/notice-descriptive-du-fichier-dvf-20221017.pdf" rel="noopener" target="_blank">Notice descriptive du fichier DVF (PDF)</a> — DGFiP, consultée le 9 octobre 2026 (version du 17 octobre 2022)&nbsp;: définition de la valeur foncière, de la surface réelle bâtie et du nombre de pièces.</li>
+<li><a href="https://static.data.gouv.fr/resources/demandes-de-valeurs-foncieres/20221017-153257/faq-20221017.pdf" rel="noopener" target="_blank">Foire aux questions DVF (PDF)</a> — DGFiP, consultée le 9 octobre 2026&nbsp;: calendrier des mises à jour et décalage de publication.</li>
+<li><a href="https://www.data.gouv.fr/datasets/demandes-de-valeurs-foncieres-geolocalisees" rel="noopener" target="_blank">Demandes de valeurs foncières géolocalisées (geo-DVF)</a> — Etalab, data.gouv.fr, consulté le 9 octobre 2026&nbsp;; fichiers départementaux 2021-2025 téléchargés le 9 octobre 2026 (département 13).</li>
+<li><a href="https://www.data.gouv.fr/datasets/donnees-departementales-sur-la-commercialisation-des-logements-neufs" rel="noopener" target="_blank">Données départementales sur la commercialisation des logements neufs (ECLN)</a> — service des données et études statistiques (SDES), data.gouv.fr, consulté le 9 octobre 2026 (série trimestrielle jusqu'au 2e trimestre 2026, derniers trimestres provisoires).</li>
+<li><a href="https://data.statistiques.developpement-durable.gouv.fr/dido/api/files/a402b3fd-805c-4523-844f-435339169a8c" rel="noopener" target="_blank">Enquête sur la commercialisation des logements neufs&nbsp;: notice méthodologique (PDF)</a> — SDES, mise à jour d'août 2026, consultée le 9 octobre 2026&nbsp;: champ de l'enquête, définition du prix (TTC, hors frais de notaire, hors parking).</li>
+<li><a href="https://www.paca.developpement-durable.gouv.fr/IMG/pdf/ecln_2024v2.pdf" rel="noopener" target="_blank">La commercialisation de logements neufs en Provence-Alpes-Côte d'Azur, année 2024 (PDF)</a> — DREAL Provence-Alpes-Côte d'Azur, consultée le 9 octobre 2026&nbsp;: définition du prix moyen au m² (somme des prix divisée par somme des surfaces).</li>
+<li><a href="https://www.impots.gouv.fr/particulier/achat-dans-le-neuf" rel="noopener" target="_blank">Achat dans le neuf</a> — impots.gouv.fr, consulté le 9 octobre 2026 (page modifiée le 7 janvier 2026)&nbsp;: TVA à 20&nbsp;% dans la majorité des cas, taux réduit de 5,5&nbsp;% sous conditions.</li>
+<li><a href="https://www.notaires.fr/en/housing-tax-system/financing/cost-buying-house-conveyancing-fees-0" rel="noopener" target="_blank">Cost of buying a house: conveyancing fees (page en anglais)</a> — notaires.fr, consulté le 9 octobre 2026 (page du 25 novembre 2025)&nbsp;: frais de 2 à 3&nbsp;% du prix dans le neuf, environ 7 à 8&nbsp;% dans l'ancien.</li>
+        </ul>
+        <p class="post-credits">Crédits photographiques&nbsp;: vue aérienne du cours Mirabeau à Aix-en-Provence, par FrogsLegs71, <a href="https://creativecommons.org/licenses/by-sa/3.0" rel="noopener" target="_blank">licence CC BY-SA 3.0</a>, <a href="https://commons.wikimedia.org/wiki/File:Cours_Mirabeau_in_Aix_en_Provence.jpg" rel="noopener" target="_blank">page d'origine sur Wikimedia Commons</a>&nbsp;; façade de la place d'Albertas à Aix-en-Provence, par GFreihalter, <a href="https://creativecommons.org/licenses/by-sa/4.0" rel="noopener" target="_blank">licence CC BY-SA 4.0</a>, <a href="https://commons.wikimedia.org/wiki/File:Aix-en-Provence_(13)_Place_d%27Albertas_988.jpg" rel="noopener" target="_blank">page d'origine sur Wikimedia Commons</a>&nbsp;; toits d'Aix-en-Provence et montagne Sainte-Victoire, par Nicolas Brignol, <a href="https://creativecommons.org/licenses/by-sa/3.0" rel="noopener" target="_blank">licence CC BY-SA 3.0</a>, <a href="https://commons.wikimedia.org/wiki/File:Montagne_Sainte-Victoire_towards_roofs_of_Aix-en-Provence.jpg" rel="noopener" target="_blank">page d'origine sur Wikimedia Commons</a>. L'image de partage (réseaux sociaux) est un recadrage de la vue aérienne du cours Mirabeau. Photographie du chantier&nbsp;: document du promoteur.</p>
+      </section>
+
+    </article>
+  </div>
+
+  <section class="post-cta fond-brun has-trait" aria-labelledby="cta-titre">
+    <div class="container">
+      <p class="script script--blanc" data-lang-fr="Parlons-en" data-lang-en="Let&#39;s talk">Parlons-en</p>
+      <h2 id="cta-titre">Une question sur les appartements de 59 Cézanne ?</h2>
+      <p class="post-cta-lead">Découvrez les appartements, leurs plans et leurs jardins, ou contactez-nous pour connaître les conditions d'un logement précis : un prix se comprend bien par bien.</p>
+      <p class="post-cta-dispo"><span data-lang-fr="Dernières disponibilités&nbsp;: un 4 pièces de 138&nbsp;m² avec jardin et un duplex de 216&nbsp;m² avec ascenseur privatif" data-lang-en="Last homes available: a 138&nbsp;m² four-room apartment with a garden and a 216&nbsp;m² duplex with a private lift">Dernières disponibilités&nbsp;: un 4 pièces de 138&nbsp;m² avec jardin et un duplex de 216&nbsp;m² avec ascenseur privatif</span>.</p>
+      <p class="post-cta-actions">
+        <a class="btn btn-primary" href="tel:+33609204590" data-lang-fr="Appeler le 06 09 20 45 90" data-lang-en="Call 06 09 20 45 90">Appeler le 06 09 20 45 90</a>
+        <a class="btn btn-outline-dark" href="/logements#disponibles" data-lang-fr="Voir les disponibilités" data-lang-en="See the available homes">Voir les disponibilités</a>
+        <a class="post-cta-link" href="/contact">Nous contacter</a>
+      </p>
+    </div>
+  </section>
+
+  <section class="post-related" aria-labelledby="related-titre">
+    <div class="container">
+      <h2 id="related-titre">À lire aussi</h2>
+      <ul class="post-cards">
+        <li class="post-card"><a href="/blog/acheter-appartement-neuf-aix-en-provence"><span class="post-card-pillar">Acheter dans le neuf</span><span class="post-card-title">Acheter un appartement neuf à Aix-en-Provence : le guide</span></a></li>
+        <li class="post-card"><a href="/blog/frais-de-notaire-neuf-tva-taxe-fonciere"><span class="post-card-pillar">Budget, financement, fiscalité</span><span class="post-card-title">Frais de notaire, TVA, taxe foncière : ce que coûte l'achat d'un appartement neuf</span></a></li>
+        <li class="post-card"><a href="/blog/financer-appartement-neuf-ptz-appels-de-fonds"><span class="post-card-pillar">Budget, financement, fiscalité</span><span class="post-card-title">Financer un appartement neuf : apport, prêt, PTZ et appels de fonds</span></a></li>
+      </ul>
+    </div>
+  </section>
+
+</main>
+
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="/" class="nav-logo" style="margin-bottom:1rem;display:inline-block;" aria-label="59 Cézanne — accueil">
+          <span class="logo-59">59</span><span class="logo-cez">Cézanne</span>
+        </a>
+        <p style="font-size:0.82rem;color:rgba(255,255,255,0.45);line-height:1.7;max-width:240px;">Résidence neuve de standing à Aix-en-Provence, avenue Paul Cézanne.</p>
+      </div>
+      <nav class="footer-links" aria-label="Pied de page — navigation">
+        <h3>Navigation</h3>
+        <ul>
+          <li><a href="/">Accueil</a></li>
+          <li><a href="/logements">Logements</a></li>
+          <li><a href="/localisation">Localisation</a></li>
+          <li><a href="/blog">Blog</a></li>
+          <li><a href="/contact">Contact</a></li>
+        </ul>
+      </nav>
+      <nav class="footer-links" aria-label="Pied de page — guides">
+        <h3>Guides</h3>
+        <ul>
+          <li><a href="/blog/acheter-appartement-neuf-aix-en-provence">Acheter un appartement neuf à Aix</a></li>
+          <li><a href="/blog/appartement-de-luxe-aix-en-provence-criteres">Appartement de luxe à Aix</a></li>
+          <li><a href="/blog/prix-immobilier-neuf-aix-en-provence">Prix de l'immobilier neuf à Aix</a></li>
+          <li><a href="/blog/appartement-jardin-prive-aix-en-provence">Appartement avec jardin privatif</a></li>
+          <li><a href="/blog/appartement-piscine-aix-en-provence">Appartement avec piscine</a></li>
+          <li><a href="/blog/vivre-a-aix-en-provence-guide-acheteur">Vivre à Aix-en-Provence</a></li>
+        </ul>
+      </nav>
+      <div class="footer-contact">
+        <h3>Contact</h3>
+        <p>Ponthieu Développement Holding</p>
+        <p>418 Ancienne Route des Alpes<br/>13100 Aix-en-Provence</p>
+        <p><a href="tel:+33609204590">06 09 20 45 90</a></p>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 Ponthieu Développement Holding — Tous droits réservés</p>
+      <p style="font-size:0.75rem;color:rgba(255,255,255,0.3);margin-top:0.25rem;">59 Avenue Paul Cézanne, 13100 Aix-en-Provence ·
+        <a href="/mentions-legales">Mentions légales</a> ·
+        <button type="button" class="footer-cookie-btn" onclick="openCookieSettings()">Gérer les cookies</button></p>
+    </div>
+  </div>
+</footer>
+
+<script src="/animations.js?v=62025150" defer></script>
+<script src="/translations.js?v=9c66aeea" defer></script>
+<script src="/cookie.js?v=80f178f3" defer></script>
+</body>
+</html>
