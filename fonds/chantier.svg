@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 270" fill="none" stroke="#000" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round">
+  <!-- sol -->
+  <path d="M18 240 C150 237 300 243 460 239 S700 237 782 240"/>
+  <!-- la Sainte-Victoire au fond : crête et lignes de relief -->
+  <path d="M500 239 C536 228 566 204 598 176 C630 158 652 140 668 122 C676 112 684 106 692 104 C706 118 724 136 750 152 C766 162 780 172 788 180"/>
+  <path d="M560 239 C610 228 652 216 702 214 C734 213 762 218 786 228"/>
+  <!-- immeuble en construction : murs, dalles, baies, aciers en attente -->
+  <path d="M296 239 L296 126 L486 126 L486 239"/>
+  <path d="M296 198 L486 198 M296 160 L486 160"/>
+  <path d="M322 212 L322 228 L346 228 L346 212 Z"/>
+  <path d="M382 212 L382 228 L406 228 L406 212 Z"/>
+  <path d="M436 212 L436 228 L460 228 L460 212 Z"/>
+  <path d="M322 174 L322 190 L346 190 L346 174 Z"/>
+  <path d="M436 174 L436 190 L460 190 L460 174 Z"/>
+  <path d="M318 126 L318 98 M342 126 L342 104 M392 126 L392 100"/>
+  <!-- grue à tour : mât à treillis, cabine, flèche, contre-flèche, haubans, câble et crochet -->
+  <path d="M186 239 L186 58 M212 239 L212 58"/>
+  <path d="M186 239 L212 217 L186 195 L212 173 L186 151 L212 129 L186 107 L212 85 L186 63"/>
+  <path d="M180 58 L218 58 L218 42 L180 42 Z"/>
+  <path d="M218 36 L572 36 M218 50 L520 50 M520 50 L572 36"/>
+  <path d="M232 50 L256 36 L280 50 L304 36 L328 50 L352 36 L376 50 L400 36 L424 50 L448 36 L472 50 L496 36"/>
+  <path d="M180 36 L96 36 M180 50 L96 50 M96 36 L96 50"/>
+  <path d="M104 50 L104 70 L134 70 L134 50"/>
+  <path d="M199 36 L199 12 L572 36 M199 12 L96 36"/>
+  <path d="M470 52 L470 90"/>
+  <path d="M462 90 C462 106 478 106 478 90"/>
+</svg>
