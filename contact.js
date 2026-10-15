@@ -6,7 +6,7 @@
    - consentement RGPD transmis avec la demande (case non pré-cochée, texte et date) ;
    - anti-spam : champ piège « _gotcha » + délai minimal avant envoi ;
    - contexte transmis : page d'origine, page de contact, langue, type de projet ;
-   - /contact?bien=138 ou ?bien=duplex-216 : présélectionne le bien et préremplit le message
+   - /contact?bien=138 ou ?bien=duplex-206 : présélectionne le bien et préremplit le message
      (aucune donnée personnelle dans l'URL ; toute autre valeur est ignorée) ;
    - événement de succès (generate_lead) UNIQUEMENT si un outil de mesure a déjà été
      chargé après consentement (window.gtag) : ce script ne charge rien lui-même.
@@ -31,9 +31,9 @@
       fr: 'Bonjour, je souhaite visiter le 4 pièces de 138 m². Pourriez-vous me recontacter pour convenir d\u2019un rendez-vous ? Merci.',
       en: 'Hello, I would like to visit the 4-room, 138 m\u00b2 apartment. Could you please get back to me to arrange an appointment? Thank you.'
     },
-    'duplex-216': {
-      fr: 'Bonjour, je souhaite visiter le duplex 4 pièces de 216 m². Pourriez-vous me recontacter pour convenir d\u2019un rendez-vous ? Merci.',
-      en: 'Hello, I would like to visit the 4-room, 216 m\u00b2 duplex. Could you please get back to me to arrange an appointment? Thank you.'
+    'duplex-206': {
+      fr: 'Bonjour, je souhaite visiter le duplex 4 pièces de 206 m². Pourriez-vous me recontacter pour convenir d\u2019un rendez-vous ? Merci.',
+      en: 'Hello, I would like to visit the 4-room, 206 m\u00b2 duplex. Could you please get back to me to arrange an appointment? Thank you.'
     }
   };
 
@@ -130,7 +130,7 @@
     }
   }
 
-  /* ─── Bien concerné : /contact?bien=138 ou ?bien=duplex-216 ──────
+  /* ─── Bien concerné : /contact?bien=138 ou ?bien=duplex-206 ──────
      Présélectionne l'option du sélecteur et préremplit poliment le message. Seules les clés de BIENS
      sont reconnues ; toute autre valeur est ignorée. Le message n'est jamais écrasé s'il a été modifié. */
   function initBien() {
@@ -154,6 +154,7 @@
     try {
       wanted = (new URLSearchParams(window.location.search).get('bien') || '').trim().toLowerCase();
     } catch (e) { wanted = ''; }
+    if (wanted === 'duplex-216') wanted = 'duplex-206';   // anciens liens (surface corrigée : 206 m²)
 
     if (hasBien(wanted)) {
       select.value = wanted;
