@@ -355,7 +355,18 @@
   function init() {
     var rec = readConsent();
     if (rec && rec.analytics) { loadGA(); loadCF(); }
-    if (!rec && (MEASURE_CONFIGURED || !BANNER_ONLY_IF_GA_CONFIGURED)) show('auto');
+    if (!rec && (MEASURE_CONFIGURED || !BANNER_ONLY_IF_GA_CONFIGURED)) showWhenFontsReady();
+  }
+
+  // Le bandeau apparaît une fois les polices chargées (1,5 s au plus) : son texte ne change plus de taille
+  // après l'affichage, ce qui évite un décalage de mise en page.
+  function showWhenFontsReady() {
+    var shown = false;
+    function go() { if (!shown) { shown = true; show('auto'); } }
+    if (doc.fonts && doc.fonts.ready) {
+      doc.fonts.ready.then(go, go);
+      setTimeout(go, 1500);
+    } else go();
   }
 
   // Bandeau et textes suivent la langue choisie dans l'en-tête

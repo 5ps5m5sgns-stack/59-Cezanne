@@ -6,6 +6,16 @@
   var play = document.querySelector('.ch-play');
   if (!video || !play) return;
 
+  // L'image d'aperçu (193 Ko) n'est chargée qu'à l'approche de la vidéo, pour ne pas ralentir le haut de la page.
+  var poster = video.getAttribute('data-poster');
+  function loadPoster() { if (poster) { video.poster = poster; poster = null; } }
+  if ('IntersectionObserver' in window) {
+    var po = new IntersectionObserver(function (entries) {
+      if (entries.some(function (e) { return e.isIntersecting; })) { loadPoster(); po.disconnect(); }
+    }, { rootMargin: '600px 0px' });
+    po.observe(video);
+  } else { loadPoster(); }
+
   function idle() { video.controls = false; play.hidden = false; }
   idle();
 

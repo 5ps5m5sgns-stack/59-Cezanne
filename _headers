@@ -18,7 +18,31 @@ https://:version.:project.pages.dev/*
   Strict-Transport-Security: max-age=86400
   Content-Security-Policy-Report-Only: default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://www.googletagmanager.com https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://*.google-analytics.com https://*.googletagmanager.com; connect-src 'self' https://formspree.io https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com https://cloudflareinsights.com; frame-src https://maps.google.com https://www.google.com; frame-ancestors 'none'; base-uri 'self'; form-action 'self' https://formspree.io; object-src 'none'
 
-# --- Cache : le HTML garde le défaut Pages (public, max-age=0, must-revalidate) : ne rien ajouter ---
+# --- Cache : le HTML garde le comportement Pages (max-age=0, must-revalidate), avec no-transform :
+#     sans lui Cloudflare injecte le script Web Analytics (erreur console /cdn-cgi/rum). Routes HTML listées une à une
+#     pour ne jamais chevaucher les blocs CSS/JS/images ci-dessous ---
+/
+  Cache-Control: public, max-age=0, must-revalidate, no-transform
+/logements
+  Cache-Control: public, max-age=0, must-revalidate, no-transform
+/localisation
+  Cache-Control: public, max-age=0, must-revalidate, no-transform
+/contact
+  Cache-Control: public, max-age=0, must-revalidate, no-transform
+/blog
+  Cache-Control: public, max-age=0, must-revalidate, no-transform
+/blog/*
+  Cache-Control: public, max-age=0, must-revalidate, no-transform
+/mentions-legales
+  Cache-Control: public, max-age=0, must-revalidate, no-transform
+/merci
+  Cache-Control: public, max-age=0, must-revalidate, no-transform
+/en
+  Cache-Control: public, max-age=0, must-revalidate, no-transform
+/en/*
+  Cache-Control: public, max-age=0, must-revalidate, no-transform
+/404
+  Cache-Control: public, max-age=0, must-revalidate, no-transform
 
 # --- Cache : CSS/JS référencés avec ?v=<empreinte> (docs/version_assets.py, à relancer après chaque modification) ;
 #     pas de stale-while-revalidate : un visiteur ne doit jamais recevoir un HTML neuf avec un ancien CSS ---
