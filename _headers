@@ -52,6 +52,8 @@ https://:version.:project.pages.dev/*
   Cache-Control: public, max-age=3600
 /*.webp
   Cache-Control: public, max-age=2592000
+/*.avif
+  Cache-Control: public, max-age=2592000
 /*.png
   Cache-Control: public, max-age=2592000
 /*.ico

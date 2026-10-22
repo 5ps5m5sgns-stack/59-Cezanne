@@ -151,9 +151,9 @@
       win.addEventListener('scroll', onScroll, { passive: true });
       win.addEventListener('resize', onScroll, { passive: true });
     }
-    updateNav();
-    updateProgress();
-    updateParallax();
+    // Pas de mesure au chargement : lire le défilement forcerait un calcul de mise en page dans une tâche longue.
+    // L'état initial est déjà dans le HTML (classe transparent/scrolled) et le navigateur envoie un évènement scroll
+    // quand il restaure une position : onScroll met alors tout à jour.
   });
 
   /* ─── Menu mobile ───────────────────────────────────────────── */
