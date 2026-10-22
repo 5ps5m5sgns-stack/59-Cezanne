@@ -86,7 +86,7 @@
   var TEXTS = {
     fr: {
       title: 'Vos choix concernant les cookies',
-      desc: "Avec votre accord, nous mesurons la fréquentation et la vitesse d'affichage du site (Cloudflare Web Analytics, sans cookie) pour l'améliorer. Sans votre accord, aucune mesure n'est lancée. Votre choix est conservé 6 mois ; vous pouvez le modifier à tout moment via « Gérer les cookies » en bas de page.",
+      desc: "Avec votre accord, nous mesurons la fréquentation du site (Cloudflare Web Analytics, sans cookie). Sans votre accord, aucune mesure. Choix conservé 6 mois, modifiable via « Gérer les cookies » en bas de page.",
       policy: 'Politique de confidentialité',
       refuse: 'Tout refuser',
       accept: 'Tout accepter',
@@ -102,7 +102,7 @@
     },
     en: {
       title: 'Your cookie choices',
-      desc: 'With your consent, we measure site traffic and loading speed (Cloudflare Web Analytics, no cookie) to improve the site. Without your consent, no measurement is started. Your choice is kept for 6 months; you can change it at any time via “Cookie settings” at the bottom of the page.',
+      desc: 'With your consent, we measure site traffic (Cloudflare Web Analytics, no cookie). Without your consent, nothing is measured. Choice kept for 6 months, changeable via “Cookie settings” at the bottom of the page.',
       policy: 'Privacy policy',
       refuse: 'Reject all',
       accept: 'Accept all',
