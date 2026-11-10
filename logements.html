@@ -89,6 +89,8 @@
     .lg-dispo .dispo-card:nth-child(1) .dispo-fig { margin-left: calc(-1 * var(--rg-gutter)); border-radius: 0 var(--arche) 0 0; }
     .lg-dispo .dispo-card:nth-child(2) .dispo-fig { margin-right: calc(-1 * var(--rg-gutter)); border-radius: var(--arche) 0 0 0; background: #0f0c08; }
     .lg-dispo .dispo-fig--plan img { mix-blend-mode: multiply; }
+    .lg-dispo .dispo-fig--duo { display: grid; gap: .6rem; }
+    .lg-dispo .dispo-fig--duo img { display: block; width: 100%; height: auto; }
     .lg-dispo .dispo-body { grid-area: body; padding: 0; gap: .85rem; }
     .lg-dispo .dispo-list { gap: .4rem; }
     .lg-dispo .dispo-cta { gap: .7rem; margin-top: .4rem; }
@@ -439,11 +441,16 @@
             <a class="btn btn-outline-dark" href="/contact?bien=138" data-lang-fr="Demander une visite" data-lang-en="Request a visit">Demander une visite</a>
           </div>
         </div>
-        <figure class="dispo-fig">
+        <figure class="dispo-fig dispo-fig--duo">
           <img src="/Photo%2059%20C%C3%A9zanne/3D%20interieur/CHAMBRE_VUE_SAINTE-VICTOIRE-1200w.webp" srcset="/Photo%2059%20C%C3%A9zanne/3D%20interieur/CHAMBRE_VUE_SAINTE-VICTOIRE-800w.webp 800w, /Photo%2059%20C%C3%A9zanne/3D%20interieur/CHAMBRE_VUE_SAINTE-VICTOIRE-1200w.webp 1200w, /Photo%2059%20C%C3%A9zanne/3D%20interieur/CHAMBRE_VUE_SAINTE-VICTOIRE.webp 1536w" sizes="(min-width: 901px) 62vw, 100vw" width="1536" height="1024"
             alt="Illustration d'ambiance : chambre ouverte par une grande baie vitrée sur les pins, les toits et la Sainte-Victoire"
             data-alt-fr="Illustration d'ambiance : chambre ouverte par une grande baie vitrée sur les pins, les toits et la Sainte-Victoire"
             data-alt-en="Mood illustration: bedroom opening through a large glazed bay onto pine trees, rooftops and the Sainte-Victoire"
+            loading="lazy" decoding="async" />
+          <img src="/Photo%2059%20C%C3%A9zanne/3D%20Exterieur/JARDIN_LOT_8-1200w.webp" srcset="/Photo%2059%20C%C3%A9zanne/3D%20Exterieur/JARDIN_LOT_8-800w.webp 800w, /Photo%2059%20C%C3%A9zanne/3D%20Exterieur/JARDIN_LOT_8-1200w.webp 1200w, /Photo%2059%20C%C3%A9zanne/3D%20Exterieur/JARDIN_LOT_8.webp 1671w" sizes="(min-width: 901px) 62vw, 100vw" width="1671" height="941"
+            alt="Illustration d'ambiance : terrasse dallée avec salon d'extérieur, pelouse, haie, lavandes et massifs fleuris devant la façade de plain-pied"
+            data-alt-fr="Illustration d'ambiance : terrasse dallée avec salon d'extérieur, pelouse, haie, lavandes et massifs fleuris devant la façade de plain-pied"
+            data-alt-en="Mood illustration: paved terrace with outdoor lounge, lawn, hedge, lavender and flowering shrubs in front of the ground-level façade"
             loading="lazy" decoding="async" />
         </figure>
       </article>
