@@ -25,6 +25,8 @@ https://:version.:project.pages.dev/*
   Cache-Control: public, max-age=0, must-revalidate, no-transform
 /logements
   Cache-Control: public, max-age=0, must-revalidate, no-transform
+/visite-3d
+  Cache-Control: public, max-age=0, must-revalidate, no-transform
 /localisation
   Cache-Control: public, max-age=0, must-revalidate, no-transform
 /contact
