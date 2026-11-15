@@ -134,7 +134,7 @@
     .lg-vues .rg-text .section-lead { max-width: 34rem; color: var(--text); font-weight: 400; }
 
 
-    /* ── 4 bis. Le chantier : l'état d'octobre en grand, puis trois mois plus tôt (photo + vidéo dans une arche) ── */
+    /* ── 4 bis. Le chantier : les deux vidéos de novembre, l'état d'octobre en grand, puis trois mois plus tôt (photo + vidéo dans une arche) ── */
     #chantier { scroll-margin-top: 4.25rem; }
     .lg-chantier { --rg-gutter: max(clamp(1.25rem, 4vw, 3rem), calc((100vw - var(--container)) / 2)); position: relative; isolation: isolate; overflow: hidden; display: grid; row-gap: clamp(3.5rem, 7vw, 7rem); padding: clamp(4rem, 8vw, 8rem) var(--rg-gutter) clamp(4.5rem, 9vw, 9rem); background: var(--blanc); }
     .ch-row { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: clamp(1rem, 3vw, 2.8rem); row-gap: clamp(1.4rem, 3vw, 2.4rem); align-items: center; }
@@ -159,9 +159,15 @@
     .ch-play:hover { transform: translate(-50%, -50%) scale(1.06); background: #fff; }
     .ch-play:focus-visible { outline: 3px solid #fff; outline-offset: 4px; box-shadow: 0 0 0 7px var(--brun); }
     .ch-play svg { width: 1.9rem; height: 1.9rem; margin-left: .22rem; fill: currentColor; }
+    .ch-nov { row-gap: clamp(2.6rem, 7vw, 3.4rem); }
     .ch-dl { display: block; margin-top: 1.5rem; text-align: center; font-size: 1rem; color: var(--brun); text-decoration: underline; text-underline-offset: 4px; text-decoration-color: rgba(123, 69, 56, .45); padding: .6rem 0; }
     .ch-dl:hover { color: var(--terra-texte); }
     @media (min-width: 901px) {
+      .ch-nov { align-items: end; }
+      .ch-nov .ch-text { grid-column: 1 / 5; align-self: center; }
+      .ch-nov .ch-video { width: min(100%, 19rem); align-self: end; }
+      .ch-nov .ch-video--a { grid-column: 5 / 9; }
+      .ch-nov .ch-video--b { grid-column: 9 / 13; }
       .ch-now .ch-text { grid-column: 1 / 6; }
       .ch-now .ch-fig { grid-column: 6 / 13; margin: 0 calc(-1 * var(--rg-gutter)) 0 0; border-radius: var(--arche) 0 0 0; }
       .ch-past { row-gap: clamp(1.6rem, 3vw, 2.6rem); align-items: end; }
@@ -263,6 +269,34 @@
       "uploadDate": "2026-10-09",
       "duration": "PT20S",
       "contentUrl": "https://59-cezanne.com/chantier/chantier-juillet-2026.mp4",
+      "inLanguage": "fr-FR",
+      "isPartOf": {
+        "@id": "https://59-cezanne.com/logements#webpage"
+      }
+    },
+    {
+      "@type": "VideoObject",
+      "@id": "https://59-cezanne.com/logements#chantier-video-novembre-ciel",
+      "name": "Le chantier de 59 Cézanne vu du ciel, 11 novembre 2026",
+      "description": "Survol en drone du chantier de la résidence 59 Cézanne, avenue Paul Cézanne à Aix-en-Provence, le 11 novembre 2026 : la toiture en tuiles est posée.",
+      "thumbnailUrl": "https://59-cezanne.com/chantier/video-novembre-ciel-poster.webp",
+      "uploadDate": "2026-11-15",
+      "duration": "PT26S",
+      "contentUrl": "https://59-cezanne.com/chantier/chantier-novembre-2026-ciel.mp4",
+      "inLanguage": "fr-FR",
+      "isPartOf": {
+        "@id": "https://59-cezanne.com/logements#webpage"
+      }
+    },
+    {
+      "@type": "VideoObject",
+      "@id": "https://59-cezanne.com/logements#chantier-video-novembre-interieur",
+      "name": "Le chantier de 59 Cézanne vu de l'intérieur, 11 novembre 2026",
+      "description": "Image du chantier de la résidence 59 Cézanne, à Aix-en-Provence, le 11 novembre 2026 : la charpente en bois sous la toiture et les grandes ouvertures donnant sur les cyprès.",
+      "thumbnailUrl": "https://59-cezanne.com/chantier/video-novembre-interieur-poster.webp",
+      "uploadDate": "2026-11-15",
+      "duration": "PT14S",
+      "contentUrl": "https://59-cezanne.com/chantier/chantier-novembre-2026-interieur.mp4",
       "inLanguage": "fr-FR",
       "isPartOf": {
         "@id": "https://59-cezanne.com/logements#webpage"
@@ -562,13 +596,45 @@
     </figure>
   </section>
 
-  <!-- ─── 4 bis. Le chantier : photos et vidéo de drone (6 juillet et 8 octobre 2026) ─── -->
+  <!-- ─── 4 bis. Le chantier : photos et vidéo de drone (6 juillet, 8 octobre et 11 novembre 2026) ─── -->
   <section class="lg-chantier" id="chantier" aria-labelledby="t-chantier">
+    <div class="ch-row ch-nov">
+      <div class="ch-text">
+        <time class="ch-date" datetime="2026-11-11" data-lang-fr="11 novembre 2026" data-lang-en="11 November 2026">11 novembre 2026</time>
+        <p class="script" data-lang-fr="Le chantier avance" data-lang-en="Work in progress">Le chantier avance</p>
+        <h2 class="section-title" id="t-chantier" data-lang-fr="La toiture est posée" data-lang-en="The roof is on">La toiture est posée</h2>
+        <p class="section-lead" data-lang-fr="Le chantier vu du ciel, puis de l'intérieur." data-lang-en="The site seen from the sky, then from inside.">Le chantier vu du ciel, puis de l'intérieur.</p>
+      </div>
+      <figure class="ch-video ch-video--a">
+        <p class="ch-video-k"><span data-lang-fr="Vu du ciel" data-lang-en="From the sky">Vu du ciel</span><small data-lang-fr="26 secondes" data-lang-en="26 seconds">26 secondes</small></p>
+        <div class="ch-arch">
+          <div class="ch-frame">
+            <video controls preload="none" playsinline data-poster="/chantier/video-novembre-ciel-poster-720w.webp" width="1080" height="1920" aria-label="Vidéo : le chantier vu du ciel par drone, le 11 novembre 2026 (26 secondes)" data-aria-label-fr="Vidéo : le chantier vu du ciel par drone, le 11 novembre 2026 (26 secondes)" data-aria-label-en="Video: drone view of the site, 11 November 2026 (26 seconds)">
+              <source src="/chantier/chantier-novembre-2026-ciel.mp4" type="video/mp4">
+              <a href="/chantier/chantier-novembre-2026-ciel.mp4" data-lang-fr="Télécharger la vidéo (MP4)" data-lang-en="Download the video (MP4)">Télécharger la vidéo (MP4)</a>
+            </video>
+            <button type="button" class="ch-play" hidden aria-label="Lire la vidéo" data-aria-label-fr="Lire la vidéo" data-aria-label-en="Play the video"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M7 4.5v15a1 1 0 0 0 1.5.86l12.4-7.5a1 1 0 0 0 0-1.72L8.5 3.64A1 1 0 0 0 7 4.5z"/></svg></button>
+          </div>
+        </div>
+      </figure>
+      <figure class="ch-video ch-video--b">
+        <p class="ch-video-k"><span data-lang-fr="À l'intérieur" data-lang-en="Inside">À l'intérieur</span><small data-lang-fr="14 secondes" data-lang-en="14 seconds">14 secondes</small></p>
+        <div class="ch-arch">
+          <div class="ch-frame">
+            <video controls preload="none" playsinline data-poster="/chantier/video-novembre-interieur-poster-720w.webp" width="1080" height="1920" aria-label="Vidéo : l'intérieur du chantier sous la charpente, le 11 novembre 2026 (14 secondes)" data-aria-label-fr="Vidéo : l'intérieur du chantier sous la charpente, le 11 novembre 2026 (14 secondes)" data-aria-label-en="Video: inside the site under the roof frame, 11 November 2026 (14 seconds)">
+              <source src="/chantier/chantier-novembre-2026-interieur.mp4" type="video/mp4">
+              <a href="/chantier/chantier-novembre-2026-interieur.mp4" data-lang-fr="Télécharger la vidéo (MP4)" data-lang-en="Download the video (MP4)">Télécharger la vidéo (MP4)</a>
+            </video>
+            <button type="button" class="ch-play" hidden aria-label="Lire la vidéo" data-aria-label-fr="Lire la vidéo" data-aria-label-en="Play the video"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M7 4.5v15a1 1 0 0 0 1.5.86l12.4-7.5a1 1 0 0 0 0-1.72L8.5 3.64A1 1 0 0 0 7 4.5z"/></svg></button>
+          </div>
+        </div>
+      </figure>
+    </div>
+
     <div class="ch-row ch-now">
       <div class="ch-text">
         <time class="ch-date" datetime="2026-10-08" data-lang-fr="8 octobre 2026" data-lang-en="8 October 2026">8 octobre 2026</time>
-        <p class="script" data-lang-fr="Le chantier avance" data-lang-en="Work in progress">Le chantier avance</p>
-        <h2 class="section-title" id="t-chantier" data-lang-fr="Les murs en béton sortent de terre" data-lang-en="The concrete walls rise from the ground">Les murs en béton sortent de terre</h2>
+        <h3 class="section-title" data-lang-fr="Les murs en béton sortent de terre" data-lang-en="The concrete walls rise from the ground">Les murs en béton sortent de terre</h3>
         <p class="section-lead" data-lang-fr="Vue de drone du chantier&nbsp;: la structure, la grue à tour et la Sainte-Victoire à l'horizon." data-lang-en="Drone view of the site: the structure, the tower crane and Mont Sainte-Victoire on the horizon.">Vue de drone du chantier&nbsp;: la structure, la grue à tour et la Sainte-Victoire à l'horizon.</p>
         <i class="orn orn--chantier" aria-hidden="true"></i>
       </div>
@@ -687,7 +753,7 @@
 <script src="/animations.js?v=d8c58172" defer></script>
 <script src="/translations.js?v=9c66aeea" defer></script>
 <script src="/cookie.js?v=8a99e3ac" defer></script>
-<script src="/chantier.js?v=9347fded" defer></script>
+<script src="/chantier.js?v=70aaee08" defer></script>
 <script>
 /* Texte alternatif des images : suit le basculement FR/EN (événement émis par translations.js). */
 document.addEventListener('59c:langchange', function (e) {

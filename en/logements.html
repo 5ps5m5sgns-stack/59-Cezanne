@@ -134,7 +134,7 @@
     .lg-vues .rg-text .section-lead { max-width: 34rem; color: var(--text); font-weight: 400; }
 
 
-    /* ── 4 bis. Le chantier : l'état d'octobre en grand, puis trois mois plus tôt (photo + vidéo dans une arche) ── */
+    /* ── 4 bis. Le chantier : les deux vidéos de novembre, l'état d'octobre en grand, puis trois mois plus tôt (photo + vidéo dans une arche) ── */
     #chantier { scroll-margin-top: 4.25rem; }
     .lg-chantier { --rg-gutter: max(clamp(1.25rem, 4vw, 3rem), calc((100vw - var(--container)) / 2)); position: relative; isolation: isolate; overflow: hidden; display: grid; row-gap: clamp(3.5rem, 7vw, 7rem); padding: clamp(4rem, 8vw, 8rem) var(--rg-gutter) clamp(4.5rem, 9vw, 9rem); background: var(--blanc); }
     .ch-row { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: clamp(1rem, 3vw, 2.8rem); row-gap: clamp(1.4rem, 3vw, 2.4rem); align-items: center; }
@@ -159,9 +159,15 @@
     .ch-play:hover { transform: translate(-50%, -50%) scale(1.06); background: #fff; }
     .ch-play:focus-visible { outline: 3px solid #fff; outline-offset: 4px; box-shadow: 0 0 0 7px var(--brun); }
     .ch-play svg { width: 1.9rem; height: 1.9rem; margin-left: .22rem; fill: currentColor; }
+    .ch-nov { row-gap: clamp(2.6rem, 7vw, 3.4rem); }
     .ch-dl { display: block; margin-top: 1.5rem; text-align: center; font-size: 1rem; color: var(--brun); text-decoration: underline; text-underline-offset: 4px; text-decoration-color: rgba(123, 69, 56, .45); padding: .6rem 0; }
     .ch-dl:hover { color: var(--terra-texte); }
     @media (min-width: 901px) {
+      .ch-nov { align-items: end; }
+      .ch-nov .ch-text { grid-column: 1 / 5; align-self: center; }
+      .ch-nov .ch-video { width: min(100%, 19rem); align-self: end; }
+      .ch-nov .ch-video--a { grid-column: 5 / 9; }
+      .ch-nov .ch-video--b { grid-column: 9 / 13; }
       .ch-now .ch-text { grid-column: 1 / 6; }
       .ch-now .ch-fig { grid-column: 6 / 13; margin: 0 calc(-1 * var(--rg-gutter)) 0 0; border-radius: var(--arche) 0 0 0; }
       .ch-past { row-gap: clamp(1.6rem, 3vw, 2.6rem); align-items: end; }
@@ -259,6 +265,34 @@
       "uploadDate": "2026-10-09",
       "duration": "PT20S",
       "contentUrl": "https://59-cezanne.com/chantier/chantier-juillet-2026.mp4",
+      "inLanguage": "en",
+      "isPartOf": {
+        "@id": "https://59-cezanne.com/logements#webpage"
+      }
+    },
+    {
+      "@type": "VideoObject",
+      "@id": "https://59-cezanne.com/logements#chantier-video-novembre-ciel",
+      "name": "The 59 Cézanne construction site seen from the sky, 11 November 2026",
+      "description": "Drone flyover of the 59 Cézanne residence construction site, avenue Paul Cézanne, Aix-en-Provence, 11 November 2026: the tiled roof is in place.",
+      "thumbnailUrl": "https://59-cezanne.com/chantier/video-novembre-ciel-poster.webp",
+      "uploadDate": "2026-11-15",
+      "duration": "PT26S",
+      "contentUrl": "https://59-cezanne.com/chantier/chantier-novembre-2026-ciel.mp4",
+      "inLanguage": "en",
+      "isPartOf": {
+        "@id": "https://59-cezanne.com/logements#webpage"
+      }
+    },
+    {
+      "@type": "VideoObject",
+      "@id": "https://59-cezanne.com/logements#chantier-video-novembre-interieur",
+      "name": "Inside the 59 Cézanne construction site, 11 November 2026",
+      "description": "Footage of the 59 Cézanne residence construction site, Aix-en-Provence, 11 November 2026: the timber roof frame under the roof and the large openings facing the cypress trees.",
+      "thumbnailUrl": "https://59-cezanne.com/chantier/video-novembre-interieur-poster.webp",
+      "uploadDate": "2026-11-15",
+      "duration": "PT14S",
+      "contentUrl": "https://59-cezanne.com/chantier/chantier-novembre-2026-interieur.mp4",
       "inLanguage": "en",
       "isPartOf": {
         "@id": "https://59-cezanne.com/logements#webpage"
@@ -512,13 +546,44 @@
 <img src="/Photo%2059%20C%C3%A9zanne/Photo%20Vue%20depuis%20chaque%20appartement/Vue%20Lot%208-1200w.webp" srcset="/Photo%2059%20C%C3%A9zanne/Photo%20Vue%20depuis%20chaque%20appartement/Vue%20Lot%208-800w.webp 800w, /Photo%2059%20C%C3%A9zanne/Photo%20Vue%20depuis%20chaque%20appartement/Vue%20Lot%208-1200w.webp 1200w, /Photo%2059%20C%C3%A9zanne/Photo%20Vue%20depuis%20chaque%20appartement/Vue%20Lot%208.webp 2400w" sizes="(min-width: 901px) 46vw, 100vw" width="2400" height="1800" alt="Photograph of the site before construction: cypress and pine trees in the foreground, the Sainte-Victoire on the skyline" loading="lazy" decoding="async"/>
 </figure>
 </section>
-<!-- ─── 4 bis. Le chantier : photos et vidéo de drone (6 juillet et 8 octobre 2026) ─── -->
+<!-- ─── 4 bis. Le chantier : photos et vidéo de drone (6 juillet, 8 octobre et 11 novembre 2026) ─── -->
 <section class="lg-chantier" id="chantier" aria-labelledby="t-chantier">
+<div class="ch-row ch-nov">
+<div class="ch-text">
+<time class="ch-date" datetime="2026-11-11">11 November 2026</time>
+<p class="script">Work in progress</p>
+<h2 class="section-title" id="t-chantier">The roof is on</h2>
+<p class="section-lead">The site seen from the sky, then from inside.</p>
+</div>
+<figure class="ch-video ch-video--a">
+<p class="ch-video-k"><span>From the sky</span><small>26 seconds</small></p>
+<div class="ch-arch">
+<div class="ch-frame">
+<video controls="" preload="none" playsinline="" data-poster="/chantier/video-novembre-ciel-poster-720w.webp" width="1080" height="1920" aria-label="Video: drone view of the site, 11 November 2026 (26 seconds)">
+<source src="/chantier/chantier-novembre-2026-ciel.mp4" type="video/mp4"/>
+<a href="/chantier/chantier-novembre-2026-ciel.mp4">Download the video (MP4)</a>
+</video>
+<button type="button" class="ch-play" hidden="" aria-label="Play the video"><svg viewbox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M7 4.5v15a1 1 0 0 0 1.5.86l12.4-7.5a1 1 0 0 0 0-1.72L8.5 3.64A1 1 0 0 0 7 4.5z"></path></svg></button>
+</div>
+</div>
+</figure>
+<figure class="ch-video ch-video--b">
+<p class="ch-video-k"><span>Inside</span><small>14 seconds</small></p>
+<div class="ch-arch">
+<div class="ch-frame">
+<video controls="" preload="none" playsinline="" data-poster="/chantier/video-novembre-interieur-poster-720w.webp" width="1080" height="1920" aria-label="Video: inside the site under the roof frame, 11 November 2026 (14 seconds)">
+<source src="/chantier/chantier-novembre-2026-interieur.mp4" type="video/mp4"/>
+<a href="/chantier/chantier-novembre-2026-interieur.mp4">Download the video (MP4)</a>
+</video>
+<button type="button" class="ch-play" hidden="" aria-label="Play the video"><svg viewbox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M7 4.5v15a1 1 0 0 0 1.5.86l12.4-7.5a1 1 0 0 0 0-1.72L8.5 3.64A1 1 0 0 0 7 4.5z"></path></svg></button>
+</div>
+</div>
+</figure>
+</div>
 <div class="ch-row ch-now">
 <div class="ch-text">
 <time class="ch-date" datetime="2026-10-08">8 October 2026</time>
-<p class="script">Work in progress</p>
-<h2 class="section-title" id="t-chantier">The concrete walls rise from the ground</h2>
+<h3 class="section-title">The concrete walls rise from the ground</h3>
 <p class="section-lead">Drone view of the site: the structure, the tower crane and Mont Sainte-Victoire on the horizon.</p>
 <i class="orn orn--chantier" aria-hidden="true"></i>
 </div>
@@ -629,7 +694,7 @@
 <script src="/animations.js?v=d8c58172" defer=""></script>
 <script src="/translations.js?v=9c66aeea" defer=""></script>
 <script src="/cookie.js?v=8a99e3ac" defer=""></script>
-<script src="/chantier.js?v=9347fded" defer=""></script>
+<script src="/chantier.js?v=70aaee08" defer=""></script>
 <script>
 /* Texte alternatif des images : suit le basculement FR/EN (événement émis par translations.js). */
 document.addEventListener('59c:langchange', function (e) {
