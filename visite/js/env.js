@@ -150,7 +150,21 @@ export class Environment {
     this.renderer.toneMappingExposure = lerp(0.43, 0.4, golden) * lerp(1, 1.25, night);
     this.placeSun();
     this.updateEnvMap(lerp(1, 0.07, night));
+    if (this.studio) this.setStudio(true, this.studioComposer);
     return night;
+  }
+
+  /* Fond de maquette : ni ciel ni paysage, un aplat pierre comme sur les planches du graphiste.
+     Avec la chaîne de post-traitement, le fond passe par la courbe ACES : on la compense pour retrouver la teinte voulue. */
+  setStudio(on, composer) {
+    this.studio = on; this.studioComposer = composer;
+    this.sky.visible = !on; this.land.visible = !on; this.near.visible = !on;
+    this.scene.fog = on ? null : this.fog;
+    if (!on) { this.scene.background = null; return; }
+    const target = new THREE.Color(0xeee5d4), e = this.renderer.toneMappingExposure / 0.6;
+    const fit = (v) => (v * (v + 0.0245786) - 0.000090537) / (v * (0.983729 * v + 0.4329510) + 0.238081);
+    const inv = (L) => { let lo = 0, hi = 40; for (let i = 0; i < 40; i++) { const m = (lo + hi) / 2; if (fit(m * e) < L) lo = m; else hi = m; } return lo; };
+    this.scene.background = composer ? new THREE.Color(inv(target.r), inv(target.g), inv(target.b)) : target;
   }
 
   placeSun() {

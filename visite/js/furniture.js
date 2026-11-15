@@ -131,7 +131,7 @@ export const F = {
     }
     // centre de table
     b.cyl(M.pot, 0, 0.76, 0, 0.09, 0.2, 14, 0.06); b.sph(M.leafOlive, 0, 1.08, 0, 0.17, 1, 1.1, 1);
-    return [w + (ends ? 1.1 : 0.1), d + 1.1];
+    return [w + 0.1, d + 0.5];
   },
   stool(b, M, { mat = 'greige', h = 0.66 }) {
     b.cbox(M[mat], 0, h, 0, 0.42, 0.07, 0.4, 0.03);
@@ -194,7 +194,7 @@ export const F = {
     if (hob !== null) F._hob(b, M, hob, 0.921, dz);
     if (sink !== null) { b.box(M.black, sink - 0.3, 0.915, dz - 0.17, sink + 0.3, 0.923, dz + 0.17); b.cyl(M.brass, sink, 0.92, dz - 0.24, 0.016, 0.3, 8); }
     for (let i = 0; i < stools; i++) { b.push(-w / 2 + (w / stools) * (i + 0.5), 0, d / 2 + 0.1, PI); F.stool(b, M, { mat: stoolMat }); b.pop(); }
-    return [w + 0.06, d + (stools ? 0.5 : 0.04)];
+    return [w + 0.06, d + 0.04];
   },
   barTable(b, M, { w = 1.6, d = 0.9, top = 'oak', stools = 2, stoolMat = 'greige' }) {
     b.cbox(M[top], 0, 0.86, 0, w, 0.05, d, 0.03);
@@ -205,7 +205,7 @@ export const F = {
       b.push(x, 0, d / 2 + 0.08, PI); F.stool(b, M, { mat: stoolMat }); b.pop();
     }
     b.cyl(M.pot, w * 0.3, 0.91, 0, 0.06, 0.16, 12, 0.045); b.sph(M.leafOlive, w * 0.3, 1.2, 0, 0.14, 1, 1.2, 1);
-    return [w, d + 0.9];
+    return [w, d + 0.3];
   },
 
   /* ── Chambres ────────────────────────────────────────────────────────── */
@@ -223,7 +223,7 @@ export const F = {
       b.cyl(M.brass, x, 0.46, -l / 2 + 0.2, 0.05, 0.02, 12); b.cyl(M.brass, x, 0.48, -l / 2 + 0.2, 0.008, 0.2, 6);
       b.cyl(M.lampShade, x, 0.66, -l / 2 + 0.2, 0.085, 0.14, 16, 0.065); b.light(x, 0.8, -l / 2 + 0.24, 0.45);
     }
-    return [w + (nights ? 1.1 : 0.1), l + 0.2];
+    return [w + 0.1, l + 0.16];
   },
   wardrobe(b, M, { w = 2.2, d = 0.6, h = 2.35, mat = 'oak' }) {
     b.box(M[mat], -w / 2, 0.06, -d / 2, w / 2, h, d / 2 - 0.02); b.box(M.black, -w / 2 + 0.02, 0, -d / 2 + 0.02, w / 2 - 0.02, 0.06, d / 2 - 0.05);
@@ -251,7 +251,7 @@ export const F = {
     b.box(M.steel, -0.17, 0.757, -0.11, 0.17, 0.765, 0.12); b.geo(M.screen, new THREE.BoxGeometry(0.34, 0.22, 0.008), 0, 0.875, -0.14, -0.22, 0, 0);
     if (lamp) { b.cyl(M.black, w * 0.36, 0.755, -d * 0.2, 0.06, 0.012, 12); b.cyl(M.black, w * 0.36, 0.76, -d * 0.2, 0.007, 0.34, 6); b.cyl(M.lampShade, w * 0.36, 1.08, -d * 0.2, 0.09, 0.1, 14, 0.05); b.light(w * 0.36, 1.05, -d * 0.1, 0.4); }
     if (chair) { b.push(0, 0, d / 2 + 0.22, PI); F.officeChair(b, M, { mat: chair }); b.pop(); }
-    return [w, d + (chair ? 0.75 : 0)];
+    return [w, d + (chair ? 0.3 : 0)];
   },
   officeChair(b, M, { mat = 'cream' }) {
     b.cbox(M[mat], 0, 0.42, 0, 0.5, 0.09, 0.5, 0.04); b.geo(M[mat], new THREE.BoxGeometry(0.48, 0.46, 0.07), 0, 0.72, -0.24, -0.16, 0, 0);
@@ -264,7 +264,7 @@ export const F = {
     for (const sx of [-1, 1]) b.cbox(M.brass, sx * (w / 2 - 0.05), 0, 0, 0.025, 0.72, d - 0.08);
     b.cyl(M.brass, w * 0.25, 0.75, -0.05, 0.05, 0.012, 12); b.geo(M.mirror, new THREE.CylinderGeometry(0.17, 0.17, 0.012, 28), w * 0.25, 1.0, -0.05, PI / 2, 0, 0);
     b.push(0, 0, d / 2 + 0.2, PI); F.pouf(b, M, { mat: 'cream' }); b.pop();
-    return [w, d + 0.6];
+    return [w, d + 0.2];
   },
   pouf(b, M, { mat = 'cream', r = 0.24 }) { b.sph(M[mat], 0, 0.22, 0, r, 1, 0.9, 1); return null; },
   bench(b, M, { w = 1.4, d = 0.42, mat = 'greige' }) {
@@ -404,7 +404,7 @@ export const F = {
     const ch = (x, z, r) => { b.push(x, 0, z, r); b.cbox(M.rattan, 0, 0.1, 0, 0.58, 0.3, 0.58, 0.03); b.cbox(M.charcoal, 0, 0.4, 0.02, 0.5, 0.08, 0.5, 0.03); b.cbox(M.rattan, 0, 0.4, -0.25, 0.58, 0.36, 0.08, 0.03); b.pop(); };
     for (let i = 0; i < n; i++) { const x = -w / 2 + (w / n) * (i + 0.5); ch(x, -d / 2 - 0.22, 0); ch(x, d / 2 + 0.22, PI); }
     if (ends) { ch(-w / 2 - 0.26, 0, PI / 2); ch(w / 2 + 0.26, 0, -PI / 2); }
-    return [w + (ends ? 1.2 : 0), d + 1.5];
+    return [w + 0.3, d + 0.9];
   },
   parasol(b, M, { r = 1.5, h = 2.5 }) {
     b.cyl(M.oak, 0, 0, 0, 0.03, h, 8); b.cyl(M.concrete, 0, 0, 0, 0.3, 0.07, 16);

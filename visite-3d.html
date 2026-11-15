@@ -30,12 +30,12 @@
 
   <link rel="stylesheet" href="/style.css?v=a11a26f2" />
   <!-- Visite 3D : après toute modification d'un fichier de /visite, changer l'empreinte ?v= ci-dessous (feuille de style et carte d'import). -->
-  <link rel="stylesheet" href="/visite/visite.css?v=14b8b7de" />
+  <link rel="stylesheet" href="/visite/visite.css?v=a86bdccf" />
   <link rel="preload" as="font" type="font/woff2" crossorigin href="/fonts/gilda-display-latin.woff2" />
   <link rel="preload" as="font" type="font/woff2" crossorigin href="/fonts/jost-latin.woff2" />
   <link rel="preload" as="font" type="font/woff2" crossorigin href="/fonts/whisper-400-latin.woff2" />
   <link rel="modulepreload" href="/vendor/three/three.module.min.js?v=r170" />
-  <script type="importmap">{"imports":{"three":"/vendor/three/three.module.min.js?v=r170","three/addons/":"/vendor/three/addons/","v3d/geo":"/visite/js/geo.js?v=14b8b7de","v3d/materials":"/visite/js/materials.js?v=14b8b7de","v3d/furniture":"/visite/js/furniture.js?v=14b8b7de","v3d/build":"/visite/js/build.js?v=14b8b7de","v3d/plans":"/visite/js/plans.js?v=14b8b7de","v3d/env":"/visite/js/env.js?v=14b8b7de","v3d/nav":"/visite/js/nav.js?v=14b8b7de","v3d/main":"/visite/js/main.js?v=14b8b7de"}}</script>
+  <script type="importmap">{"imports":{"three":"/vendor/three/three.module.min.js?v=r170","three/addons/":"/vendor/three/addons/","v3d/geo":"/visite/js/geo.js?v=a86bdccf","v3d/materials":"/visite/js/materials.js?v=a86bdccf","v3d/furniture":"/visite/js/furniture.js?v=a86bdccf","v3d/build":"/visite/js/build.js?v=a86bdccf","v3d/plans":"/visite/js/plans.js?v=a86bdccf","v3d/env":"/visite/js/env.js?v=a86bdccf","v3d/nav":"/visite/js/nav.js?v=a86bdccf","v3d/main":"/visite/js/main.js?v=a86bdccf"}}</script>
 
   <script type="application/ld+json">
 {
@@ -130,13 +130,6 @@
     <canvas id="v3d-canvas" tabindex="0" aria-label="Vue 3D du logement. Les pièces sont aussi accessibles par la liste « Pièces »." data-aria-label-fr="Vue 3D du logement. Les pièces sont aussi accessibles par la liste « Pièces »." data-aria-label-en="3D view of the home. Rooms can also be reached from the “Rooms” list."></canvas>
     <div id="v3d-labels"></div>
 
-    <div class="v3d-ui v3d-card v3d-id">
-      <p class="script" id="v3d-name">Appartement-villa</p>
-      <strong id="v3d-facts">4 pièces · 138 m² · jardin de 82 m²</strong>
-      <p id="v3d-pitch">Au premier et dernier étage, de plain-pied avec son jardin, la Sainte-Victoire à l'Est.</p>
-      <a class="btn btn-primary" id="v3d-cta" href="/contact?bien=138"><span data-lang-fr="Demander une visite" data-lang-en="Request a visit">Demander une visite</span></a>
-    </div>
-
     <div class="v3d-ui v3d-card v3d-modes" role="group" aria-label="Mode de vue" data-aria-label-fr="Mode de vue" data-aria-label-en="View mode">
       <button type="button" class="v3d-seg" data-mode="orbit" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M12 3l8 4.5v9L12 21l-8-4.5v-9L12 3z"/><path d="M4 7.5l8 4.5 8-4.5M12 12v9"/></svg><span data-lang-fr="Maquette" data-lang-en="Model">Maquette</span></button>
       <button type="button" class="v3d-seg" data-mode="walk" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M2 12s3.6-6.5 10-6.5S22 12 22 12s-3.6 6.5-10 6.5S2 12 2 12z"/><circle cx="12" cy="12" r="2.8"/></svg><span data-lang-fr="Visite libre" data-lang-en="Walk">Visite libre</span></button>
@@ -145,28 +138,26 @@
 
     <div class="v3d-ui v3d-tools">
       <button type="button" class="v3d-seg" id="v3d-tour" aria-pressed="false"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><path d="M8 5.5v13l11-6.5z"/></svg><span>Visite guidée</span></button>
-      <button type="button" class="v3d-seg v3d-icon v3d-only-s" id="v3d-rooms-toggle" aria-label="Pièces" data-aria-label-fr="Pièces" data-aria-label-en="Rooms"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true" focusable="false"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
-      <button type="button" class="v3d-seg v3d-icon v3d-only-s" id="v3d-panel-toggle" aria-label="Lumière et sols" data-aria-label-fr="Lumière et sols" data-aria-label-en="Light and floors"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="4"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8"/></svg></button>
-      <button type="button" class="v3d-seg v3d-icon" id="v3d-full" aria-label="Plein écran" data-aria-label-fr="Plein écran" data-aria-label-en="Full screen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button>
+      <button type="button" class="v3d-seg v3d-round" id="v3d-full" aria-label="Plein écran" data-aria-label-fr="Plein écran" data-aria-label-en="Full screen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button>
     </div>
 
-    <aside class="v3d-ui v3d-card v3d-rooms" aria-labelledby="v3d-rooms-t">
-      <h2 id="v3d-rooms-t" data-lang-fr="Pièces" data-lang-en="Rooms">Pièces</h2>
-      <div class="v3d-levels" id="v3d-levels" role="group" aria-label="Niveau" data-aria-label-fr="Niveau" data-aria-label-en="Level" hidden></div>
-      <div id="v3d-rooms"></div>
-    </aside>
+    <nav class="v3d-ui v3d-nav" aria-label="Pièces du logement" data-aria-label-fr="Pièces du logement" data-aria-label-en="Rooms of the home">
+      <div class="v3d-card v3d-levels" id="v3d-levels" role="group" aria-label="Niveau" data-aria-label-fr="Niveau" data-aria-label-en="Level" hidden></div>
+      <div class="v3d-card v3d-rooms" id="v3d-rooms"></div>
+    </nav>
 
+    <button type="button" class="v3d-ui v3d-seg v3d-round v3d-setbtn" id="v3d-panel-toggle" aria-label="Lumière et sols" data-aria-label-fr="Lumière et sols" data-aria-label-en="Light and floors"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="4"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8"/></svg></button>
     <div class="v3d-ui v3d-card v3d-panel">
       <div class="v3d-set">
         <span data-lang-fr="Heure" data-lang-en="Time">Heure</span>
         <input type="range" id="v3d-time" min="6.5" max="21.5" step="0.25" value="11" aria-label="Heure du jour" data-aria-label-fr="Heure du jour" data-aria-label-en="Time of day" />
         <output id="v3d-time-out" for="v3d-time">11 h 00</output>
-        <div class="v3d-presets">
-          <button type="button" data-hour="9.5"><span data-lang-fr="Matin" data-lang-en="Morning">Matin</span></button>
-          <button type="button" data-hour="13.75"><span data-lang-fr="Midi" data-lang-en="Midday">Midi</span></button>
-          <button type="button" data-hour="19.5"><span data-lang-fr="Heure dorée" data-lang-en="Golden hour">Heure dorée</span></button>
-          <button type="button" data-hour="21.5"><span data-lang-fr="Soir" data-lang-en="Evening">Soir</span></button>
-        </div>
+      </div>
+      <div class="v3d-presets">
+        <button type="button" data-hour="9.5"><span data-lang-fr="Matin" data-lang-en="Morning">Matin</span></button>
+        <button type="button" data-hour="13.75"><span data-lang-fr="Midi" data-lang-en="Midday">Midi</span></button>
+        <button type="button" data-hour="19.5"><span data-lang-fr="Heure dorée" data-lang-en="Golden hour">Heure dorée</span></button>
+        <button type="button" data-hour="21.5"><span data-lang-fr="Soir" data-lang-en="Evening">Soir</span></button>
       </div>
       <div class="v3d-set">
         <span data-lang-fr="Sol" data-lang-en="Floor">Sol</span>
@@ -175,14 +166,16 @@
       </div>
     </div>
 
+    <button type="button" class="v3d-ui v3d-seg v3d-round v3d-look" id="v3d-look" aria-label="Regarder autour de soi" data-aria-label-fr="Regarder autour de soi" data-aria-label-en="Look around"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M20 12a8 8 0 1 1-2.6-5.9"/><path d="M20 4v5h-5"/></svg></button>
     <div class="v3d-ui v3d-card v3d-mapbox">
       <canvas id="v3d-map" width="440" height="230" aria-label="Mini-plan : cliquez pour vous déplacer" data-aria-label-fr="Mini-plan : cliquez pour vous déplacer" data-aria-label-en="Mini plan: click to move"></canvas>
       <p id="v3d-hud" aria-live="polite"></p>
     </div>
+    <div id="v3d-fade" aria-hidden="true"></div>
 
     <p id="v3d-hint" aria-hidden="true"></p>
     <p id="v3d-caption" hidden></p>
-    <p class="v3d-note" data-lang-fr="Images de synthèse non contractuelles · mobilier et aménagement indicatifs" data-lang-en="Computer-generated images, not contractual · furniture and layout for illustration">Images de synthèse non contractuelles · mobilier et aménagement indicatifs</p>
+    <p class="v3d-note" data-lang-fr="Images de synthèse non contractuelles, d'après les plans de l'architecte. Mobilier indicatif." data-lang-en="Computer-generated images, not contractual, based on the architect's plans. Furniture for illustration.">Images de synthèse non contractuelles, d'après les plans de l'architecte. Mobilier indicatif.</p>
 
     <div id="v3d-loader">
       <p class="script">59 Cézanne</p>
@@ -207,9 +200,9 @@
       <article class="v3d-bien">
         <h3><small data-lang-fr="Appartement-villa" data-lang-en="Villa-style apartment">Appartement-villa</small><span data-lang-fr="4 pièces, 138&nbsp;m²" data-lang-en="4 rooms, 138&nbsp;m²">4 pièces, 138&nbsp;m²</span></h3>
         <ul>
-          <li data-lang-fr="Séjour, salle à manger et cuisine ouverte, balcon tourné vers la Sainte-Victoire" data-lang-en="Living room, dining area and open kitchen, with a balcony facing the Sainte-Victoire">Séjour, salle à manger et cuisine ouverte, balcon tourné vers la Sainte-Victoire</li>
-          <li data-lang-fr="Chambre parentale avec dressing et salle de bains, deux autres chambres, un bureau" data-lang-en="Master bedroom with dressing room and bathroom, two more bedrooms, a study">Chambre parentale avec dressing et salle de bains, deux autres chambres, un bureau</li>
-          <li data-lang-fr="Jardin privatif de 82&nbsp;m², de plain-pied avec les chambres" data-lang-en="82&nbsp;m² private garden, level with the bedrooms">Jardin privatif de 82&nbsp;m², de plain-pied avec les chambres</li>
+          <li data-lang-fr="Séjour de 40,7&nbsp;m² et cuisine ouverts de plain-pied sur le jardin de 82&nbsp;m²" data-lang-en="40.7&nbsp;m² living room and kitchen opening level onto the 82&nbsp;m² garden">Séjour de 40,7&nbsp;m² et cuisine ouverts de plain-pied sur le jardin de 82&nbsp;m²</li>
+          <li data-lang-fr="Chambre parentale avec dressing et salle de bains, sa baie tournée vers la Sainte-Victoire" data-lang-en="Master bedroom with dressing area and bathroom, its bay facing the Sainte-Victoire">Chambre parentale avec dressing et salle de bains, sa baie tournée vers la Sainte-Victoire</li>
+          <li data-lang-fr="Deux autres chambres, une salle d'eau, une buanderie" data-lang-en="Two more bedrooms, a shower room, a laundry">Deux autres chambres, une salle d'eau, une buanderie</li>
         </ul>
         <div class="dispo-cta">
           <button type="button" class="btn btn-primary" data-open="villa"><span data-lang-fr="Ouvrir la visite 3D" data-lang-en="Open the 3D tour">Ouvrir la visite 3D</span></button>
@@ -230,11 +223,11 @@
       </article>
     </div>
     <div class="v3d-how">
-      <div><h3 data-lang-fr="La maquette" data-lang-en="The model">La maquette</h3><p data-lang-fr="Le logement vu de dessus, murs coupés, comme sur les axonométries. Faites-le tourner, zoomez, puis cliquez sur une pièce pour y entrer." data-lang-en="The home seen from above with the walls cut, as in the axonometric views. Rotate it, zoom in, then click a room to step inside.">Le logement vu de dessus, murs coupés, comme sur les axonométries. Faites-le tourner, zoomez, puis cliquez sur une pièce pour y entrer.</p></div>
-      <div><h3 data-lang-fr="La visite libre" data-lang-en="The walk-through">La visite libre</h3><p data-lang-fr="À hauteur d'œil&nbsp;: glissez pour regarder autour de vous, cliquez au sol pour avancer, ou laissez-vous conduire par la visite guidée." data-lang-en="At eye level: drag to look around, click the floor to move forward, or let the guided tour lead the way.">À hauteur d'œil&nbsp;: glissez pour regarder autour de vous, cliquez au sol pour avancer, ou laissez-vous conduire par la visite guidée.</p></div>
+      <div><h3 data-lang-fr="La maquette" data-lang-en="The model">La maquette</h3><p data-lang-fr="Le logement vu de dessus, murs coupés. Cliquez sur une pièce, sur la maquette ou dans la liste du bas, pour y entrer." data-lang-en="The home seen from above with the walls cut. Click a room, on the model or in the list at the bottom, to step inside.">Le logement vu de dessus, murs coupés. Cliquez sur une pièce, sur la maquette ou dans la liste du bas, pour y entrer.</p></div>
+      <div><h3 data-lang-fr="La visite libre" data-lang-en="The walk-through">La visite libre</h3><p data-lang-fr="À hauteur d'œil&nbsp;: la vue fait un tour d'horizon de la pièce, puis glissez pour regarder où vous voulez et cliquez au sol pour avancer. Dans le duplex, l'escalier et l'ascenseur mènent à l'étage." data-lang-en="At eye level: the view pans around the room, then drag to look wherever you like and click the floor to move. In the duplex, the stairs and the lift take you upstairs.">À hauteur d'œil&nbsp;: la vue fait un tour d'horizon de la pièce, puis glissez pour regarder où vous voulez et cliquez au sol pour avancer. Dans le duplex, l'escalier et l'ascenseur mènent à l'étage.</p></div>
       <div><h3 data-lang-fr="La lumière et les sols" data-lang-en="Light and floors">La lumière et les sols</h3><p data-lang-fr="Faites défiler la journée, du soleil du matin sur le séjour à la soirée éclairée, et comparez plusieurs finitions de sol." data-lang-en="Scroll through the day, from morning sun in the living room to a lamp-lit evening, and compare several floor finishes.">Faites défiler la journée, du soleil du matin sur le séjour à la soirée éclairée, et comparez plusieurs finitions de sol.</p></div>
     </div>
-    <p class="v3d-legal" data-lang-fr="Images de synthèse non contractuelles, réalisées d'après les vues axonométriques et les plans de principe de la résidence. Le mobilier, la décoration, les finitions, la végétation et le paysage sont des illustrations d'ambiance. La distribution du duplex réuni est une proposition d'aménagement. Les surfaces indiquées sont celles de la commercialisation ; seuls les plans et la notice descriptive remis lors de la réservation ont une valeur contractuelle." data-lang-en="Computer-generated images, not contractual, based on the axonometric views and schematic plans of the residence. Furniture, decoration, finishes, planting and landscape are mood illustrations. The layout of the combined duplex is a suggested arrangement. The areas shown are those of the sales programme; only the plans and descriptive notice provided at reservation are contractually binding.">Images de synthèse non contractuelles, réalisées d'après les vues axonométriques et les plans de principe de la résidence. Le mobilier, la décoration, les finitions, la végétation et le paysage sont des illustrations d'ambiance. La distribution du duplex réuni est une proposition d'aménagement. Les surfaces indiquées sont celles de la commercialisation ; seuls les plans et la notice descriptive remis lors de la réservation ont une valeur contractuelle.</p>
+    <p class="v3d-legal" data-lang-fr="Images de synthèse non contractuelles, établies d'après les plans de pré-commercialisation de l'architecte (indice D, 17 février 2025) ; les surfaces des pièces sont celles de ces plans, indicatives, avec une tolérance de 5&nbsp;%. Le duplex de 206&nbsp;m² réunit les logements 02 et 03, chacun selon son plan ; cinq adaptations, à confirmer sur le plan du logement réuni, sont des propositions : l'ouverture entre les deux séjours, la salle à manger à la place de la seconde cuisine, l'ascenseur privatif à l'emplacement du second escalier, le passage ouvert entre les deux paliers de l'étage, et le dressing et la salle de bains de la suite parentale. Le mobilier, la décoration, la végétation et le paysage sont des illustrations d'ambiance. Seuls les plans et la notice descriptive remis lors de la réservation ont une valeur contractuelle." data-lang-en="Computer-generated images, not contractual, based on the architect's pre-sales plans (revision D, 17 February 2025); room areas are those of these plans, indicative, with a 5% tolerance. The 206&nbsp;m² duplex combines homes 02 and 03, each following its plan; five adaptations, to be confirmed on the plan of the combined home, are suggestions: the opening between the two living rooms, the dining room in place of the second kitchen, the private lift in place of the second staircase, the open passage between the two upstairs landings, and the dressing room and bathroom of the master suite. Furniture, decoration, planting and landscape are mood illustrations. Only the plans and descriptive notice provided at reservation are contractually binding.">Images de synthèse non contractuelles, établies d'après les plans de pré-commercialisation de l'architecte (indice D, 17 février 2025) ; les surfaces des pièces sont celles de ces plans, indicatives, avec une tolérance de 5&nbsp;%. Le duplex de 206&nbsp;m² réunit les logements 02 et 03, chacun selon son plan ; cinq adaptations, à confirmer sur le plan du logement réuni, sont des propositions : l'ouverture entre les deux séjours, la salle à manger à la place de la seconde cuisine, l'ascenseur privatif à l'emplacement du second escalier, le passage ouvert entre les deux paliers de l'étage, et le dressing et la salle de bains de la suite parentale. Le mobilier, la décoration, la végétation et le paysage sont des illustrations d'ambiance. Seuls les plans et la notice descriptive remis lors de la réservation ont une valeur contractuelle.</p>
   </section>
 
 </main>

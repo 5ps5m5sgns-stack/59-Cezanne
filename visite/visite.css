@@ -1,14 +1,14 @@
 /* ============================================================
    59 CÉZANNE — Visite 3D (page /visite-3d)
    Couche locale : style.css n'est pas modifié. Palette, polices et pilules reprises de la charte du site.
+   Interface volontairement réduite : les vues en haut, les pièces en bas, le reste à la demande.
    ============================================================ */
-.v3d-page { --v3d-ink: #7b4538; --v3d-deep: #3b231d; --v3d-terra: #a4513a; --v3d-card: rgba(249, 245, 236, 0.93); --v3d-line: rgba(123, 69, 56, 0.2);
+.v3d-page { --v3d-ink: #7b4538; --v3d-deep: #3b231d; --v3d-terra: #a4513a; --v3d-card: rgba(249, 245, 236, 0.94); --v3d-line: rgba(123, 69, 56, 0.2);
   --rg-gutter: max(clamp(1rem, 3vw, 2.5rem), calc((100vw - var(--container)) / 2)); background: var(--pierre, #f6f1e7); }
 
 /* ── Bandeau de titre ─────────────────────────────────────── */
 .v3d-head { position: relative; isolation: isolate; overflow: hidden; padding: calc(var(--nav-height) + 1.1rem) var(--rg-gutter) 1rem; display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 0.8rem 2rem; }
 .v3d-head::after { content: ""; position: absolute; z-index: -1; right: -3%; bottom: -8%; width: min(70%, 900px); aspect-ratio: 2033 / 367; background: url("/fonds/montagne-ligne.png") no-repeat right bottom / contain; opacity: 0.55; pointer-events: none; }
-.v3d-head .lg-breadcrumb { flex-basis: 100%; }
 .v3d-crumb ol { list-style: none; display: flex; gap: 0.5rem; font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; color: #6b5850; margin: 0 0 0.35rem; padding: 0; }
 .v3d-crumb li + li::before { content: "·"; margin-right: 0.5rem; color: #b86248; }
 .v3d-crumb a { color: inherit; text-decoration: none; } .v3d-crumb a:hover { color: var(--v3d-terra); }
@@ -22,7 +22,7 @@
 .v3d-apts button.is-on { background: var(--v3d-terra); border-color: var(--v3d-terra); color: #fff; box-shadow: 0 4px 18px rgba(164, 81, 58, 0.28); }
 
 /* ── Scène ────────────────────────────────────────────────── */
-.v3d { position: relative; margin: 0 var(--rg-gutter); height: clamp(480px, calc(100svh - var(--nav-height) - 10.6rem), 980px); border-radius: clamp(1.4rem, 3vw, 3.2rem) clamp(1.4rem, 3vw, 3.2rem) 14px 14px; overflow: hidden; background: #e9dfcc; box-shadow: var(--shadow-lg); color: var(--v3d-ink); font-family: var(--font-sans); user-select: none; -webkit-user-select: none; }
+.v3d { position: relative; margin: 0 var(--rg-gutter); height: clamp(480px, calc(100svh - var(--nav-height) - 10.6rem), 980px); border-radius: clamp(1.4rem, 3vw, 3.2rem) clamp(1.4rem, 3vw, 3.2rem) 14px 14px; overflow: hidden; background: #eee5d4; box-shadow: var(--shadow-lg); color: var(--v3d-ink); font-family: var(--font-sans); user-select: none; -webkit-user-select: none; }
 .v3d:fullscreen, .v3d.is-fake-full { margin: 0; height: 100vh; height: 100dvh; border-radius: 0; }
 .v3d.is-fake-full { position: fixed; inset: 0; z-index: 2000; }
 #v3d-canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; outline: none; cursor: grab; touch-action: none; opacity: 0; transition: opacity 0.9s ease; }
@@ -30,63 +30,65 @@
 .v3d[data-mode="walk"] #v3d-canvas { cursor: crosshair; }
 #v3d-canvas:active { cursor: grabbing; }
 .v3d [hidden] { display: none !important; }
+#v3d-fade { position: absolute; inset: 0; z-index: 5; background: #2b1c18; opacity: 0; pointer-events: none; transition: opacity 0.5s ease; }
+#v3d-fade.is-on { opacity: 1; }
 
-.v3d-card { background: var(--v3d-card); border: 1px solid var(--v3d-line); border-radius: 18px; box-shadow: 0 8px 30px rgba(59, 35, 29, 0.14); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
+.v3d-card { background: var(--v3d-card); border: 1px solid var(--v3d-line); box-shadow: 0 6px 24px rgba(59, 35, 29, 0.14); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
 .v3d-ui { position: absolute; z-index: 3; opacity: 0; transition: opacity 0.6s ease 0.3s; }
 .v3d.is-ready .v3d-ui { opacity: 1; }
 .v3d.is-nogl .v3d-ui { display: none; }
 
-/* fiche du logement */
-.v3d-id { top: 1rem; left: 1rem; max-width: min(17rem, 36vw); padding: 0.7rem 1rem 0.85rem; }
-.v3d-id .script { font-size: 1.5rem; line-height: 1; margin: 0 0 0.1rem; }
-.v3d-id strong { display: block; font-family: var(--font-serif); font-weight: 400; font-size: 0.9rem; line-height: 1.25; color: var(--v3d-ink); }
-.v3d-id p { font-size: 0.76rem; line-height: 1.45; color: #5c4a42; margin: 0.35rem 0 0; }
-#v3d-pitch { display: none; }
-@media (min-width: 1500px) { .v3d[data-mode="orbit"] #v3d-pitch { display: block; } }
-.v3d-id .btn { margin-top: 0.6rem; padding: 0.5rem 1rem; font-size: 0.66rem; }
-
-/* modes */
-.v3d-modes { top: 1rem; left: 50%; transform: translateX(-50%); display: flex; padding: 0.28rem; border-radius: 999px; gap: 0.15rem; }
-.v3d-seg { font: inherit; font-size: 0.8rem; letter-spacing: 0.06em; text-transform: uppercase; cursor: pointer; border: 0; background: transparent; color: var(--v3d-ink); border-radius: 999px; padding: 0 1.05rem; min-height: 40px; display: inline-flex; align-items: center; gap: 0.45rem; transition: background 0.25s, color 0.25s; white-space: nowrap; }
+/* boutons */
+.v3d-seg { font: inherit; font-size: 0.78rem; letter-spacing: 0.06em; text-transform: uppercase; cursor: pointer; border: 0; background: transparent; color: var(--v3d-ink); border-radius: 999px; padding: 0 1rem; min-height: 40px; display: inline-flex; align-items: center; gap: 0.45rem; transition: background 0.25s, color 0.25s, border-color 0.25s; white-space: nowrap; }
 .v3d-seg svg { width: 1.05rem; height: 1.05rem; flex: none; }
 .v3d-seg:hover { background: rgba(184, 98, 72, 0.12); }
 .v3d-seg.is-on { background: var(--v3d-terra); color: #fff; }
-.v3d-tools { top: 1rem; right: 1rem; display: flex; gap: 0.5rem; }
-.v3d-tools .v3d-seg { background: var(--v3d-card); border: 1px solid var(--v3d-line); box-shadow: 0 6px 22px rgba(59, 35, 29, 0.12); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
-.v3d-tools .v3d-seg:hover { border-color: var(--v3d-terra); color: var(--v3d-terra); }
+.v3d-round { width: 44px; height: 44px; min-height: 0; padding: 0; justify-content: center; border-radius: 50%; }
+.v3d-tools .v3d-seg, .v3d-round { background: var(--v3d-card); border: 1px solid var(--v3d-line); box-shadow: 0 6px 22px rgba(59, 35, 29, 0.12); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
+.v3d-tools .v3d-seg:hover, .v3d-round:hover { border-color: var(--v3d-terra); color: var(--v3d-terra); background: var(--v3d-card); }
 .v3d-tools .v3d-seg.is-on { background: var(--v3d-deep); border-color: var(--v3d-deep); color: #fff; }
-.v3d-icon { padding: 0; width: 42px; justify-content: center; }
-.v3d-only-s { display: none; }
 
-/* pièces */
-.v3d-rooms { top: 4.6rem; right: 1rem; width: 12.5rem; max-height: calc(100% - 13rem); overflow: auto; padding: 0.7rem 0.6rem 0.6rem; scrollbar-width: thin; }
-.v3d-rooms h2 { font-family: var(--font-serif); font-weight: 400; font-size: 0.95rem; margin: 0 0.5rem 0.45rem; color: var(--v3d-ink); }
-.v3d-levels { display: flex; gap: 0.25rem; margin: 0 0.2rem 0.55rem; padding: 0.2rem; border-radius: 999px; background: rgba(123, 69, 56, 0.08); }
-.v3d-levels button { flex: 1; font: inherit; font-size: 0.72rem; letter-spacing: 0.04em; border: 0; background: transparent; color: var(--v3d-ink); border-radius: 999px; min-height: 32px; cursor: pointer; }
-.v3d-levels button.is-on { background: #fff; box-shadow: 0 1px 6px rgba(59, 35, 29, 0.14); color: var(--v3d-terra); }
-.v3d-rooms ul { list-style: none; margin: 0 0 0.3rem; padding: 0; }
-.v3d-rooms-level { font-size: 0.66rem; letter-spacing: 0.12em; text-transform: uppercase; color: #8f4b36; margin: 0.5rem 0.5rem 0.2rem; }
-.v3d-rooms li button { width: 100%; text-align: left; font: inherit; font-size: 0.86rem; border: 0; background: transparent; color: #4a3830; padding: 0.38rem 0.6rem; border-radius: 10px; cursor: pointer; display: flex; align-items: center; gap: 0.5rem; }
-.v3d-rooms li button::before { content: ""; width: 5px; height: 5px; border-radius: 50%; background: #c98a52; flex: none; opacity: 0.7; }
-.v3d-rooms li button:hover { background: rgba(184, 98, 72, 0.12); color: var(--v3d-terra); }
+/* en haut : les vues, la visite guidée, le plein écran */
+.v3d-modes { top: 1rem; left: 50%; transform: translateX(-50%); display: flex; padding: 0.28rem; border-radius: 999px; gap: 0.15rem; }
+.v3d-tools { top: 1rem; right: 1rem; display: flex; gap: 0.5rem; }
 
-/* étiquettes des pièces */
+/* en bas : niveaux et pièces */
+.v3d-nav { left: 4.4rem; right: 4.4rem; bottom: 1rem; display: flex; justify-content: center; align-items: center; gap: 0.5rem; pointer-events: none; }
+.v3d-nav > * { pointer-events: auto; }
+.v3d-levels { display: flex; flex: none; gap: 0.15rem; padding: 0.25rem; border-radius: 999px; }
+.v3d-levels button { font: inherit; font-size: 0.74rem; letter-spacing: 0.04em; border: 0; background: transparent; color: var(--v3d-ink); border-radius: 999px; min-height: 36px; padding: 0 0.9rem; cursor: pointer; white-space: nowrap; }
+.v3d-levels button.is-on { background: var(--v3d-deep); color: #fff; }
+.v3d-rooms { display: flex; gap: 0.15rem; padding: 0.25rem; border-radius: 999px; overflow-x: auto; scrollbar-width: none; min-width: 0; }
+.v3d-rooms::-webkit-scrollbar { display: none; }
+.v3d-rooms button { flex: none; font: inherit; font-size: 0.8rem; border: 0; background: transparent; color: #4a3830; border-radius: 999px; min-height: 36px; padding: 0 0.8rem; cursor: pointer; white-space: nowrap; transition: background 0.2s, color 0.2s; }
+.v3d-rooms button small { margin-left: 0.4rem; font-size: 0.68rem; opacity: 0.7; }
+.v3d-rooms button:hover { background: rgba(184, 98, 72, 0.14); color: var(--v3d-terra); }
+.v3d-rooms button.is-here { background: var(--v3d-terra); color: #fff; }
+
+/* étiquettes des pièces sur la maquette et le plan */
 #v3d-labels { position: absolute; inset: 0; z-index: 2; pointer-events: none; overflow: hidden; }
-.v3d-label { position: absolute; left: 0; top: 0; pointer-events: auto; cursor: pointer; font: inherit; font-family: var(--font-serif); font-size: 0.82rem; white-space: nowrap; color: var(--v3d-deep); background: rgba(249, 245, 236, 0.9); border: 1px solid rgba(123, 69, 56, 0.25); border-radius: 999px; padding: 0.22rem 0.7rem 0.26rem; box-shadow: 0 3px 12px rgba(59, 35, 29, 0.18); transition: background 0.2s, color 0.2s; will-change: transform; }
-.v3d-label.is-minor { font-size: 0.7rem; padding: 0.12rem 0.5rem 0.16rem; opacity: 0.9; }
-.v3d-label:hover { background: var(--v3d-terra); color: #fff; border-color: var(--v3d-terra); }
+.v3d-label { position: absolute; left: 0; top: 0; pointer-events: auto; cursor: pointer; font: inherit; font-family: var(--font-serif); font-size: 0.78rem; line-height: 1.15; white-space: nowrap; text-align: center; color: var(--v3d-deep); background: rgba(249, 245, 236, 0.88); border: 1px solid rgba(123, 69, 56, 0.22); border-radius: 999px; padding: 0.2rem 0.65rem 0.24rem; box-shadow: 0 2px 10px rgba(59, 35, 29, 0.16); transition: background 0.2s, color 0.2s; will-change: transform; }
+.v3d-label small { display: none; font-family: var(--font-sans); font-size: 0.62rem; opacity: 0.75; }
+.v3d[data-mode="plan"] .v3d-label { border-radius: 12px; } .v3d[data-mode="plan"] .v3d-label small { display: block; }
+.v3d-label.is-minor { font-size: 0.68rem; padding: 0.1rem 0.45rem 0.14rem; }
+.v3d[data-mode="orbit"] .v3d-label.is-minor { display: none; }
+.v3d-label:hover, .v3d-label.is-hover { background: var(--v3d-terra); color: #fff; border-color: var(--v3d-terra); }
 
-/* réglages : heure du jour, sols */
-.v3d-panel { left: 1rem; bottom: 1rem; display: flex; flex-wrap: wrap; align-items: center; gap: 0.6rem 1.4rem; padding: 0.7rem 1.1rem; max-width: calc(100% - 2rem); }
-.v3d-set { display: flex; align-items: center; gap: 0.6rem; }
-.v3d-set > span:first-child { font-size: 0.66rem; letter-spacing: 0.12em; text-transform: uppercase; color: #8f4b36; white-space: nowrap; }
-.v3d-set output { font-family: var(--font-serif); font-size: 0.92rem; min-width: 4.1rem; color: var(--v3d-deep); }
-#v3d-time { -webkit-appearance: none; appearance: none; width: clamp(7rem, 16vw, 13rem); height: 28px; background: transparent; cursor: pointer; }
+/* à la demande : lumière et sols */
+.v3d-setbtn { left: 1rem; bottom: 1rem; }
+.v3d-setbtn.v3d-round svg, .v3d-look.v3d-round svg { width: 1.2rem; height: 1.2rem; }
+.v3d-panel { left: 1rem; bottom: 4.4rem; display: none; flex-direction: column; gap: 0.7rem; padding: 0.9rem 1.1rem; border-radius: 18px; max-width: calc(100% - 2rem); }
+.v3d.is-panel-open .v3d-panel { display: flex; }
+.v3d.is-panel-open .v3d-setbtn { background: var(--v3d-deep); border-color: var(--v3d-deep); color: #fff; }
+.v3d-set { display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap; }
+.v3d-set > span:first-child { font-size: 0.66rem; letter-spacing: 0.12em; text-transform: uppercase; color: #8f4b36; white-space: nowrap; min-width: 2.6rem; }
+.v3d-set output { font-family: var(--font-serif); font-size: 0.9rem; min-width: 4.1rem; color: var(--v3d-deep); }
+#v3d-time { -webkit-appearance: none; appearance: none; width: clamp(8rem, 18vw, 13rem); height: 28px; background: transparent; cursor: pointer; }
 #v3d-time::-webkit-slider-runnable-track { height: 4px; border-radius: 2px; background: linear-gradient(90deg, #e8b98c 0%, #f3e3b4 22%, #cfe3ee 50%, #f0c78f 80%, #7c5a78 93%, #2f3350 100%); }
 #v3d-time::-moz-range-track { height: 4px; border-radius: 2px; background: linear-gradient(90deg, #e8b98c 0%, #f3e3b4 22%, #cfe3ee 50%, #f0c78f 80%, #7c5a78 93%, #2f3350 100%); }
 #v3d-time::-webkit-slider-thumb { -webkit-appearance: none; width: 20px; height: 20px; margin-top: -8px; border-radius: 50%; background: #fff; border: 2px solid var(--v3d-terra); box-shadow: 0 2px 8px rgba(59, 35, 29, 0.3); }
 #v3d-time::-moz-range-thumb { width: 16px; height: 16px; border-radius: 50%; background: #fff; border: 2px solid var(--v3d-terra); box-shadow: 0 2px 8px rgba(59, 35, 29, 0.3); }
-.v3d-presets { display: flex; gap: 0.25rem; }
+.v3d-presets { display: flex; gap: 0.25rem; flex-wrap: wrap; }
 .v3d-presets button { font: inherit; font-size: 0.72rem; border: 1px solid var(--v3d-line); background: transparent; color: var(--v3d-ink); border-radius: 999px; padding: 0 0.7rem; min-height: 30px; cursor: pointer; white-space: nowrap; }
 .v3d-presets button:hover, .v3d-presets button.is-on { background: var(--v3d-terra); border-color: var(--v3d-terra); color: #fff; }
 .v3d-swatch { width: 28px; height: 28px; border-radius: 50%; border: 2px solid #fff; background: var(--sw); box-shadow: 0 0 0 1px var(--v3d-line); cursor: pointer; padding: 0; transition: transform 0.2s, box-shadow 0.2s; }
@@ -94,33 +96,34 @@
 .v3d-swatch.is-on { box-shadow: 0 0 0 2px var(--v3d-terra); }
 #v3d-floors { display: flex; gap: 0.4rem; }
 
-/* visite libre : mini-plan, pièce courante */
-.v3d-mapbox { right: 1rem; bottom: 1rem; padding: 0.5rem 0.5rem 0.35rem; display: none; }
-.v3d[data-mode="walk"] .v3d-mapbox { display: block; }
-#v3d-map { display: block; width: clamp(150px, 19vw, 250px); height: auto; cursor: pointer; border-radius: 10px; }
-#v3d-hud { margin: 0.3rem 0.3rem 0; font-family: var(--font-serif); font-size: 0.92rem; color: var(--v3d-deep); text-align: center; }
-.v3d[data-mode="walk"] .v3d-rooms { max-height: calc(100% - 20rem); }
+/* visite libre : tour d'horizon, mini-plan */
+.v3d-look, .v3d-mapbox { display: none; }
+.v3d[data-mode="walk"] .v3d-look { display: inline-flex; right: 1rem; bottom: 1rem; }
+.v3d[data-mode="walk"] .v3d-mapbox { display: block; right: 1rem; bottom: 4.4rem; padding: 0.4rem 0.4rem 0.3rem; border-radius: 14px; }
+#v3d-map { display: block; width: clamp(140px, 16vw, 210px); height: auto; cursor: pointer; border-radius: 9px; }
+#v3d-hud { margin: 0.25rem 0.3rem 0; font-family: var(--font-serif); font-size: 0.86rem; color: var(--v3d-deep); text-align: center; }
 
 /* messages */
 #v3d-hint, #v3d-caption { position: absolute; z-index: 4; left: 50%; transform: translateX(-50%); margin: 0; pointer-events: none; text-align: center; }
-#v3d-hint { bottom: 5.4rem; font-size: 0.78rem; color: #fff; background: rgba(43, 28, 24, 0.72); padding: 0.4rem 1rem; border-radius: 999px; opacity: 0; max-width: calc(100% - 2rem); }
-#v3d-hint.is-in { animation: v3d-hint 6.5s ease forwards; }
-@keyframes v3d-hint { 0% { opacity: 0; } 8%, 80% { opacity: 1; } 100% { opacity: 0; } }
-#v3d-caption { top: 5rem; font-family: var(--font-script, 'Whisper', Georgia, serif); font-size: clamp(2.4rem, 5vw, 4rem); line-height: 1; color: #fff; text-shadow: 0 2px 18px rgba(43, 28, 24, 0.75), 0 0 3px rgba(43, 28, 24, 0.5); opacity: 0; white-space: nowrap; }
+#v3d-hint { bottom: 4.6rem; font-size: 0.76rem; color: #fff; background: rgba(43, 28, 24, 0.7); padding: 0.35rem 0.95rem; border-radius: 999px; opacity: 0; max-width: calc(100% - 2rem); }
+#v3d-hint.is-in { animation: v3d-hint 5s ease forwards; }
+@keyframes v3d-hint { 0% { opacity: 0; } 10%, 75% { opacity: 1; } 100% { opacity: 0; } }
+#v3d-caption { top: 4.6rem; z-index: 6; font-family: var(--font-script, 'Whisper', Georgia, serif); font-size: clamp(2.4rem, 5vw, 4rem); line-height: 1; color: #fff; text-shadow: 0 2px 18px rgba(43, 28, 24, 0.75), 0 0 3px rgba(43, 28, 24, 0.5); opacity: 0; white-space: nowrap; }
 #v3d-caption.is-in { animation: v3d-cap 5.5s ease forwards; }
 @keyframes v3d-cap { 0% { opacity: 0; transform: translateX(-50%) translateY(10px); } 12%, 78% { opacity: 1; transform: translateX(-50%); } 100% { opacity: 0; transform: translateX(-50%); } }
-.v3d.is-touring .v3d-id, .v3d.is-touring .v3d-rooms, .v3d.is-touring .v3d-panel, .v3d.is-touring .v3d-modes { opacity: 0; pointer-events: none; }
-.v3d-note { position: absolute; z-index: 2; left: 50%; bottom: 0.25rem; transform: translateX(-50%); margin: 0; font-size: 0.62rem; letter-spacing: 0.03em; color: rgba(255, 255, 255, 0.9); text-shadow: 0 1px 4px rgba(43, 28, 24, 0.9); white-space: nowrap; pointer-events: none; }
+.v3d.is-touring .v3d-nav, .v3d.is-touring .v3d-panel, .v3d.is-touring .v3d-setbtn, .v3d.is-touring .v3d-modes, .v3d.is-touring .v3d-look { opacity: 0; pointer-events: none; }
+.v3d-note { position: absolute; z-index: 2; left: 1rem; top: 1.1rem; margin: 0; max-width: 15rem; font-size: 0.6rem; line-height: 1.35; letter-spacing: 0.02em; color: rgba(59, 35, 29, 0.6); pointer-events: none; }
+.v3d[data-mode="walk"] .v3d-note { color: rgba(255, 255, 255, 0.85); text-shadow: 0 1px 4px rgba(43, 28, 24, 0.9); }
 
 /* chargement et repli */
-#v3d-loader, #v3d-fallback { position: absolute; inset: 0; z-index: 6; display: grid; place-content: center; justify-items: center; gap: 1rem; text-align: center; padding: 2rem; background: #f1e9da url("/fonds/montagne-ligne.png") no-repeat center 78% / min(80%, 900px) auto; color: var(--v3d-ink); }
+#v3d-loader, #v3d-fallback { position: absolute; inset: 0; z-index: 7; display: grid; place-content: center; justify-items: center; gap: 1rem; text-align: center; padding: 2rem; background: #f1e9da url("/fonds/montagne-ligne.png") no-repeat center 78% / min(80%, 900px) auto; color: var(--v3d-ink); }
 #v3d-loader .script { font-size: clamp(2.2rem, 4vw, 3.4rem); margin: 0; }
 #v3d-loader p { margin: 0; font-size: 0.85rem; letter-spacing: 0.08em; text-transform: uppercase; }
 .v3d-spin { width: 46px; height: 46px; border-radius: 50%; border: 2px solid rgba(184, 98, 72, 0.25); border-top-color: #b86248; animation: v3d-spin 0.9s linear infinite; }
 @keyframes v3d-spin { to { transform: rotate(360deg); } }
 #v3d-fallback img { width: min(100%, 720px); height: auto; border-radius: 4rem 4rem 12px 12px; box-shadow: var(--shadow); }
 #v3d-fallback p { max-width: 34rem; margin: 0; }
-@media (prefers-reduced-motion: reduce) { .v3d-spin { animation-duration: 3s; } #v3d-canvas, .v3d-ui { transition: none; } }
+@media (prefers-reduced-motion: reduce) { .v3d-spin { animation-duration: 3s; } #v3d-canvas, .v3d-ui, #v3d-fade { transition: none; } }
 
 /* ── Sous la scène ────────────────────────────────────────── */
 .v3d-info { padding: clamp(2.5rem, 6vw, 5rem) var(--rg-gutter) clamp(3rem, 7vw, 6rem); display: grid; gap: clamp(2rem, 4vw, 3.5rem); }
@@ -142,23 +145,18 @@
   .v3d-head .script { display: none; }
   .v3d-apts { width: 100%; } .v3d-apts button { flex: 1; padding: 0.4rem 0.9rem 0.45rem; } .v3d-apts button strong { font-size: 0.92rem; }
   .v3d { margin: 0; border-radius: 1.4rem 1.4rem 0 0; height: clamp(420px, min(74svh, calc(100svh - var(--nav-height) - 11.5rem)), 820px); }   /* une bande de page reste visible sous la scène pour pouvoir faire défiler */
-  .v3d-id { display: none; }
-  .v3d-modes { top: 0.6rem; } .v3d-seg { padding: 0 0.75rem; font-size: 0.7rem; min-height: 38px; } .v3d-modes .v3d-seg svg { display: none; }
-  .v3d-tools { top: auto; bottom: 0.7rem; right: 0.6rem; flex-direction: column; } .v3d-tools .v3d-seg span { display: none; } .v3d-tools .v3d-seg { width: 42px; padding: 0; justify-content: center; }
-  .v3d-only-s { display: inline-flex; }
-  .v3d-rooms { top: 3.6rem; right: 0.6rem; left: 0.6rem; width: auto; max-height: 52%; display: none; }
-  .v3d.is-rooms-open .v3d-rooms { display: block; }
-  .v3d-rooms ul { display: grid; grid-template-columns: 1fr 1fr; }
-  .v3d-panel { left: 0.6rem; right: 3.8rem; bottom: 0.7rem; max-width: none; display: none; }
-  .v3d.is-panel-open .v3d-panel { display: flex; }
-  .v3d-presets { display: none; }
-  .v3d-mapbox { right: auto; left: 0.6rem; bottom: 0.7rem; }
-  .v3d.is-panel-open .v3d-mapbox { display: none; }
-  #v3d-map { width: 132px; } #v3d-hud { font-size: 0.8rem; }
-  #v3d-hint { bottom: 0.9rem; top: auto; font-size: 0.68rem; max-width: calc(100% - 7.5rem); left: 0.6rem; transform: none; text-align: left; border-radius: 14px; }
-  .v3d[data-mode="walk"] #v3d-hint { left: auto; right: 3.8rem; max-width: calc(100% - 13.5rem); }
-  #v3d-caption { top: 4.2rem; }
+  .v3d-modes { top: 0.6rem; left: 0.6rem; transform: none; } .v3d-seg { padding: 0 0.7rem; font-size: 0.68rem; min-height: 38px; } .v3d-modes .v3d-seg svg { display: none; }
+  .v3d-tools { top: 0.6rem; right: 0.6rem; gap: 0.35rem; } .v3d-tools .v3d-seg span { display: none; } .v3d-tools .v3d-seg { width: 40px; padding: 0; justify-content: center; }
+  .v3d-nav { left: 0.6rem; right: 0.6rem; bottom: 0.6rem; flex-direction: column; align-items: stretch; gap: 0.35rem; }
+  .v3d-levels { align-self: center; }
+  .v3d-setbtn { left: 0.6rem; bottom: 3.6rem; } .v3d-panel { left: 0.6rem; right: 0.6rem; bottom: 6.6rem; max-width: none; }
+  .v3d[data-levels="2"] .v3d-setbtn { bottom: 6.5rem; } .v3d[data-levels="2"] .v3d-panel { bottom: 9.5rem; }
+  .v3d[data-mode="walk"] .v3d-look { right: 0.6rem; bottom: 3.6rem; } .v3d[data-levels="2"][data-mode="walk"] .v3d-look { bottom: 6.5rem; }
+  .v3d[data-mode="walk"] .v3d-mapbox { right: 0.6rem; bottom: 6.7rem; } .v3d[data-levels="2"][data-mode="walk"] .v3d-mapbox { bottom: 9.6rem; }
+  #v3d-map { width: 118px; } #v3d-hud { font-size: 0.74rem; }
+  #v3d-hint { bottom: auto; top: 3.4rem; font-size: 0.68rem; border-radius: 14px; }
+  #v3d-caption { top: 4.4rem; }
   .v3d-note { display: none; }
   .v3d-duo, .v3d-how { grid-template-columns: 1fr; }
-  .v3d-label { font-size: 0.7rem; padding: 0.14rem 0.5rem 0.18rem; } .v3d-label.is-minor { display: none; }
+  .v3d-label { font-size: 0.68rem; padding: 0.12rem 0.45rem 0.16rem; } .v3d-label.is-minor { display: none; }
 }

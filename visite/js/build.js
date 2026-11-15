@@ -83,9 +83,16 @@ const JOINERY = {
     b.box(M.steel, w / 2 + 0.14, 1.0, z - 0.012, w / 2 + 0.22, 1.2, z + 0.012); b.box(M.led, w / 2 + 0.16, 1.12, z - 0.016, w / 2 + 0.2, 1.16, z + 0.016);
     b.box(M.screen, -0.14, H + 0.1, z - 0.012, 0.14, H + 0.2, z + 0.012);
   },
+  /* Porte palière d'ascenseur, vantaux ouverts : on voit la cabine. */
+  liftdoor(b, M, L, w, t, o) {
+    const H = o.head;
+    b.box(M.steel, -w / 2 - 0.07, 0, -t / 2 - 0.015, -w / 2, H + 0.07, t / 2 + 0.015); b.box(M.steel, w / 2, 0, -t / 2 - 0.015, w / 2 + 0.07, H + 0.07, t / 2 + 0.015); b.box(M.steel, -w / 2 - 0.07, H, -t / 2 - 0.015, w / 2 + 0.07, H + 0.07, t / 2 + 0.015);
+    b.box(M.steel, -w / 2, 0, -0.012, -w / 2 + 0.1, H, 0.012); b.box(M.steel, w / 2 - 0.1, 0, -0.012, w / 2, H, 0.012);
+    for (const z of [-t / 2 - 0.02, t / 2 + 0.008]) { b.box(M.steel, w / 2 + 0.12, 1.0, z, w / 2 + 0.2, 1.2, z + 0.012); b.box(M.led, w / 2 + 0.14, 1.11, z - 0.003, w / 2 + 0.18, 1.15, z + 0.015); b.box(M.screen, -0.14, H + 0.1, z, 0.14, H + 0.19, z + 0.012); }
+  },
   pass() { },
 };
-const PASSABLE = (o) => o.kind === 'door' || o.kind === 'pass' || (o.kind === 'bay' && !o.rail) || (o.kind === 'french' && o.rail === false);
+const PASSABLE = (o) => o.kind === 'door' || o.kind === 'pass' || o.kind === 'liftdoor' || (o.kind === 'bay' && !o.rail) || (o.kind === 'french' && o.rail === false);
 
 /* Un mur : k = 'v' (le long de y, à l'abscisse c) ou 'h' (le long de x, à l'ordonnée c). ext = ±1 : côté extérieur. */
 function buildWall(b, M, lv, w) {
@@ -133,34 +140,36 @@ function buildWall(b, M, lv, w) {
   if (w.a1 > p) lv.blocks.push(w.k === 'h' ? [p, w.c - t / 2, w.a1, w.c + t / 2] : [w.c - t / 2, p, w.c + t / 2, w.a1]);
 }
 
-/* Escalier à deux volées droites et palier intermédiaire (demi-tournant).
-   st = { xa:[x0,x1] volée basse, xb:[x0,x1] volée haute, yFoot, tread, n (marches par volée), H (hauteur à franchir), yWall } */
+/* Escalier défini par la liste de ses marches (rectangles de plan, dans l'ordre de la montée).
+   La dernière contremarche arrive au niveau supérieur. Les marches basses sont pleines, les hautes sont en console. */
 export function buildStair(b, M, st, lv0) {
-  const rise = st.H / (2 * st.n), tr = st.tread, y0 = lv0.y, dirv = st.dir || -1;   // dirv = -1 : la volée basse monte vers les y décroissants
-  const yTurn = st.yFoot + dirv * (st.n - 1) * tr, hMid = st.n * rise;
-  b.on(lv0.layer);
-  for (let i = 0; i < st.n - 1; i++) {                        // volée basse : marches pleines
-    const ya = st.yFoot + dirv * i * tr, yb = st.yFoot + dirv * (i + 1) * tr, h = (i + 1) * rise;
-    b.on(h > CUT ? lv0.layer + ':top' : lv0.layer);
-    b.box(M.plaster, st.xa[0], y0, Math.min(ya, yb), st.xa[1], y0 + h - 0.04, Math.max(ya, yb));
-    b.box(M.oak, st.xa[0], y0 + h - 0.04, Math.min(ya, yb) - 0.012, st.xa[1], y0 + h, Math.max(ya, yb) + 0.012);
-  }
-  b.on(lv0.layer + ':top');
-  const yEnd = st.yWall;                                      // mur du fond, côté palier
-  b.box(M.plaster, st.xa[0], y0 + hMid - 0.22, Math.min(yTurn, yEnd), st.xb[1], y0 + hMid - 0.04, Math.max(yTurn, yEnd));
-  b.box(M.oak, st.xa[0], y0 + hMid - 0.04, Math.min(yTurn, yEnd), st.xb[1], y0 + hMid, Math.max(yTurn, yEnd));
-  for (let j = 0; j < st.n - 1; j++) {                        // volée haute
-    const ya = yTurn - dirv * j * tr, yb = yTurn - dirv * (j + 1) * tr, h = hMid + (j + 1) * rise;
-    b.box(M.plaster, st.xb[0], y0 + h - rise - 0.14, Math.min(ya, yb), st.xb[1], y0 + h - 0.04, Math.max(ya, yb));
-    b.box(M.oak, st.xb[0], y0 + h - 0.04, Math.min(ya, yb) - 0.012, st.xb[1], y0 + h, Math.max(ya, yb) + 0.012);
-  }
-  // main courante laiton le long du mur extérieur de la volée basse
-  const hr = (x, ya, yb, ha, hb) => b.geo(M.brass, new THREE.CylinderGeometry(0.018, 0.018, Math.hypot(yb - ya, hb - ha), 8), x, y0 + (ha + hb) / 2 + 0.92, (ya + yb) / 2, Math.atan2(yb - ya, hb - ha), 0, 0);
-  b.on(lv0.layer); hr(st.xa[0] + 0.06, st.yFoot, yTurn, 0, hMid);
-  b.on(lv0.layer + ':top'); hr(st.xb[1] - 0.06, yTurn, st.yFoot, hMid, st.H);
-  // trajet du visiteur (coordonnées de plan + hauteur du sol)
-  const xa = (st.xa[0] + st.xa[1]) / 2, xb = (st.xb[0] + st.xb[1]) / 2, yl = (yTurn + yEnd) / 2;
-  st.path = [[xa, st.yFoot - dirv * 0.75, 0], [xa, st.yFoot, 0], [xa, yTurn, hMid], [xa, yl, hMid], [xb, yl, hMid], [xb, yTurn, hMid], [xb, st.yFoot, st.H], [xb, st.yFoot - dirv * 0.8, st.H]];
+  const n = st.steps.length + 1, rise = st.H / n, y0 = lv0.y, c = (r) => [(r[0] + r[2]) / 2, (r[1] + r[3]) / 2];
+  st.steps.forEach((r, i) => {
+    const h = (i + 1) * rise, low = h <= CUT + 0.02;
+    b.on(low ? lv0.layer : lv0.layer + ':top');
+    b.box(M.plaster, r[0], y0 + (low ? 0 : h - rise - 0.1), r[1], r[2], y0 + h - 0.04, r[3]);
+    b.box(M.oak, r[0] - 0.012, y0 + h - 0.04, r[1] - 0.012, r[2] + 0.012, y0 + h, r[3] + 0.012);
+  });
+  st.path = [[...st.foot, 0], [...st.trig0, 0], ...st.steps.map((r, i) => [...c(r), (i + 1) * rise]), [...st.trig1, st.H], [...st.head, st.H]];
+}
+
+/* Cabine de l'ascenseur privatif, dessinée à chaque niveau : sol en pierre sombre, parois inox, miroir, main courante, plafonnier. */
+export function buildLift(b, M, lift, levels) {
+  const { x0, y0, x1, y1 } = lift;
+  levels.forEach((lv) => {
+    const y = lv.y, hc = 2.2;
+    b.on(lv.layer);
+    b.box(M.marbleDark, x0, y + 0.004, y0, x1, y + 0.016, y1);
+    for (const [ax, az, bx, bz] of [[x0, y0, x0 + 0.02, y1], [x1 - 0.02, y0, x1, y1], [x0, y1 - 0.02, x1, y1]]) { b.box(M.steel, ax, y, az, bx, y + Math.min(hc, CUT), bz); b.on(lv.layer + ':top'); b.box(M.steel, ax, y + CUT, az, bx, y + hc, bz); b.on(lv.layer); }
+    b.box(M.mirror, x0 + 0.12, y + 0.95, y1 - 0.03, x1 - 0.12, y + CUT, y1 - 0.021);
+    b.box(M.brass, x0 + 0.06, y + 0.9, y1 - 0.09, x1 - 0.06, y + 0.93, y1 - 0.06);
+    b.box(M.screen, x1 - 0.03, y + 0.95, y0 + 0.25, x1 - 0.021, y + 1.2, y0 + 0.45);
+    b.on(lv.layer + ':top');
+    b.box(M.mirror, x0 + 0.12, y + CUT, y1 - 0.03, x1 - 0.12, y + 2.0, y1 - 0.021);
+    b.box(M.steel, x0, y + hc, y0, x1, y + hc + 0.04, y1); b.box(M.liftLight, x0 + 0.2, y + hc - 0.012, y0 + 0.3, x1 - 0.2, y + hc, y1 - 0.3);
+    b.on(lv.layer); b.light((x0 + x1) / 2, y + 1.9, (y0 + y1) / 2, 0.7);
+    lv.dayLights.push({ pos: new THREE.Vector3((x0 + x1) / 2, y + 1.8, (y0 + y1) / 2), power: 1.5, layer: lv.layer });
+  });
 }
 
 /* Un niveau complet. Renvoie les informations de navigation (obstacles, pièces). */
@@ -171,6 +180,7 @@ export function buildLevel(b, M, lv, index) {
   for (const [mat, x0, z0, x1, z1] of lv.floors) b.slab(M[mat], x0, z0, x1, z1, y0 + (mat === 'floor' ? 0 : 0.004), mat === 'floor' ? 0.03 : 0.012);
   for (const s of lv.slabs || []) b.box(M.concrete, s[0], y0 - (s[4] || 0.28), s[1], s[2], y0 - 0.03, s[3]);
   for (const w of lv.walls) buildWall(b, M, lv, w);
+  lv.nWall = lv.blocks.length;                                  // les premiers obstacles sont les murs (utile aux contrôles)
   b.on(lv.layer + ':top');
   for (const c of lv.ceilings || []) {
     b.box(M.ceiling, c[0], y0 + lv.h, c[1], c[2], y0 + lv.h + 0.05, c[3]);
@@ -203,7 +213,7 @@ export function buildLevel(b, M, lv, index) {
 }
 
 /* Grille de navigation d'un niveau : cellules libres = intérieur de la zone praticable, hors obstacles (dilatés du rayon du visiteur). */
-export function buildNav(lv, cell = 0.1, radius = 0.24) {
+export function buildNav(lv, cell = 0.1, radius = 0.17) {
   const [x0, z0, x1, z1] = lv.bounds, nx = Math.ceil((x1 - x0) / cell), nz = Math.ceil((z1 - z0) / cell);
   const g = new Uint8Array(nx * nz);                              // 1 = libre
   for (const a of lv.walkable) {

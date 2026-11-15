@@ -266,7 +266,7 @@ export function makeMaterials(quality) {
   M.glass.userData = { cast: false, receive: false, order: 5 };
   M.glassFrost = new THREE.MeshPhysicalMaterial({ color: 0xf2f6f6, roughness: 0.25, transparent: true, opacity: 0.28, depthWrite: false });
   M.glassFrost.userData = { cast: false, receive: false, order: 5 };
-  M.mirror = std({ color: 0xdfe6e8, roughness: 0.04, metalness: 1 });
+  M.mirror = std({ color: 0xf4f6f6, roughness: 0.05, metalness: 1 });
   M.door = std({ color: 0xf3efe7, roughness: 0.55 });
   M.slat = std({ map: T(woodGrain([150, 108, 70], 31, 0.16)), roughness: 0.7, userData: { wuv: 1.2, wuvSwap: true } });
   // Mobilier
@@ -298,6 +298,7 @@ export function makeMaterials(quality) {
   // Lumières (émissifs : allumés à la tombée du jour)
   M.lampShade = std({ color: 0xf6ecd8, roughness: 0.9, emissive: 0xffd9a0, emissiveIntensity: 0 });
   M.led = std({ color: 0xfff1d6, roughness: 0.6, emissive: 0xffe2b0, emissiveIntensity: 0 });
+  M.liftLight = std({ color: 0xfff6e6, roughness: 0.6, emissive: 0xfff0d8, emissiveIntensity: 2.2 }); M.liftLight.userData = { cast: false };
   M.lampShade.userData = { cast: false }; M.led.userData = { cast: false };
   // Extérieur
   M.grass = std({ map: T(foliage([98, 124, 64], 51, { blades: true })), roughness: 1, userData: { wuv: 2.5, cast: false } });
