@@ -84,9 +84,9 @@ const villa = {
     ceilings: [[0, 0, VW, VD]],
     walls: [
       // façades : baie du séjour et porte de la cuisine sur le jardin (Ouest), quatre portes-fenêtres au Nord, baie de la chambre 1 et porte-fenêtre de la salle de bains à l'Est
-      wv(-E / 2, -E, VD + E, E, -1, [op(1.1, 5.05, 'bay', { panels: 3, open: true, head: 2.35 }), op(6.75, 7.7, 'french', { rail: false, head: 2.3 })]),
+      wv(-E / 2, 0, VD, E, -1, [op(1.1, 5.05, 'bay', { panels: 3, open: true, head: 2.35 }), op(6.75, 7.7, 'french', { rail: false, head: 2.3 })]),
       wh(-E / 2, -E, VW + E, E, -1, [op(2.71, 3.99, 'french', { head: 2.3 }), op(5.31, 6.59, 'french', { head: 2.3 }), op(7.91, 9.19, 'french', { head: 2.3 }), op(11.76, 13.04, 'french', { head: 2.3 })]),
-      wv(VW + E / 2, -E, VD + E, E, 1, [op(0.65, 4.6, 'bay', { panels: 3, rail: true, head: 2.35 }), op(5.95, 7.2, 'french', { head: 2.3 })]),
+      wv(VW + E / 2, 0, VD, E, 1, [op(0.65, 4.6, 'bay', { panels: 3, rail: true, head: 2.35 }), op(5.95, 7.2, 'french', { head: 2.3 })]),
       wh(VD + E / 2, -E, VW + E, E, 1, [op(8.16, 9.12, 'entry', { head: 2.15 })]),
       // chambres 3 et 2
       wv(7.24, 0, 4.59, T), wh(4.55, 7.2, 10.28, T, 0, [op(9.36, 10.2, 'door', { hinge: 'a1', swing: -1 })]),
@@ -172,7 +172,7 @@ const villa = {
     b.box(M.stone, VW + E + 4.6, -6.7, -8, VW + E + 5.0, -3.2, 34); b.box(M.grass, VW + E, -3.3, -8, VW + E + 4.6, -3.16, 34);
     b.on('ext:top');
     hipRoof(b, M.roof, -1.3, -1.3, VW + 1.5, 31.8, 2.92, 2.2);
-    b.box(M.stucco, -E, 2.6, -E, VW + E, 2.92, VD + E);
+    b.box(M.stucco, -E, 2.66, -E, VW + E, 2.92, VD + E);        // au-dessus du plafond, jamais dans le même plan que lui
   },
   trees: [[22, -6, 'pine', 9], [27, 4, 'cypress', 8], [31, -3, 'olive', 5], [36, 8, 'pine', 10], [24, 30, 'olive', 5], [34, 28, 'pine', 9], [-16, -8, 'pine', 9], [-20, 6, 'cypress', 8], [-14, 16, 'pine', 9], [4, -14, 'pine', 10], [14, -12, 'olive', 5]],
 };
@@ -199,9 +199,9 @@ const duplex = {
     slabs: [[-E, -E, DW + E, DD + E, 0.3]],
     ceilings: [[0, 1.95, DW, MY(1.95)], [0, 0, 4.0, 1.95], [7.1, 0, DW, 1.95], [0, MY(1.95), 4.0, DD], [5.5, MY(1.95), DW, DD], [4.0, MY(1.95), 5.5, LIFT.y0 - 0.1]],
     walls: [
-      wv(-E / 2, -E, DD + E, E, -1, [op(2.15, 3.05, 'entry', { head: 2.15 }), op(MY(3.05), MY(2.15), 'entry', { head: 2.15 })]),
+      wv(-E / 2, 0, DD, E, -1, [op(2.15, 3.05, 'entry', { head: 2.15 }), op(MY(3.05), MY(2.15), 'entry', { head: 2.15 })]),
       wh(-E / 2, -E, DW + E, E, -1), wh(DD + E / 2, -E, DW + E, E, 1),
-      wv(DW + E / 2, -E, DD + E, E, 1, [op(0.95, 5.2, 'bay', { panels: 3, open: true, head: 2.4 }), op(MY(5.2), MY(0.95), 'bay', { panels: 3, open: true, head: 2.4 })]),
+      wv(DW + E / 2, 0, DD, E, 1, [op(0.95, 5.2, 'bay', { panels: 3, open: true, head: 2.4 }), op(MY(5.2), MY(0.95), 'bay', { panels: 3, open: true, head: 2.4 })]),
       // mur mitoyen : conservé derrière la cuisine et derrière le meuble du salon, ouvert entre les deux séjours
       wh(HD + PW / 2, 0, 6.3, PW), wh(HD + PW / 2, 8.9, DW, PW), wv(5.93, 5.13, HD, 0.36), wv(5.93, HD + PW, MY(5.13), 0.36),
       // logement 02 : salle d'eau-buanderie, cage d'escalier
@@ -254,9 +254,9 @@ const duplex = {
     floors: [['floor', UX, 1.9, DW, DD], ['floor', 7.02, 0, DW, 1.9], ['tile', 4.1, 3.4, 6.23, HD], ['tile', 4.1, HD + PW, 6.23, MY(3.4)], ['tile', 9.2, HD + PW, DW, 8.89]],
     ceilings: [[UX, 0, DW, DD]],
     walls: [
-      wv(UX - E / 2, -E, DD + E, E, -1, [op(1.9, 2.8, 'entry', { head: 2.1 }), op(MY(2.8), MY(1.9), 'entry', { head: 2.1 })]),
+      wv(UX - E / 2, 0, DD, E, -1, [op(1.9, 2.8, 'entry', { head: 2.1 }), op(MY(2.8), MY(1.9), 'entry', { head: 2.1 })]),
       wh(-E / 2, UX - E, DW + E, E, -1), wh(DD + E / 2, UX - E, DW + E, E, 1),
-      wv(DW + E / 2, -E, DD + E, E, 1, [op(1.05, 2.3, 'french', { head: 2.25, shutter: 'a1' }), op(3.95, 5.2, 'french', { head: 2.25, shutter: 'a0' }), op(MY(5.2), MY(3.95), 'french', { head: 2.25, shutter: 'a1' }), op(MY(2.3), MY(1.05), 'french', { head: 2.25, shutter: 'a0' })]),
+      wv(DW + E / 2, 0, DD, E, 1, [op(1.05, 2.3, 'french', { head: 2.25, shutter: 'a1' }), op(3.95, 5.2, 'french', { head: 2.25, shutter: 'a0' }), op(MY(5.2), MY(3.95), 'french', { head: 2.25, shutter: 'a1' }), op(MY(2.3), MY(1.05), 'french', { head: 2.25, shutter: 'a0' })]),
       // mitoyen : ouvert au droit des deux WC, transformés en passage
       wh(HD + PW / 2, UX, 6.33, PW), wh(HD + PW / 2, 7.02, DW, PW),
       // logement 02 : chambres, salle de bains, passage
@@ -326,7 +326,7 @@ const duplex = {
     b.box(M.plaster, UX, 2.6, -E, 7.02, FH, 0);                                      // bandeau du mur Nord dans la cage d'escalier
     b.on('ext:top');
     hipRoof(b, M.roof, -6.9, -10.3, DW + 1.0, 22.3, 5.74, 2.2);
-    b.box(M.stucco, UX - E, FH + 2.5, -E, DW + E, 5.74, DD + E);
+    b.box(M.stucco, UX - E, FH + 2.56, -E, DW + E, 5.74, DD + E);
   },
   trees: [[31, 3, 'olive', 5], [33, 9, 'cypress', 8], [37, -2, 'pine', 9], [40, 12, 'pine', 10], [30, 16, 'olive', 5], [44, 2, 'cypress', 9], [36, -14, 'olive', 5], [34, -8, 'pine', 9], [36, 20, 'olive', 5], [31, 26, 'cypress', 9], [24, -16, 'pine', 10], [19, 28, 'pine', 9], [-12, -22, 'pine', 10], [-16, 30, 'pine', 9]],
 };

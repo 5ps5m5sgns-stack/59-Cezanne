@@ -258,9 +258,9 @@ export function makeMaterials(quality) {
   M.stone = std({ map: T(dryStone(24)), roughness: 0.95, userData: { wuv: 2.2 } });
   M.roof = std({ map: T(roofTiles(25)), roughness: 0.85, userData: { wuv: 1.6 } });
   // Menuiseries
-  M.frame = std({ color: 0x3a332c, roughness: 0.45, metalness: 0.55 });
-  M.steel = std({ color: 0xb9b6b0, roughness: 0.28, metalness: 0.9 });
-  M.brass = std({ color: 0xc9a25e, roughness: 0.3, metalness: 0.95 });
+  M.frame = std({ color: 0x3a332c, roughness: 0.6, metalness: 0.35 });
+  M.steel = std({ color: 0xb9b6b0, roughness: 0.42, metalness: 0.85 });
+  M.brass = std({ color: 0xc9a25e, roughness: 0.42, metalness: 0.9 });
   M.black = std({ color: 0x1d1b1a, roughness: 0.5, metalness: 0.3 });
   M.glass = new THREE.MeshPhysicalMaterial({ color: 0xcfe0e2, roughness: 0.04, metalness: 0, transparent: true, opacity: 0.07, envMapIntensity: 0.55, depthWrite: false });
   M.glass.userData = { cast: false, receive: false, order: 5 };
@@ -273,6 +273,7 @@ export function makeMaterials(quality) {
   M.oak = std({ map: T(woodGrain([186, 142, 96], 32)), roughness: 0.55, userData: { wuv: 1.4 } });
   M.walnut = std({ map: T(woodGrain([104, 70, 46], 33, 0.14)), roughness: 0.5, userData: { wuv: 1.4 } });
   M.lacquer = std({ color: 0xf2efe9, roughness: 0.35 });
+  M.seam = std({ color: 0x5f4a3c, roughness: 0.85 });                 // joints entre façades
   M.anthracite = std({ color: 0x35373b, roughness: 0.55 });
   M.navy = std({ color: 0x38465a, roughness: 0.5 });
   M.marble = std({ map: T(marble([238, 234, 228], [128, 122, 118], 34)), roughness: 0.18, userData: { wuv: 1.8 } });
@@ -295,6 +296,7 @@ export function makeMaterials(quality) {
   M.art2 = std({ map: T(painting(42)), roughness: 0.8 });
   M.pot = std({ color: 0xd9cdb8, roughness: 0.85 });
   M.rattan = std({ map: T(woodGrain([170, 128, 84], 43, 0.2)), roughness: 0.8, userData: { wuv: 0.5 } });
+  for (const k of ['tile', 'rug', 'rugDark']) Object.assign(M[k], { polygonOffset: true, polygonOffsetFactor: -2, polygonOffsetUnits: -2 });
   // Lumières (émissifs : allumés à la tombée du jour)
   M.lampShade = std({ color: 0xf6ecd8, roughness: 0.9, emissive: 0xffd9a0, emissiveIntensity: 0 });
   M.led = std({ color: 0xfff1d6, roughness: 0.6, emissive: 0xffe2b0, emissiveIntensity: 0 });

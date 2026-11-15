@@ -15,7 +15,7 @@ export function railing(b, M, x0, z0, x1, z1, y = 0, h = 1.02, mat = 'frame') {
   b.box(M[mat], 0, h - 0.045, -0.025, len, h, 0.025);
   b.box(M[mat], 0, 0.08, -0.012, len, 0.105, 0.012);
   const n = Math.max(1, Math.round(len / 0.11));
-  for (let i = 0; i <= n; i++) { const x = (len / n) * i; b.box(M[mat], x - 0.007, 0.08, -0.007, x + 0.007, h - 0.04, 0.007); }
+  for (let i = 0; i <= n; i++) { const x = (len / n) * i; b.box(M[mat], x - 0.009, 0.08, -0.009, x + 0.009, h - 0.04, 0.009); }
   for (let i = 0, k = Math.max(1, Math.round(len / 1.4)); i <= k; i++) { const x = (len / k) * i; b.box(M[mat], x - 0.02, 0, -0.02, x + 0.02, h, 0.02); }
   b.pop();
 }
@@ -213,7 +213,7 @@ export function buildLevel(b, M, lv, index) {
 }
 
 /* Grille de navigation d'un niveau : cellules libres = intérieur de la zone praticable, hors obstacles (dilatés du rayon du visiteur). */
-export function buildNav(lv, cell = 0.1, radius = 0.17) {
+export function buildNav(lv, seed, cell = 0.1, radius = 0.17) {
   const [x0, z0, x1, z1] = lv.bounds, nx = Math.ceil((x1 - x0) / cell), nz = Math.ceil((z1 - z0) / cell);
   const g = new Uint8Array(nx * nz);                              // 1 = libre
   for (const a of lv.walkable) {
@@ -231,6 +231,13 @@ export function buildNav(lv, cell = 0.1, radius = 0.17) {
     const i0 = Math.max(0, Math.floor((r[0] - radius - x0) / cell)), i1 = Math.min(nx - 1, Math.ceil((r[2] + radius - x0) / cell) - 1);
     const j0 = Math.max(0, Math.floor((r[1] - radius - z0) / cell)), j1 = Math.min(nz - 1, Math.ceil((r[3] + radius - z0) / cell) - 1);
     for (let j = j0; j <= j1; j++) for (let i = i0; i <= i1; i++) g[j * nx + i] = 0;
+  }
+  if (seed) {
+    let si = Math.floor((seed[0] - x0) / cell), sj = Math.floor((seed[1] - z0) / cell);
+    if (!g[sj * nx + si]) { let best = -1, bd = 1e9; for (let j = 0; j < nz; j++) for (let i = 0; i < nx; i++) if (g[j * nx + i]) { const d = (i - si) ** 2 + (j - sj) ** 2; if (d < bd) { bd = d; best = j * nx + i; } } si = best % nx; sj = (best / nx) | 0; }
+    const seen = new Uint8Array(nx * nz), stack = [sj * nx + si]; seen[stack[0]] = 1;
+    while (stack.length) { const c = stack.pop(), ci = c % nx, cj = (c / nx) | 0; for (const [di, dj] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) { const i = ci + di, j = cj + dj; if (i < 0 || j < 0 || i >= nx || j >= nz) continue; const n = j * nx + i; if (g[n] && !seen[n]) { seen[n] = 1; stack.push(n); } } }
+    for (let n = 0; n < g.length; n++) if (g[n] && !seen[n]) g[n] = 0;
   }
   lv.nav = { g, nx, nz, x0, z0, cell };
   return lv.nav;

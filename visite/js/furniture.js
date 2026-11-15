@@ -67,7 +67,7 @@ export const F = {
     b.cbox(M[mat], 0, 0.08, 0, w, h - 0.08, d, 0.008);
     if (top) b.cbox(M[top], 0, h, 0, w + 0.02, 0.025, d + 0.02);
     const n = Math.max(2, Math.round(w / 0.55));
-    for (let i = 1; i < n; i++) b.box(M.black, -w / 2 + (w / n) * i - 0.003, 0.1, d / 2, -w / 2 + (w / n) * i + 0.003, h - 0.02, d / 2 + 0.003);
+    for (let i = 1; i < n; i++) b.box(M.seam, -w / 2 + (w / n) * i - 0.005, 0.1, d / 2, -w / 2 + (w / n) * i + 0.005, h - 0.02, d / 2 + 0.005);
     b.box(M.black, -w / 2 + 0.06, 0, -d / 2 + 0.05, w / 2 - 0.06, 0.08, d / 2 - 0.05);
     return [w, d];
   },
@@ -161,7 +161,7 @@ export const F = {
     if (splash) b.box(M[top], -w / 2, 0.91, -d / 2, w / 2, 1.5, -d / 2 + 0.02);
     if (upper) {
       b.box(M.oak, -w / 2, 1.5, -d / 2, w / 2, 2.3, -d / 2 + 0.36);
-      for (let i = 1; i < n; i++) b.box(M.black, -w / 2 + (w / n) * i - 0.003, 1.5, -d / 2 + 0.36, -w / 2 + (w / n) * i + 0.003, 2.3, -d / 2 + 0.363);
+      for (let i = 1; i < n; i++) b.box(M.seam, -w / 2 + (w / n) * i - 0.005, 1.5, -d / 2 + 0.36, -w / 2 + (w / n) * i + 0.005, 2.3, -d / 2 + 0.363);
       b.box(M.led, -w / 2 + 0.03, 1.49, -d / 2 + 0.05, w / 2 - 0.03, 1.5, -d / 2 + 0.08);
       b.light(0, 1.42, -d / 2 + 0.2, 0.6);
     }
@@ -175,7 +175,7 @@ export const F = {
   kitchenTall(b, M, { w = 1.8, d = 0.63, h = 2.25, front = 'oak' }) {
     b.box(M[front], -w / 2, 0.1, -d / 2, w / 2, h, d / 2); b.box(M.black, -w / 2 + 0.02, 0, -d / 2 + 0.03, w / 2 - 0.02, 0.1, d / 2 - 0.06);
     const n = Math.max(2, Math.round(w / 0.6));
-    for (let i = 1; i < n; i++) b.box(M.black, -w / 2 + (w / n) * i - 0.003, 0.1, d / 2, -w / 2 + (w / n) * i + 0.003, h, d / 2 + 0.003);
+    for (let i = 1; i < n; i++) b.box(M.seam, -w / 2 + (w / n) * i - 0.005, 0.1, d / 2, -w / 2 + (w / n) * i + 0.005, h, d / 2 + 0.005);
     const x0 = w / 2 - w / n + 0.03, x1 = w / 2 - 0.03;       // dernière colonne : fours
     b.box(M.screen, x0, 0.75, d / 2, x1, 1.3, d / 2 + 0.012); b.box(M.screen, x0, 1.36, d / 2, x1, 1.8, d / 2 + 0.012);
     b.box(M.steel, x0 + 0.04, 1.26, d / 2 + 0.012, x1 - 0.04, 1.275, d / 2 + 0.04); b.box(M.steel, x0 + 0.04, 1.76, d / 2 + 0.012, x1 - 0.04, 1.775, d / 2 + 0.04);
@@ -188,7 +188,7 @@ export const F = {
     b.box(M.black, -w / 2 + 0.04, 0, -d / 2 + 0.04, w / 2 - 0.04, 0.1, d / 2 - over - 0.04);
     b.box(M[front], -w / 2, 0.1, -d / 2, w / 2, 0.87, d / 2 - over);
     const n = Math.max(1, Math.round(w / 0.6));
-    for (let i = 1; i < n; i++) b.box(M.black, -w / 2 + (w / n) * i - 0.003, 0.1, -d / 2 - 0.003, -w / 2 + (w / n) * i + 0.003, 0.87, -d / 2);
+    for (let i = 1; i < n; i++) b.box(M.seam, -w / 2 + (w / n) * i - 0.005, 0.1, -d / 2 - 0.005, -w / 2 + (w / n) * i + 0.005, 0.87, -d / 2);
     b.cbox(M[top], 0, 0.87, 0, w + 0.06, 0.05, d + 0.04, 0.006);
     b.box(M[top], -w / 2 - 0.03, 0, d / 2 - 0.03, -w / 2 + 0.02, 0.87, d / 2 + 0.02); b.box(M[top], w / 2 - 0.02, 0, d / 2 - 0.03, w / 2 + 0.03, 0.87, d / 2 + 0.02);
     if (hob !== null) F._hob(b, M, hob, 0.921, dz);
@@ -238,7 +238,7 @@ export const F = {
   },
   dresser(b, M, { w = 1.9, d = 0.45, h = 0.72, mat = 'walnut', tv = true }) {
     b.cbox(M[mat], 0, 0.1, 0, w, h - 0.1, d, 0.008);
-    for (let i = 1; i < 4; i++) b.box(M.black, -w / 2 + (w / 4) * i - 0.003, 0.12, d / 2, -w / 2 + (w / 4) * i + 0.003, h - 0.02, d / 2 + 0.003);
+    for (let i = 1; i < 4; i++) b.box(M.seam, -w / 2 + (w / 4) * i - 0.005, 0.12, d / 2, -w / 2 + (w / 4) * i + 0.005, h - 0.02, d / 2 + 0.005);
     b.box(M.black, -w / 2, h * 0.52, d / 2, w / 2, h * 0.52 + 0.005, d / 2 + 0.003);
     for (const sx of [-1, 1]) b.cbox(M.black, sx * (w / 2 - 0.1), 0, 0, 0.04, 0.1, d - 0.1);
     if (tv) { b.box(M.screen, -0.6, h + 0.08, -0.04, 0.6, h + 0.76, -0.01); b.box(M.black, -0.18, h, -0.1, 0.18, h + 0.02, 0.06); b.box(M.black, -0.03, h, -0.05, 0.03, h + 0.1, -0.02); }

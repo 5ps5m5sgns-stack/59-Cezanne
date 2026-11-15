@@ -32,10 +32,33 @@
 .v3d [hidden] { display: none !important; }
 #v3d-fade { position: absolute; inset: 0; z-index: 5; background: #2b1c18; opacity: 0; pointer-events: none; transition: opacity 0.5s ease; }
 #v3d-fade.is-on { opacity: 1; }
+#v3d-fade.is-light { background: #eee5d4; transition-duration: 0.26s; }      /* fondu enchaîné entre la maquette et la visite */
+
+/* visite libre : noms des pièces voisines, visibles par les portes ; un clic y conduit */
+#v3d-spots { position: absolute; inset: 0; z-index: 2; pointer-events: none; overflow: hidden; }
+.v3d-spot { position: absolute; left: 0; top: 0; pointer-events: auto; cursor: pointer; font: inherit; font-size: 0.74rem; white-space: nowrap; color: #fff; background: rgba(43, 28, 24, 0.72); border: 1px solid rgba(255, 255, 255, 0.35); border-radius: 999px; padding: 0.22rem 0.7rem 0.26rem; margin-top: -12px; box-shadow: 0 2px 10px rgba(43, 28, 24, 0.3); transition: background 0.2s, border-color 0.2s; will-change: transform; }
+.v3d-spot::after { content: ""; position: absolute; left: 50%; top: 100%; width: 1px; height: 12px; background: rgba(255, 255, 255, 0.75); }
+.v3d-spot:hover { background: var(--v3d-terra); border-color: var(--v3d-terra); }
+.v3d-spot:not([hidden]) { animation: v3d-spot 0.24s ease both; }
+@keyframes v3d-spot { from { opacity: 0; } to { opacity: 1; } }
+
+/* croix directionnelle : écrans tactiles seulement */
+.v3d-pad { display: none; }
+@media (pointer: coarse) {
+  .v3d[data-mode="walk"] .v3d-pad { display: grid; grid-template-columns: repeat(3, 40px); gap: 4px; left: 0.6rem; bottom: 6.9rem; }
+  .v3d[data-levels="2"][data-mode="walk"] .v3d-pad { bottom: 9.8rem; }
+  .v3d-pad .v3d-round { width: 40px; height: 40px; }
+  .v3d-pad [data-key="ArrowUp"] { grid-column: 2; }
+  .v3d-pad [data-key="ArrowLeft"] { grid-column: 1; grid-row: 2; } .v3d-pad [data-key="ArrowLeft"] svg { transform: rotate(-90deg); }
+  .v3d-pad [data-key="ArrowDown"] { grid-column: 2; grid-row: 2; } .v3d-pad [data-key="ArrowDown"] svg { transform: rotate(180deg); }
+  .v3d-pad [data-key="ArrowRight"] { grid-column: 3; grid-row: 2; } .v3d-pad [data-key="ArrowRight"] svg { transform: rotate(90deg); }
+  .v3d.is-touring .v3d-pad { opacity: 0; pointer-events: none; }
+}
 
 .v3d-card { background: var(--v3d-card); border: 1px solid var(--v3d-line); box-shadow: 0 6px 24px rgba(59, 35, 29, 0.14); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
 .v3d-ui { position: absolute; z-index: 3; opacity: 0; transition: opacity 0.6s ease 0.3s; }
 .v3d.is-ready .v3d-ui { opacity: 1; }
+.v3d.is-ready.is-seen .v3d-ui { transition: opacity 0.3s ease; }      /* après l'apparition initiale, l'interface réagit sans délai */
 .v3d.is-nogl .v3d-ui { display: none; }
 
 /* boutons */
@@ -123,7 +146,7 @@
 @keyframes v3d-spin { to { transform: rotate(360deg); } }
 #v3d-fallback img { width: min(100%, 720px); height: auto; border-radius: 4rem 4rem 12px 12px; box-shadow: var(--shadow); }
 #v3d-fallback p { max-width: 34rem; margin: 0; }
-@media (prefers-reduced-motion: reduce) { .v3d-spin { animation-duration: 3s; } #v3d-canvas, .v3d-ui, #v3d-fade { transition: none; } }
+@media (prefers-reduced-motion: reduce) { .v3d-spin { animation-duration: 3s; } #v3d-canvas, .v3d-ui, #v3d-fade { transition: none; } .v3d-spot:not([hidden]) { animation: none; } }
 
 /* ── Sous la scène ────────────────────────────────────────── */
 .v3d-info { padding: clamp(2.5rem, 6vw, 5rem) var(--rg-gutter) clamp(3rem, 7vw, 6rem); display: grid; gap: clamp(2rem, 4vw, 3.5rem); }

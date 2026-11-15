@@ -149,7 +149,7 @@ export class Environment {
     this.sky.material.uniforms.rayleigh.value *= lerp(1, 0.25, night);
     this.renderer.toneMappingExposure = lerp(0.43, 0.4, golden) * lerp(1, 1.25, night);
     this.placeSun();
-    this.updateEnvMap(lerp(1, 0.07, night));
+    this.envK = lerp(1, 0.07, night); this.envDirty = true; if (!this.envRT) this.flushEnv();
     if (this.studio) this.setStudio(true, this.studioComposer);
     return night;
   }
@@ -165,6 +165,12 @@ export class Environment {
     const fit = (v) => (v * (v + 0.0245786) - 0.000090537) / (v * (0.983729 * v + 0.4329510) + 0.238081);
     const inv = (L) => { let lo = 0, hi = 40; for (let i = 0; i < 40; i++) { const m = (lo + hi) / 2; if (fit(m * e) < L) lo = m; else hi = m; } return lo; };
     this.scene.background = composer ? new THREE.Color(inv(target.r), inv(target.g), inv(target.b)) : target;
+  }
+
+  /* Recalcul différé de la carte d'environnement ; renvoie true si elle vient d'être refaite. */
+  flushEnv(now = performance.now()) {
+    if (!this.envDirty || (this.envRT && now - (this.envAt || 0) < 240)) return false;
+    this.envDirty = false; this.envAt = now; this.updateEnvMap(this.envK); return true;
   }
 
   placeSun() {

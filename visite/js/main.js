@@ -14,7 +14,7 @@ import { makeMaterials, FLOOR_FINISHES, setFloorFinish } from 'v3d/materials';
 import { buildLevel, buildStair, buildLift, buildNav } from 'v3d/build';
 import { APARTMENTS } from 'v3d/plans';
 import { Environment } from 'v3d/env';
-import { cellFree, nearestFree, findPath } from 'v3d/nav';
+import { cellFree, nearestFree, findPath, pathLength } from 'v3d/nav';
 
 const $ = (s, r = document) => r.querySelector(s), $$ = (s, r = document) => [...r.querySelectorAll(s)];
 const rad = THREE.MathUtils.degToRad, clamp = THREE.MathUtils.clamp;
@@ -26,8 +26,8 @@ const T = {
   loadTex: { fr: 'Préparation des matériaux…', en: 'Preparing materials…' },
   loadGeo: { fr: 'Construction du logement…', en: 'Building the home…' },
   loadEnv: { fr: 'Mise en lumière…', en: 'Setting the light…' },
-  hintWalk: { fr: 'Glissez pour regarder autour de vous · cliquez au sol pour avancer', en: 'Drag to look around · click the floor to walk' },
-  hintWalkTouch: { fr: 'Glissez pour regarder · touchez le sol pour avancer', en: 'Drag to look · tap the floor to walk' },
+  hintWalk: { fr: 'Glissez pour regarder · cliquez là où vous voulez aller · molette pour avancer', en: 'Drag to look · click where you want to go · scroll to move forward' },
+  hintWalkTouch: { fr: 'Glissez pour regarder · touchez là où vous voulez aller · écartez deux doigts pour avancer', en: 'Drag to look · tap where you want to go · spread two fingers to move forward' },
   hintOrbit: { fr: 'Cliquez sur une pièce pour y entrer · glissez pour tourner la maquette', en: 'Click a room to step inside · drag to rotate the model' },
   hintPlan: { fr: 'Glissez pour déplacer le plan · cliquez sur une pièce pour y entrer', en: 'Drag to move the plan · click a room to step inside' },
   hintLift: { fr: 'Entrez dans la cabine pour changer de niveau', en: 'Step into the lift to change level' },
@@ -52,7 +52,7 @@ const QUALITY = QUALITIES[qName] || QUALITIES.high;
 
 const root = $('#v3d');
 const canvas = $('#v3d-canvas');
-const ui = { loader: $('#v3d-loader'), loaderText: $('#v3d-loader-text'), labels: $('#v3d-labels'), hud: $('#v3d-hud'), hint: $('#v3d-hint'), map: $('#v3d-map'), fade: $('#v3d-fade') };
+const ui = { spots: $('#v3d-spots'), loader: $('#v3d-loader'), loaderText: $('#v3d-loader-text'), labels: $('#v3d-labels'), hud: $('#v3d-hud'), hint: $('#v3d-hint'), map: $('#v3d-map'), fade: $('#v3d-fade') };
 
 class App {
   constructor() {
@@ -70,7 +70,8 @@ class App {
     this.walk = { level: 0, x: 0, z: 0, yaw: 0, pitch: 0, path: null, look: null, climbing: null, dragAt: 0, onArrive: null };
     this.keys = new Set(); this.fly = null; this.tour = null; this.dirty = true; this.clock = new THREE.Clock();
     this.pool = []; this.lightAt = new THREE.Vector3(1e9, 0, 0);
-    this.labelEls = []; this.ready = false;
+    this.labelEls = []; this.spotEls = []; this.ready = false; this.aoK = 0; this.movedAt = 0; this.swapping = false;
+    this.camP = new THREE.Vector3(); this.camQ = new THREE.Quaternion(); this.camF = 0;
     this.controls = new OrbitControls(this.camera, canvas);
     Object.assign(this.controls, { enableDamping: true, dampingFactor: 0.08, maxPolarAngle: 1.44, minDistance: 5, maxDistance: 70, zoomSpeed: 0.9, rotateSpeed: 0.7, screenSpacePanning: false });
     this.controls.addEventListener('change', () => { this.dirty = true; });
@@ -118,7 +119,7 @@ class App {
     if (apt.lift) buildLift(b, this.M, apt.lift, apt.levels);
     apt.exterior(b, this.M, lv0, apt.levels[1]);
     const layers = b.build(group);
-    apt.levels.forEach((lv) => buildNav(lv));
+    apt.levels.forEach((lv, i) => { const st = i === 0 && lv.rooms.find((r) => r.id === apt.start.room); buildNav(lv, ((st && st.cam) || lv.rooms.find((r) => r.cam).cam).p); });
     const lamps = b.lights.map((l) => ({ pos: l.pos, power: l.power, level: /^L(\d)/.test(l.layer) ? +l.layer[1] : 0, day: false }));
     const days = apt.levels.flatMap((lv, i) => lv.dayLights.map((l) => ({ pos: l.pos, power: l.power, level: i, day: true })));
     // fond de maquette : un plan qui ne montre que l'ombre portée du logement
@@ -148,10 +149,11 @@ class App {
     const cur = this.build(apt);
     if (prev) this.scene.remove(prev.group);
     this.scene.add(cur.group); cur.group.add(this.camera, this.reticle, this.hl);
-    this.apt = apt; this.cur = cur; this.viewLevel = 0;
+    this.apt = apt; this.cur = cur; this.viewLevel = 0; this.mode = 'orbit'; this.lastRoom = null;
+    Object.assign(this.walk, { level: 0, path: null, look: null, climbing: null, riding: null, spin: null, onArrive: null, floorY: undefined });
     // lumières d'appoint : un petit nombre de sources, réattribuées aux lampes ou aux baies les plus proches
     for (const p of this.pool) p.removeFromParent();
-    this.pool = Array.from({ length: QUALITY.lights }, () => { const p = new THREE.PointLight(0xffffff, 0, 9, 1.6); cur.group.add(p); return p; });
+    this.pool = Array.from({ length: QUALITY.lights }, () => { const p = new THREE.PointLight(0xffffff, 0, 9, 1.6); p.userData = { src: null, goal: 0, next: null }; cur.group.add(p); return p; });
     this.lightAt.set(1e9, 0, 0);
     ui.loaderText.textContent = tr('loadEnv'); await new Promise((r) => setTimeout(r, 30));
     cur.group.updateMatrixWorld(true);
@@ -164,7 +166,7 @@ class App {
     if (opts.mode === 'walk' || room) { const r = room || this.findRoom(apt.start.room); this.enterWalk(r.room, r.level, true); }
     else if (opts.mode === 'plan') this.setMode('plan', true);
     else this.setMode('orbit', true);
-    this.ready = true; ui.loader.hidden = true; root.classList.add('is-ready'); this.dirty = true;
+    this.ready = true; ui.loader.hidden = true; root.classList.add('is-ready'); this.dirty = true; setTimeout(() => root.classList.add('is-seen'), 1200);
     window.__v3dReady = true;
   }
 
@@ -191,41 +193,48 @@ class App {
     return { target: t, pos: t.clone().add(new THREE.Vector3(0.25, 0.866, 0.433).multiplyScalar(dist)) };   // même point de vue que les axonométries du graphiste
   }
 
+  /* Fondu enchaîné : l'image se voile, la vue change à couvert, puis elle revient. Aucune géométrie ne « saute » à l'écran. */
+  fadeSwap(fn) {
+    if (this.swapping) { fn(); return; }
+    this.swapping = true; ui.fade.classList.add('is-light', 'is-on');
+    setTimeout(() => { fn(); this.dirty = true; setTimeout(() => { ui.fade.classList.remove('is-on'); this.swapping = false; }, 90); }, 270);
+  }
+
   setMode(mode, instant) {
-    if (mode === 'walk') { const r = this.findRoom(this.apt.start.room); return this.enterWalk(this.lastRoom || r.room, this.lastRoom ? this.lastLevel : r.level, instant); }
-    this.stopTour(); this.walk.path = null; this.walk.climbing = null;
-    if (this.mode === 'walk') this.viewLevel = this.walk.level;
+    if (mode === 'walk') { this.stopTour(); const r = this.findRoom(this.apt.start.room); return this.enterWalk(this.lastRoom || r.room, this.lastRoom ? this.lastLevel : r.level, instant); }
+    if (this.mode === 'walk' && !instant) return this.fadeSwap(() => this.setMode(mode, true));
+    this.stopTour(); Object.assign(this.walk, { path: null, climbing: null, riding: null, spin: null });
+    if (this.mode === 'walk') this.viewLevel = Math.min(this.walk.level, this.apt.levels.length - 1);
     this.mode = mode; this.applyView(true); this.syncUI();
-    const pose = this.orbitPose(mode === 'plan');
+    this.camera.near = 1.2; this.camera.far = 700; this.camera.updateProjectionMatrix();      // vue lointaine : tampon de profondeur resserré, pas de surfaces qui se chevauchent à l'œil
+    const plan = mode === 'plan', pose = this.orbitPose(plan), c = this.controls;
     const done = () => {
-      this.controls.target.copy(pose.target); this.controls.enabled = true;
-      this.controls.enableRotate = mode === 'orbit'; this.controls.minPolarAngle = mode === 'plan' ? 0 : 0.05; this.controls.maxPolarAngle = mode === 'plan' ? 0.001 : 1.44;
-      this.controls.minDistance = mode === 'plan' ? 14 : 5; this.controls.maxDistance = mode === 'plan' ? 150 : 70;
-      this.controls.mouseButtons.LEFT = mode === 'plan' ? THREE.MOUSE.PAN : THREE.MOUSE.ROTATE; this.controls.touches.ONE = mode === 'plan' ? THREE.TOUCH.PAN : THREE.TOUCH.ROTATE;
-      this.controls.update(); this.dirty = true;
+      c.target.copy(pose.target); c.enabled = true; c.enableRotate = !plan;
+      c.minPolarAngle = plan ? 0.02 : 0.05; c.maxPolarAngle = plan ? 0.02 : 1.44;
+      c.minAzimuthAngle = plan ? 0 : -Infinity; c.maxAzimuthAngle = plan ? 0 : Infinity;      // en plan, l'orientation est verrouillée
+      c.minDistance = plan ? 14 : 5; c.maxDistance = plan ? 150 : 70;
+      c.mouseButtons.LEFT = plan ? THREE.MOUSE.PAN : THREE.MOUSE.ROTATE; c.touches.ONE = plan ? THREE.TOUCH.PAN : THREE.TOUCH.ROTATE;
+      c.update(); this.dirty = true;
     };
-    this.controls.enabled = false;
-    this.flyTo({ pos: pose.pos, look: pose.target, fov: mode === 'plan' ? FOV_PLAN : FOV_ORBIT, dur: instant ? 0 : 1.5, done });
-    this.showHint(mode === 'plan' ? 'hintPlan' : 'hintOrbit');
+    c.enabled = false;
+    this.flyTo({ pos: pose.pos, look: pose.target, fov: plan ? FOV_PLAN : FOV_ORBIT, dur: instant ? 0 : 1.1, done });
+    this.showHint(plan ? 'hintPlan' : 'hintOrbit');
   }
 
   /* Entre dans une pièce à hauteur d'œil. */
   enterWalk(room, level, instant, at) {
-    this.stopTour(); this.controls.enabled = false;
+    if (!instant && this.mode !== 'walk') return this.fadeSwap(() => { this.enterWalk(room, level, true, at); if (!this.tour && !matchMedia('(prefers-reduced-motion: reduce)').matches) this.lookAround(); });
+    this.controls.enabled = false; this.fly = null;
     const lv = this.apt.levels[level];
     let cam = room.cam || { p: room.at, t: [room.at[0] + 1, room.at[1]] };
     if (at && Math.hypot(at[0] - room.at[0], at[1] - room.at[1]) > 0.9) cam = { p: at, t: room.at };      // on entre là où l'on a cliqué, tourné vers le centre de la pièce
     const p = nearestFree(lv.nav, cam.p[0], cam.p[1], 2) || cam.p;
-    this.lastRoom = room; this.lastLevel = level;
+    this.lastRoom = room; this.lastLevel = level; this.spotSnap = true;
     const w = this.walk; Object.assign(w, { level, x: p[0], z: p[1], path: null, look: null, climbing: null, onArrive: null, riding: null, spin: null, floorY: undefined, liftLock: true });
     w.yaw = Math.atan2(p[0] - cam.t[0], p[1] - cam.t[1]); w.pitch = -0.04;
-    const pos = new THREE.Vector3(p[0], lv.y + EYE, p[1]);
-    const wasCut = this.mode !== 'walk';
-    this.mode = 'walk'; this.viewLevel = level; this.syncUI();
-    if (!wasCut || instant) this.applyView(false);
-    this.flyTo({ pos, yaw: w.yaw, pitch: w.pitch, fov: FOV_WALK, dur: instant ? 0 : 1.7,
-      step: () => { if (this.cutView && this.camera.position.y < lv.y + lv.h - 0.25) this.applyView(false); },
-      done: () => { if (this.cutView) this.applyView(false); this.placeCamera(); this.updateHud(); if (!instant && !this.tour) this.lookAround(); } });
+    this.mode = 'walk'; this.viewLevel = level;
+    this.camera.near = 0.08; this.camera.far = 3200; this.camera.fov = FOV_WALK; this.camera.updateProjectionMatrix();
+    this.applyView(false); this.syncUI(); this.placeCamera(); this.updateHud();
     this.showHint(room.id === 'ascenseur' ? 'hintLift' : touch ? 'hintWalkTouch' : 'hintWalk');
   }
 
@@ -253,7 +262,7 @@ class App {
     const n = this.night, M = this.M;
     M.lampShade.emissiveIntensity = n * 1.25; M.led.emissiveIntensity = n * 1.5;
     M.glass.opacity = 0.07 + n * 0.1;
-    if (this.bloom) this.bloom.strength = 0.06 + n * 0.16;
+    if (this.bloom) { this.bloom.strength = n * 0.2; this.bloom.enabled = n > 0.03; }      // de jour, pas de halo : il faisait scintiller les reflets
     this.lightAt.set(1e9, 0, 0); this.dirty = true;
     const out = $('#v3d-time-out'); if (out) { const hh = Math.floor(h), mm = Math.round((h - hh) * 60); out.textContent = `${hh} h ${String(mm).padStart(2, '0')}`; }
     const range = $('#v3d-time'); if (range && Number(range.value) !== h) range.value = h;
@@ -261,44 +270,70 @@ class App {
   }
 
   /* Réattribue les sources d'appoint aux lampes (le soir) ou aux baies (le jour) les plus proches du regard. */
-  updateLights() {
-    const focus = this.mode === 'walk' ? this.camera.position : this.controls.target;
-    if (focus.distanceToSquared(this.lightAt) < 0.36) return;
-    this.lightAt.copy(focus);
-    const n = this.night, lvl = this.mode === 'walk' ? this.walk.level : this.viewLevel, wide = this.mode !== 'walk';
-    const dayK = (1 - n) * clamp(this.env.dir.y * 3 + 0.25, 0.25, 1), list = [];
-    for (const l of this.cur.lights) {
-      if (this.cutView && l.level > this.viewLevel) continue;
-      const k = l.day ? dayK * 3 : n * 4.2; if (k < 0.05) continue;
-      const d2 = l.pos.distanceToSquared(focus) + (l.level === lvl ? 0 : 60);
-      list.push({ l, s: (l.power * k) / (1 + d2 / (wide ? 900 : 30)), k });
+  updateLights(dt = 0.016) {
+    const focus = this.mode === 'walk' ? this.camera.position : this.controls.target, set = (p, l) => { p.position.copy(l.pos); p.color.set(l.day ? 0xfff4e2 : 0xffc98a); p.distance = l.day ? 9 : 7.5; };
+    if (focus.distanceToSquared(this.lightAt) > 0.25) {
+      this.lightAt.copy(focus);
+      const n = this.night, lvl = this.mode === 'walk' ? this.walk.level : this.viewLevel, wide = this.mode !== 'walk';
+      const dayK = (1 - n) * clamp(this.env.dir.y * 3 + 0.25, 0.25, 1), list = [];
+      for (const l of this.cur.lights) {
+        if (this.cutView && l.level > this.viewLevel) continue;
+        const k = l.day ? dayK * 3 : n * 4.2; if (k < 0.05) continue;
+        const d2 = l.pos.distanceToSquared(focus) + (l.level === lvl ? 0 : 60);
+        list.push({ l, I: l.power * k, s: (l.power * k) / (1 + d2 / (wide ? 900 : 30)) });
+      }
+      list.sort((a, b) => b.s - a.s);
+      const want = new Map(list.slice(0, this.pool.length).map((it) => [it.l, it.I]));
+      for (const p of this.pool) { const u = p.userData; if (u.src && !want.has(u.src)) u.goal = 0; u.next = null; }
+      for (const [l, I] of want) {
+        let p = this.pool.find((q) => q.userData.src === l);
+        if (!p) { p = this.pool.find((q) => !q.userData.src); if (p) { p.userData.src = l; p.intensity = 0; set(p, l); } else { p = this.pool.find((q) => q.userData.goal === 0 && !q.userData.next); if (p) p.userData.next = { l, I }; continue; } }
+        p.userData.goal = I;
+      }
     }
-    list.sort((a, b) => b.s - a.s);
-    this.pool.forEach((p, i) => {
-      const it = list[i];
-      if (!it) { p.intensity = 0; return; }
-      p.position.copy(it.l.pos); p.intensity = it.l.power * it.k; p.distance = it.l.day ? 9 : 7.5;
-      p.color.set(it.l.day ? 0xfff4e2 : 0xffc98a);
-    });
+    let busy = false;
+    for (const p of this.pool) {
+      const u = p.userData, d = u.goal - p.intensity;
+      if (Math.abs(d) > 0.02) { p.intensity += d * Math.min(1, dt * 5); busy = true; }
+      else { p.intensity = u.goal; if (u.goal === 0 && u.src) { u.src = null; if (u.next) { u.src = u.next.l; u.goal = u.next.I; u.next = null; set(p, u.src); busy = true; } } }
+    }
+    if (busy) this.dirty = true;
   }
 
   /* ── Déplacements à hauteur d'œil ───────────────────────────────────────── */
-  walkTo(x, z, look, onArrive) {
+  /* Avance en ligne droite de (x0,z0) vers (x1,z1) tant que le sol est libre ; renvoie le dernier point libre. */
+  march(x0, z0, x1, z1) {
+    const nav = this.apt.levels[this.walk.level].nav, d = Math.hypot(x1 - x0, z1 - z0), n = Math.ceil(d / 0.05); let best = null;
+    for (let i = 1; i <= n; i++) { const t = i / n, x = x0 + (x1 - x0) * t, z = z0 + (z1 - z0) * t; if (!cellFree(nav, x, z)) break; best = [x, z]; }
+    return best && Math.hypot(best[0] - x0, best[1] - z0) > 0.2 ? best : null;
+  }
+  /* follow = la vue se tourne dans le sens de la marche (trajets vers une pièce) ; sinon on garde son regard. */
+  walkTo(x, z, look, onArrive, follow = true) {
     const w = this.walk, nav = this.apt.levels[w.level].nav;
-    const path = findPath(nav, [w.x, w.z], [x, z]);
-    if (!path) return false;
-    w.path = path.slice(1); w.look = look || null; w.onArrive = onArrive || null; return true;
+    let path = findPath(nav, [w.x, w.z], [x, z]);
+    if (!path) { const e = this.march(w.x, w.z, x, z); if (!e) return false; path = [[w.x, w.z], e]; }
+    w.path = path.slice(1); w.look = look || null; w.onArrive = onArrive || null; w.follow = follow; w.spin = null; return true;
+  }
+  /* Quelques pas dans l'axe du regard (molette, croix directionnelle). */
+  advance(dist) {
+    const w = this.walk; if (w.climbing || w.riding) return;
+    const s = Math.sign(dist), e = this.march(w.x, w.z, w.x - Math.sin(w.yaw) * dist, w.z - Math.cos(w.yaw) * dist);
+    if (e) { w.path = [e]; w.look = null; w.onArrive = null; w.follow = false; w.spin = null; this.stopTour(); }
+    return s;
   }
 
-  /* Va dans une pièce, en empruntant l'escalier si elle est à l'autre niveau. */
-  goToRoom(room, level, onArrive) {
-    if (this.mode !== 'walk') { this.enterWalk(room, level); if (onArrive) this.walk.onArrive = onArrive; this.lastRoom = room; this.lastLevel = level; return; }
-    const w = this.walk, cam = room.cam || { p: room.at, t: room.at };
+  /* Va dans une pièce. À pied si elle est proche ; sinon par un fondu (la visite guidée, elle, marche toujours, escalier compris). */
+  goToRoom(room, level, onArrive, walk = false) {
     this.lastRoom = room; this.lastLevel = level;
-    const end = () => { if (onArrive) onArrive(); else if (!this.tour) this.lookAround(); };
+    if (this.mode !== 'walk') return this.enterWalk(room, level);
+    const w = this.walk, cam = room.cam || { p: room.at, t: room.at };
+    if (w.climbing || w.riding) return; w.spin = null;
+    const end = () => { if (onArrive) onArrive(); else if (!this.tour && !matchMedia('(prefers-reduced-motion: reduce)').matches) this.lookAround(); };
     const arrive = () => { if (!this.walkTo(cam.p[0], cam.p[1], cam.t, end)) { Object.assign(w, { x: cam.p[0], z: cam.p[1] }); this.placeCamera(); end(); } };
-    w.spin = null;
-    if (w.climbing) return;
+    if (!walk) {
+      const path = level === w.level ? findPath(this.apt.levels[level].nav, [w.x, w.z], cam.p) : null;
+      if (!path || pathLength(path) > 11) return this.fadeSwap(() => { this.enterWalk(room, level, true); end(); });
+    }
     if (level === w.level) return arrive();
     const st = this.apt.stair, up = level > w.level, foot = up ? st.path[0] : st.path[st.path.length - 1];
     if (!this.walkTo(foot[0], foot[1], null, () => this.climb(up, arrive))) this.climb(up, arrive);
@@ -310,7 +345,7 @@ class App {
   /* Ascenseur : fondu, changement de niveau, sortie de la cabine. */
   ride() {
     const w = this.walk, to = w.level ? 0 : 1; w.path = null; w.look = null; w.spin = null; w.riding = { t: 0, to, done: false };
-    ui.fade.classList.add('is-on'); const c = $('#v3d-caption'); c.hidden = false; c.textContent = tr('lift') + ' · ' + this.apt.levels[to].name[lang()]; c.classList.remove('is-in'); void c.offsetWidth; c.classList.add('is-in');
+    ui.fade.classList.remove('is-light'); ui.fade.classList.add('is-on'); const c = $('#v3d-caption'); c.hidden = false; c.textContent = tr('lift') + ' · ' + this.apt.levels[to].name[lang()]; c.classList.remove('is-in'); void c.offsetWidth; c.classList.add('is-in');
   }
 
   climb(up, then) {
@@ -331,7 +366,7 @@ class App {
       if (r.t > 1.25) { w.riding = null; w.liftLock = true; const e = this.apt.lift.exits[w.level]; this.walkTo(e[0], e[1]); }
       this.dirty = true; return;
     }
-    if (w.spin && !w.path && !w.climbing) { if (!idle) w.spin = null; else { const a = Math.min(w.spin.left, dt * 0.4); w.yaw -= a; w.spin.left -= a; w.pitch += (-0.04 - w.pitch) * Math.min(1, dt * 2); moved = true; if (w.spin.left <= 0) w.spin = null; } }
+    if (w.spin && !w.path && !w.climbing) { if (!idle) w.spin = null; else { const a = Math.min(w.spin.left, dt * 0.5); w.yaw -= a; w.spin.left -= a; w.pitch += (-0.04 - w.pitch) * Math.min(1, dt * 2); moved = true; if (w.spin.left <= 0) w.spin = null; } }
     if (w.climbing) {
       const c = w.climbing; c.d = Math.min(c.len[c.len.length - 1], c.d + dt * 1.7);
       let i = 1; while (i < c.len.length - 1 && c.len[i] < c.d) i++;
@@ -343,7 +378,7 @@ class App {
     } else if (w.path && w.path.length) {
       const tgt = w.path[0], dx = tgt[0] - w.x, dz = tgt[1] - w.z, d = Math.hypot(dx, dz), stepLen = dt * (this.tour ? 1.9 : 2.5);
       if (d <= stepLen) { w.x = tgt[0]; w.z = tgt[1]; w.path.shift(); } else { w.x += (dx / d) * stepLen; w.z += (dz / d) * stepLen; }
-      if (idle && d > 0.05) { turnTo(Math.atan2(-dx, -dz), 3.2); w.pitch += (-0.04 - w.pitch) * Math.min(1, dt * 2); }
+      if (idle && d > 0.05) { const want = Math.atan2(-dx, -dz); let off = want - w.yaw; off = Math.abs(Math.atan2(Math.sin(off), Math.cos(off))); if (w.follow) { turnTo(want, 3.2); w.pitch += (-0.04 - w.pitch) * Math.min(1, dt * 2); } else if (off > 1.9) turnTo(want, 2.4); }   // sans suivi : on ne se retourne que si la cible est dans le dos
       moved = true;
       if (!w.path.length) { w.path = null; if (!w.look && w.onArrive) { const f = w.onArrive; w.onArrive = null; f(); } }
     } else if (w.look) {
@@ -384,6 +419,7 @@ class App {
     const w = this.walk, r = this.roomAt(w.level, w.x, w.z), name = r ? r[lang()] : tr('outside');
     if (ui.hud.dataset.v !== name) { ui.hud.dataset.v = name; ui.hud.textContent = name; $$('#v3d-rooms [data-room]').forEach((b) => b.classList.toggle('is-here', !!r && b.dataset.room === r.id && +b.dataset.level === w.level)); }
     for (const g of this.cur.pucks.children) g.visible = g.userData.level === w.level && g.userData.room !== r && Math.hypot(g.position.x - w.x, g.position.z - w.z) > 0.9;
+    this.updateSpots();
     this.drawMap();
   }
 
@@ -395,7 +431,7 @@ class App {
       if (!this.tour) return; this.tour.i++;
       if (this.tour.i >= stops.length) return this.stopTour();
       const s = stops[this.tour.i]; this.showCaption(s.room);
-      this.goToRoom(s.room, s.level, () => { if (this.tour) this.tour.wait = 3.4; });
+      this.goToRoom(s.room, s.level, () => { if (this.tour) this.tour.wait = 3.4; }, true);
     };
     this.tour.next = next;
     if (this.mode !== 'walk') { const s = stops[0]; this.tour.i = 0; this.showCaption(s.room); this.enterWalk(s.room, s.level); this.tour = { stops, i: 0, wait: 5.2, next }; root.classList.add('is-touring'); this.syncUI(); } else next();
@@ -422,6 +458,55 @@ class App {
     g.fillStyle = '#b86248'; g.beginPath(); g.arc(px, pz, 4.5, 0, 7); g.fill(); g.strokeStyle = '#fff'; g.lineWidth = 1.5; g.stroke();
   }
 
+  /* ── Repères vers les pièces visibles : une pastille au-dessus de chaque anneau, un clic y conduit ── */
+  makeSpots() {
+    ui.spots.textContent = ''; this.spotEls = [];
+    for (const g of this.cur.pucks.children) {
+      const el = document.createElement('button'); el.type = 'button'; el.className = 'v3d-spot'; el.textContent = g.userData.room[lang()]; el.hidden = true;
+      el.addEventListener('click', () => { this.stopTour(); this.goToRoom(g.userData.room, g.userData.level, null, true); });
+      ui.spots.appendChild(el); this.spotEls.push({ el, g, w: el.textContent.length * 6.6 + 26, clear: false, shown: false, since: 0, tf: '' });
+    }
+  }
+  /* Aucun mur entre deux points du plan ? (les portes et les baies sont des vides) */
+  wallClear(x0, z0, x1, z1, lv) {
+    for (let i = 0; i < lv.nWall; i++) {
+      const q = lv.blocks[i]; let t0 = 0, t1 = 1; const dx = x1 - x0, dz = z1 - z0; let hit = true;
+      for (const [o, d, lo, hi] of [[x0, dx, q[0], q[2]], [z0, dz, q[1], q[3]]]) {
+        if (Math.abs(d) < 1e-9) { if (o < lo || o > hi) { hit = false; break; } } else { let a = (lo - o) / d, b = (hi - o) / d; if (a > b) [a, b] = [b, a]; t0 = Math.max(t0, a); t1 = Math.min(t1, b); if (t0 > t1) { hit = false; break; } }
+      }
+      if (hit) return false;
+    }
+    return true;
+  }
+  updateSpots() {
+    const show = this.mode === 'walk' && !this.tour && !this.walk.climbing && !this.walk.riding && !this.swapping; if (ui.spots.hidden === show) ui.spots.hidden = !show; if (!show) return;
+    const w = this.walk, lv = this.apt.levels[w.level], W = root.clientWidth, H = root.clientHeight, v = new THREE.Vector3(), here = this.roomAt(w.level, w.x, w.z), now = performance.now();
+    const snap = this.spotSnap; this.spotSnap = false;          // arrivée dans une pièce : état appliqué sans délai
+    this.camera.updateMatrixWorld();
+    const cand = [];
+    for (const S of this.spotEls) {
+      const g = S.g, d = Math.hypot(g.position.x - w.x, g.position.z - w.z);
+      const near = g.userData.level === w.level && g.userData.room !== here && d > 1.2 && d < 12;
+      const clear = near && this.wallClear(w.x, w.z, g.position.x, g.position.z, lv);
+      if (clear !== S.clear) { S.clear = clear; S.since = now; }
+      // on longe un mur, on passe une porte : le repère ne change d'état qu'après 0,22 s de stabilité — il ne clignote pas
+      if (snap || !near || now - S.since > 220) S.shown = clear;
+      let ok = S.shown && near;
+      if (ok) { v.set(g.position.x, lv.y + 0.32, g.position.z).project(this.camera); ok = v.z < 1 && Math.abs(v.x) < 0.92 && v.y > -0.8 && v.y < 0.8; }
+      if (ok) { S.x = (v.x + 1) / 2 * W; S.y = (1 - v.y) / 2 * H; S.d = d; cand.push(S); } else if (!S.el.hidden) S.el.hidden = true;
+    }
+    // deux repères ne se recouvrent jamais : le plus proche l'emporte
+    cand.sort((a, b) => a.d - b.d); const kept = [];
+    for (const S of cand) {
+      const hit = kept.some((K) => Math.abs(K.x - S.x) < (K.w + S.w) / 2 + 6 && Math.abs(K.y - S.y) < 30);
+      if (hit) { if (!S.el.hidden) S.el.hidden = true; continue; }
+      kept.push(S);
+      const tf = `translate(-50%,-100%) translate(${S.x.toFixed(1)}px,${S.y.toFixed(1)}px)`;
+      if (tf !== S.tf) { S.tf = tf; S.el.style.transform = tf; }
+      if (S.el.hidden) S.el.hidden = false;
+    }
+  }
+
   /* ── Étiquettes des pièces (maquette et plan) ───────────────────────────── */
   makeLabels() {
     ui.labels.textContent = ''; this.labelEls = [];
@@ -429,7 +514,7 @@ class App {
       if (room.hidden) return;
       const el = document.createElement('button'); el.type = 'button'; el.className = 'v3d-label' + (room.minor ? ' is-minor' : ''); el.textContent = room[lang()];
       if (room.m2) { const sm = document.createElement('small'); sm.textContent = room.m2.toLocaleString(lang() === 'en' ? 'en-GB' : 'fr-FR', { minimumFractionDigits: 1 }) + ' m²'; el.appendChild(sm); }
-      el.addEventListener('click', () => this.goToRoom(room, i));
+      el.addEventListener('click', () => { this.stopTour(); this.goToRoom(room, i); });
       ui.labels.appendChild(el); this.labelEls.push({ el, room, level: i, v: new THREE.Vector3(room.at[0], lv.y + 0.9, room.at[1]) });
     }));
   }
@@ -452,7 +537,7 @@ class App {
     a.levels.forEach((lv, i) => { const bt = document.createElement('button'); bt.type = 'button'; bt.textContent = lv.name[L]; bt.dataset.level = i; bt.addEventListener('click', () => this.setLevel(i)); lvBox.appendChild(bt); });
     $$('[data-apt]').forEach((b) => { const on = b.dataset.apt === a.id; b.classList.toggle('is-on', on); b.setAttribute('aria-pressed', on); });
     root.dataset.levels = a.levels.length;
-    this.roomsLevel = -1; this.makeLabels(); this.syncUI();
+    this.roomsLevel = -1; this.makeLabels(); this.makeSpots(); this.syncUI();
   }
   /* Bandeau des pièces : une pastille par pièce du niveau affiché ; un clic y fait entrer. */
   fillRooms(level) {
@@ -474,11 +559,11 @@ class App {
     this.hl.visible = true; canvas.style.cursor = 'pointer';
   }
   setLevel(i) {
-    if (this.mode === 'walk') { const lv = this.apt.levels[i], room = lv.rooms.find((r) => r.id === (i ? 'palier' : this.apt.start.room)) || lv.rooms[0]; this.stopTour(); return this.goToRoom(room, i); }
+    if (this.mode === 'walk') { const lv = this.apt.levels[i], room = lv.rooms.find((r) => r.id === (i ? 'palier' : this.apt.start.room)) || lv.rooms[0]; this.stopTour(); return this.goToRoom(room, i); }   // l'autre niveau : fondu (l'escalier et l'ascenseur restent praticables)
     this.viewLevel = i; this.setMode(this.mode);
   }
   syncUI() {
-    $$('[data-mode]').forEach((b) => { const on = b.dataset.mode === this.mode; b.classList.toggle('is-on', on); b.setAttribute('aria-pressed', on); });
+    $$('button[data-mode]').forEach((b) => { const on = b.dataset.mode === this.mode; b.classList.toggle('is-on', on); b.setAttribute('aria-pressed', on); });
     $$('#v3d-levels button').forEach((b) => { const on = +b.dataset.level === (this.mode === 'walk' ? this.walk.level : this.viewLevel); b.classList.toggle('is-on', on); b.setAttribute('aria-pressed', on); });
     root.dataset.mode = this.mode;
     const lvNow = this.mode === 'walk' ? this.walk.level : this.viewLevel; if (this.apt && this.roomsLevel !== lvNow) this.fillRooms(lvNow);
@@ -494,7 +579,7 @@ class App {
       local(e); this.ray.setFromCamera(this.ptr, this.camera);
       const lv = this.apt.levels[w.level], o = this.cur.group.worldToLocal(this.ray.ray.origin.clone()), d = this.ray.ray.direction.clone().transformDirection(this.cur.group.matrixWorld.clone().invert());
       if (d.y > -0.02) return null; const t = (lv.y - o.y) / d.y; if (t < 0 || t > 16) return null;
-      const p = nearestFree(lv.nav, o.x + d.x * t, o.z + d.z * t, 0.5); return p ? { p, y: lv.y } : null;
+      const p = nearestFree(lv.nav, o.x + d.x * t, o.z + d.z * t, 0.5); return p && this.wallClear(w.x, w.z, p[0], p[1], lv) ? { p, y: lv.y } : null;
     };
     let od = null;
     const pick = (e) => {                                        // pièce visée sur la maquette ou le plan
@@ -503,34 +588,64 @@ class App {
       const t = (lv.y - o.y) / d.y, x = o.x + d.x * t, z = o.z + d.z * t, room = this.roomAt(this.viewLevel, x, z);
       return room ? { room, p: [x, z] } : null;
     };
-    canvas.addEventListener('pointerdown', (e) => { if (this.mode !== 'walk') { od = { x: e.clientX, y: e.clientY }; return; } w.spin = null; canvas.setPointerCapture(e.pointerId); down = { x: e.clientX, y: e.clientY, yaw: w.yaw, pitch: w.pitch, moved: false, id: e.pointerId }; });
+    const pts = new Map(); let pinch = 0;
+    const gap = () => { const [a, b] = [...pts.values()]; return Math.hypot(a.x - b.x, a.y - b.y); };
+    const lift = (e) => {                                        // un doigt quitte l'écran : le doigt restant reprend la main sans à-coup
+      if (!pts.delete(e.pointerId) || this.mode !== 'walk' || pts.size !== 1) return;
+      const [id, q] = [...pts.entries()][0]; down = { x: q.x, y: q.y, yaw: w.yaw, pitch: w.pitch, moved: true, id };
+    };
+    canvas.addEventListener('pointerdown', (e) => {
+      if (this.mode !== 'walk') { od = { x: e.clientX, y: e.clientY }; return; }
+      w.spin = null; try { canvas.setPointerCapture(e.pointerId); } catch (err) { /* pointeur déjà relâché */ }
+      pts.set(e.pointerId, { x: e.clientX, y: e.clientY });
+      if (pts.size === 2) { pinch = gap(); if (down) down.moved = true; return; }
+      if (pts.size > 2) return;
+      down = { x: e.clientX, y: e.clientY, yaw: w.yaw, pitch: w.pitch, moved: false, id: e.pointerId };
+    });
     canvas.addEventListener('pointermove', (e) => {
       if (this.mode !== 'walk') { if (!e.buttons && !touch) { const h = pick(e); this.highlight(h ? h.room : null, this.viewLevel); } return; }
+      if (pts.has(e.pointerId)) { const q = pts.get(e.pointerId); q.x = e.clientX; q.y = e.clientY; }
+      if (pts.size >= 2) { if (pts.size === 2) { const g = gap(); if (Math.abs(g - pinch) > 44) { this.stopTour(); this.advance(g > pinch ? 0.9 : -0.9); pinch = g; } } return; }
       if (down && down.id === e.pointerId) {
         const dx = e.clientX - down.x, dy = e.clientY - down.y; if (Math.abs(dx) + Math.abs(dy) > 6) down.moved = true;
         if (down.moved) { const k = (this.camera.fov / 70) * 0.0042; w.yaw = down.yaw + dx * k; w.pitch = clamp(down.pitch + dy * k, -1.1, 1.0); w.dragAt = performance.now(); w.look = null; this.reticle.visible = false; this.placeCamera(); }
       } else if (!touch && !w.climbing) { const h = floorHit(e); this.reticle.visible = !!h; if (h) this.reticle.position.set(h.p[0], h.y + 0.02, h.p[1]); this.dirty = true; }
     });
     const up = (e) => {
-      if (this.mode !== 'walk') { const o = od; od = null; if (o && Math.hypot(e.clientX - o.x, e.clientY - o.y) < 7) { const h = pick(e); if (h) { this.highlight(null); this.enterWalk(h.room, this.viewLevel, false, h.p); } } return; }
+      if (this.mode !== 'walk') { pts.clear(); const o = od; od = null; if (o && Math.hypot(e.clientX - o.x, e.clientY - o.y) < 7) { const h = pick(e); if (h) { this.highlight(null); this.stopTour(); this.enterWalk(h.room, this.viewLevel, false, h.p); } } return; }
+      const multi = pts.size > 1; lift(e); if (multi) return;
       if (!down || down.id !== e.pointerId) return; const d = down; down = null;
       if (this.mode !== 'walk' || d.moved || w.climbing) return;
-      const h = floorHit(e); if (h) { this.stopTour(); this.walkTo(h.p[0], h.p[1]); }
+      this.stopTour();
+      const h = floorHit(e); if (h && this.walkTo(h.p[0], h.p[1], null, null, false)) return;
+      // pas de sol libre sous le pointeur (meuble, mur, horizon) : on avance dans cette direction autant que possible
+      local(e); this.ray.setFromCamera(this.ptr, this.camera); const dr = this.ray.ray.direction, k = Math.hypot(dr.x, dr.z) || 1;
+      const a0 = Math.atan2(dr.x / k, dr.z / k); let best = null, bd = 0;
+      for (const off of [0, 0.3, -0.3, 0.6, -0.6, 0.95, -0.95]) { const t = this.march(w.x, w.z, w.x + Math.sin(a0 + off) * 3.2, w.z + Math.cos(a0 + off) * 3.2); const d = t ? Math.hypot(t[0] - w.x, t[1] - w.z) : 0; if (d > bd + (best ? 0.6 : 0)) { best = t; bd = d; } if (bd > 1.5) break; }
+      if (best) return void this.walkTo(best[0], best[1], null, null, false);
+      // coincé entre deux meubles : on contourne pour rejoindre le sol libre le plus proche dans l'axe visé
+      const lv = this.apt.levels[w.level];
+      for (const dist of [1.8, 2.6, 1.2]) {
+        const q = nearestFree(lv.nav, w.x + Math.sin(a0) * dist, w.z + Math.cos(a0) * dist, 0.8);
+        if (!q || Math.hypot(q[0] - w.x, q[1] - w.z) < 0.5 || !this.wallClear(w.x, w.z, q[0], q[1], lv)) continue;
+        const path = findPath(lv.nav, [w.x, w.z], q);
+        if (path && pathLength(path) < 8) { this.walkTo(q[0], q[1], null, null, false); break; }
+      }
     };
-    canvas.addEventListener('pointerup', up); canvas.addEventListener('pointercancel', () => { down = null; });
+    canvas.addEventListener('pointerup', up); canvas.addEventListener('pointercancel', (e) => { const multi = pts.size > 1; lift(e); if (!multi) down = null; });
     canvas.addEventListener('pointerleave', () => { this.reticle.visible = false; this.highlight(null); this.dirty = true; });
-    canvas.addEventListener('wheel', (e) => { if (this.mode !== 'walk') return; e.preventDefault(); this.camera.fov = clamp(this.camera.fov + e.deltaY * 0.03, 38, 84); this.camera.updateProjectionMatrix(); this.dirty = true; }, { passive: false });
+    canvas.addEventListener('wheel', (e) => { if (this.mode !== 'walk') return; e.preventDefault(); this.advance(e.deltaY < 0 ? 0.9 : -0.9); }, { passive: false });
     addEventListener('keydown', (e) => {
       if (e.target.closest && e.target.closest('input,textarea,select')) return;
       const rect = root.getBoundingClientRect(); if (rect.bottom < 80 || rect.top > innerHeight - 80) return;
       if (this.mode === 'walk' && /^(Arrow|Key[WASDQE])/.test(e.code)) { this.keys.add(e.code); if (e.code.startsWith('Arrow')) e.preventDefault(); }   // e.code = position physique : ZQSD sur un clavier AZERTY
       if (e.code === 'ShiftLeft') this.keys.add('ShiftLeft');
-      if (e.key === 'Escape') { this.stopTour(); if (document.fullscreenElement) document.exitFullscreen(); }
+      if (e.key === 'Escape') { if (this.tour) this.stopTour(); else if (document.fullscreenElement) document.exitFullscreen(); else if (this.mode === 'walk') this.setMode('orbit'); }
     });
     addEventListener('keyup', (e) => { this.keys.delete(e.code); });
     addEventListener('blur', () => this.keys.clear());
     // commandes
-    $$('[data-mode]').forEach((b) => b.addEventListener('click', () => this.setMode(b.dataset.mode)));
+    $$('button[data-mode]').forEach((b) => b.addEventListener('click', () => { if (b.dataset.mode !== this.mode) this.setMode(b.dataset.mode); }));
     $$('[data-apt]').forEach((b) => b.addEventListener('click', () => { const a = APARTMENTS.find((x) => x.id === b.dataset.apt); if (a && a !== this.apt) { this.lastRoom = null; this.load(a); } }));
     $('#v3d-tour').addEventListener('click', () => (this.tour ? this.stopTour() : this.startTour()));
     $('#v3d-time').addEventListener('input', (e) => this.setHour(Number(e.target.value)));
@@ -539,10 +654,21 @@ class App {
     FLOOR_FINISHES.forEach((f, i) => { const bt = document.createElement('button'); bt.type = 'button'; bt.className = 'v3d-swatch' + (i ? '' : ' is-on'); bt.style.setProperty('--sw', f.sw); bt.dataset.floor = f.id; bt.title = f[lang()]; bt.setAttribute('aria-label', f[lang()]); bt.addEventListener('click', () => { setFloorFinish(this.M, f.id); $$('.v3d-swatch').forEach((x) => x.classList.toggle('is-on', x === bt)); $('#v3d-floor-out').textContent = f[lang()]; this.dirty = true; }); fl.appendChild(bt); });
     $('#v3d-full').addEventListener('click', () => { if (document.fullscreenElement) document.exitFullscreen(); else if (root.requestFullscreen) root.requestFullscreen(); else root.classList.toggle('is-fake-full'); });
     $('#v3d-look').addEventListener('click', () => this.lookAround());
+    $$('[data-key]').forEach((b) => {                              // croix directionnelle (écrans tactiles) : appui maintenu
+      const on = (e) => { e.preventDefault(); this.keys.add(b.dataset.key); }, off = () => this.keys.delete(b.dataset.key);
+      b.addEventListener('pointerdown', on); b.addEventListener('pointerup', off); b.addEventListener('pointerleave', off); b.addEventListener('pointercancel', off);
+    });
     $('#v3d-panel-toggle').addEventListener('click', () => root.classList.toggle('is-panel-open'));
     ui.map.addEventListener('click', (e) => { if (!this.mapT) return; const r = ui.map.getBoundingClientRect(), k = ui.map.width / r.width, x = ((e.clientX - r.left) * k - this.mapT.ox) / this.mapT.s, z = ((e.clientY - r.top) * k - this.mapT.oy) / this.mapT.s; this.stopTour(); this.walkTo(x, z); });
-    document.addEventListener('59c:langchange', () => { if (!this.apt) return; this.fillUI(); if (this.mode === 'walk') this.updateHud(); $$('.v3d-swatch').forEach((b) => { const f = FLOOR_FINISHES.find((x) => x.id === b.dataset.floor); b.title = f[lang()]; b.setAttribute('aria-label', f[lang()]); if (b.classList.contains('is-on')) $('#v3d-floor-out').textContent = f[lang()]; }); });
-    document.addEventListener('visibilitychange', () => { this.clock.getDelta(); });
+    document.addEventListener('59c:langchange', () => { if (!this.apt) return; this.fillUI(); if (this.mode === 'walk') this.updateHud(); this.dirty = true; $$('.v3d-swatch').forEach((b) => { const f = FLOOR_FINISHES.find((x) => x.id === b.dataset.floor); b.title = f[lang()]; b.setAttribute('aria-label', f[lang()]); if (b.classList.contains('is-on')) $('#v3d-floor-out').textContent = f[lang()]; }); });
+    document.addEventListener('visibilitychange', () => { this.clock.getDelta(); if (!document.hidden) this.dirty = true; });
+    canvas.addEventListener('webglcontextrestored', () => setTimeout(() => {
+      if (!this.M) return;
+      const room = this.env.pmrem.fromScene(new RoomEnvironment(), 0.03).texture;
+      for (const k of ['mirror', 'steel', 'brass']) this.M[k].envMap = room;
+      this.env.envRT = null; this.env.envDirty = true; this.env.flushEnv();
+      this.renderer.shadowMap.needsUpdate = true; this.resize(); this.dirty = true;
+    }, 60));
   }
   animHour(to) { const from = this.hour, t0 = performance.now(); const step = () => { const k = Math.min(1, (performance.now() - t0) / 1400); this.setHour(from + (to - from) * ease(k)); if (k < 1) requestAnimationFrame(step); }; step(); }
 
@@ -557,11 +683,20 @@ class App {
 
   frame() {
     requestAnimationFrame(() => this.frame());
-    const dt = Math.min(0.05, this.clock.getDelta());
+    const raw = this.clock.getDelta(), dt = Math.min(0.05, raw), slow = Math.min(0.2, raw), now = performance.now();
     if (!this.ready || document.hidden) return;
-    this.tick(dt);
-    if (!this.dirty) return; this.dirty = false;
-    this.updateLights(); this.updateLabels();
+    this.tick(dt); this.updateLights(dt);
+    if (this.env.flushEnv(now)) this.dirty = true;
+    const cam = this.camera;
+    if (!this.camP.equals(cam.position) || !this.camQ.equals(cam.quaternion) || this.camF !== cam.fov) { this.camP.copy(cam.position); this.camQ.copy(cam.quaternion); this.camF = cam.fov; this.movedAt = now; }
+    let refine = false;
+    if (this.ao) {
+      const goal = now - this.movedAt > 260 ? 0.85 : 0;
+      if (Math.abs(goal - this.aoK) > 0.004) { this.aoK = goal > this.aoK ? Math.min(goal, this.aoK + slow * 1.9) : Math.max(0, this.aoK - slow * 6.5); this.ao.blendIntensity = this.aoK; this.ao.enabled = this.aoK > 0.004; refine = true; }
+    }
+    this.updateSpots();                                        // repères : suivis à chaque image, même sans nouveau rendu (leur hystérésis est temporelle)
+    if (!this.dirty && !refine) return; this.dirty = false;
+    this.updateLabels();
     if (this.composer) this.composer.render(); else this.renderer.render(this.scene, this.camera);
   }
 }
