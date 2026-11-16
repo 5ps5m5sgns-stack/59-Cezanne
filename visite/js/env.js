@@ -166,11 +166,11 @@ export class Environment {
   /* Lumière de maquette : soleil fixe venu du haut à gauche de l'image, ombres courtes et douces, ambiance claire ; le soir, elle baisse et les lampes prennent le relais. */
   studioLook() {
     const n = this.night || 0, composer = this.studioComposer;
-    this.sun.visible = true; this.sun.color.setRGB(1, 0.975, 0.94); this.sun.intensity = 2.5 * (1 - n * 0.82);
-    this.hemi.color.set(0xffffff).lerp(new THREE.Color(0x2a3350), n * 0.8); this.hemi.groundColor.set(0xe9dcc8).lerp(new THREE.Color(0x15161c), n * 0.8); this.hemi.intensity = 1.0 * (1 - n * 0.75);
-    this.renderer.toneMappingExposure = 0.6;
+    this.sun.visible = true; this.sun.color.setRGB(1 - n * 0.3, 0.975 - n * 0.2, 0.94 + n * 0.06); this.sun.intensity = 2.3 * (1 - n * 0.62);
+    this.hemi.color.set(0xffffff).lerp(new THREE.Color(0x8a93b4), n * 0.7); this.hemi.groundColor.set(0xe9dcc8).lerp(new THREE.Color(0x4a4038), n * 0.7); this.hemi.intensity = 0.92 * (1 - n * 0.5);
+    this.renderer.toneMappingExposure = 0.52;
     this.placeSun(this.studioDir || (this.studioDir = new THREE.Vector3(-0.25, 0.8, 0.33).normalize()));
-    const target = new THREE.Color(0xf3ece0).lerp(new THREE.Color(0x2b2622), n * 0.85), e = this.renderer.toneMappingExposure / 0.6;
+    const target = new THREE.Color(0xf3ece0).lerp(new THREE.Color(0x3a322d), n * 0.85), e = this.renderer.toneMappingExposure / 0.6;
     const fit = (v) => (v * (v + 0.0245786) - 0.000090537) / (v * (0.983729 * v + 0.4329510) + 0.238081);
     const inv = (L) => { let lo = 0, hi = 40; for (let i = 0; i < 40; i++) { const m = (lo + hi) / 2; if (fit(m * e) < L) lo = m; else hi = m; } return lo; };
     this.scene.background = composer ? new THREE.Color(inv(target.r), inv(target.g), inv(target.b)) : target;

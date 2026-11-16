@@ -348,6 +348,8 @@ export function makeMaterials(quality) {
   M.tile = std({ map: T(stoneTiles([214, 208, 198], 15, 2, { ny: 4, veins: 0.5, joint: 2.5, jointCol: [176, 170, 162], shift: 0.5 })), roughness: 0.3, userData: { wuv: 2.4, cast: false } });   // grès 60 × 120
   M.terrace = std({ map: T(stoneTiles([224, 208, 178], 16, 4, { veins: 1.1, joint: 4 })), roughness: 0.82, userData: { wuv: 2.4 } });
   M.concrete = std({ color: 0x8f8a84, roughness: 0.9 });
+  M.socle = std({ color: 0xd8d0c2, roughness: 0.9 });
+  M.wallCut = std({ color: 0xdcd6cb, roughness: 1 });               // tranche des murs coupés               // socle de la maquette
 
   // ── Murs et plafonds
   M.plaster = std({ map: T(plain([247, 244, 238], 21, { grain: 0.018, cloud: 0.02 })), roughness: 0.94, userData: { wuv: 3 } });
@@ -431,10 +433,10 @@ export function makeMaterials(quality) {
   M.glow.userData = { cast: false, receive: false, order: 3 };
 
   // ── Extérieur
-  M.grass = std({ map: T(foliage([92, 128, 58], 51, { blades: true })), roughness: 1, userData: { wuv: 2.2, cast: false } });
+  M.grass = std({ map: T(foliage([104, 140, 62], 51, { blades: true })), roughness: 1, userData: { wuv: 2.2, cast: false } });
   M.hedge = std({ map: T(foliage([62, 98, 50], 52)), roughness: 1, userData: { wuv: 1.3 } });
   const card = (c, o) => std({ map: T(c), alphaTest: 0.42, alphaToCoverage: true, side: THREE.DoubleSide, roughness: 0.95, ...o });      // bords de feuilles lissés par l'anticrénelage
-  M.leafOlive = card(leafCard([146, 160, 122], 53, { n: 60, len: 0.2, wid: 0.04 }));
+  M.leafOlive = card(leafCard([122, 146, 98], 53, { n: 60, len: 0.2, wid: 0.04 }));
   M.leafPine = card(leafCard([70, 110, 62], 54, { n: 26, len: 0.3, needles: true }));
   M.leafBroad = card(leafCard([78, 122, 62], 55, { n: 34, len: 0.26, wid: 0.11 }));     // plantes d'intérieur, lauriers
   M.leafCypress = std({ map: T(foliage([46, 78, 48], 56, { S: 512 })), roughness: 1, userData: { wuv: 1.1 } });

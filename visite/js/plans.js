@@ -156,7 +156,7 @@ const villa = {
     const gx0 = -9.15, gz0 = -E, gz1 = VD + E;
     b.on('ext');
     // jardin de plain-pied : terrasse dallée devant le séjour, puis pelouse
-    b.box(M.terrace, -4.95, -0.06, gz0, -E, -0.015, gz1); b.box(M.grass, gx0, -0.1, gz0, -4.95, -0.02, gz1); b.box(M.earth, gx0 - 0.4, -1.2, gz0 - 0.4, -E, -0.1, gz1 + 0.05);
+    b.box(M.terrace, -4.95, -0.06, gz0, -E, -0.015, gz1); b.box(M.grass, gx0, -0.1, gz0, -4.95, -0.02, gz1); b.box(M.socle, gx0 - 0.4, -0.3, gz0 - 0.4, -E, -0.1, gz1 + 0.05); b.on('ctx'); b.box(M.earth, gx0 - 0.4, -1.2, gz0 - 0.4, -E, -0.3, gz1 + 0.05); b.on('ext');
     lv.blocks.push(V.hedge(b, M, gx0, gz0 - 0.4, -E - 0.05, gz0 + 0.3, { h: 1.6 })); lv.blocks.push(V.hedge(b, M, gx0 - 0.4, gz0 - 0.4, gx0 + 0.25, gz1, { h: 1.6 }));
     lv.blocks.push(V.hedge(b, M, gx0, gz1 - 0.55, -E - 0.05, gz1 + 0.05, { h: 1.2 }));
     lv.blocks.push(V.tree(b, M, -8.0, 1.5, { kind: 'olive', h: 4.2, r: 1.7, seed: 4 })); lv.blocks.push(V.tree(b, M, -7.9, 7.0, { kind: 'pine', h: 6.0, r: 2.4, seed: 9 }));
@@ -307,9 +307,9 @@ const duplex = {
     const gx0 = DW + E, gx1 = 16.9;
     b.on('ext');
     // jardin : 4,9 m de profondeur sur toute la largeur, dallage devant les baies
-    b.box(M.terrace, gx0, -0.06, -E, 14.6, -0.015, DD + E); b.box(M.grass, 14.6, -0.1, -E, gx1, -0.02, DD + E); b.box(M.earth, gx0, -1.0, -E, gx1 + 0.4, -0.1, DD + E);
+    b.box(M.terrace, gx0, -0.06, -E, 14.6, -0.015, DD + E); b.box(M.grass, 14.6, -0.1, -E, gx1, -0.02, DD + E); b.box(M.socle, gx0, -0.3, -E, gx1 + 0.4, -0.1, DD + E); b.on('ctx'); b.box(M.earth, gx0, -1.0, -E, gx1 + 0.4, -0.3, DD + E); b.on('ext');
     lv.blocks.push(V.hedge(b, M, gx0, -E, gx1, 0.3, { h: 1.6 })); lv.blocks.push(V.hedge(b, M, gx0, DD - 0.3, gx1, DD + E, { h: 1.6 }));
-    b.box(M.stone, gx1, -3.6, -E, gx1 + 0.4, 0.45, DD + E); lv.blocks.push(V.hedge(b, M, gx1 - 0.5, 0.3, gx1, DD - 0.3, { h: 0.95 })); lv.blocks.push([gx1 - 0.1, -E, gx1 + 0.4, DD + E]);
+    b.box(M.stone, gx1, -0.3, -E, gx1 + 0.4, 0.45, DD + E); b.on('ctx'); b.box(M.stone, gx1, -3.6, -E, gx1 + 0.4, -0.3, DD + E); b.on('ext'); lv.blocks.push(V.hedge(b, M, gx1 - 0.5, 0.3, gx1, DD - 0.3, { h: 0.95 })); lv.blocks.push([gx1 - 0.1, -E, gx1 + 0.4, DD + E]);
     b.box(M.frame, DW + 0.2, 2.42, 0.75, DW + E + 0.02, 2.5, 5.4); b.box(M.frame, DW + 0.2, 2.42, MY(5.4), DW + E + 0.02, 2.5, MY(0.75));
     lv.blocks.push(V.cypress(b, M, 16.2, 0.85, { h: 5 })); lv.blocks.push(V.cypress(b, M, 16.2, DD - 0.85, { h: 5 })); lv.blocks.push(V.oleander(b, M, 15.9, 5.9, { r: 0.7, seed: 8 }));
     V.lavender(b, M, 14.85, 3.6, 14.85, 5.2, { seed: 5 }); V.lavender(b, M, 14.85, 6.6, 14.85, 7.4, { seed: 6 });

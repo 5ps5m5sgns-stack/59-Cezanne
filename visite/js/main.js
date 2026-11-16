@@ -180,8 +180,9 @@ class App {
   /* ── Calques visibles : en maquette et en plan, on coupe le niveau regardé et on masque ce qui est au-dessus ── */
   applyView(cut) {
     for (const [name, g] of Object.entries(this.cur.layers)) {
-      const m = /^L(\d)(:top)?$/.exec(name); let vis = true;
-      if (cut) { if (m) { const i = +m[1]; vis = i < this.viewLevel || (i === this.viewLevel && !m[2]); } else if (name === 'ext:top' || name === 'ctx') vis = false; }
+      const m = /^L(\d)(:top|:cap)?$/.exec(name); let vis = true;
+      if (cut) { if (m) { const i = +m[1]; vis = m[2] === ':cap' ? i === this.viewLevel : i < this.viewLevel || (i === this.viewLevel && !m[2]); } else if (name === 'ext:top' || name === 'ctx') vis = false; }
+      else if (m && m[2] === ':cap') vis = false;
       g.visible = vis;
     }
     this.cur.catcher.visible = cut; this.cur.pucks.visible = !cut; this.env.setStudio(cut, !!this.composer);
@@ -695,7 +696,7 @@ class App {
 
   frame() {
     requestAnimationFrame(() => this.frame());
-    const raw = this.clock.getDelta(), dt = Math.min(0.05, raw), slow = Math.min(0.2, raw), now = performance.now();
+    const raw = this.clock.getDelta(), dt = Math.min(0.1, raw), slow = Math.min(0.2, raw), now = performance.now();
     if (!this.ready || document.hidden) return;
     this.tick(dt); this.updateLights(dt);
     if (this.env.flushEnv(now)) this.dirty = true;
@@ -703,7 +704,7 @@ class App {
     if (!this.camP.equals(cam.position) || !this.camQ.equals(cam.quaternion) || this.camF !== cam.fov) { this.camP.copy(cam.position); this.camQ.copy(cam.quaternion); this.camF = cam.fov; this.movedAt = now; }
     let refine = false;
     if (this.ao) {
-      const goal = now - this.movedAt > 260 ? 0.85 : 0;
+      const goal = this.mode !== 'walk' || now - this.movedAt > 260 ? 0.85 : 0;
       if (Math.abs(goal - this.aoK) > 0.004) { this.aoK = goal > this.aoK ? Math.min(goal, this.aoK + slow * 1.9) : Math.max(0, this.aoK - slow * 6.5); this.ao.blendIntensity = this.aoK; this.ao.enabled = this.aoK > 0.004; refine = true; }
     }
     this.updateSpots();                                        // repères : suivis à chaque image, même sans nouveau rendu (leur hystérésis est temporelle)

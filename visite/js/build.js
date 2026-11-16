@@ -124,6 +124,7 @@ function buildWall(b, M, lv, w) {
       } else put(M[w.mat || 'plaster'], w.c - t / 2, w.c + t / 2);
     };
     seg(L, ya, Math.min(yb, cut)); seg(top, Math.max(ya, cut), yb);
+    if (ya < cut && yb > cut) { b.on(L + ':cap'); if (w.k === 'h') b.box(M.wallCut, a0, y0 + cut, w.c - t / 2, a1, y0 + cut + 0.003, w.c + t / 2); else b.box(M.wallCut, w.c - t / 2, y0 + cut, a0, w.c + t / 2, y0 + cut + 0.003, a1); }
     if (ya === 0 && !w.mat && !w.noSkirt && a1 - a0 > 0.06) {
       b.on(L);
       const sk = (c0, c1) => { if (w.k === 'h') b.box(M.skirt, a0, y0, Math.min(c0, c1), a1, y0 + 0.08, Math.max(c0, c1)); else b.box(M.skirt, Math.min(c0, c1), y0, a0, Math.max(c0, c1), y0 + 0.08, a1); };
@@ -191,9 +192,10 @@ export function buildLift(b, M, lift, levels) {
 export function buildLevel(b, M, lv, index) {
   lv.layer = 'L' + index; lv.blocks = []; lv.dayLights = [];
   const y0 = lv.y;
+  b.cuts[lv.layer] = y0 + Math.min(CUT, lv.h);                 // menuiseries et mobilier sont sciés à la même cote que les murs
   b.on(lv.layer);
   for (const [mat, x0, z0, x1, z1] of lv.floors) b.slab(M[mat], x0, z0, x1, z1, y0 + (mat === 'floor' ? 0 : 0.004), mat === 'floor' ? 0.03 : 0.012);
-  for (const s of lv.slabs || []) b.box(M.concrete, s[0], y0 - (s[4] || 0.28), s[1], s[2], y0 - 0.03, s[3]);
+  for (const s of lv.slabs || []) b.box(M.socle, s[0], y0 - (s[4] || 0.28), s[1], s[2], y0 - 0.03, s[3]);
   for (const w of lv.walls) buildWall(b, M, lv, w);
   lv.nWall = lv.blocks.length;                                  // les premiers obstacles sont les murs (utile aux contrôles)
   b.on(lv.layer + ':top');
