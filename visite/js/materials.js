@@ -124,6 +124,22 @@ function stoneTiles(base, seed, nx, { ny = nx, joint = 3, veins = 0.5, jointCol 
   });
 }
 
+/* Dallage en petits hexagones clairs (terrasse du duplex, comme sur son plan) : motif raccordable, kx périodes en largeur, ky en hauteur. */
+function hexTiles(base, seed, kx = 7, ky = 12, S = 1024) {
+  return canvas(S, (g) => {
+    const R = rng(seed), a = S / (3 * kx), h = S / (2 * ky), k = 0.93;       // a : côté de l'hexagone ; h : sa demi-hauteur
+    const tone = (i, j) => { const n = Math.sin(((i % (2 * kx)) + 2 * kx) % (2 * kx) * 127.1 + ((j % ky) + ky) % ky * 311.7 + seed) * 43758.5453; return n - Math.floor(n); };
+    g.fillStyle = rgb(188, 172, 152); g.fillRect(0, 0, S, S);
+    for (let i = -1; i <= 2 * kx; i++) for (let j = -1; j <= ky; j++) {
+      const cx = i * 1.5 * a, cy = (2 * j + (i & 1)) * h;
+      g.fillStyle = rgb(...shade(base, 0.94 + tone(i, j) * 0.1)); g.beginPath();
+      for (const [dx, dy] of [[1, 0], [0.5, 1], [-0.5, 1], [-1, 0], [-0.5, -1], [0.5, -1]]) g.lineTo(cx + dx * a * k, cy + dy * h * k);
+      g.closePath(); g.fill();
+    }
+    speckle(g, S, R, 7000, 0.03, 1.5);
+  });
+}
+
 /* Aplat légèrement vivant (enduit, plâtre). */
 function plain(base, seed, { grain = 0.05, cloud = 0.05 } = {}) {
   return canvas(512, (g, S) => {
@@ -347,6 +363,7 @@ export function makeMaterials(quality) {
   M.floor = std({ ...M.floorDef('floorOak'), metalness: 0, envMapIntensity: 1.15, userData: { wuv: 3.24, cast: false } });   // matériau courant des pièces de vie
   M.tile = std({ map: T(stoneTiles([214, 208, 198], 15, 2, { ny: 4, veins: 0.5, joint: 2.5, jointCol: [176, 170, 162], shift: 0.5 })), roughness: 0.3, userData: { wuv: 2.4, cast: false } });   // grès 60 × 120
   M.terrace = std({ map: T(stoneTiles([224, 208, 178], 16, 4, { veins: 1.1, joint: 4 })), roughness: 0.82, userData: { wuv: 2.4 } });
+  M.hexPaving = std({ map: T(hexTiles([230, 209, 188], 41)), roughness: 0.84, userData: { wuv: 1.2 } });
   M.concrete = std({ color: 0x8f8a84, roughness: 0.9 });
   M.socle = std({ color: 0xd8d0c2, roughness: 0.9 });
   M.wallCut = std({ color: 0xdcd6cb, roughness: 1 });               // tranche des murs coupés               // socle de la maquette

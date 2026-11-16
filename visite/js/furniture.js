@@ -254,7 +254,8 @@ export const F = {
       b.cbox(M[top], 0, 0.71, 0, w, 0.04, d, 0.008);
       for (const sx of [-1, 1]) { const x = sx * w * 0.3; b.box(M[leg], x - 0.04, 0, -d * 0.36, x + 0.04, 0.04, d * 0.36); for (const sz of [-1, 1]) b.box(M[leg], x - 0.04, 0.04, sz * d * 0.36 - 0.03, x + 0.04, 0.71, sz * d * 0.36 + 0.03); b.box(M[leg], x - 0.04, 0.67, -d * 0.36, x + 0.04, 0.71, d * 0.36); }
       for (let i = 0; i < n; i++) { const x = -w / 2 + (w / n) * (i + 0.5); seats.push([x, -d / 2 - 0.13, 0, x, -d / 2 + 0.22], [x, d / 2 + 0.13, PI, x, d / 2 - 0.22]); }
-      if (ends) seats.push([-w / 2 - 0.15, 0, PI / 2, -w / 2 + 0.22, 0], [w / 2 + 0.15, 0, -PI / 2, w / 2 - 0.22, 0]);
+      if (ends && ends !== 'b') seats.push([-w / 2 - 0.15, 0, PI / 2, -w / 2 + 0.22, 0]);      // ends : true = les deux bouts, 'a' = bout -x, 'b' = bout +x
+      if (ends && ends !== 'a') seats.push([w / 2 + 0.15, 0, -PI / 2, w / 2 - 0.22, 0]);
     }
     for (const [x, z, rot, px, pz] of seats) {
       b.push(x, 0, z, rot); F.chair(b, M, { mat: chairMat }); b.pop();
@@ -329,6 +330,15 @@ export const F = {
     }
     return [w, d];
   },
+  /* Réfrigérateur à deux portes en inox, tel que repéré « R » sur les plans. */
+  fridge(b, M, { w = 0.85, d = 0.72, h = 1.92 }) {
+    b.box(M.black, -w / 2 + 0.02, 0, -d / 2 + 0.03, w / 2 - 0.02, 0.08, d / 2 - 0.06);
+    b.box(M.steel, -w / 2, 0.08, -d / 2, w / 2, h, d / 2 - 0.03);
+    for (const sx of [-1, 1]) { b.box(M.steel, sx > 0 ? 0.002 : -w / 2, 0.085, d / 2 - 0.03, sx > 0 ? w / 2 : -0.002, h - 0.004, d / 2); b.box(M.black, sx * 0.045 - 0.008, 0.75, d / 2 + 0.02, sx * 0.045 + 0.008, 1.45, d / 2 + 0.032); for (const y of [0.78, 1.42]) b.box(M.black, sx * 0.045 - 0.007, y - 0.008, d / 2, sx * 0.045 + 0.007, y + 0.008, d / 2 + 0.024); }
+    return [w, d];
+  },
+  /* Gaine technique maçonnée, toute hauteur (les rectangles barrés d'une croix sur les plans). */
+  duct(b, M, { w = 0.6, d = 0.4, ceil = 2.6, h = ceil }) { b.box(M.plaster, -w / 2, 0, -d / 2, w / 2, h, d / 2); return [w, d]; },
   /* Îlot : plan épais débordant côté tabourets (+z), retombées en pierre aux deux bouts, niche éclairée. */
   island(b, M, { w = 3.0, d = 1.1, front = 'oakV', top = 'marble', hob = null, sink = null, stools = 0, stoolMat = 'greige', over = 0.28, deco = true }) {
     const dz = -over / 2, wt = 0.87;
@@ -522,6 +532,12 @@ export const F = {
     b.cbox(M.cream, -n * 0.3 + 0.3, 0.885, 0, 0.34, 0.12, 0.26, 0.03); b.cyl(M.rattan, n * 0.3 - 0.3, 0.885, 0, 0.14, 0.2, 16, 0.17);
     return [n * 0.6, 0.62];
   },
+  /* Chauffe-eau vertical sur trépied (« CE » des plans). */
+  boiler(b, M, { r = 0.27, h = 1.5 }) {
+    for (let i = 0; i < 3; i++) { const a = i * 2.094; b.cyl(M.steel, Math.sin(a) * r * 0.7, 0, Math.cos(a) * r * 0.7, 0.015, 0.26, 6); }
+    b.cyl(M.steel, 0, 0.24, 0, r * 0.92, 0.04, 22); b.cyl(M.white, 0, 0.28, 0, r, h, 30); b.sph(M.white, 0, 0.28 + h, 0, r, 1, 0.3, 1, 20);
+    return [2 * r, 2 * r];
+  },
   /* Étagères ouvertes : linge plié, paniers. */
   shelves(b, M, { w = 1.2, d = 0.4, h = 2.0, mat = 'oak' }) {
     for (const sx of [-1, 1]) b.box(M[mat], sx > 0 ? w / 2 - 0.02 : -w / 2, 0, -d / 2, sx > 0 ? w / 2 : -w / 2 + 0.02, h, d / 2);
@@ -647,6 +663,14 @@ export const F = {
     b.geo(M.linen, new THREE.ConeGeometry(r, 0.42, 8, 1, true), 0, h - 0.08, 0, 0, PI / 8, 0); b.geo(M.linen, new THREE.ConeGeometry(r * 0.995, 0.418, 8, 1, true), 0, h - 0.083, 0, PI, PI / 8, 0, 1, -1, 1);
     for (let i = 0; i < 8; i++) { const a = (i / 8) * 6.283; b.rod(M.teak, [0, h + 0.1, 0], [Math.sin(a) * r * 0.98, h - 0.29, Math.cos(a) * r * 0.98], 0.008, 4); b.rod(M.teak, [0, h - 0.5, 0], [Math.sin(a) * r * 0.5, h - 0.1, Math.cos(a) * r * 0.5], 0.006, 4); }
     return [0.5, 0.5];
+  },
+  /* Unité extérieure de climatisation (« UNITÉ EXT. » des plans) : caisson clair, grille du ventilateur, pieds. */
+  acUnit(b, M, { w = 0.82, d = 0.32, h = 0.62 }) {
+    for (const sx of [-1, 1]) b.box(M.black, sx * (w / 2 - 0.14) - 0.03, 0, -d / 2, sx * (w / 2 - 0.14) + 0.03, 0.06, d / 2);
+    b.cbox(M.white, 0, 0.06, 0, w, h, d, 0.012);
+    b.geo(M.black, new THREE.CylinderGeometry(h * 0.4, h * 0.4, 0.012, 32), -w * 0.14, 0.06 + h / 2, d / 2 + 0.002, PI / 2, 0, 0);
+    for (let i = 1; i <= 3; i++) b.geo(M.steel, new THREE.TorusGeometry(h * 0.4 * (i / 3.2), 0.004, 4, 28), -w * 0.14, 0.06 + h / 2, d / 2 + 0.01);
+    return [w, d];
   },
   planter(b, M, { w = 1.2, d = 0.4, h = 0.5, plant = 'lavender' }) {
     b.cbox(M.concrete, 0, 0, 0, w, h, d, 0.02);

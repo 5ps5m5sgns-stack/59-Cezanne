@@ -157,6 +157,12 @@ export class Batch {
     const M = new THREE.Matrix4().compose(new THREE.Vector3(x, y, z), new THREE.Quaternion().setFromEuler(new THREE.Euler(rx, ry, rz, 'YXZ')), new THREE.Vector3(sx, sy, sz));
     return this.add(mat, geo, M, /^(Box|Cylinder|Sphere)Geometry$/.test(geo.type) && !(geo.parameters && geo.parameters.openEnded));
   }
+  /* Prisme droit sur un polygone de plan pts = [[x, z], …], entre les cotes y0 et y1 (marches balancées, dallages biais). */
+  prism(mat, pts, y0, y1) {
+    const g = new THREE.ExtrudeGeometry(new THREE.Shape(pts.map(([x, z]) => new THREE.Vector2(x, -z))), { depth: y1 - y0, bevelEnabled: false });
+    g.rotateX(-Math.PI / 2); g.translate(0, y0, 0);
+    return this.add(mat, g, null, true);
+  }
   /* Dalle horizontale mince (sol, plafond) sur le rectangle de plan [x0,z0,x1,z1], face supérieure à la cote y. */
   slab(mat, x0, z0, x1, z1, y, t = 0.02) { return this.box(mat, x0, y - t, z0, x1, y, z1); }
 

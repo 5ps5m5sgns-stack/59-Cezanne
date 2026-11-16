@@ -100,9 +100,18 @@ const JOINERY = {
     b.box(M.steel, -w / 2, 0, -0.012, -w / 2 + 0.1, H, 0.012); b.box(M.steel, w / 2 - 0.1, 0, -0.012, w / 2, H, 0.012);
     for (const z of [-t / 2 - 0.02, t / 2 + 0.008]) { b.box(M.steel, w / 2 + 0.12, 1.0, z, w / 2 + 0.2, 1.2, z + 0.012); b.box(M.led, w / 2 + 0.14, 1.11, z - 0.003, w / 2 + 0.18, 1.15, z + 0.015); b.box(M.screen, -0.14, H + 0.1, z, 0.14, H + 0.19, z + 0.012); }
   },
+  /* Porte coulissante en applique, dessinée ouverte : le vantail est rangé devant le mur, du côté `to` ('a0' | 'a1') de la baie,
+     sur la face `side` (+1 : vers les coordonnées croissantes). Rail noir en tête, habillage chêne de la baie. */
+  slide(b, M, L, w, t, o) {
+    const H = o.head, dir = (o.to === 'a1' ? 1 : -1) * L.s, z = (o.side || 1) * L.z * (t / 2 + 0.024), xc = dir * (w - 0.04);
+    b.box(M.door, -w / 2, 0, -t / 2 - 0.004, -w / 2 + 0.03, H, t / 2 + 0.004); b.box(M.door, w / 2 - 0.03, 0, -t / 2 - 0.004, w / 2, H, t / 2 + 0.004); b.box(M.door, -w / 2, H - 0.03, -t / 2 - 0.004, w / 2, H, t / 2 + 0.004);
+    b.box(M.door, xc - w / 2 - 0.03, 0.01, z - 0.02, xc + w / 2 + 0.03, H + 0.02, z + 0.02);
+    b.box(M.black, Math.min(-w / 2, xc - w / 2) - 0.05, H + 0.02, z - 0.025, Math.max(w / 2, xc + w / 2) + 0.05, H + 0.07, z + 0.025);
+    const hx = xc - dir * (w / 2 - 0.06); for (const s of [-1, 1]) b.box(M.black, hx - 0.012, 0.9, z + s * 0.02 - 0.003, hx + 0.012, 1.15, z + s * 0.02 + 0.003);
+  },
   pass() { },
 };
-const PASSABLE = (o) => o.kind === 'door' || o.kind === 'pass' || o.kind === 'liftdoor' || (o.kind === 'bay' && !o.rail) || (o.kind === 'french' && o.rail === false);
+const PASSABLE = (o) => o.kind === 'door' || o.kind === 'slide' || o.kind === 'pass' || o.kind === 'liftdoor' || (o.kind === 'bay' && !o.rail) || (o.kind === 'french' && o.rail === false);
 
 /* Un mur : k = 'v' (le long de y, à l'abscisse c) ou 'h' (le long de x, à l'ordonnée c). ext = ±1 : côté extérieur. */
 function buildWall(b, M, lv, w) {
@@ -159,14 +168,21 @@ function buildWall(b, M, lv, w) {
 /* Escalier défini par la liste de ses marches (rectangles de plan, dans l'ordre de la montée).
    La dernière contremarche arrive au niveau supérieur. Les marches basses sont pleines, les hautes sont en console. */
 export function buildStair(b, M, st, lv0) {
-  const n = st.steps.length + 1, rise = st.H / n, y0 = lv0.y, c = (r) => [(r[0] + r[2]) / 2, (r[1] + r[3]) / 2];
+  const n = st.steps.length + 1, rise = st.H / n, y0 = lv0.y;
+  const rect = (r) => typeof r[0] === 'number';                 // marche droite [x0, z0, x1, z1] ou marche balancée [[x, z], …]
+  const c = (r) => rect(r) ? [(r[0] + r[2]) / 2, (r[1] + r[3]) / 2] : [r.reduce((s, q) => s + q[0], 0) / r.length, r.reduce((s, q) => s + q[1], 0) / r.length];
   st.steps.forEach((r, i) => {
-    const h = (i + 1) * rise, low = h <= CUT + 0.02;
+    const h = (i + 1) * rise, low = h <= CUT + 0.02, ya = y0 + (low ? 0 : h - rise - 0.1);
     b.on(low ? lv0.layer : lv0.layer + ':top');
-    b.box(M.plaster, r[0], y0 + (low ? 0 : h - rise - 0.1), r[1], r[2], y0 + h - 0.04, r[3]);
-    b.box(M.oak, r[0] - 0.012, y0 + h - 0.04, r[1] - 0.012, r[2] + 0.012, y0 + h, r[3] + 0.012);
+    if (rect(r)) { b.box(M.plaster, r[0], ya, r[1], r[2], y0 + h - 0.04, r[3]); b.box(M.oak, r[0] - 0.012, y0 + h - 0.04, r[1] - 0.012, r[2] + 0.012, y0 + h, r[3] + 0.012); }
+    else { b.prism(M.plaster, r, ya, y0 + h - 0.04); b.prism(M.oak, r, y0 + h - 0.04, y0 + h); }
   });
-  st.path = [[...st.foot, 0], [...st.trig0, 0], ...st.steps.map((r, i) => [...c(r), (i + 1) * rise]), [...st.trig1, st.H], [...st.head, st.H]];
+  if (st.core) {                                                // mur d'échiffre entre les volées, prolongé en garde-corps plein à l'étage
+    const k = st.core;
+    b.on(lv0.layer); b.box(M.plaster, k[0], y0, k[1], k[2], y0 + st.H, k[3]);
+    b.on('L1'); b.box(M.plaster, k[0], y0 + st.H, k[1], k[2], y0 + st.H + 1.0, k[3]); b.box(M.oak, k[0] - 0.01, y0 + st.H + 1.0, k[1] - 0.01, k[2] + 0.01, y0 + st.H + 1.03, k[3] + 0.01);
+  }
+  st.path = [[...st.foot, 0], [...st.trig0, 0], ...(st.line || st.steps.map(c)).map((p, i) => [p[0], p[1], (i + 1) * rise]), [...st.trig1, st.H], [...st.head, st.H]];
 }
 
 /* Cabine de l'ascenseur privatif, dessinée à chaque niveau : sol en pierre sombre, parois inox, miroir, main courante, plafonnier. */

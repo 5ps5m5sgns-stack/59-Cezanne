@@ -14,7 +14,7 @@ export const SITE = {
   /* Emprise des deux logements à vendre, pour les repérer sur la vue d'ensemble : [x0, y0, z0, x1, y1, z1]. */
   lots: {
     villa: { boxes: [[0, 2.9, 0, 17.39, 5.82, 9.37]], at: [8.7, 6.4, 4.7] },
-    duplex: { boxes: [[5.06, 0, 13.15, 17.39, 2.9, 25.63], [9.05, 2.9, 13.15, 17.39, 5.82, 25.63]], at: [14.6, 6.4, 19.4] },
+    duplex: { boxes: [[5.06, 0, 13.15, 17.39, 2.9, 25.88], [9.05, 2.9, 13.15, 17.39, 5.82, 25.88]], at: [14.6, 6.4, 19.4] },
   },
 };
 
@@ -57,15 +57,15 @@ export function buildSite(b, M, { o, skip }) {
   // Les volumes s'arrêtent sous les planchers des logements détaillés : jamais deux surfaces dans le même plan (le parquet scintillerait).
   const y0 = -0.31, y1 = FH - 0.31;
   box('stucco', 0, y0, 0, W, y1, 9.37 - G); box('stucco', 9.6, y0, 9.37, W, y1, 11.4);                     // logement 01
-  box('stucco', 0, y0, 9.37, 9.6, y1, 13.14); box('stucco', 0, y0, 13.14, 5.06 - G, y1, 25.64); box('stucco', 9.6, y0, 11.4, W, y1, 13.15 - G);   // caves, hall, escalier
-  if (has('duplex')) box('stucco', 5.06, y0, 13.15, W, y1, 25.63);                                          // duplex 02 et 03
-  box('stucco', 0, y0, 25.63 + G, W, y1, L);                                                                // logement 04
+  box('stucco', 0, y0, 9.37, 9.6, y1, 13.14); box('stucco', 0, y0, 13.14, 5.06 - G, y1, 25.89); box('stucco', 9.6, y0, 11.4, W, y1, 13.15 - G);   // caves, hall, escalier
+  if (has('duplex')) box('stucco', 5.06, y0, 13.15, W, y1, 25.88);                                          // duplex 02 et 03
+  box('stucco', 0, y0, 25.88 + G, W, y1, L);                                                                // logement 04
   if (has('villa')) box('stucco', 0, y1, 0, W, EAVE, 9.37);                                                 // logement 08
-  box('stucco', 0, y1, 9.37 + G, 5.06 - G, EAVE, 25.64); box('stucco', 5.06 - G, y1, 9.37 + G, 9.05 - G, EAVE, 13.15 - G);   // logements 06 et 07
-  box('stucco', 5.06 - G, has('duplex') ? y1 : FH - 0.02, 13.15 - G, 9.05 - G, EAVE, 25.64);               // …au-dessus du fond des duplex
+  box('stucco', 0, y1, 9.37 + G, 5.06 - G, EAVE, 25.89); box('stucco', 5.06 - G, y1, 9.37 + G, 9.05 - G, EAVE, 13.15 - G);   // logements 06 et 07
+  box('stucco', 5.06 - G, has('duplex') ? y1 : FH - 0.02, 13.15 - G, 9.05 - G, EAVE, 25.89);               // …au-dessus du fond des duplex
   box('stucco', 9.05, y1, 9.37 + G, W, EAVE, 13.15 - G);                                                    // circulation
-  if (has('duplex')) box('stucco', 9.05, y1, 13.15, W, EAVE, 25.63);
-  box('stucco', 0, y1, 25.63 + G, W, EAVE, L);                                                              // logement 05
+  if (has('duplex')) box('stucco', 9.05, y1, 13.15, W, EAVE, 25.88);
+  box('stucco', 0, y1, 25.88 + G, W, EAVE, L);                                                              // logement 05
   box('socle', -0.02, -3.3, -0.02, W + 0.02, y0, L + 0.02);                                                 // soubassement (garage, caves)
 
   // ── Façades : un « cadre » métallique par logement, vitrage sombre, volets coulissants, garde-corps ──
@@ -127,12 +127,12 @@ export function buildSite(b, M, { o, skip }) {
 
   // ── Jardins des duplex à l'Est, puis terrasse de la piscine 1,30 m plus bas ──
   if (has('duplex')) {
-    box('socle', W, -0.3, 13.15, 22.31, -0.1, 25.63); box('terrace', W, -0.1, 13.15, 20.0, -0.015, 25.63); box('grass', 20.0, -0.1, 13.15, 22.31, -0.02, 25.63);
+    box('socle', W, -0.3, 13.15, 22.31, -0.1, 25.88); box('terrace', W, -0.1, 13.15, 20.0, -0.015, 25.88); box('grass', 20.0, -0.1, 13.15, 22.31, -0.02, 25.88);
     for (const z of [13.2, 19.39, 25.3]) V.hedge(b, M, W + 0.3, z - 0.25, 22.3, z + 0.25, { h: 1.5, y: -0.03 });
-    box('stone', 22.31, -1.3, 13.15, 22.71, 0.45, 25.63); railing(b, M, 22.5, 13.2, 22.5, 25.6, 0.45, 0.6, 'cadre');
+    box('stone', 22.31, -1.3, 13.15, 22.71, 0.45, 25.88); railing(b, M, 22.5, 13.2, 22.5, 25.6, 0.45, 0.6, 'cadre');
     for (const z of [16.3, 22.5]) { b.push(19.0, -0.015, z, 0); F.outdoorTable(b, M, { w: 1.5, d: 1.5, n: 2, ends: true }); b.pop(); }
   }
-  box('socle', W, -0.3, 25.63, 22.71, -0.1, L + 0.02); box('terrace', W, -0.1, 25.63, 22.31, -0.015, L); box('stone', 22.31, -1.3, 25.63, 22.71, 0.45, 41.4);   // terrasse du logement 04
+  box('socle', W, -0.3, 25.88, 22.71, -0.1, L + 0.02); box('terrace', W, -0.1, 25.88, 22.31, -0.015, L); box('stone', 22.31, -1.3, 25.88, 22.71, 0.45, 41.4);   // terrasse du logement 04
   box('stone', 22.31, -1.3, 9.62, 22.71, 0.45, 13.15); box('earth', W, -3.3, 9.6, 22.31, -0.3, 41.4); box('terrace', W, -0.3, 9.62, 22.31, -0.02, 13.15);   // parvis de l'entrée
   box('terrace', 22.71, -1.6, 9.62, 33.4, -1.3, 29.6);                                                                           // plage en travertin
   box('wallTile', 26.75, -1.3, 14.95, 33.25, -1.27, 27.75); box('water', 27.0, -1.36, 15.2, 33.0, -1.265, 27.5);                 // bassin de 6 × 12,3 m

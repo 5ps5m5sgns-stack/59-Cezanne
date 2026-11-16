@@ -473,7 +473,7 @@ class App {
     const st = this.apt.stair;
     if (st && !w.climbing && !this.fly) {
       const m = w.level === 0 ? st.m0 : st.m1;
-      if (w.x > m[0] && w.x < m[1] && w.z < m[2]) { const then = w.onArrive; w.onArrive = null; this.climb(w.level === 0, then); }
+      if (w.x > m[0] && w.z > m[1] && w.x < m[2] && w.z < m[3]) { const then = w.onArrive; w.onArrive = null; this.climb(w.level === 0, then); }
     }
     // cabine de l'ascenseur : y entrer change de niveau
     const lf = this.apt.lift;

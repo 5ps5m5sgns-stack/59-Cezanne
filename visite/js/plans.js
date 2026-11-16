@@ -3,13 +3,13 @@
    l'angle intérieur du logement. `north` donne la rotation à appliquer pour retrouver l'orientation réelle
    (la Sainte-Victoire est à l'Est).
 
-   Source : plans de pré-commercialisation de l'architecte (dossier 050-APC, indice D, 17/02/2025), cotes en centimètres
-   reportées telles quelles ; surfaces des pièces = tableau du plan (indicatives, tolérance de 5 %).
-   - Appartement-villa (logement 08) : 137,5 m², jardin 82,1 m². Séjour à l'Ouest sur le jardin, chambres à l'Est.
-   - Duplex de 206 m² : logements 02 (103,2 m²) et 03 (103,6 m²) réunis. Chaque moitié suit son plan ; le logement 03
-     est le symétrique du 02. Seules adaptations, signalées dans la page : mur mitoyen ouvert entre les deux séjours,
-     seconde cuisine remplacée par la salle à manger, second escalier remplacé par l'ascenseur privatif, les deux WC
-     de l'étage ouverts en passage, une chambre recoupée en dressing et salle de bains de la suite parentale.
+   Sources : les deux plans de vente de l'architecte, et eux seuls.
+   - Appartement-villa : « Logement 08, niveau 1 », indice C du 29/04/2024 (137,9 m², jardin 82,1 m²). Chambres 1 et 2 et bureau
+     à l'Ouest sur le jardin, suite avec dressing et salle de bains, séjour à l'Est sur le balcon.
+   - Duplex : « Logement 02 - V4 » (niveau 1 : entrée, séjours, cuisine, arrière-cuisine, buanderie, WC ; niveau 2 : trois chambres,
+     deux salles de bains, WC), escalier balancé au centre, ascenseur privatif au centre de la moitié Sud.
+   Les cotes imprimées sur les plans sont reportées telles quelles (en centimètres sur les plans, en mètres ici) ; ce qui n'est pas
+   coté est mesuré sur le plan. Surfaces des pièces = tableau du plan (indicatives).
    Illustrations non contractuelles. */
 import * as THREE from 'three';
 import { V } from 'v3d/furniture';
@@ -52,118 +52,120 @@ function pool(b, M, x0, z0, x1, z1, y) {
   }
 }
 
-/* Marches d'un escalier tournant autour d'un vide : montée le long de x=[xa0,xa1] vers les y décroissants,
-   retour le long du mur du fond, descente... en fait montée finale le long de x=[xb0,xb1] vers les y croissants.
-   Si `flip` vaut D, l'escalier est retourné par symétrie (y -> D - y). */
-function windingStair(xa0, xa1, xb0, xb1, yFoot, yBack, H) {
-  const steps = [], w = yFoot - (yBack + (xa1 - xa0)), ta = w / 4, tb = (xb0 - xa1) / 5, yc = yBack + (xa1 - xa0);
-  for (let i = 0; i < 4; i++) steps.push([xa0, yFoot - (i + 1) * ta, xa1, yFoot - i * ta]);
-  steps.push([xa0, yBack, xa1, yc]);
-  for (let i = 0; i < 5; i++) steps.push([xa1 + i * tb, yBack, xa1 + (i + 1) * tb, yc]);
-  steps.push([xb0, yBack, xb1, yc]);
-  for (let i = 0; i < 4; i++) steps.push([xb0, yc + i * ta, xb1, yc + (i + 1) * ta]);
-  const xa = (xa0 + xa1) / 2, xb = (xb0 + xb1) / 2;
-  return { steps, H, foot: [xa, yFoot + 0.75], trig0: [xa, yFoot], trig1: [xb, yFoot], head: [xb, yFoot + 0.8], m0: [xa0 + 0.08, xa1 - 0.08, yFoot - 0.04], m1: [xb0 + 0.08, xb1 - 0.08, yFoot - 0.04] };
-}
-
 /* ════════════════════════════════════════════════════════════════════════════════════════════
-   1. APPARTEMENT-VILLA — logement 08, niveau 1 : T4, 3 chambres, 2 salles de bains, 137,5 m², jardin 82,1 m²
-   x : de la façade Ouest sur le jardin (0) à la façade Est (16,69) ; y : de la façade Nord (0) au mur Sud (8,67).
-   Le plan est orienté comme celui de l'architecte : Nord en haut, la Sainte-Victoire à droite.
+   1. APPARTEMENT-VILLA — plan « Logement 08, niveau 1 », indice C du 29/04/2024 : T4, 3 chambres, 2 salles de bains,
+      137,9 m², jardin 82,1 m².
+   x : de la face intérieure de la façade Ouest sur le jardin (0) à celle de la façade Est (16,68) ;
+   y : de la face intérieure de la façade Nord (0) à celle du mur Sud (8,67). Nord en haut, la Sainte-Victoire à droite.
+   Cotes imprimées reportées telles quelles : 326 / 8 / 312 / 8 / 180 / 10 / 824 au Nord ; 29 / 297 / 10 / 139 / 111 / 147 / 58 / 150 / 8
+   le long du couloir ; 326 / 10 / 240 / 10 / 287 / 8 / 736 / 51 au Sud ; 342 / 8 / 181 / 10 / 326 à l'Ouest ; couloir de 96,
+   placards de 60, dressing de 288, salle de bains 2 de 174, WC de 90. Le reste est mesuré sur le plan.
    ════════════════════════════════════════════════════════════════════════════════════════════ */
-const VW = 16.69, VD = 8.67, T = 0.08;
+const VW = 16.68, VD = 8.67, T = 0.08, CN = 4.15, CS = 5.11;      // CN, CS : rives Nord et Sud du couloir (96 cm)
 const villa = {
-  id: 'villa', bien: '138', north: 0, groundY: -6.5, hour: 18.75, site: { key: 'villa', o: [0.35, 2.9, 0.35] },
+  id: 'villa', bien: '138', north: 0, groundY: -6.5, hour: 9.5, site: { key: 'villa', o: [0.35, 2.9, 0.35] },
   name: { fr: 'Appartement-villa', en: 'Villa-style apartment' },
   facts: { fr: '4 pièces · 138 m² · jardin de 82 m²', en: '4 rooms · 138 m² · 82 m² garden' },
-  pitch: { fr: 'Au premier et dernier étage : le séjour de plain-pied avec le jardin, la chambre parentale face à la Sainte-Victoire.', en: 'On the first and top floor: the living room level with the garden, the master bedroom facing the Sainte-Victoire.' },
+  pitch: { fr: 'Au premier et dernier étage : un séjour de 46 m² tourné vers la Sainte-Victoire, deux chambres et un bureau de plain-pied avec le jardin, une suite avec dressing et salle de bains.', en: 'On the first and top floor: a 46 m² living room facing the Sainte-Victoire, two bedrooms and a study level with the garden, a suite with dressing room and bathroom.' },
   levels: [{
     id: 'n1', name: { fr: 'Niveau 1', en: 'Level 1' }, y: 0, h: 2.6,
-    bounds: [-9.6, -0.9, 17.9, 9.4], walkable: [[-9.1, -0.3, VW, VD + 0.3]],
-    floors: [['floor', 0, 0, VW, VD], ['tile', 4.88, 5.78, 7.38, VD], ['tile', 9.33, 6.41, 10.28, VD], ['tile', 10.48, 6.4, 13.86, VD], ['tile', 13.94, 6.44, VW, VD], ['tile', 15.01, 5.4, VW, 6.44], ['tile', 12.84, 6.4, 13.94, 7.41]],
-    slabs: [[-E, -E, VW + E + 0.6, VD + E, 0.3]],
+    bounds: [-11.6, -1.3, 18.0, 9.6], walkable: [[-8.6, -0.25, VW, VD + 0.25]],
+    floors: [['floor', 0, 0, VW, VD], ['tile', 6.54, 0, 8.34, 2.19], ['tile', 6.54, 2.29, 8.34, CN - T], ['tile', 5.86, 5.99, 7.33, VD], ['tile', 7.33, 6.13, 8.73, VD],
+      ['tile', 7.91, CS + 0.04, 9.41, 6.05], ['tile', 8.81, 6.05, 9.41, 6.59]],
+    slabs: [[-E, -E, VW + E, VD + E, 0.3]],
     ceilings: [[0, 0, VW, VD]],
     walls: [
-      // façades : baie du séjour et porte de la cuisine sur le jardin (Ouest), quatre portes-fenêtres au Nord, baie de la chambre 1 et porte-fenêtre de la salle de bains à l'Est
-      wv(-E / 2, 0, VD, E, -1, [op(1.1, 5.05, 'bay', { panels: 3, open: true, head: 2.35 }), op(6.75, 7.7, 'french', { rail: false, head: 2.3 })]),
-      wh(-E / 2, -E, VW + E, E, -1, [op(2.71, 3.99, 'french', { head: 2.3 }), op(5.31, 6.59, 'french', { head: 2.3 }), op(7.91, 9.19, 'french', { head: 2.3 }), op(11.76, 13.04, 'french', { head: 2.3 })]),
-      wv(VW + E / 2, 0, VD, E, 1, [op(0.65, 4.6, 'bay', { panels: 3, rail: true, head: 2.35 }), op(5.95, 7.2, 'french', { head: 2.3 })]),
-      wh(VD + E / 2, -E, VW + E, E, 1, [op(8.16, 9.12, 'entry', { head: 2.15 })]),
-      // chambres 3 et 2
-      wv(7.24, 0, 4.59, T), wh(4.55, 7.2, 10.28, T, 0, [op(9.36, 10.2, 'door', { hinge: 'a1', swing: -1 })]),
-      wv(10.38, 0, 4.59, 0.2), wh(4.55, 10.48, 11.5, T, 0, [op(10.58, 11.42, 'door', { hinge: 'a0', swing: -1 })]),
-      wh(3.79, 11.5, 13.56, T), wv(13.52, 0, 3.83, T),
-      // suite parentale : porte, passage-dressing, penderie, salle de bains
-      wv(11.54, 3.75, 6.4, T, 0, [op(4.72, 5.62, 'door', { hinge: 'a1', swing: 1 })]),
-      wv(13.94, 3.79, 4.45, T), wv(13.94, 5.7, 6.4, T), wv(14.97, 4.7, 6.44, T), wh(4.72, 14.97, VW, T), wh(5.36, 14.97, VW, T),
-      wh(6.4, 13.9, 15.0, T, 0, [op(14.06, 14.9, 'door', { hinge: 'a0', swing: 1 })]),
-      wv(12.8, 6.36, 7.45, T), wh(7.45, 12.8, 13.94, T), wv(13.9, 7.45, VD, T),
-      // salle d'eau, WC, entrée, buanderie
-      wh(6.36, 10.48, 13.94, T, 0, [op(10.6, 11.4, 'door', { hinge: 'a0', swing: 1 })]),
-      wv(10.38, 5.7, VD, 0.2), wh(6.37, 9.33, 10.28, T), wv(9.28, 5.7, VD, 0.1, 0, [op(7.45, 8.3, 'door', { hinge: 'a0', swing: 1, open: 172 })]),
-      wv(7.43, 5.74, VD, 0.1, 0, [op(7.45, 8.3, 'door', { hinge: 'a0', swing: -1, open: 172 })]), wh(5.74, 4.78, 7.48, T), wv(7.65, 5.7, 6.15, 0.5),
-      wv(4.83, 5.7, VD, 0.1, 0, [op(7.45, 8.3, 'door', { hinge: 'a0', swing: 1, open: 172 })]),
+      // façades : trois portes-fenêtres sur le jardin (Ouest) ; au Nord, chambre 3, buanderie, cuisine et baie du séjour sur le balcon ;
+      // à l'Est, baie coulissante de 3,97 m et porte-fenêtre du séjour ; porte palière au Sud
+      wv(-E / 2, 0, VD, E, -1, [op(1.08, 2.34, 'french', { rail: false, head: 2.3 }), op(3.68, 4.97, 'french', { rail: false, head: 2.3 }), op(6.32, 7.6, 'french', { rail: false, head: 2.3 })]),
+      wh(-E / 2, -E, VW + E, E, -1, [op(4.68, 5.92, 'french', { rail: false, head: 2.3 }), op(7.25, 7.79, 'french', { rail: false, head: 2.3 }), op(9.16, 10.43, 'french', { rail: false, head: 2.3 }),
+        op(13.29, 15.7, 'bay', { panels: 2, head: 2.35 })]),
+      wv(VW + E / 2, 0, VD, E, 1, [op(0.67, 4.64, 'bay', { panels: 3, open: true, head: 2.35 }), op(5.99, 7.25, 'french', { rail: false, head: 2.3 })]),
+      wh(VD + E / 2, -E, VW + E, E, 1, [op(9.57, 10.46, 'entry', { head: 2.15 })]),
+      // chambre 2 (porte sur le bureau), chambre 3, buanderie et salle de bains 2, cuisine
+      wv(3.3, 0, CN - T, T), wv(6.5, 0, CN - T, T), wv(8.39, 0, 3.33, 0.1, 0, [op(0.05, 0.86, 'door', { hinge: 'a0', swing: -1, open: 90 })]),
+      wh(3.46, 0, 3.26, T, 0, [op(0.04, 0.82, 'door', { hinge: 'a0', swing: -1, open: 90 })]), wh(2.24, 6.54, 8.34, 0.1),
+      // rive Nord du couloir : portes de la chambre 3 et de la salle de bains 2, niche du tableau électrique
+      wh(CN - T / 2, 3.26, 8.33, T, 0, [op(3.41, 4.22, 'door', { hinge: 'a0', swing: -1, open: 90 }), op(6.6, 7.35, 'door', { hinge: 'a0', swing: -1, open: 90 })]),
+      wh(3.83, 8.81, 9.49, T), wv(9.45, 3.79, CN, T),
+      // bureau et chambre 1
+      wh(5.36, 0.29, 3.26, 0.1),
+      // suite : cloisons de la chambre 1, du dressing et de la salle de bains 1, portes coulissantes
+      wv(3.31, CS, VD, 0.1, 0, [op(7.03, 7.9, 'slide', { to: 'a0', side: 1 })]), wv(5.81, CS, VD, 0.1, 0, [op(7.05, 7.88, 'slide', { to: 'a0', side: -1 })]),
+      // rive Sud du couloir : placards de 60 de part et d'autre de la porte du dressing
+      wh(5.75, 3.36, 4.75, T), wh(5.85, 5.86, 7.33, 0.28), wv(4.79, CS, 5.79, T), wh(CS + 0.04, 4.83, 5.76, T, 0, [op(4.87, 5.65, 'door', { hinge: 'a1', swing: 1, open: 90 })]),
+      // WC : porte coulissante sur le couloir, lave-mains en alcôve ; placard de l'entrée dessous
+      wh(CS + 0.04, 7.91, 9.41, T, 0, [op(8.54, 9.38, 'slide', { to: 'a0', side: -1 })]), wv(9.45, CS, 6.67, T), wh(6.09, 7.91, 8.81, T), wh(6.63, 8.73, 9.49, T), wv(8.77, 6.13, VD, T),
     ],
-    rails: [[VW + E + 0.55, -0.6, VW + E + 0.55, 7.35], [VW + E, 7.35, VW + E + 0.55, 7.35], [VW + E, -0.6, VW + E + 0.55, -0.6]],
+    rails: [[VW + E + 0.47, -E - 0.47, VW + E + 0.47, 7.33], [VW + E, 7.33, VW + E + 0.47, 7.33], [4.57, -E - 0.47, VW + E + 0.47, -E - 0.47], [4.57, -E, 4.57, -E - 0.47]],
     items: [
-      // séjour (40,7 m²)
-      ['diningTable', 1.55, 3.1, 0, { w: 1.5, round: true, top: 'glassSmoke', n: 6, chairMat: 'terra' }], ['pendant', 1.55, 3.1, 20, { kind: 'ring', drop: 0.9 }],
-      ['rug', 4.95, 2.4, 0, { w: 2.6, d: 3.2 }], ['sofa', 3.76, 2.92, 90, { w: 2.85, d: 0.92, chaise: 'L', cl: 0.72, cw: 0.83 }],
-      ['coffeeRect', 5.06, 2.5, 90, { w: 1.2, d: 0.7 }], ['armchair', 5.65, 3.9, 315, { mat: 'walnut' }],
-      ['tvWall', 7.2, 2.48, 270, { w: 2.6, tv: 1.4 }], ['floorLamp', 6.75, 0.5, 0, {}], ['plant', 0.45, 0.5, 0, { h: 1.15, kind: 'snake', pot: 0.19 }], ['plant', 0.45, 5.32, 0, { h: 1.0, kind: 'snake', pot: 0.17 }],
-      ['curtain', 0.1, 0.95, 90, { w: 0.5 }], ['curtain', 0.1, 4.85, 90, { w: 0.5 }], ['picture', 5.6, 5.695, 180, { w: 1.1, h: 1.3, mat: 'art1' }],
-      // cuisine (13,3 m²) : linéaire au Sud, retour avec évier double côté séjour
-      ['kitchenRun', 1.95, 8.35, 180, { w: 3.9, hob: 0.45, upper: true, splash: true }], ['kitchenTall', 4.33, 8.35, 180, { w: 0.86 }],
-      ['kitchenRun', 1.87, 6.12, 0, { w: 3.15, d: 0.67, sink: -0.35 }], ['pendant', 2.35, 6.0, 0, { kind: 'rings3', drop: 0.75 }], ['stool', 2.05, 5.55, 0, {}], ['stool', 2.75, 5.55, 0, {}],
-      // buanderie (7,2 m²) et entrée (10,4 m²)
-      ['wardrobe', 6.13, 6.09, 0, { w: 2.4, d: 0.58, mat: 'lacquer' }], ['washer', 5.55, 8.36, 180, { n: 2 }], ['shelves', 6.75, 8.45, 180, { w: 1.0, d: 0.36 }],
-      ['wardrobe', 9.8, 6.03, 180, { w: 0.92, d: 0.6, mat: 'lacquer' }], ['pendant', 8.55, 6.9, 0, { kind: 'globe', drop: 0.5 }],
-      // WC (2,2 m²)
-      ['toilet', 9.8, 8.33, 180, {}], ['basin', 9.85, 6.56, 0, { w: 0.4 }],
-      // salle d'eau (6,5 m²)
-      ['vanity', 11.25, 8.42, 180, { w: 1.4, double: true }], ['toilet', 12.47, 6.95, 270, {}], ['shower', 13.38, 8.08, 270, { w: 1.14, d: 0.95, glass: ['front'] }], ['towelRail', 12.0, 6.41, 0, {}],
-      // chambre 1 — suite parentale (22,7 m² avec son passage-dressing)
-      ['bed', 14.62, 1.89, 90, { w: 1.8, l: 2.0, hw: 0.7 }], ['rug', 15.3, 1.9, 0, { w: 2.2, d: 2.9, mat: 'rug' }], ['armchair', 15.95, 4.1, 205, { mat: 'sand' }], ['picture', 14.6, 0.005, 0, { w: 0.9, h: 1.1, mat: 'art3', frame: 'brass' }],
-      ['curtain', 16.6, 0.42, 270, { w: 0.4 }], ['wardrobe', 15.85, 5.04, 180, { w: 1.66, d: 0.58 }],
-      ['wardrobe', 12.75, 4.14, 0, { w: 2.3, d: 0.6 }], ['wardrobe', 12.75, 6.03, 180, { w: 2.3, d: 0.58 }],
-      // salle de bains (9,2 m²)
-      ['vanity', 15.85, 5.66, 0, { w: 1.5, double: true }], ['bathtub', 15.55, 8.15, 90, { free: true, w: 0.8, l: 1.75 }], ['shower', 13.36, 6.9, 90, { w: 1.0, d: 1.0, glass: ['front'] }], ['towelRail', 13.99, 7.9, 90, {}],
-      // chambres 2 (12,0 m²) et 3 (13,3 m²)
-      ['bed', 12.5, 1.75, 270, { w: 0.9, l: 2.0, nights: false, hw: 0.06, throwMat: 'sage' }], ['wardrobe', 12.5, 3.45, 180, { w: 1.95, d: 0.58 }],
-      ['bed', 8.31, 1.75, 90, { w: 0.9, l: 2.0, nights: false, hw: 0.06, throwMat: 'ochre' }], ['wardrobe', 8.2, 4.19, 180, { w: 1.8, d: 0.62 }],
+      // 1 — entrée : placard à portes pliantes, meuble bas en limite du séjour
+      ['wardrobe', 9.135, 7.67, 90, { w: 2.0, d: 0.65, mat: 'lacquer' }], ['sideboard', 11.1, 7.795, 270, { w: 1.65, d: 0.34, h: 0.85, mat: 'walnut' }],
+      // 2 — séjour : table de huit au Nord, canapé face au meuble TV du mur Sud, fauteuil, table basse
+      ['diningTable', 14.3, 2.27, 0, { w: 2.35, d: 1.13, n: 3, ends: true }], ['pendant', 14.3, 2.27, 0, { kind: 'rail', n: 5, span: 0.42, drop: 1.0 }],
+      ['rug', 14.13, 6.89, 0, { w: 3.27, d: 2.46 }], ['sofa', 14.0, 5.44, 0, { w: 2.21, d: 1.02 }], ['armchair', 12.32, 7.14, 90, { mat: 'walnut' }],
+      ['coffeeRect', 14.12, 7.1, 0, { w: 1.15, d: 0.69, oval: false }], ['dresser', 14.13, 8.44, 180, { w: 1.7, d: 0.46, h: 0.5, mat: 'walnut' }], ['duct', 16.425, 8.48, 0, { w: 0.51, d: 0.38 }],
+      ['curtain', VW - 0.1, 0.38, 270, { w: 0.5 }], ['curtain', VW - 0.1, 4.95, 270, { w: 0.5 }],
+      // 3 — cuisine : évier double et réfrigérateur côté buanderie, îlot avec plaque et trois tabourets côté séjour
+      ['kitchenRun', 8.755, 1.755, 90, { w: 1.67, d: 0.63, sink: 0, upper: true, splash: true, deco: false }], ['fridge', 8.79, 2.945, 90, { w: 0.7, d: 0.7 }],
+      ['island', 11.19, 2.535, 90, { w: 2.63, d: 1.08, over: 0.46, hob: 0, stools: 3 }], ['pendant', 11.0, 2.535, 90, { kind: 'cone', n: 3, span: 0.75, drop: 0.85 }],
+      ['duct', 8.57, 3.7, 0, { w: 0.48, d: 0.74 }], ['wardrobe', 9.13, 4.01, 0, { w: 0.6, d: 0.26, h: 2.1, mat: 'lacquer' }], ['duct', 10.96, 3.955, 0, { w: 0.62, d: 0.33 }],
+      // 4 — buanderie : lave-linge et sèche-linge au Sud, chauffe-eau dans l'angle
+      ['washer', 7.215, 1.87, 180, { n: 2 }], ['boiler', 8.06, 1.88, 0, {}],
+      // 13 — salle de bains 2 : douche dans l'angle Nord-Est, vasque à l'Est
+      ['shower', 7.94, 2.69, 0, { w: 0.8, d: 0.78, glass: ['left'] }], ['vanity', 8.115, 3.68, 270, { w: 0.55, d: 0.45, double: false, mirrorH: 0.7 }],
+      // 11 — chambre 2 : lit d'une personne le long du mur Nord, penderie au Sud
+      ['bed', 2.13, 0.5, 270, { w: 0.9, l: 2.0, nights: false, hw: 0.06, throwMat: 'sage' }], ['sideTable', 2.98, 1.2, 0, { r: 0.2, h: 0.5, mat: 'oak' }], ['wardrobe', 2.285, 3.115, 180, { w: 1.89, d: 0.61 }],
+      // 12 — chambre 3 : lit d'une personne tête à l'Est, penderie au Sud
+      ['bed', 5.4, 1.45, 270, { w: 0.9, l: 2.0, nights: false, hw: 0.06, throwMat: 'ochre' }], ['sideTable', 6.28, 2.15, 0, { r: 0.16, h: 0.5, mat: 'oak' }], ['wardrobe', 5.41, 3.765, 180, { w: 2.0, d: 0.61 }],
+      // 6 — bureau : plan de travail de 2,05 m contre la chambre 2, deux assises ; gaine dans l'angle
+      ['desk', 2.255, 3.795, 0, { w: 2.05, d: 0.55, top: 'oak', chair: 'greige' }], ['stool', 1.55, 4.3, 0, { mat: 'greige', h: 0.46 }], ['duct', 0.145, 5.395, 0, { w: 0.29, d: 0.65 }],
+      // 5 — couloir : deux placards
+      ['wardrobe', 4.055, CS + 0.3, 180, { w: 1.39, d: 0.6, mat: 'lacquer' }], ['wardrobe', 6.595, CS + 0.3, 180, { w: 1.47, d: 0.6, mat: 'lacquer' }], ['duct', 7.62, 5.62, 0, { w: 0.58, d: 1.02 }],
+      // 7 — chambre 1 : lit de 140 tête au Nord
+      ['bed', 1.62, 6.5, 0, { w: 1.4, l: 2.0, hw: 0.4 }],
+      // 8 — dressing : coiffeuse au Nord, penderie de 2,40 m au Sud
+      ['vanityTable', 4.09, 6.03, 0, { w: 1.45, d: 0.48 }], ['wardrobe', 4.56, 8.385, 180, { w: 2.4, d: 0.57 }],
+      // 9 — salle de bains 1 : WC et sèche-serviettes au Nord, douche sous le WC du couloir, baignoire à l'Est, double vasque au Sud
+      ['toilet', 6.27, 6.32, 0, {}], ['towelRail', 6.93, 6.0, 0, {}], ['shower', 8.17, 6.54, 0, { w: 1.12, d: 0.78, glass: ['front'] }],
+      ['bathtub', 8.36, 7.85, 0, { w: 0.72, l: 1.62 }], ['vanity', 6.63, 8.425, 180, { w: 1.57, d: 0.49, double: true }],
+      // 10 — WC : cuvette contre la gaine, lave-mains en alcôve
+      ['toilet', 8.24, 5.6, 90, {}], ['basin', 9.11, 6.44, 180, { w: 0.42 }],
     ],
     rooms: [
-      { id: 'entree', fr: 'Entrée', en: 'Entrance', m2: 10.4, rs: [[7.48, 5.78, 9.23, VD], [7.28, 4.59, 11.5, 5.7]], at: [8.55, 5.2], cam: { p: [7.65, 5.2], t: [2.5, 4.3] } },
-      { id: 'sejour', fr: 'Séjour', en: 'Living room', m2: 40.7, rs: [[0, 0, 7.2, 5.72]], at: [3.6, 2.8], cam: { p: [6.3, 4.9], t: [1.2, 1.6] } },
-      { id: 'cuisine', fr: 'Cuisine', en: 'Kitchen', m2: 13.3, rs: [[0, 5.72, 4.78, VD]], at: [2.3, 7.3], cam: { p: [4.2, 7.25], t: [0.8, 7.5] } },
-      { id: 'buanderie', fr: 'Buanderie', en: 'Laundry', m2: 7.2, rs: [[4.88, 5.78, 7.38, VD]], at: [6.1, 7.2], cam: { p: [6.9, 7.2], t: [5.5, 8.6], pitch: -0.25 }, minor: true },
-      { id: 'wc', fr: 'WC', en: 'WC', m2: 2.2, rs: [[9.33, 6.41, 10.28, VD]], at: [9.8, 7.5], cam: { p: [9.8, 7.15], t: [9.8, 8.6], pitch: -0.42 }, minor: true },
-      { id: 'sde', fr: 'Salle d\'eau', en: 'Shower room', m2: 6.5, rs: [[10.48, 6.4, 12.8, VD], [12.8, 7.45, 13.86, VD]], at: [11.6, 7.5], cam: { p: [11.1, 7.0], t: [12.8, 8.5], pitch: -0.22 } },
-      { id: 'suite', fr: 'Chambre 1', en: 'Bedroom 1', m2: 22.7, rs: [[13.56, 0, VW, 4.7], [11.58, 4.45, 14.97, 5.7]], at: [15.1, 2.4], cam: { p: [14.2, 4.3], t: [15.3, 0.8], pitch: -0.22 } },
-      { id: 'sdb', fr: 'Salle de bains', en: 'Bathroom', m2: 9.2, rs: [[13.94, 6.44, VW, VD], [15.01, 5.4, VW, 6.44], [12.84, 6.4, 13.9, 7.41]], at: [15.3, 7.4], cam: { p: [14.35, 6.8], t: [16.3, 8.2], pitch: -0.3 } },
-      { id: 'ch2', fr: 'Chambre 2', en: 'Bedroom 2', m2: 12.0, rs: [[10.48, 0, 13.48, 3.75], [10.48, 3.75, 11.5, 4.55]], at: [12.0, 1.9], cam: { p: [10.85, 3.3], t: [13.0, 0.8], pitch: -0.16 } },
-      { id: 'ch3', fr: 'Chambre 3', en: 'Bedroom 3', m2: 13.3, rs: [[7.28, 0, 10.28, 3.75], [9.3, 3.75, 10.28, 4.55]], at: [8.8, 1.9], cam: { p: [9.9, 3.3], t: [7.8, 0.8], pitch: -0.16 } },
-      { id: 'jardin', fr: 'Jardin', en: 'Garden', m2: 82.1, rs: [[-9.15, -E, -E, VD + E]], at: [-4.6, 4.3], cam: { p: [-4.9, 3.1], t: [0.5, 3.1] } },
+      { id: 'entree', fr: 'Entrée', en: 'Entrance', m2: 9.5, rs: [[9.49, CN, 11.27, VD]], at: [10.4, 6.2], cam: { p: [10.05, 7.9], t: [12.6, 3.6] } },
+      { id: 'sejour', fr: 'Séjour', en: 'Living room', m2: 46.1, rs: [[11.27, 0, VW, VD]], at: [14.0, 4.2], cam: { p: [11.9, 4.45], t: [16.6, 2.6] } },
+      { id: 'cuisine', fr: 'Cuisine', en: 'Kitchen', m2: 11.2, rs: [[8.44, 0, 11.27, CN - T]], at: [9.85, 2.4], cam: { p: [9.85, 3.45], t: [9.9, 0.2] } },
+      { id: 'buanderie', fr: 'Buanderie', en: 'Laundry', m2: 3.9, rs: [[6.54, 0, 8.34, 2.19]], at: [7.4, 0.9], cam: { p: [7.9, 0.55], t: [7.0, 2.0], pitch: -0.3 }, minor: true },
+      { id: 'couloir', fr: 'Couloir', en: 'Hallway', m2: 7.6, rs: [[3.36, CN, 9.49, CS]], at: [6.9, 4.63], cam: { p: [9.2, 4.63], t: [3.4, 4.63] }, minor: true },
+      { id: 'bureau', fr: 'Bureau', en: 'Study', m2: 5.8, rs: [[0, 3.5, 3.26, 5.31], [3.26, CN, 3.36, CS]], at: [1.3, 4.75], cam: { p: [3.0, 4.75], t: [0.2, 4.2] } },
+      { id: 'ch1', fr: 'Chambre 1', en: 'Bedroom 1', m2: 10.3, rs: [[0, 5.41, 3.26, VD]], at: [1.6, 7.9], cam: { p: [2.85, 8.2], t: [0.7, 6.0] } },
+      { id: 'dressing', fr: 'Dressing', en: 'Dressing room', m2: 7.5, rs: [[3.36, 5.79, 5.76, VD], [4.83, CS + 0.08, 5.76, 5.79]], at: [4.6, 7.2], cam: { p: [5.3, 6.35], t: [3.8, 8.5] } },
+      { id: 'sdb1', fr: 'Salle de bains 1', en: 'Bathroom 1', m2: 7.7, rs: [[5.86, 5.99, 7.33, VD], [7.33, 6.13, 8.73, VD]], at: [6.9, 7.3], cam: { p: [6.25, 7.45], t: [8.5, 7.7], pitch: -0.25 } },
+      { id: 'wc', fr: 'WC', en: 'WC', m2: 1.6, rs: [[7.91, CS + 0.08, 9.41, 6.05], [8.81, 6.05, 9.41, 6.59]], at: [8.9, 5.6], cam: { p: [9.05, 5.6], t: [8.0, 5.6], pitch: -0.3 }, minor: true },
+      { id: 'ch2', fr: 'Chambre 2', en: 'Bedroom 2', m2: 11.1, rs: [[0, 0, 3.26, 3.42]], at: [1.5, 2.0], cam: { p: [0.6, 2.85], t: [2.7, 0.5] } },
+      { id: 'ch3', fr: 'Chambre 3', en: 'Bedroom 3', m2: 12.5, rs: [[3.34, 0, 6.46, CN - T]], at: [4.9, 2.7], cam: { p: [3.85, 3.2], t: [6.0, 1.0] } },
+      { id: 'sdb2', fr: 'Salle de bains 2', en: 'Bathroom 2', m2: 3.1, rs: [[6.54, 2.29, 8.34, CN - T]], at: [7.3, 3.3], cam: { p: [6.9, 3.7], t: [8.1, 2.6], pitch: -0.22 }, minor: true },
+      { id: 'jardin', fr: 'Jardin', en: 'Garden', m2: 82.1, rs: [[-10.9, -E, -E, VD + E]], at: [-3.4, 4.3], cam: { p: [-4.6, 5.9], t: [0.5, 4.2] } },
     ],
-    tour: ['entree', 'sejour', 'jardin', 'cuisine', 'ch3', 'ch2', 'suite', 'sdb'],
+    tour: ['entree', 'sejour', 'cuisine', 'ch3', 'bureau', 'ch2', 'jardin', 'ch1', 'dressing', 'sdb1'],
   }],
   start: { room: 'sejour' },
   orbit: { target: [4.6, 0, 4.3], dist: 35 },
-  garden: [
-    ['outdoorSofa', -2.3, 1.75, 90, { w: 2.2 }], ['sideTable', -1.45, 3.15, 0, { r: 0.32, h: 0.38 }], ['outdoorTable', -2.6, 6.55, 0, { w: 2.2, n: 3 }], ['parasol', -3.95, 6.55, 0, { r: 1.5 }],
-    ['lounger', -6.6, 2.7, 270, {}], ['lounger', -6.6, 3.7, 270, {}], ['planter', -0.72, 5.75, 90, { w: 1.1, d: 0.36 }],
-  ],
+  garden: [['parasol', -6.8, 2.7, 0, { r: 1.5 }], ['lounger', -4.75, 3.15, 160, {}], ['lounger', -5.6, 3.6, 160, {}]],
   exterior(b, M, lv) {
-    const gx0 = -9.15, gz0 = -E, gz1 = VD + E;
+    const gz0 = -E, gz1 = VD + E, gN = -8.92, gS = -10.86;       // limite Ouest du jardin, en biais : 8,9 m au Nord, 10,9 m au Sud
     b.on('ext');
-    // jardin de plain-pied : terrasse dallée devant le séjour, puis pelouse
-    b.box(M.terrace, -4.95, -0.06, gz0, -E, -0.015, gz1); b.box(M.grass, gx0, -0.1, gz0, -4.95, -0.02, gz1); b.box(M.socle, gx0 - 0.4, -0.3, gz0 - 0.4, -E, -0.1, gz1 + 0.05);
-    lv.blocks.push(V.hedge(b, M, gx0, gz0 - 0.4, -E - 0.05, gz0 + 0.3, { h: 1.6 })); lv.blocks.push(V.hedge(b, M, gx0 - 0.4, gz0 - 0.4, gx0 + 0.25, gz1, { h: 1.6 }));
-    lv.blocks.push(V.hedge(b, M, gx0, gz1 - 0.55, -E - 0.05, gz1 + 0.05, { h: 1.2 }));
-    lv.blocks.push(V.tree(b, M, -8.0, 1.5, { kind: 'olive', h: 4.2, r: 1.7, seed: 4 })); lv.blocks.push(V.tree(b, M, -7.9, 7.0, { kind: 'pine', h: 6.0, r: 2.4, seed: 9 }));
-    lv.blocks.push(V.oleander(b, M, -5.7, 8.05, { r: 0.7 })); V.lavender(b, M, -8.3, 3.2, -8.3, 5.6, { seed: 2 });
-    // balcon filant de la façade Est, côté Sainte-Victoire
-    b.box(M.terrace, VW + E, -0.04, -0.6, VW + E + 0.6, 0, 7.35); b.box(M.stucco, VW + E, -0.3, -0.65, VW + E + 0.65, -0.04, 7.4);
+    // jardin de plain-pied : terrasse dallée sur 3,85 m devant les chambres et le bureau, puis pelouse
+    b.box(M.terrace, -4.2, -0.06, gz0, -E, -0.015, gz1); b.box(M.grass, -10.25, -0.1, gz0, -4.2, -0.02, gz1); b.box(M.socle, -10.25, -0.3, gz0 - 0.4, -E, -0.1, gz1 + 0.05);
+    lv.blocks.push(V.hedge(b, M, gN, gz0 - 0.4, -E - 0.05, gz0 + 0.3, { h: 1.6 })); lv.blocks.push(V.hedge(b, M, gS, gz1 - 0.55, -E - 0.05, gz1 + 0.05, { h: 1.2 }));
+    for (let i = 0; i < 7; i++) { const z0 = gz0 + ((gz1 - gz0) / 7) * i, z1 = z0 + (gz1 - gz0) / 7, x = gN + (gS - gN) * ((i + 0.5) / 7); lv.blocks.push(V.hedge(b, M, x - 0.3, z0 - 0.05, x + 0.3, z1 + 0.05, { h: 1.6 })); }
+    lv.blocks.push(V.tree(b, M, -7.6, 0.9, { kind: 'olive', h: 4.2, r: 1.7, seed: 4 })); lv.blocks.push(V.tree(b, M, -9.0, 7.2, { kind: 'pine', h: 6.0, r: 2.4, seed: 9 }));
+    lv.blocks.push(V.oleander(b, M, -8.6, 4.4, { r: 0.8, seed: 3 })); lv.blocks.push(V.oleander(b, M, -6.3, 7.95, { r: 0.7 })); V.lavender(b, M, -5.2, 0.35, -7.0, 0.35, { seed: 2 });
+    // balcon filant : façade Est côté Sainte-Victoire, retour le long de la façade Nord jusqu'à la chambre 3
+    const bx = VW + E, bz = -E;
+    b.box(M.terrace, bx, -0.04, bz - 0.5, bx + 0.5, 0, 7.33); b.box(M.stucco, bx, -0.3, bz - 0.5, bx + 0.5, -0.04, 7.33);
+    b.box(M.terrace, 4.57, -0.04, bz - 0.5, bx, 0, bz); b.box(M.stucco, 4.57, -0.3, bz - 0.5, bx, -0.04, bz);
     // le reste de l'immeuble et ses abords (site.js)
     buildSite(b, M, { o: villa.site.o, skip: ['villa'] });
     b.on('ext:top');
@@ -173,147 +175,192 @@ const villa = {
 };
 
 /* ════════════════════════════════════════════════════════════════════════════════════════════
-   2. DUPLEX — logements 02 et 03 réunis : 206 m², terrasse et jardin d'environ 56 m², ascenseur privatif
-   x : du fond côté couloir (0) à la façade Est sur jardin (11,63) ; y : du Nord (0) au Sud (11,78).
-   Moitié Nord = logement 02 tel que dessiné ; moitié Sud = logement 03, son symétrique. L'étage ne couvre que x >= 4.
+   2. DUPLEX — plan « Logement 02 - V4 » : T4, 3 chambres, 2 salles de bains, accès direct au parking, ascenseur privatif
+   x : de la face intérieure du mur Ouest (0) à celle de la façade Est sur jardin (11,64) ;
+   y : de la face intérieure du mur Nord (0) à celle du mur Sud (12,03) : 589 + mur de 20 + 594.
+   L'étage ne couvre que x >= 4,00 (772 de large). Cotes imprimées reportées telles quelles (1164, 589, 529 + 65, 223 × 292,
+   229 / 127 / 178 / 190 / 441, 231, 140, 386, 69 + 161, 495 ; étage : 220 / 88 / 443, 291 / 290, 133 / 174 / 443, 227, 100, 259,
+   133 / 182 / 8 / 90 / 353, 60 / 474 / 60) ; le reste est mesuré sur le plan.
    ════════════════════════════════════════════════════════════════════════════════════════════ */
-const DW = 11.63, HD = 5.79, PW = 0.2, DD = 2 * HD + PW, UX = 4.0, FH = 2.9, MY = (y) => DD - y;
-const stair = windingStair(4.05, 4.95, 6.1, 7.0, 1.9, 0.05, FH);
-const LIFT = { x0: 4.2, y0: 10.3, x1: 5.4, y1: 11.7 };
+const DW = 11.64, NH = 5.89, PW = 0.2, SH = NH + PW, DD = 12.03, UX = 4.0, FH = 2.9, P = 0.1;
+/* Escalier balancé (emprise 223 × 292) : départ au Sud le long de la volée Est, quartier tournant au Nord, retour le long
+   de la volée Ouest, second quartier tournant et arrivée vers l'Est sur le palier. 17 marches, 18 hauteurs. */
+const SX = 4.01, SZ = 2.98, sp = (...p) => p.map(([x, z]) => [SX + x / 100, SZ + z / 100]);
+const stair = {
+  H: FH,
+  steps: [
+    sp([132, 138], [223, 138], [223, 168], [132, 168]), sp([132, 108], [223, 108], [223, 138], [132, 138]), sp([132, 95], [223, 60], [223, 108], [132, 108]),
+    sp([132, 90], [124, 90], [211, 0], [223, 0], [223, 60], [132, 95]), sp([116, 90], [146, 0], [211, 0], [124, 90]), sp([108, 90], [93.5, 0], [146, 0], [116, 90]),
+    sp([99.5, 90], [36, 0], [93.5, 0], [108, 90]), sp([90, 90], [0, 42], [0, 0], [36, 0], [99.5, 90]), sp([0, 42], [90, 90], [90, 97], [0, 97]),
+    sp([0, 97], [90, 97], [90, 128], [0, 128]), sp([0, 128], [90, 128], [90, 157], [0, 157]), sp([0, 157], [90, 157], [90, 187], [0, 187]),
+    sp([0, 187], [90, 187], [90, 197], [0, 246]), sp([0, 246], [90, 197], [90, 199], [40, 290], [0, 290]), sp([90, 199], [96, 199], [96, 290], [40, 290]),
+    sp([96, 199], [125, 199], [125, 290], [96, 290]), sp([125, 199], [157, 199], [157, 290], [125, 290]),
+  ],
+  line: sp([177, 153], [177, 123], [177, 92], [182, 45], [150, 42], [115, 40], [82, 42], [45, 45], [45, 82], [45, 112], [45, 142], [45, 172], [45, 205], [42, 248], [72, 250], [110, 245], [141, 245]),
+  core: [SX + 0.9, SZ + 0.9, SX + 1.32, SZ + 1.99],
+  foot: [5.79, 5.4], trig0: [5.79, 4.66], trig1: [5.61, 5.43], head: [6.45, 5.43], m0: [5.42, 4.2, 6.2, 4.62], m1: [5.2, 5.05, 5.6, 5.85],
+};
+/* Ascenseur : gaine de 190 × 200 hors tout au centre de la moitié Sud, porte au Nord. */
+const SHAFT = [5.34, 7.46, 7.24, 9.46], LIFT = { x0: 5.64, y0: 7.76, x1: 6.95, y1: 9.14 };
+const shaftWalls = () => [
+  wv(SHAFT[0] + 0.1, SHAFT[1], SHAFT[3], 0.2, 0, [], { h: FH, noSkirt: true }), wv(SHAFT[2] - 0.1, SHAFT[1], SHAFT[3], 0.2, 0, [], { h: FH, noSkirt: true }),
+  wh(SHAFT[3] - 0.1, SHAFT[0] + 0.2, SHAFT[2] - 0.2, 0.2, 0, [], { h: FH, noSkirt: true }),
+  wh(SHAFT[1] + 0.1, SHAFT[0] + 0.2, SHAFT[2] - 0.2, 0.2, 0, [op(5.84, 6.74, 'liftdoor', { head: 2.1 })], { h: FH, noSkirt: true }),
+];
 const duplex = {
   id: 'duplex', bien: 'duplex-206', north: 0, groundY: -3.6, hour: 9.25, site: { key: 'duplex', o: [5.41, 0, 13.5] },
   name: { fr: 'Duplex', en: 'Duplex' },
   facts: { fr: '4 pièces · 206 m² · terrasse et jardin d\'environ 56 m²', en: '4 rooms · 206 m² · terrace and garden of about 56 m²' },
-  pitch: { fr: 'Deux duplex réunis : plus de 100 m² de réception en rez-de-jardin, trois chambres à l\'étage, un ascenseur privatif.', en: 'Two duplexes combined: over 100 m² of reception space at garden level, three bedrooms upstairs, a private lift.' },
+  pitch: { fr: 'Près de 100 m² de séjours et de cuisine ouverts sur le jardin, trois chambres à l\'étage, un ascenseur privatif et l\'accès direct au parking.', en: 'Nearly 100 m² of living space and kitchen opening onto the garden, three bedrooms upstairs, a private lift and direct access to the car park.' },
   stair,
-  lift: { ...LIFT, door: [4.8, 10.25], exits: [[4.8, 9.6], [4.8, 9.45]] },
+  lift: { ...LIFT, door: [6.29, 7.56], exits: [[6.29, 6.8], [6.29, 6.8]] },
   levels: [{
-    id: 'rdc', name: { fr: 'Rez-de-jardin', en: 'Garden level' }, y: 0, h: 2.6,
-    bounds: [-0.4, -0.4, 17.4, DD + 0.4], walkable: [[0, 0, 16.85, DD]],
-    floors: [['floor', 0, 0, DW, DD], ['tile', 0, 0, 3.92, 1.91], ['tile', 0, MY(1.91), 3.92, DD]],
+    id: 'rdc', name: { fr: 'Niveau 1', en: 'Level 1' }, y: 0, h: 2.6,
+    bounds: [-0.5, -0.6, 17.4, DD + 0.6], walkable: [[-0.09, 0, 16.6, DD]],
+    floors: [['floor', -0.09, 0, DW, DD], ['tile', -0.09, 8.2, 2.22, DD], ['tile', 3.65, 7.56, 4.95, 9.36]],
     slabs: [[-E, -E, DW + E, DD + E, 0.3]],
-    ceilings: [[0, 1.95, DW, MY(1.95)], [0, 0, 4.0, 1.95], [7.1, 0, DW, 1.95], [0, MY(1.95), 4.0, DD], [5.5, MY(1.95), DW, DD], [4.0, MY(1.95), 5.5, LIFT.y0 - 0.1]],
+    ceilings: [[0, 0, DW, SZ], [0, SZ, SX, NH], [6.25, SZ, DW, NH], [0, NH, DW, SHAFT[1]], [-0.09, SHAFT[1], SHAFT[0], DD], [SHAFT[2], SHAFT[1], DW, DD], [SHAFT[0], SHAFT[3], SHAFT[2], DD]],
     walls: [
-      wv(-E / 2, 0, DD, E, -1, [op(2.15, 3.05, 'entry', { head: 2.15 }), op(MY(3.05), MY(2.15), 'entry', { head: 2.15 })]),
+      // murs extérieurs : porte palière à l'Ouest (accès direct au parking), deux baies coulissantes de 3,92 m à l'Est ; pas de doublage dans la buanderie
+      wv(-E / 2, 0, 8.2, E, -1, [op(6.42, 7.39, 'entry', { head: 2.15 })]), wv(-0.09 - (E - 0.09) / 2, 8.2, DD, E - 0.09, -1),
       wh(-E / 2, -E, DW + E, E, -1), wh(DD + E / 2, -E, DW + E, E, 1),
-      wv(DW + E / 2, 0, DD, E, 1, [op(0.95, 5.2, 'bay', { panels: 3, open: true, head: 2.4 }), op(MY(5.2), MY(0.95), 'bay', { panels: 3, open: true, head: 2.4 })]),
-      // mur mitoyen : conservé derrière la cuisine et derrière le meuble du salon, ouvert entre les deux séjours
-      wh(HD + PW / 2, 0, 6.3, PW), wh(HD + PW / 2, 8.9, DW, PW), wv(5.93, 5.13, HD, 0.36), wv(5.93, HD + PW, MY(5.13), 0.36),
-      // logement 02 : salle d'eau-buanderie, cage d'escalier
-      wh(1.95, 0, 4.0, T, 0, [op(1.7, 2.55, 'door', { hinge: 'a0', swing: -1, open: 172 })]), wv(3.96, 0, 1.95, T),
-      wv(7.06, 0, 1.95, T, 0, [], { h: FH }), wh(1.94, 4.95, 7.1, T),
-      // logement 03 (symétrique) : salle d'eau-buanderie, ascenseur dans la trémie de l'escalier
-      wh(MY(1.95), 0, 4.0, T, 0, [op(1.7, 2.55, 'door', { hinge: 'a0', swing: 1, open: 172 })]), wv(3.96, MY(1.95), DD, T),
-      wv(LIFT.x0 - 0.07, LIFT.y0 - 0.1, DD, 0.1, 0, [], { h: FH }), wv(LIFT.x1 + 0.07, LIFT.y0 - 0.1, DD, 0.1, 0, [], { h: FH }),
-      wh(LIFT.y0 - 0.05, LIFT.x0 - 0.12, LIFT.x1 + 0.12, 0.1, 0, [op(4.35, 5.25, 'liftdoor', { head: 2.1 })], { h: FH }),
-      wv(7.06, MY(1.95), DD, T), wh(MY(1.94), 5.5, 7.1, T, 0, [op(5.75, 6.65, 'door', { hinge: 'a0', swing: 1, open: 88 })]),
+      wv(DW + E / 2, 0, DD, E, 1, [op(1.02, 4.94, 'bay', { panels: 3, open: true, head: 2.4 }), op(7.11, 11.02, 'bay', { panels: 3, open: true, head: 2.4 })]),
+      // refend médian : il n'en reste que trois tronçons, le reste est ouvert sous poutre
+      wh(NH + PW / 2, 0, 0.42, PW), wh(NH + PW / 2, SX, 5.57, PW), wh(NH + PW / 2, 11.36, DW, PW),
+      // niche du mur Nord : placard et gaine
+      wv(4.05, 0, 0.43, P), wv(5.815, 0, 0.43, 0.09),
+      // placard de l'entrée, buanderie
+      wh(8.145, -0.09, 2.22, 0.11), wv(2.27, SHAFT[1], DD, P, 0, [op(10.3, 11.3, 'door', { hinge: 'a1', swing: 1, open: 23 })]),
+      // WC PMR, adossé à la gaine de l'ascenseur ; sa cloison Ouest se prolonge en joue des placards de l'arrière-cuisine
+      wh(SHAFT[1] + 0.05, 3.56, SHAFT[0], P), wv(3.605, SHAFT[1], 10.34, 0.09, 0, [op(8.04, 9.04, 'door', { hinge: 'a0', swing: -1, open: 23 })]), wh(9.41, 3.65, SHAFT[0], P),
+      ...shaftWalls(),
     ],
-    blockers: [[4.95, 0, 7.02, 1.9], [4.0, 0, 4.95, 1.42]],
+    blockers: [[SX, SZ, 6.25, 4.2], [SX, 4.2, 5.33, NH]],
     items: [
-      // logement 02 — salle d'eau-buanderie (7,3 m²)
-      ['washer', 0.34, 0.45, 90, { n: 1 }], ['vanity', 0.27, 1.25, 90, { w: 0.8, double: false, d: 0.46 }], ['toilet', 2.5, 0.34, 0, {}], ['shower', 3.42, 0.5, 0, { w: 0.92, d: 0.92, glass: ['left'] }],
-      // cuisine (18,1 m²) : colonnes à l'Ouest, linéaire contre le mitoyen, îlot central
-      ['kitchenTall', 0.335, 4.12, 90, { w: 1.45 }], ['kitchenRun', 2.9, 5.47, 180, { w: 5.65, top: 'marble', sink: -0.3, hob: 1.3, upper: true, splash: true }],
-      ['island', 3.77, 3.6, 180, { w: 3.6, d: 0.95, stools: 4, stoolMat: 'charcoal', over: 0.22 }], ['pendant', 3.77, 3.55, 0, { kind: 'cone', n: 3, span: 1.0, drop: 0.85 }],
-      // séjour (41,0 m²)
-      ['desk', 9.55, 1.44, 180, { w: 2.0, d: 0.6, top: 'walnut', chair: 'cognac' }], ['sofa', 9.38, 2.84, 0, { w: 2.8, d: 0.9, mat: 'cognac', chaise: 'R', cl: 0.72, cw: 0.8, pillows: ['charcoal', 'cream'], plaid: false }], ['pendant', 9.0, 4.1, 0, { kind: 'tubes', drop: 0.5 }],
-      ['rug', 9.15, 4.08, 0, { w: 3.5, d: 2.3, mat: 'rug' }], ['coffeeRect', 8.95, 4.13, 0, { w: 1.1, d: 0.65, mat: 'marbleDark' }], ['armchair', 7.57, 4.17, 90, { mat: 'walnut' }], ['armchair', 10.3, 4.72, 320, { mat: 'walnut' }],
-      ['tvWall', 10.2, HD, 180, { w: 2.5, tv: 1.4 }], ['curtain', DW - 0.1, 0.62, 270, { w: 0.5 }], ['picture', 9.4, 0.005, 0, { w: 1.2, h: 0.85, mat: 'art2' }],
-      // logement 03 — salle d'eau-buanderie
-      ['washer', 0.34, MY(0.45), 90, { n: 1 }], ['vanity', 0.27, MY(1.25), 90, { w: 0.8, double: false, d: 0.46 }], ['toilet', 2.5, MY(0.34), 180, {}], ['shower', 3.42, MY(0.5), 180, { w: 0.92, d: 0.92, glass: ['right'] }],
-      // salle à manger, à l'emplacement de la cuisine du logement 03
-      ['diningTable', 3.77, MY(3.6), 0, { w: 3.0, d: 1.1, n: 4, ends: true }], ['pendant', 3.77, MY(3.6), 0, { kind: 'rail', n: 5, span: 0.42, drop: 1.0 }],
-      ['sideboard', 2.9, HD + PW + 0.26, 0, { w: 3.4, d: 0.48, h: 0.82, mat: 'walnut', top: 'marbleDark' }], ['picture', 2.9, HD + PW + 0.005, 0, { w: 1.3, h: 1.0, mat: 'art2' }], ['tableLamp', 1.6, HD + PW + 0.26, 0, { y: 0.845 }],
-      ['bookcase', 0.19, MY(4.12), 90, { w: 1.45, h: 2.3 }],
-      // second salon (symétrique du séjour)
-      ['sofa', 9.38, MY(2.84), 180, { w: 2.8, d: 0.9, chaise: 'L', cl: 0.72, cw: 0.8, pillows: ['terra', 'charcoal'] }], ['pendant', 9.0, MY(4.1), 0, { kind: 'ring', drop: 0.55 }], ['rug', 9.15, MY(4.08), 0, { w: 3.5, d: 2.3, mat: 'rugDark' }],
-      ['coffeeRound', 8.95, MY(4.13), 0, { r: 0.5 }], ['armchair', 7.57, MY(4.17), 90, { mat: 'terra' }], ['armchair', 10.3, MY(4.72), 220, { mat: 'terra' }],
-      ['bookcase', 10.2, HD + PW + 0.18, 0, { w: 2.5, h: 2.3 }], ['shelves', 6.28, 11.57, 180, { w: 1.3, d: 0.36 }], ['desk', 9.55, MY(1.44), 0, { w: 2.0, d: 0.6, top: 'marbleDark', chair: 'sand' }], ['curtain', DW - 0.1, MY(0.62), 270, { w: 0.5 }],
+      // 1 — entrée : placard à portes pliantes
+      ['wardrobe', 1.11, 7.775, 180, { w: 2.22, d: 0.63, mat: 'lacquer' }],
+      // 2 — séjours : coin salon au Nord-Ouest (table ronde, trois fauteuils), canapé d'angle au Nord-Est face au mur TV
+      ['rug', 2.175, 2.61, 0, { w: 3.21, d: 4.04, mat: 'rug' }], ['coffeeRound', 2.2, 2.5, 0, { r: 0.59, h: 0.42 }],
+      ['armchair', 1.33, 1.48, 40, { mat: 'walnut' }], ['armchair', 3.03, 1.48, 321, { mat: 'walnut' }], ['armchair', 2.17, 3.91, 180, { mat: 'walnut' }],
+      ['sideTable', 2.16, 0.95, 0, { r: 0.19, h: 0.45, mat: 'walnut' }], ['pouf', 1.21, 3.39, 0, { r: 0.27 }], ['pendant', 2.2, 2.5, 0, { kind: 'ring', drop: 0.7 }],
+      ['wardrobe', 4.935, 0.215, 0, { w: 1.67, d: 0.43, mat: 'lacquer' }], ['duct', 6.26, 0.215, 0, { w: 0.8, d: 0.43 }],
+      ['rug', 9.475, 3.135, 0, { w: 3.53, d: 3.09, mat: 'rugDark' }], ['sofa', 8.84, 4.79, 180, { w: 3.5, d: 0.98, chaise: 'R', cl: 1.79, cw: 1.0, pillows: ['terra', 'charcoal'] }],
+      ['coffeeRect', 9.49, 2.975, 0, { w: 1.2, d: 1.17, oval: false, mat: 'marbleDark' }], ['tvWall', 9.53, 0, 0, { w: 2.6, tv: 1.5 }], ['pampas', 8.0, 0.24, 0, { h: 1.25 }],
+      ['pendant', 9.5, 3.0, 0, { kind: 'tubes', drop: 0.5 }], ['curtain', DW - 0.1, 0.7, 270, { w: 0.5 }], ['curtain', DW - 0.1, 5.25, 270, { w: 0.5 }],
+      // 3 — cuisine : linéaire Sud avec évier double et plaque, colonnes le long de la gaine, table de huit
+      ['kitchenRun', 9.44, 11.705, 180, { w: 4.4, d: 0.65, sink: 0.92, hob: -0.84, upper: true, splash: true }],
+      ['kitchenTall', 7.575, 8.9, 90, { w: 2.88, d: 0.63 }],
+      ['diningTable', 9.63, 8.79, 90, { w: 2.8, d: 1.19, n: 4, ends: 'b' }], ['pendant', 9.63, 8.79, 90, { kind: 'rail', n: 5, span: 0.45, drop: 1.0 }],
+      ['curtain', DW - 0.1, 6.8, 270, { w: 0.5 }], ['curtain', DW - 0.1, 11.35, 270, { w: 0.5 }],
+      // 4 — arrière-cuisine : placards à portes pliantes et réfrigérateur contre la gaine, plan de travail le long du mur Sud
+      ['wardrobe', 5.03, 9.9, 0, { w: 2.72, d: 0.88, mat: 'lacquer' }], ['fridge', 6.815, 9.9, 0, { w: 0.85, d: 0.88 }],
+      ['kitchenRun', 4.32, 11.705, 180, { w: 4.0, d: 0.65, upper: true, splash: true }], ['kitchenRun', 6.78, 11.705, 180, { w: 0.92, d: 0.65, deco: false }], ['duct', 6.78, 11.845, 0, { w: 0.92, d: 0.37 }],
+      // 5 — buanderie : placards le long du mur Ouest, de part et d'autre d'une gaine
+      ['wardrobe', 0.26, 9.09, 90, { w: 1.78, d: 0.7, mat: 'lacquer' }], ['duct', 0.26, 10.265, 90, { w: 0.57, d: 0.7 }], ['wardrobe', 0.26, 11.29, 90, { w: 1.48, d: 0.7, mat: 'lacquer' }],
+      // 6 — WC PMR : plan vasque au Nord, cuvette contre la gaine
+      ['vanity', 4.3, 7.77, 0, { w: 1.3, d: 0.42, double: false, mirrorH: 0.7 }], ['duct', 5.145, 8.46, 0, { w: 0.39, d: 1.8 }], ['toilet', 4.62, 8.9, 270, {}],
     ],
     rooms: [
-      { id: 'entree', fr: 'Entrée', en: 'Entrance', rs: [[0, 1.99, 2.2, 3.35]], at: [1.1, 2.65], cam: { p: [0.9, 2.6], t: [7, 3.3] }, minor: true },
-      { id: 'cuisine', fr: 'Cuisine', en: 'Kitchen', rs: [[0, 3.0, 6.2, HD], [2.2, 1.99, 4.0, 3.0]], at: [3.2, 4.6], cam: { p: [6.05, 4.45], t: [2.2, 4.9] } },
-      { id: 'sejour', fr: 'Séjour', en: 'Living room', rs: [[6.2, 0, DW, HD], [4.95, 1.95, 6.2, 3.0]], at: [9.3, 3.6], cam: { p: [7.3, 3.4], t: [11.8, 3.1] } },
-      { id: 'escalier', fr: 'Escalier', en: 'Stairs', rs: [[4.0, 0, 7.02, 1.95], [4.0, 1.95, 4.95, 3.0]], at: [5.5, 1.0], cam: { p: [4.5, 2.75], t: [4.5, 0.4] }, minor: true },
-      { id: 'sde', fr: 'Salle d\'eau', en: 'Shower room', rs: [[0, 0, 3.92, 1.91]], at: [1.9, 1.0], cam: { p: [1.9, 1.35], t: [3.6, 0.3], pitch: -0.22 }, minor: true },
-      { id: 'repas', fr: 'Salle à manger', en: 'Dining room', rs: [[0, HD + PW, 6.2, 9.25], [0, 9.25, 4.0, MY(1.99)]], at: [3.2, 8.2], cam: { p: [6.0, 7.1], t: [2.2, 8.6] } },
-      { id: 'salon', fr: 'Salon', en: 'Lounge', rs: [[6.2, HD + PW, DW, DD]], at: [9.3, 8.3], cam: { p: [7.3, 8.4], t: [11.8, 8.7] } },
-      { id: 'ascenseur', fr: 'Ascenseur privatif', en: 'Private lift', rs: [[LIFT.x0, LIFT.y0, LIFT.x1, LIFT.y1], [4.0, 9.25, 5.6, LIFT.y0]], at: [4.8, 11.0], cam: { p: [4.8, 9.5], t: [4.8, 11.3] } },
-      { id: 'sde2', fr: 'Salle d\'eau 2', en: 'Shower room 2', rs: [[0, MY(1.91), 3.92, DD]], at: [1.9, 10.8], cam: { p: [1.9, 10.45], t: [3.6, 11.5], pitch: -0.22 }, minor: true },
-      { id: 'jardin', fr: 'Terrasse et jardin', en: 'Terrace and garden', rs: [[DW + E, 0, 16.9, DD]], at: [14.4, 5.9], cam: { p: [13.4, 5.9], t: [22, 5.9] } },
+      { id: 'entree', fr: 'Entrée', en: 'Entrance', rs: [[0, SH, SHAFT[0], SHAFT[1]]], at: [1.9, 6.8], cam: { p: [0.75, 6.85], t: [8, 6.6] } },
+      { id: 'sejour', fr: 'Séjours', en: 'Living rooms', rs: [[0, 0, DW, NH], [0.42, NH, 11.36, SH], [SHAFT[0], SH, 5.84, SHAFT[1]], [5.84, SH, 6.74, 6.2], [6.74, SH, DW, SHAFT[1]]], at: [7.3, 2.4], cam: { p: [6.75, 1.5], t: [10.4, 4.4] } },
+      { id: 'cuisine', fr: 'Cuisine', en: 'Kitchen', rs: [[SHAFT[2], SHAFT[1], DW, DD]], at: [9.6, 10.4], cam: { p: [8.33, 7.8], t: [10.6, 11.7] } },
+      { id: 'arriere', fr: 'Arrière-cuisine', en: 'Scullery', rs: [[2.32, SHAFT[1], 3.56, 10.34], [2.32, 10.34, SHAFT[2], DD]], at: [4.6, 10.85], cam: { p: [2.95, 10.8], t: [7.0, 10.9] } },
+      { id: 'buanderie', fr: 'Buanderie', en: 'Laundry', rs: [[-0.09, 8.2, 2.22, DD]], at: [1.3, 10.0], cam: { p: [1.45, 11.3], t: [0.3, 8.8], pitch: -0.2 }, minor: true },
+      { id: 'wc', fr: 'WC', en: 'WC', rs: [[3.65, 7.56, 4.95, 9.36]], at: [4.25, 8.6], cam: { p: [4.0, 9.0], t: [4.6, 7.6], pitch: -0.3 }, minor: true },
+      { id: 'ascenseur', fr: 'Ascenseur privatif', en: 'Private lift', rs: [[LIFT.x0, SHAFT[1], LIFT.x1, LIFT.y1], [5.84, 6.2, 6.74, SHAFT[1]]], at: [6.29, 8.45], cam: { p: [6.29, 6.55], t: [6.29, 8.6] } },
+      { id: 'jardin', fr: 'Terrasse et jardin', en: 'Terrace and garden', rs: [[DW + E, -0.2, 16.65, DD + 0.2]], at: [14.2, 3.2], cam: { p: [13.0, 3.2], t: [22, 3.6] } },
     ],
-    tour: ['entree', 'cuisine', 'sejour', 'jardin', 'salon', 'repas', 'ascenseur'],
+    tour: ['entree', 'sejour', 'jardin', 'cuisine', 'arriere', 'ascenseur'],
   }, {
-    id: 'etage', name: { fr: 'Étage', en: 'Upper floor' }, y: FH, h: 2.5,
-    bounds: [3.6, -0.4, 12.1, DD + 0.4], walkable: [[UX, 0, DW, DD]],
-    floors: [['floor', UX, 1.9, DW, DD], ['floor', 7.02, 0, DW, 1.9], ['tile', 4.1, 3.4, 6.23, HD], ['tile', 4.1, HD + PW, 6.23, MY(3.4)], ['tile', 9.2, HD + PW, DW, 8.89]],
+    id: 'etage', name: { fr: 'Niveau 2', en: 'Level 2' }, y: FH, h: 2.5,
+    bounds: [3.5, -0.6, 12.7, DD + 0.6], walkable: [[UX, 0, DW, DD]],
+    floors: [['floor', UX, 0, DW, SZ], ['floor', 6.25, SZ, DW, NH], ['floor', 5.57, 4.98, 6.25, NH], ['floor', 5.57, NH, DW, SH], ['floor', UX, SH, DW, DD],
+      ['tile', UX, 0, 6.2, 2.89], ['tile', 5.79, 0.75, 6.58, 1.81], ['tile', UX, SH, 5.34, 8.36], ['tile', UX, 8.45, 5.34, 9.46], ['tile', UX, 9.46, 7.15, DD]],
     ceilings: [[UX, 0, DW, DD]],
     walls: [
-      wv(UX - E / 2, 0, DD, E, -1, [op(1.9, 2.8, 'entry', { head: 2.1 }), op(MY(2.8), MY(1.9), 'entry', { head: 2.1 })]),
-      wh(-E / 2, UX - E, DW + E, E, -1), wh(DD + E / 2, UX - E, DW + E, E, 1),
-      wv(DW + E / 2, 0, DD, E, 1, [op(1.05, 2.3, 'french', { head: 2.25, shutter: 'a1' }), op(3.95, 5.2, 'french', { head: 2.25, shutter: 'a0' }), op(MY(5.2), MY(3.95), 'french', { head: 2.25, shutter: 'a1' }), op(MY(2.3), MY(1.05), 'french', { head: 2.25, shutter: 'a0' })]),
-      // mitoyen : ouvert au droit des deux WC, transformés en passage
-      wh(HD + PW / 2, UX, 6.33, PW), wh(HD + PW / 2, 7.02, DW, PW),
-      // logement 02 : chambres, salle de bains, passage
-      wv(7.06, 0, HD, T, 0, [op(1.95, 2.75, 'door', { hinge: 'a1', swing: 1 }), op(3.0, 3.8, 'door', { hinge: 'a0', swing: 1 })]), wh(2.85, 7.1, DW, T),
-      wh(3.36, UX, 6.31, T, 0, [op(4.9, 5.75, 'door', { hinge: 'a0', swing: 1, open: 172 })]), wv(6.27, 3.36, HD, T),
-      // logement 03 : suite parentale (chambre, dressing, salle de bains), salle d'eau, palier de l'ascenseur
-      wv(7.06, HD + PW, DD, T, 0, [op(MY(2.75), MY(1.95), 'door', { hinge: 'a0', swing: 1 })]), wh(MY(2.85), 7.1, DW, T, 0, [op(7.4, 8.3, 'door', { hinge: 'a0', swing: -1 })]),
-      wv(9.15, HD + PW, MY(2.89), T, 0, [op(7.0, 7.85, 'door', { hinge: 'a1', swing: 1 })]),
-      wh(MY(3.36), UX, 6.31, T, 0, [op(4.9, 5.75, 'door', { hinge: 'a0', swing: -1, open: 172 })]), wv(6.27, HD + PW, MY(3.36), T),
-      wv(LIFT.x0 - 0.07, LIFT.y0 - 0.1, DD, 0.1), wv(LIFT.x1 + 0.07, LIFT.y0 - 0.1, DD, 0.1), wh(LIFT.y0 - 0.05, LIFT.x0 - 0.12, LIFT.x1 + 0.12, 0.1, 0, [op(4.35, 5.25, 'liftdoor', { head: 2.1 })]),
-      wv(5.5, MY(1.95), DD, T),
+      // murs extérieurs : fenêtre de la salle de bains 1 à l'Ouest, quatre portes-fenêtres de 1,24 m à l'Est
+      wv(UX - E / 2, 0, DD, E, -1, [op(10.45, 11.0, 'window', { sill: 1.25, head: 2.1 })]), wh(-E / 2, UX - E, DW + E, E, -1), wh(DD + E / 2, UX - E, DW + E, E, 1),
+      wv(DW + E / 2, 0, DD, E, 1, [op(1.02, 2.25, 'french', { head: 2.25, rail: false, shutter: 'a1' }), op(3.69, 4.93, 'french', { head: 2.25, rail: false, shutter: 'a0' }),
+        op(7.1, 8.35, 'french', { head: 2.25, rail: false, shutter: 'a1' }), op(9.8, 11.04, 'french', { head: 2.25, rail: false, shutter: 'a0' })]),
+      // refend médian, ouvert sur 1,58 m entre le palier et le dégagement de l'ascenseur
+      wh(NH + PW / 2, UX, 5.57, PW), wh(NH + PW / 2, 7.15, DW, PW),
+      // salle de bains 2 : mur de la cage d'escalier, niche de la douche, porte sur le couloir
+      wh(2.945, UX, 6.29, 0.11), wv(6.245, 1.92, 2.89, 0.09, 0, [op(2.01, 2.82, 'door', { hinge: 'a1', swing: -1, open: 90 })]), wh(1.865, 5.79, 7.25, 0.11), wv(5.76, 0, 0.75, 0.06), wv(6.62, 0, 1.81, 0.08),
+      // cloison des chambres : portes des chambres 3 et 2 ; au Sud du refend, portes de la chambre 1 et de sa salle de bains
+      wv(7.2, 1.92, NH, P, 0, [op(2.01, 2.82, 'door', { hinge: 'a1', swing: 1, open: 90 }), op(4.96, 5.77, 'door', { hinge: 'a1', swing: 1, open: 90 })]),
+      wv(7.2, SH, SHAFT[1], P, 0, [op(6.58, 7.39, 'door', { hinge: 'a0', swing: 1, open: 90 })]), wv(7.2, SHAFT[3], DD, P, 0, [op(9.56, 10.37, 'door', { hinge: 'a0', swing: -1, open: 90 })]),
+      wh(2.965, 7.25, DW, 0.09),
+      // WC 2 et douche de la salle de bains 1, contre la gaine de l'ascenseur
+      wv(5.39, SH, SHAFT[1], P, 0, [op(6.55, 7.4, 'door', { hinge: 'a0', swing: -1, open: 90 })]), wh(8.405, UX, SHAFT[0], 0.09),
+      ...shaftWalls(),
+      // tête de lit maçonnée de la chambre 1 : 90 cm de passage derrière, vers la salle de bains
+      wv(8.225, 7.59, 10.6, 0.17, 0, [], { h: 1.25 }),
     ],
-    rails: [[4.0, 1.92, 6.1, 1.92]],
-    blockers: [[4.0, 0, 6.1, 1.9], [6.1, 0, 7.02, 1.42]],
+    rails: [[6.27, SZ, 6.27, 4.98], [5.57, 4.98, 6.27, 4.98]],
+    blockers: [[UX, SZ, 6.25, 4.98], [UX, 4.98, 5.2, NH]],
     items: [
-      // logement 02 : chambres (12,7 et 12,8 m²), salle de bains (4,4 m²)
-      ['wardrobe', 7.42, 0.95, 90, { w: 1.75, d: 0.6 }], ['bed', 9.67, 1.03, 0, { w: 1.4, l: 1.9, hw: 0.3, throwMat: 'sage' }],
-      ['wardrobe', 7.42, 4.9, 90, { w: 1.72, d: 0.6 }], ['bed', 9.67, 4.78, 180, { w: 1.4, l: 1.9, hw: 0.3, throwMat: 'ochre' }],
-      ['bathtub', 5.05, 5.4, 90, { w: 0.72, l: 1.75 }], ['vanity', 6.0, 4.1, 270, { w: 1.3, double: true, d: 0.46 }], ['towelRail', 4.11, 4.2, 90, {}],
-      ['pendant', 5.4, 2.6, 0, { kind: 'globe', drop: 0.5 }], ['picture', 4.005, 3.05, 90, { w: 0.5, h: 0.7, mat: 'art1' }],
-      // logement 03 : salle d'eau (douche, vasque, WC)
-      ['shower', 4.9, HD + PW + 0.46, 0, { w: 1.5, d: 0.9, glass: ['front'] }], ['vanity', 6.0, MY(4.1), 270, { w: 1.1, double: false, d: 0.46 }], ['toilet', 4.43, 7.5, 90, {}],
-      // suite parentale : chambre, dressing, salle de bains
-      ['bed', 9.67, MY(1.03), 180, { w: 1.6, l: 1.9, hw: 0.7 }], ['wardrobe', 7.42, MY(0.95), 90, { w: 1.75, d: 0.6 }], ['armchair', 10.9, MY(2.45), 250, { mat: 'sand' }],
-      ['wardrobe', 7.42, 7.42, 90, { w: 1.5, d: 0.6 }], ['wardrobe', 8.1, HD + PW + 0.31, 0, { w: 1.9, d: 0.6 }], ['mirror', 9.105, 8.3, 270, { w: 0.6, h: 1.7, y: 1.1 }],
-      ['bathtub', 10.25, HD + PW + 0.48, 90, { free: true, w: 0.78, l: 1.6 }], ['toilet', 11.35, HD + PW + 0.34, 0, {}], ['vanity', 10.9, 8.63, 180, { w: 1.3, double: true }], ['shower', 9.67, 8.42, 180, { w: 0.9, d: 0.9, glass: ['left'] }],
+      // 13 — salle de bains 2 : baignoire au Nord, douche en niche, double vasque à l'Ouest
+      ['bathtub', 4.905, 0.385, 90, { w: 0.75, l: 1.7 }], ['duct', 6.19, 0.375, 0, { w: 0.78, d: 0.75 }], ['shower', 6.185, 1.28, 270, { w: 1.06, d: 0.79, glass: ['front'] }],
+      ['vanity', 4.23, 2.06, 90, { w: 1.4, d: 0.46, double: true }], ['towelRail', 4.71, 2.885, 180, {}],
+      // 12 — chambre 3 : lit de 140 tête au Nord, placard à l'Ouest
+      ['bed', 9.66, 1.06, 0, { w: 1.4, l: 1.9, hw: 0.2, throwMat: 'sage' }], ['wardrobe', 6.945, 0.905, 90, { w: 1.81, d: 0.57 }],
+      // 11 — chambre 2 : lit de 140 tête au Nord, placard à l'Ouest
+      ['bed', 9.66, 4.07, 0, { w: 1.4, l: 1.9, hw: 0.2, throwMat: 'ochre' }], ['wardrobe', 7.565, 3.935, 90, { w: 1.81, d: 0.63 }],
+      // 8 — WC 2
+      ['vanity', 4.665, 6.285, 0, { w: 1.33, d: 0.39, double: false, mirrorH: 0.7 }], ['toilet', 4.48, 8.03, 180, {}], ['duct', 5.145, 8.025, 0, { w: 0.39, d: 0.67 }],
+      // 9 — salle de bains 1 : douche de 133 × 100, double vasque au Sud, WC contre la gaine
+      ['shower', 4.665, 8.955, 0, { w: 1.33, d: 1.0, glass: ['front'] }], ['vanity', 5.12, 11.79, 180, { w: 2.24, d: 0.48, double: true }],
+      ['duct', 6.75, 11.79, 0, { w: 0.84, d: 0.48 }], ['toilet', 6.77, 11.22, 180, {}], ['towelRail', 4.02, 9.95, 90, {}],
+      // 10 — chambre 1 : placards au Nord et au Sud, lit de 160 adossé à la tête de lit, banc, tapis
+      ['wardrobe', 9.955, 6.39, 0, { w: 3.41, d: 0.6 }], ['wardrobe', 9.895, 11.73, 180, { w: 3.53, d: 0.6 }], ['shelves', 7.68, 11.74, 180, { w: 0.86, d: 0.56, h: 2.3 }],
+      ['rug', 10.135, 9.08, 0, { w: 1.93, d: 2.82, mat: 'rug' }], ['bed', 9.36, 9.1, 90, { w: 1.6, l: 1.9, hw: 0.9 }], ['bench', 10.485, 9.085, 90, { w: 1.21, d: 0.35 }],
     ],
     rooms: [
-      { id: 'palier', fr: 'Palier', en: 'Landing', rs: [[UX, 1.9, 7.02, 3.32], [6.33, 3.32, 7.02, MY(3.32)]], at: [5.3, 2.6], cam: { p: [4.5, 2.9], t: [6.9, 2.5] } },
-      { id: 'ch2', fr: 'Chambre 2', en: 'Bedroom 2', rs: [[7.1, 0, DW, 2.81]], at: [9.4, 1.4], cam: { p: [7.6, 2.35], t: [10.9, 0.9] } },
-      { id: 'ch3', fr: 'Chambre 3', en: 'Bedroom 3', rs: [[7.1, 2.89, DW, HD]], at: [9.4, 4.3], cam: { p: [7.6, 3.4], t: [10.9, 4.9] } },
-      { id: 'sdb2', fr: 'Salle de bains', en: 'Bathroom', rs: [[4.1, 3.4, 6.23, HD]], at: [5.1, 4.6], cam: { p: [5.2, 3.75], t: [5.2, 5.6], pitch: -0.38 }, minor: true },
-      { id: 'suite', fr: 'Suite parentale', en: 'Master suite', rs: [[7.1, MY(2.81), DW, DD]], at: [9.4, 10.4], cam: { p: [7.65, 9.4], t: [11.2, 10.6] } },
-      { id: 'dressing', fr: 'Dressing', en: 'Dressing room', rs: [[7.1, HD + PW, 9.11, 8.89]], at: [8.1, 7.4], cam: { p: [8.75, 8.6], t: [7.5, 6.4] } },
-      { id: 'sdbs', fr: 'Salle de bains de la suite', en: 'En-suite bathroom', rs: [[9.19, HD + PW, DW, 8.89]], at: [10.4, 7.4], cam: { p: [9.55, 7.55], t: [10.7, 6.3], pitch: -0.34 } },
-      { id: 'sde', fr: 'Salle d\'eau', en: 'Shower room', rs: [[4.1, HD + PW, 6.23, MY(3.4)]], at: [5.1, 7.2], cam: { p: [5.3, 7.95], t: [4.5, 6.3], pitch: -0.22 }, minor: true },
-      { id: 'ascenseur', fr: 'Ascenseur privatif', en: 'Private lift', rs: [[LIFT.x0, LIFT.y0, LIFT.x1, LIFT.y1], [UX, MY(3.32), 7.02, LIFT.y0]], at: [4.8, 11.0], cam: { p: [5.6, 9.0], t: [4.8, 11.3] } },
+      { id: 'palier', fr: 'Palier', en: 'Landing', rs: [[6.29, 1.92, 7.15, NH], [5.57, 4.98, 6.29, NH], [5.57, NH, 7.15, SH], [5.44, SH, 7.15, 6.2], [5.44, 6.2, 5.84, SHAFT[1]], [6.74, 6.2, 7.15, SHAFT[1]]], at: [6.72, 4.2], cam: { p: [6.72, 2.9], t: [6.4, 7.4] } },
+      { id: 'ch3', fr: 'Chambre 3', en: 'Bedroom 3', rs: [[7.25, 0, DW, 2.92], [6.66, 0, 7.25, 1.81]], at: [9.5, 1.5], cam: { p: [7.75, 2.45], t: [10.6, 0.9] } },
+      { id: 'ch2', fr: 'Chambre 2', en: 'Bedroom 2', rs: [[7.25, 3.01, DW, NH]], at: [9.5, 4.5], cam: { p: [8.25, 5.45], t: [10.6, 3.6] } },
+      { id: 'sdb2', fr: 'Salle de bains 2', en: 'Bathroom 2', rs: [[UX, 0, 6.2, 2.89], [5.79, 0.75, 6.58, 1.81]], at: [5.1, 1.8], cam: { p: [5.55, 2.45], t: [4.4, 0.6], pitch: -0.3 }, minor: true },
+      { id: 'wc2', fr: 'WC', en: 'WC', rs: [[UX, SH, 5.34, 8.36]], at: [4.6, 7.2], cam: { p: [4.75, 7.1], t: [4.4, 8.3], pitch: -0.35 }, minor: true },
+      { id: 'ch1', fr: 'Chambre 1', en: 'Bedroom 1', rs: [[7.25, SH, DW, DD]], at: [9.9, 9.1], cam: { p: [10.9, 7.15], t: [8.9, 9.6] } },
+      { id: 'sdb1', fr: 'Salle de bains 1', en: 'Bathroom 1', rs: [[UX, 9.46, 7.15, DD], [UX, 8.45, 5.34, 9.46]], at: [5.6, 10.6], cam: { p: [6.6, 10.0], t: [4.7, 11.6], pitch: -0.28 } },
+      { id: 'ascenseur', fr: 'Ascenseur privatif', en: 'Private lift', rs: [[LIFT.x0, SHAFT[1], LIFT.x1, LIFT.y1], [5.84, 6.2, 6.74, SHAFT[1]]], at: [6.29, 8.45], cam: { p: [6.29, 6.55], t: [6.29, 8.6] } },
     ],
-    tour: ['palier', 'ch2', 'ch3', 'suite', 'dressing', 'sdbs'],
+    tour: ['palier', 'ch3', 'ch2', 'ch1', 'sdb1'],
   }],
   start: { room: 'sejour' },
-  orbit: { target: [8.3, 0, 5.9], dist: 30 },
+  orbit: { target: [8.3, 0, 6.0], dist: 30 },
   garden: [
-    ['outdoorTable', 14.2, 2.0, 0, { w: 1.5, d: 1.5, n: 2, ends: true }], ['outdoorSofa', 12.7, 8.9, 90, { w: 2.2 }], ['sideTable', 13.55, 8.9, 0, { r: 0.32, h: 0.38 }],
-    ['lounger', 15.55, 8.2, 270, {}], ['lounger', 15.55, 9.3, 270, {}], ['planter', 12.2, 5.89, 90, { w: 1.2, d: 0.4 }],
+    ['outdoorTable', 14.085, 6.11, 90, { w: 2.2, d: 0.97, n: 3, ends: true }], ['lounger', 13.57, 9.98, 132, {}], ['lounger', 14.31, 10.72, 132, {}],
+    ['acUnit', 12.86, 0.03, 0, {}], ['acUnit', 12.2, 11.56, 90, { w: 0.74 }],
   ],
   exterior(b, M, lv) {
-    const gx0 = DW + E, gx1 = 16.9;
+    const gx0 = DW + E, gx1 = 16.65, gz0 = -0.15, gz1 = DD + 0.15;
     b.on('ext');
-    // jardin : 4,9 m de profondeur sur toute la largeur, dallage devant les baies
-    b.box(M.terrace, gx0, -0.06, -E, 14.6, -0.015, DD + E); b.box(M.grass, 14.6, -0.1, -E, gx1, -0.02, DD + E); b.box(M.socle, gx0, -0.3, -E, gx1 + 0.4, -0.1, DD + E);
-    lv.blocks.push(V.hedge(b, M, gx0, -E, gx1, 0.3, { h: 1.6 })); lv.blocks.push(V.hedge(b, M, gx0, DD - 0.3, gx1, DD + E, { h: 1.6 }));
-    b.box(M.stone, gx1, -0.3, -E, gx1 + 0.4, 0.45, DD + E); b.on('ctx'); b.box(M.stone, gx1, -1.3, -E, gx1 + 0.4, -0.3, DD + E); b.on('ext'); lv.blocks.push(V.hedge(b, M, gx1 - 0.5, 0.3, gx1, DD - 0.3, { h: 0.95 })); lv.blocks.push([gx1 - 0.1, -E, gx1 + 0.4, DD + E]);
-    b.box(M.frame, DW + 0.2, 2.42, 0.75, DW + E + 0.02, 2.5, 5.4); b.box(M.frame, DW + 0.2, 2.42, MY(5.4), DW + E + 0.02, 2.5, MY(0.75));
-    lv.blocks.push(V.cypress(b, M, 16.2, 0.85, { h: 5 })); lv.blocks.push(V.cypress(b, M, 16.2, DD - 0.85, { h: 5 })); lv.blocks.push(V.oleander(b, M, 15.9, 5.9, { r: 0.7, seed: 8 }));
-    V.lavender(b, M, 14.85, 3.6, 14.85, 5.2, { seed: 5 }); V.lavender(b, M, 14.85, 6.6, 14.85, 7.4, { seed: 6 });
+    // jardin : dallage sur presque toute la surface, massif planté le long de la limite Est et au Sud
+    b.box(M.socle, gx0, -0.3, -E, 17.3, -0.1, DD + E);
+    b.box(M.hexPaving, gx0, -0.06, gz0, 16.05, -0.015, gz1); b.box(M.grass, 16.05, -0.1, gz0, gx1, -0.02, gz1);
+    b.box(M.stucco, gx0, -0.3, -E, 17.3, 1.8, gz0); b.box(M.stucco, gx0, -0.3, gz1, 17.3, 1.8, DD + E); lv.blocks.push([gx0, -E - 0.2, 17.3, gz0], [gx0, gz1, 17.3, DD + E + 0.2]);
+    b.box(M.stone, gx1, -0.3, gz0, gx1 + 0.27, 0.45, gz1); railing(b, M, gx1 + 0.135, gz0, gx1 + 0.135, gz1, 0.45, 0.6, 'cadre');
+    b.box(M.stone, gx1 + 0.27, -0.3, gz0, 17.3, 0.3, gz1); lv.blocks.push(V.hedge(b, M, gx1 + 0.3, gz0 + 0.05, 17.28, gz1 - 0.05, { h: 0.55, y: 0.3 })); lv.blocks.push([gx1, gz0, 17.3, gz1]);
+    b.on('ctx'); b.box(M.stone, gx1, -1.3, -E, 17.3, -0.3, DD + E); b.on('ext');
+    lv.blocks.push(V.tree(b, M, 15.3, 0.75, { kind: 'olive', h: 3.6, r: 1.5, seed: 4 })); lv.blocks.push(V.oleander(b, M, 13.9, 0.55, { r: 0.6, seed: 8 }));
+    lv.blocks.push(V.oleander(b, M, 16.3, 3.0, { r: 0.55, seed: 3 })); lv.blocks.push(V.oleander(b, M, 16.3, 5.6, { r: 0.5, seed: 5 })); lv.blocks.push(V.oleander(b, M, 16.3, 8.1, { r: 0.55, seed: 6 }));
+    lv.blocks.push(V.oleander(b, M, 16.25, 10.7, { r: 0.6, seed: 7 })); lv.blocks.push(V.oleander(b, M, 15.2, 11.75, { r: 0.45, seed: 2 }));
+    V.lavender(b, M, 16.3, 1.6, 16.3, 2.4, { seed: 5 }); V.lavender(b, M, 16.3, 3.9, 16.3, 4.9, { seed: 6 }); V.lavender(b, M, 16.3, 6.5, 16.3, 7.4, { seed: 7 }); V.lavender(b, M, 16.3, 9.0, 16.3, 9.9, { seed: 8 });
     // le reste de l'immeuble et ses abords (site.js)
     buildSite(b, M, { o: duplex.site.o, skip: ['duplex'] });
-    // dalle entre les deux niveaux : trémies de l'escalier (logement 02) et de l'ascenseur (logement 03)
+    // balcons filants de l'étage au-dessus des deux baies
+    b.on('L1');
+    for (const [z0, z1] of [[0.87, 4.97], [6.98, 11.14]]) {
+      b.box(M.stucco, gx0, FH - 0.2, z0, gx0 + 0.5, FH - 0.02, z1); b.box(M.terrace, gx0, FH - 0.02, z0, gx0 + 0.5, FH - 0.004, z1);
+      railing(b, M, gx0 + 0.47, z0 + 0.03, gx0 + 0.47, z1 - 0.03, FH - 0.004); railing(b, M, gx0, z0 + 0.03, gx0 + 0.47, z0 + 0.03, FH - 0.004); railing(b, M, gx0, z1 - 0.03, gx0 + 0.47, z1 - 0.03, FH - 0.004);
+    }
+    // dalle entre les deux niveaux : trémies de l'escalier et de l'ascenseur
     b.on('L0:top');
-    for (const s of [[-E, -E, UX, DD + E], [UX, 1.95, DW + E, MY(1.95)], [7.02, -E, DW + E, 1.95], [5.5, MY(1.95), DW + E, DD + E], [UX, MY(1.95), 5.5, LIFT.y0 - 0.1]]) b.box(M.concrete, s[0], 2.65, s[1], s[2], FH - 0.03, s[3]);
-    b.box(M.plaster, UX, 2.6, -E, 7.02, FH, 0);                                      // bandeau du mur Nord dans la cage d'escalier
+    for (const s of [[-E, -E, UX, DD + E], [UX, -E, DW + E, SZ], [6.25, SZ, DW + E, NH], [5.57, 4.98, 6.25, NH], [UX, NH, DW + E, SHAFT[1] + 0.2], [UX, SHAFT[1] + 0.2, SHAFT[0] + 0.2, SHAFT[3] - 0.2],
+      [SHAFT[2] - 0.2, SHAFT[1] + 0.2, DW + E, SHAFT[3] - 0.2], [UX, SHAFT[3] - 0.2, DW + E, DD + E]]) b.box(M.concrete, s[0], 2.65, s[1], s[2], FH - 0.03, s[3]);
+    // habillage des rives de la trémie de l'escalier
+    b.box(M.plaster, SX, 2.6, SZ - 0.02, 6.25, FH - 0.03, SZ); b.box(M.plaster, 6.25, 2.6, SZ, 6.27, FH - 0.03, 4.98); b.box(M.plaster, 5.57, 2.6, 4.96, 6.27, FH - 0.03, 4.98); b.box(M.plaster, SX - 0.02, 2.6, SZ, SX, FH - 0.03, NH);
     b.on('ext:top');
     b.box(M.stucco, UX - E, FH + 2.56, -E, DW + E, 5.74, DD + E);
   },
