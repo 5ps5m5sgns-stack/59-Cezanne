@@ -362,6 +362,13 @@ export function makeMaterials(quality) {
   const [dsC, dsB] = dryStoneSet(24);
   M.stone = std({ map: T(dsC), bumpMap: L(dsB), bumpScale: 3, roughness: 0.95, userData: { wuv: 2.2 } });
   M.roof = std({ map: T(roofTiles(25)), roughness: 0.85, userData: { wuv: 1.6 } });
+  M.ashlar = std({ map: T(stoneTiles([226, 212, 186], 26, 2, { ny: 3, veins: 0.5, joint: 2, jointCol: [186, 172, 148], shift: 0.5 })), roughness: 0.8, userData: { wuv: 2.0 } });   // pierre de taille de la tour (70 × 100)
+  M.cadre = std({ color: 0x6a665f, roughness: 0.6, metalness: 0.3 });   // cadres, garde-corps et menuiseries RAL 7039
+  M.shutter = std({ map: T(canvas(128, (g, S) => { g.fillStyle = '#8f877b'; g.fillRect(0, 0, S, S); for (let x = 0; x < S; x += 8) { g.fillStyle = 'rgba(40,34,28,0.42)'; g.fillRect(x, 0, 2, S); g.fillStyle = 'rgba(255,255,255,0.1)'; g.fillRect(x + 2, 0, 1, S); } })), roughness: 0.8, userData: { wuv: 0.6 } });   // volets coulissants à lames verticales, taupe
+  M.glassDark = std({ color: 0x1b2126, roughness: 0.08, metalness: 0.75, envMapIntensity: 1.6 });   // vitrages des autres logements
+  M.paving = std({ map: T(plain([196, 190, 180], 27, { grain: 0.08, cloud: 0.06 })), roughness: 0.95, userData: { wuv: 3, cast: false } });   // enrobé clair, trottoirs
+  M.garage = std({ map: T(canvas(128, (g, S) => { g.fillStyle = '#6d6a66'; g.fillRect(0, 0, S, S); for (let y = 0; y < S; y += 16) { g.fillStyle = 'rgba(0,0,0,0.35)'; g.fillRect(0, y, S, 2); } })), roughness: 0.6, metalness: 0.3, userData: { wuv: 1 } });
+  M.carGrey = std({ color: 0x8d9296, roughness: 0.3, metalness: 0.7 }); M.carDark = std({ color: 0x1c1e22, roughness: 0.25, metalness: 0.7 });
 
   // ── Menuiseries et métaux
   M.frame = std({ color: 0x2c2d30, roughness: 0.55, metalness: 0.4 });   // aluminium anthracite

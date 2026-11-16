@@ -14,6 +14,7 @@
 import * as THREE from 'three';
 import { V } from 'v3d/furniture';
 import { railing } from 'v3d/build';
+import { buildSite } from 'v3d/site';
 
 const wv = (c, a0, a1, t = 0.1, ext = 0, ops = [], more = {}) => ({ k: 'v', c, a0, a1, t, ext, ops, ...more });
 const wh = (c, a0, a1, t = 0.1, ext = 0, ops = [], more = {}) => ({ k: 'h', c, a0, a1, t, ext, ops, ...more });
@@ -72,7 +73,7 @@ function windingStair(xa0, xa1, xb0, xb1, yFoot, yBack, H) {
    ════════════════════════════════════════════════════════════════════════════════════════════ */
 const VW = 16.69, VD = 8.67, T = 0.08;
 const villa = {
-  id: 'villa', bien: '138', north: 0, groundY: -6.75, hour: 18.75,
+  id: 'villa', bien: '138', north: 0, groundY: -6.5, hour: 18.75, site: { key: 'villa', o: [0.35, 2.9, 0.35] },
   name: { fr: 'Appartement-villa', en: 'Villa-style apartment' },
   facts: { fr: '4 pièces · 138 m² · jardin de 82 m²', en: '4 rooms · 138 m² · 82 m² garden' },
   pitch: { fr: 'Au premier et dernier étage : le séjour de plain-pied avec le jardin, la chambre parentale face à la Sainte-Victoire.', en: 'On the first and top floor: the living room level with the garden, the master bedroom facing the Sainte-Victoire.' },
@@ -156,25 +157,19 @@ const villa = {
     const gx0 = -9.15, gz0 = -E, gz1 = VD + E;
     b.on('ext');
     // jardin de plain-pied : terrasse dallée devant le séjour, puis pelouse
-    b.box(M.terrace, -4.95, -0.06, gz0, -E, -0.015, gz1); b.box(M.grass, gx0, -0.1, gz0, -4.95, -0.02, gz1); b.box(M.socle, gx0 - 0.4, -0.3, gz0 - 0.4, -E, -0.1, gz1 + 0.05); b.on('ctx'); b.box(M.earth, gx0 - 0.4, -1.2, gz0 - 0.4, -E, -0.3, gz1 + 0.05); b.on('ext');
+    b.box(M.terrace, -4.95, -0.06, gz0, -E, -0.015, gz1); b.box(M.grass, gx0, -0.1, gz0, -4.95, -0.02, gz1); b.box(M.socle, gx0 - 0.4, -0.3, gz0 - 0.4, -E, -0.1, gz1 + 0.05);
     lv.blocks.push(V.hedge(b, M, gx0, gz0 - 0.4, -E - 0.05, gz0 + 0.3, { h: 1.6 })); lv.blocks.push(V.hedge(b, M, gx0 - 0.4, gz0 - 0.4, gx0 + 0.25, gz1, { h: 1.6 }));
     lv.blocks.push(V.hedge(b, M, gx0, gz1 - 0.55, -E - 0.05, gz1 + 0.05, { h: 1.2 }));
     lv.blocks.push(V.tree(b, M, -8.0, 1.5, { kind: 'olive', h: 4.2, r: 1.7, seed: 4 })); lv.blocks.push(V.tree(b, M, -7.9, 7.0, { kind: 'pine', h: 6.0, r: 2.4, seed: 9 }));
     lv.blocks.push(V.oleander(b, M, -5.7, 8.05, { r: 0.7 })); V.lavender(b, M, -8.3, 3.2, -8.3, 5.6, { seed: 2 });
     // balcon filant de la façade Est, côté Sainte-Victoire
     b.box(M.terrace, VW + E, -0.04, -0.6, VW + E + 0.6, 0, 7.35); b.box(M.stucco, VW + E, -0.3, -0.65, VW + E + 0.65, -0.04, 7.4);
-    // volumes de la résidence, en maquette claire : rez-de-chaussée sous le logement, suite du bâtiment au Sud
-    b.on('ctx');
-    b.box(M.massing, -E, -3.15, -E, VW + E, -0.32, VD + E);
-    b.box(M.massing, -E, -3.15, VD + E + 0.01, VW + E, 2.9, 31);
-    b.box(M.earth, -60, -3.2, -40, gx0 - 0.4, -0.12, 60); b.box(M.earth, gx0 - 0.4, -3.2, gz1 + 0.05, -E, -0.12, 60); b.box(M.earth, gx0 - 0.4, -3.2, -40, VW + E, -0.12, gz0 - 0.4);   // terrain haut à l'Ouest et au Nord
-    pool(b, M, 23.5, 12.5, 29.0, 24.6, -6.7);
-    b.box(M.stone, VW + E + 4.6, -6.7, -8, VW + E + 5.0, -3.2, 34); b.box(M.grass, VW + E, -3.3, -8, VW + E + 4.6, -3.16, 34);
+    // le reste de l'immeuble et ses abords (site.js)
+    buildSite(b, M, { o: villa.site.o, skip: ['villa'] });
     b.on('ext:top');
-    hipRoof(b, M.roof, -1.3, -1.3, VW + 1.5, 31.8, 2.92, 2.2);
     b.box(M.stucco, -E, 2.66, -E, VW + E, 2.92, VD + E);        // au-dessus du plafond, jamais dans le même plan que lui
   },
-  trees: [[22, -6, 'pine', 9], [27, 4, 'cypress', 8], [31, -3, 'olive', 5], [36, 8, 'pine', 10], [24, 30, 'olive', 5], [34, 28, 'pine', 9], [-16, -8, 'pine', 9], [-20, 6, 'cypress', 8], [-14, 16, 'pine', 9], [4, -14, 'pine', 10], [14, -12, 'olive', 5]],
+  trees: [],
 };
 
 /* ════════════════════════════════════════════════════════════════════════════════════════════
@@ -186,7 +181,7 @@ const DW = 11.63, HD = 5.79, PW = 0.2, DD = 2 * HD + PW, UX = 4.0, FH = 2.9, MY 
 const stair = windingStair(4.05, 4.95, 6.1, 7.0, 1.9, 0.05, FH);
 const LIFT = { x0: 4.2, y0: 10.3, x1: 5.4, y1: 11.7 };
 const duplex = {
-  id: 'duplex', bien: 'duplex-206', north: 0, groundY: -3.55, hour: 9.25,
+  id: 'duplex', bien: 'duplex-206', north: 0, groundY: -3.6, hour: 9.25, site: { key: 'duplex', o: [5.41, 0, 13.5] },
   name: { fr: 'Duplex', en: 'Duplex' },
   facts: { fr: '4 pièces · 206 m² · terrasse et jardin d\'environ 56 m²', en: '4 rooms · 206 m² · terrace and garden of about 56 m²' },
   pitch: { fr: 'Deux duplex réunis : plus de 100 m² de réception en rez-de-jardin, trois chambres à l\'étage, un ascenseur privatif.', en: 'Two duplexes combined: over 100 m² of reception space at garden level, three bedrooms upstairs, a private lift.' },
@@ -307,28 +302,22 @@ const duplex = {
     const gx0 = DW + E, gx1 = 16.9;
     b.on('ext');
     // jardin : 4,9 m de profondeur sur toute la largeur, dallage devant les baies
-    b.box(M.terrace, gx0, -0.06, -E, 14.6, -0.015, DD + E); b.box(M.grass, 14.6, -0.1, -E, gx1, -0.02, DD + E); b.box(M.socle, gx0, -0.3, -E, gx1 + 0.4, -0.1, DD + E); b.on('ctx'); b.box(M.earth, gx0, -1.0, -E, gx1 + 0.4, -0.3, DD + E); b.on('ext');
+    b.box(M.terrace, gx0, -0.06, -E, 14.6, -0.015, DD + E); b.box(M.grass, 14.6, -0.1, -E, gx1, -0.02, DD + E); b.box(M.socle, gx0, -0.3, -E, gx1 + 0.4, -0.1, DD + E);
     lv.blocks.push(V.hedge(b, M, gx0, -E, gx1, 0.3, { h: 1.6 })); lv.blocks.push(V.hedge(b, M, gx0, DD - 0.3, gx1, DD + E, { h: 1.6 }));
-    b.box(M.stone, gx1, -0.3, -E, gx1 + 0.4, 0.45, DD + E); b.on('ctx'); b.box(M.stone, gx1, -3.6, -E, gx1 + 0.4, -0.3, DD + E); b.on('ext'); lv.blocks.push(V.hedge(b, M, gx1 - 0.5, 0.3, gx1, DD - 0.3, { h: 0.95 })); lv.blocks.push([gx1 - 0.1, -E, gx1 + 0.4, DD + E]);
+    b.box(M.stone, gx1, -0.3, -E, gx1 + 0.4, 0.45, DD + E); b.on('ctx'); b.box(M.stone, gx1, -1.3, -E, gx1 + 0.4, -0.3, DD + E); b.on('ext'); lv.blocks.push(V.hedge(b, M, gx1 - 0.5, 0.3, gx1, DD - 0.3, { h: 0.95 })); lv.blocks.push([gx1 - 0.1, -E, gx1 + 0.4, DD + E]);
     b.box(M.frame, DW + 0.2, 2.42, 0.75, DW + E + 0.02, 2.5, 5.4); b.box(M.frame, DW + 0.2, 2.42, MY(5.4), DW + E + 0.02, 2.5, MY(0.75));
     lv.blocks.push(V.cypress(b, M, 16.2, 0.85, { h: 5 })); lv.blocks.push(V.cypress(b, M, 16.2, DD - 0.85, { h: 5 })); lv.blocks.push(V.oleander(b, M, 15.9, 5.9, { r: 0.7, seed: 8 }));
     V.lavender(b, M, 14.85, 3.6, 14.85, 5.2, { seed: 5 }); V.lavender(b, M, 14.85, 6.6, 14.85, 7.4, { seed: 6 });
-    // volumes de la résidence, découpés aux mêmes hauteurs que le logement
-    b.on('ctx');
-    b.box(M.massing, -6.2, 0, -9.6, DW + E, 5.72, -E - 0.01); b.box(M.massing, -6.2, 0, DD + E + 0.01, DW + E, 5.72, 21.6); b.box(M.massing, -6.2, 0, -E, -E - 0.01, 5.72, DD + E);
-    b.box(M.massing, -E, FH, -E, UX - E - 0.01, 5.72, DD + E);                       // logements voisins au-dessus du fond du rez-de-jardin
-    b.box(M.earth, -40, 0, -40, -6.2, 2.85, 50);
-    b.box(M.grass, gx0, -0.1, -9.6, gx1, -0.02, -E); b.box(M.grass, gx0, -0.1, DD + E, gx1, -0.02, 21.6); b.box(M.stone, gx1, -3.6, -9.6, gx1 + 0.4, 0.45, 21.6);
-    pool(b, M, 22.3, -0.3, 27.8, 11.8, -3.5);
+    // le reste de l'immeuble et ses abords (site.js)
+    buildSite(b, M, { o: duplex.site.o, skip: ['duplex'] });
     // dalle entre les deux niveaux : trémies de l'escalier (logement 02) et de l'ascenseur (logement 03)
     b.on('L0:top');
     for (const s of [[-E, -E, UX, DD + E], [UX, 1.95, DW + E, MY(1.95)], [7.02, -E, DW + E, 1.95], [5.5, MY(1.95), DW + E, DD + E], [UX, MY(1.95), 5.5, LIFT.y0 - 0.1]]) b.box(M.concrete, s[0], 2.65, s[1], s[2], FH - 0.03, s[3]);
     b.box(M.plaster, UX, 2.6, -E, 7.02, FH, 0);                                      // bandeau du mur Nord dans la cage d'escalier
     b.on('ext:top');
-    hipRoof(b, M.roof, -6.9, -10.3, DW + 1.0, 22.3, 5.74, 2.2);
     b.box(M.stucco, UX - E, FH + 2.56, -E, DW + E, 5.74, DD + E);
   },
-  trees: [[31, 3, 'olive', 5], [33, 9, 'cypress', 8], [37, -2, 'pine', 9], [40, 12, 'pine', 10], [30, 16, 'olive', 5], [44, 2, 'cypress', 9], [36, -14, 'olive', 5], [34, -8, 'pine', 9], [36, 20, 'olive', 5], [31, 26, 'cypress', 9], [24, -16, 'pine', 10], [19, 28, 'pine', 9], [-12, -22, 'pine', 10], [-16, 30, 'pine', 9]],
+  trees: [],
 };
 
 export const APARTMENTS = [villa, duplex];

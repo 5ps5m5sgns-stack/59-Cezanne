@@ -101,11 +101,11 @@ export class Environment {
     };
     for (const [px, pz, kind, h] of apt.trees || []) place(px, pz, kind, h);
     for (let i = 0; i < this.quality.trees; i++) {
-      const a = R() * 6.283, d = 44 + R() * 120, x = center.x + Math.cos(a) * d, z = center.z + Math.sin(a) * d, k = R();
+      const a = R() * 6.283, d = 86 + R() * 120, x = center.x + Math.cos(a) * d, z = center.z + Math.sin(a) * d, k = R();
       place(x, z, k < 0.55 ? 'pine' : k < 0.8 ? 'cypress' : 'olive', 6 + R() * 6);
     }
     for (let i = 0; i < 42; i++) {                                                          // maisons du quartier, toits de tuiles
-      const a = R() * 6.283, d = 62 + Math.pow(R(), 0.8) * 330, x = center.x + Math.cos(a) * d, z = center.z + Math.sin(a) * d, w = 9 + R() * 7, dd = 7 + R() * 5, rot = R() * 3;
+      const a = R() * 6.283, d = 96 + Math.pow(R(), 0.8) * 330, x = center.x + Math.cos(a) * d, z = center.z + Math.sin(a) * d, w = 9 + R() * 7, dd = 7 + R() * 5, rot = R() * 3;
       b.push(x, gy, z, rot); b.box(M.massing, -w / 2, 0, -dd / 2, w / 2, 5.5, dd / 2); b.geo(M.roof, new THREE.ConeGeometry(Math.max(w, dd) * 0.78, 2, 4), 0, 6.5, 0, 0, Math.PI / 4, 0, 1, 1, dd / w); b.pop();
     }
     const L = b.build(this.near);
@@ -115,7 +115,7 @@ export class Environment {
     const forest = new THREE.InstancedMesh(geo, new THREE.MeshStandardMaterial({ roughness: 1, map: M.hedge.map }), N);
     const m4 = new THREE.Matrix4(), q = new THREE.Quaternion(), col = new THREE.Color(), pal = [0x8fae7c, 0x7a9c6c, 0xa3b88a, 0x6f8f62, 0xb4bf98, 0x86a674];      // teintes claires : elles multiplient la texture de feuillage
     for (let i = 0; i < N; i++) {
-      const a = R() * 6.283, d = 48 + Math.pow(R(), 0.62) * 540, s = 2.4 + R() * 3.4, pine = R() < 0.6;
+      const a = R() * 6.283, d = 98 + Math.pow(R(), 0.62) * 540, s = 2.4 + R() * 3.4, pine = R() < 0.6;
       q.setFromAxisAngle(new THREE.Vector3(0, 1, 0), R() * 6.283);
       m4.compose(new THREE.Vector3(center.x + Math.cos(a) * d, gy + s * (pine ? 1.5 : 0.8), center.z + Math.sin(a) * d), q, new THREE.Vector3(s * (pine ? 1.35 : 1), s * (pine ? 0.6 : 0.95), s * (pine ? 1.35 : 1)));
       forest.setMatrixAt(i, m4); forest.setColorAt(i, col.setHex(pal[(R() * pal.length) | 0]).multiplyScalar(0.8 + R() * 0.45));
@@ -181,6 +181,9 @@ export class Environment {
     if (!this.envDirty || (this.envRT && now - (this.envAt || 0) < 240)) return false;
     this.envDirty = false; this.envAt = now; this.updateEnvMap(this.envK); return true;
   }
+
+  /* Recentre les ombres portées : sur le logement (visite), ou sur toute la résidence (vue d'ensemble). */
+  focus(center, radius) { this.center.copy(center); this.radius = radius; this.placeSun(this.studio && this.studioDir ? this.studioDir : this.dir); }
 
   placeSun(dir = this.dir) {
     const r = this.radius, c = this.center;

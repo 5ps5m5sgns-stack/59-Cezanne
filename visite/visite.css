@@ -95,6 +95,13 @@
 .v3d[data-mode="plan"] .v3d-label { border-radius: 12px; } .v3d[data-mode="plan"] .v3d-label small { display: block; }
 .v3d-label.is-minor { font-size: 0.68rem; padding: 0.1rem 0.45rem 0.14rem; }
 .v3d[data-mode="orbit"] .v3d-label.is-minor { display: none; }
+/* vue d'ensemble de la résidence : étiquettes des deux logements à vendre */
+#v3d-lots { position: absolute; inset: 0; z-index: 2; pointer-events: none; overflow: hidden; }
+.v3d-lot { font-size: 0.92rem; padding: 0.4rem 0.95rem 0.45rem; color: #fff; background: var(--v3d-terra); border-color: rgba(255, 255, 255, 0.5); box-shadow: 0 6px 20px rgba(59, 35, 29, 0.3); margin-top: -10px; }
+.v3d-lot small { display: block; font-family: var(--font-sans); font-size: 0.66rem; letter-spacing: 0.03em; opacity: 0.92; margin-top: 0.1rem; }
+.v3d-lot::after { content: ""; position: absolute; left: 50%; top: 100%; width: 1px; height: 14px; background: #fff; }
+.v3d-lot:hover, .v3d-lot.is-hover { background: var(--v3d-deep); color: #fff; }
+.v3d[data-mode="site"] .v3d-nav { display: none; }
 .v3d-label:hover, .v3d-label.is-hover { background: var(--v3d-terra); color: #fff; border-color: var(--v3d-terra); }
 
 /* à la demande : lumière et sols */
@@ -170,6 +177,7 @@
   .v3d { margin: 0; border-radius: 1.4rem 1.4rem 0 0; height: clamp(420px, min(74svh, calc(100svh - var(--nav-height) - 11.5rem)), 820px); }   /* une bande de page reste visible sous la scène pour pouvoir faire défiler */
   .v3d-modes { top: 0.6rem; left: 0.6rem; transform: none; } .v3d-seg { padding: 0 0.7rem; font-size: 0.68rem; min-height: 38px; } .v3d-modes .v3d-seg svg { display: none; }
   .v3d-tools { top: 0.6rem; right: 0.6rem; gap: 0.35rem; } .v3d-tools .v3d-seg span { display: none; } .v3d-tools .v3d-seg { width: 40px; padding: 0; justify-content: center; }
+  .v3d-lot { font-size: 0.8rem; padding: 0.3rem 0.7rem 0.35rem; } .v3d-lot small { font-size: 0.6rem; }
   .v3d-nav { left: 0.6rem; right: 0.6rem; bottom: 0.6rem; flex-direction: column; align-items: stretch; gap: 0.35rem; }
   .v3d-levels { align-self: center; }
   .v3d-setbtn { left: 0.6rem; bottom: 3.6rem; } .v3d-panel { left: 0.6rem; right: 0.6rem; bottom: 6.6rem; max-width: none; }
@@ -182,4 +190,8 @@
   .v3d-note { display: none; }
   .v3d-duo, .v3d-how { grid-template-columns: 1fr; }
   .v3d-label { font-size: 0.68rem; padding: 0.12rem 0.45rem 0.16rem; } .v3d-label.is-minor { display: none; }
+}
+@media (max-width: 600px) {
+  .v3d-modes .v3d-seg svg { display: block; } .v3d-modes .v3d-seg { padding: 0 0.6rem; gap: 0.35rem; }
+  .v3d-modes .v3d-seg > span { display: none; } .v3d-modes .v3d-seg.is-on > span { display: inline; }
 }

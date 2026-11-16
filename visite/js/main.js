@@ -13,6 +13,7 @@ import { Batch } from 'v3d/geo';
 import { makeMaterials, FLOOR_FINISHES, setFloorFinish } from 'v3d/materials';
 import { buildLevel, buildStair, buildLift, buildNav } from 'v3d/build';
 import { APARTMENTS } from 'v3d/plans';
+import { SITE } from 'v3d/site';
 import { Environment } from 'v3d/env';
 import { cellFree, nearestFree, findPath, pathLength } from 'v3d/nav';
 
@@ -30,6 +31,9 @@ const T = {
   hintWalkTouch: { fr: 'Glissez pour regarder · touchez là où vous voulez aller · écartez deux doigts pour avancer', en: 'Drag to look · tap where you want to go · spread two fingers to move forward' },
   hintOrbit: { fr: 'Cliquez sur une pièce pour y entrer · glissez pour tourner la maquette', en: 'Click a room to step inside · drag to rotate the model' },
   hintPlan: { fr: 'Glissez pour déplacer le plan · cliquez sur une pièce pour y entrer', en: 'Drag to move the plan · click a room to step inside' },
+  hintSite: { fr: 'Glissez pour tourner autour de la résidence · cliquez sur un logement pour l\'ouvrir', en: 'Drag to orbit the residence · click a home to open it' },
+  lotVilla: { fr: 'Dernier étage · 138 m² · jardin', en: 'Top floor · 138 m² · garden' }, lotDuplex: { fr: 'Deux niveaux · 206 m² · ascenseur privatif', en: 'Two levels · 206 m² · private lift' },
+  lotHere: { fr: 'Voir la maquette', en: 'See the model' },
   hintLift: { fr: 'Entrez dans la cabine pour changer de niveau', en: 'Step into the lift to change level' },
   lift: { fr: 'Ascenseur', en: 'Lift' },
   tourPlay: { fr: 'Visite guidée', en: 'Guided tour' }, tourStop: { fr: 'Arrêter la visite', en: 'Stop the tour' },
@@ -52,7 +56,7 @@ const QUALITY = QUALITIES[qName] || QUALITIES.high;
 
 const root = $('#v3d');
 const canvas = $('#v3d-canvas');
-const ui = { spots: $('#v3d-spots'), loader: $('#v3d-loader'), loaderText: $('#v3d-loader-text'), labels: $('#v3d-labels'), hud: $('#v3d-hud'), hint: $('#v3d-hint'), map: $('#v3d-map'), fade: $('#v3d-fade') };
+const ui = { lots: $('#v3d-lots'), spots: $('#v3d-spots'), loader: $('#v3d-loader'), loaderText: $('#v3d-loader-text'), labels: $('#v3d-labels'), hud: $('#v3d-hud'), hint: $('#v3d-hint'), map: $('#v3d-map'), fade: $('#v3d-fade') };
 
 class App {
   constructor() {
@@ -153,7 +157,7 @@ class App {
     const cur = this.build(apt);
     if (prev) this.scene.remove(prev.group);
     this.scene.add(cur.group); cur.group.add(this.camera, this.reticle, this.hl);
-    this.apt = apt; this.cur = cur; this.viewLevel = 0; this.mode = 'orbit'; this.lastRoom = null;
+    this.apt = apt; this.cur = cur; this.viewLevel = 0; this.mode = 'orbit'; this.lastRoom = null; this.hourBack = undefined;
     Object.assign(this.walk, { level: 0, path: null, look: null, climbing: null, riding: null, spin: null, onArrive: null, floorY: undefined });
     // lumières d'appoint : un petit nombre de sources, réattribuées aux lampes ou aux baies les plus proches
     for (const p of this.pool) p.removeFromParent();
@@ -169,6 +173,7 @@ class App {
     const room = opts.room && this.findRoom(opts.room);
     if (opts.mode === 'walk' || room) { const r = room || this.findRoom(apt.start.room); this.enterWalk(r.room, r.level, true); }
     else if (opts.mode === 'plan') this.setMode('plan', true);
+    else if (opts.mode === 'site') { this.setMode('orbit', true); this.setMode('site', true); }
     else this.setMode('orbit', true);
     this.ready = true; ui.loader.hidden = true; root.classList.add('is-ready'); this.dirty = true; setTimeout(() => root.classList.add('is-seen'), 1200);
     window.__v3dReady = true;
@@ -213,10 +218,12 @@ class App {
   }
 
   setMode(mode, instant) {
+    if (mode === 'site') return this.enterSite(instant);
     if (mode === 'walk') { this.stopTour(); const r = this.findRoom(this.apt.start.room); return this.enterWalk(this.lastRoom || r.room, this.lastRoom ? this.lastLevel : r.level, instant); }
     if (this.mode === 'walk' && !instant) return this.fadeSwap(() => this.setMode(mode, true));
     this.stopTour(); Object.assign(this.walk, { path: null, climbing: null, riding: null, spin: null });
     if (this.mode === 'walk') this.viewLevel = Math.min(this.walk.level, this.apt.levels.length - 1);
+    if (this.mode === 'site') this.leaveSite();
     this.mode = mode; this.applyView(true); this.syncUI();
     this.camera.near = 1.2; this.camera.far = 700; this.camera.updateProjectionMatrix();      // vue lointaine : tampon de profondeur resserré, pas de surfaces qui se chevauchent à l'œil
     const plan = mode === 'plan', pose = this.orbitPose(plan), c = this.controls;
@@ -233,9 +240,58 @@ class App {
     this.showHint(plan ? 'hintPlan' : 'hintOrbit');
   }
 
+  /* ── Vue d'ensemble : l'immeuble dans son site, d'après le plan de masse et les façades ; les deux logements à vendre y sont repérés ── */
+  enterSite(instant) {
+    if (this.mode === 'walk' && !instant) return this.fadeSwap(() => this.enterSite(true));
+    this.stopTour(); Object.assign(this.walk, { path: null, climbing: null, riding: null, spin: null });
+    if (this.mode === 'walk') this.viewLevel = Math.min(this.walk.level, this.apt.levels.length - 1);
+    if (this.mode !== 'site') { this.hourBack = this.hour; this.setHour(10.5, true); }       // soleil du matin sur la façade Est, côté avenue
+    this.mode = 'site'; this.applyView(false); this.cur.pucks.visible = false; this.lotMarks.visible = true; this.syncUI();
+    const o = this.apt.site.o, c = this.controls, t = new THREE.Vector3(SITE.center[0] - o[0], SITE.center[1] - o[1], SITE.center[2] - o[2]);
+    this.env.focus(t, 56);
+    this.camera.near = 1.5; this.camera.far = 3200; this.camera.updateProjectionMatrix();
+    const pos = t.clone().add(new THREE.Vector3(0.8, 0.34, -0.5).normalize().multiplyScalar(this.camera.aspect < 1 ? 118 : 78));
+    const done = () => {
+      c.target.copy(t); c.enabled = true; c.enableRotate = true; c.minPolarAngle = 0.25; c.maxPolarAngle = 1.5; c.minAzimuthAngle = -Infinity; c.maxAzimuthAngle = Infinity;
+      c.minDistance = 28; c.maxDistance = 170; c.mouseButtons.LEFT = THREE.MOUSE.ROTATE; c.touches.ONE = THREE.TOUCH.ROTATE; c.update(); this.dirty = true;
+    };
+    c.enabled = false;
+    this.flyTo({ pos, look: t, fov: 32, dur: instant ? 0 : 1.2, done });
+    this.showHint('hintSite');
+  }
+  leaveSite() {
+    if (this.hourBack !== undefined) { const h = this.hourBack; this.hourBack = undefined; this.setHour(h, true); }
+    this.lotMarks.visible = false;
+    const bb = this.apt.levels[0].bounds; this.env.focus(this.cur.group.localToWorld(new THREE.Vector3((bb[0] + bb[2]) / 2, 1.5, (bb[1] + bb[3]) / 2)), Math.hypot(bb[2] - bb[0], bb[3] - bb[1]) / 2 + 3);
+  }
+  /* Volumes des deux logements à vendre, teintés par transparence dans l'immeuble, et leurs étiquettes. */
+  makeLots() {
+    if (this.lotMarks) this.lotMarks.removeFromParent();
+    this.lotMarks = new THREE.Group(); this.lotMarks.visible = this.mode === 'site'; this.cur.group.add(this.lotMarks);
+    const o = this.apt.site.o, fill = new THREE.MeshBasicMaterial({ color: 0xb86248, transparent: true, opacity: 0.2, depthTest: false, toneMapped: false }), edge = new THREE.LineBasicMaterial({ color: 0xb86248, depthTest: false, toneMapped: false });
+    ui.lots.textContent = ''; this.lotEls = [];
+    for (const [key, lot] of Object.entries(SITE.lots)) {
+      for (const q of lot.boxes) {
+        const g = new THREE.BoxGeometry(q[3] - q[0] + 0.5, q[4] - q[1] + 0.3, q[5] - q[2] + 0.5), m = new THREE.Mesh(g, fill), l = new THREE.LineSegments(new THREE.EdgesGeometry(g), edge);
+        for (const x of [m, l]) { x.position.set((q[0] + q[3]) / 2 - o[0], (q[1] + q[4]) / 2 - o[1], (q[2] + q[5]) / 2 - o[2]); x.renderOrder = 12; this.lotMarks.add(x); }
+      }
+      const apt = APARTMENTS.find((a) => a.site.key === key), here = apt === this.apt, el = document.createElement('button');
+      el.type = 'button'; el.className = 'v3d-label v3d-lot' + (here ? ' is-here' : ''); el.textContent = apt.name[lang()];
+      const sm = document.createElement('small'); sm.textContent = tr(key === 'villa' ? 'lotVilla' : 'lotDuplex'); el.appendChild(sm);
+      el.addEventListener('click', () => { if (here) this.setMode('orbit'); else { this.lastRoom = null; this.load(apt); } });
+      ui.lots.appendChild(el); this.lotEls.push({ el, v: new THREE.Vector3(lot.at[0] - o[0], lot.at[1] - o[1], lot.at[2] - o[2]) });
+    }
+  }
+  updateLots() {
+    const show = this.mode === 'site' && !this.fly; if (ui.lots.hidden === show) ui.lots.hidden = !show; if (!show) return;
+    const w = root.clientWidth, h = root.clientHeight, v = new THREE.Vector3();
+    for (const L of this.lotEls) { v.copy(L.v); this.cur.group.localToWorld(v); v.project(this.camera); const ok = v.z < 1 && Math.abs(v.x) < 1.05 && Math.abs(v.y) < 1.05; L.el.hidden = !ok; if (ok) L.el.style.transform = `translate(-50%,-100%) translate(${((v.x + 1) / 2 * w).toFixed(1)}px,${((1 - v.y) / 2 * h).toFixed(1)}px)`; }
+  }
+
   /* Entre dans une pièce à hauteur d'œil. */
   enterWalk(room, level, instant, at) {
     if (!instant && this.mode !== 'walk') return this.fadeSwap(() => { this.enterWalk(room, level, true, at); if (!this.tour && !matchMedia('(prefers-reduced-motion: reduce)').matches) this.lookAround(); });
+    if (this.mode === 'site') this.leaveSite();
     this.controls.enabled = false; this.fly = null;
     const lv = this.apt.levels[level];
     let cam = room.cam || { p: room.at, t: [room.at[0] + 1, room.at[1]] };
@@ -532,7 +588,7 @@ class App {
     }));
   }
   updateLabels() {
-    const show = this.mode !== 'walk' && !this.fly; ui.labels.hidden = !show; if (!show) return;
+    const show = (this.mode === 'orbit' || this.mode === 'plan') && !this.fly; ui.labels.hidden = !show; if (!show) return;
     const w = root.clientWidth, h = root.clientHeight, v = new THREE.Vector3();
     for (const L of this.labelEls) {
       if (L.level !== this.viewLevel) { L.el.hidden = true; continue; }
@@ -550,7 +606,7 @@ class App {
     a.levels.forEach((lv, i) => { const bt = document.createElement('button'); bt.type = 'button'; bt.textContent = lv.name[L]; bt.dataset.level = i; bt.addEventListener('click', () => this.setLevel(i)); lvBox.appendChild(bt); });
     $$('[data-apt]').forEach((b) => { const on = b.dataset.apt === a.id; b.classList.toggle('is-on', on); b.setAttribute('aria-pressed', on); });
     root.dataset.levels = a.levels.length;
-    this.roomsLevel = -1; this.makeLabels(); this.makeSpots(); this.syncUI();
+    this.roomsLevel = -1; this.makeLabels(); this.makeSpots(); this.makeLots(); this.syncUI();
   }
   /* Bandeau des pièces : une pastille par pièce du niveau affiché ; un clic y fait entrer. */
   fillRooms(level) {
@@ -616,7 +672,7 @@ class App {
       down = { x: e.clientX, y: e.clientY, yaw: w.yaw, pitch: w.pitch, moved: false, id: e.pointerId };
     });
     canvas.addEventListener('pointermove', (e) => {
-      if (this.mode !== 'walk') { if (!e.buttons && !touch) { const h = pick(e); this.highlight(h ? h.room : null, this.viewLevel); } return; }
+      if (this.mode !== 'walk') { if (this.mode !== 'site' && !e.buttons && !touch) { const h = pick(e); this.highlight(h ? h.room : null, this.viewLevel); } return; }
       if (pts.has(e.pointerId)) { const q = pts.get(e.pointerId); q.x = e.clientX; q.y = e.clientY; }
       if (pts.size >= 2) { if (pts.size === 2) { const g = gap(); if (Math.abs(g - pinch) > 44) { this.stopTour(); this.advance(g > pinch ? 0.9 : -0.9); pinch = g; } } return; }
       if (down && down.id === e.pointerId) {
@@ -625,7 +681,7 @@ class App {
       } else if (!touch && !w.climbing) { const h = floorHit(e); this.reticle.visible = !!h; if (h) this.reticle.position.set(h.p[0], h.y + 0.02, h.p[1]); this.dirty = true; }
     });
     const up = (e) => {
-      if (this.mode !== 'walk') { pts.clear(); const o = od; od = null; if (o && Math.hypot(e.clientX - o.x, e.clientY - o.y) < 7) { const h = pick(e); if (h) { this.highlight(null); this.stopTour(); this.enterWalk(h.room, this.viewLevel, false, h.p); } } return; }
+      if (this.mode !== 'walk') { pts.clear(); const o = od; od = null; if (this.mode === 'site') return; if (o && Math.hypot(e.clientX - o.x, e.clientY - o.y) < 7) { const h = pick(e); if (h) { this.highlight(null); this.stopTour(); this.enterWalk(h.room, this.viewLevel, false, h.p); } } return; }
       const multi = pts.size > 1; lift(e); if (multi) return;
       if (!down || down.id !== e.pointerId) return; const d = down; down = null;
       if (this.mode !== 'walk' || d.moved || w.climbing) return;
@@ -704,12 +760,12 @@ class App {
     if (!this.camP.equals(cam.position) || !this.camQ.equals(cam.quaternion) || this.camF !== cam.fov) { this.camP.copy(cam.position); this.camQ.copy(cam.quaternion); this.camF = cam.fov; this.movedAt = now; }
     let refine = false;
     if (this.ao) {
-      const goal = this.mode !== 'walk' || now - this.movedAt > 260 ? 0.85 : 0;
+      const goal = this.mode === 'site' ? 0 : this.mode !== 'walk' || now - this.movedAt > 260 ? 0.85 : 0;
       if (Math.abs(goal - this.aoK) > 0.004) { this.aoK = goal > this.aoK ? Math.min(goal, this.aoK + slow * 1.9) : Math.max(0, this.aoK - slow * 6.5); this.ao.blendIntensity = this.aoK; this.ao.enabled = this.aoK > 0.004; refine = true; }
     }
     this.updateSpots();                                        // repères : suivis à chaque image, même sans nouveau rendu (leur hystérésis est temporelle)
     if (!this.dirty && !refine) return; this.dirty = false;
-    this.updateLabels();
+    this.updateLabels(); this.updateLots();
     if (this.composer) this.composer.render(); else this.renderer.render(this.scene, this.camera);
   }
 }
@@ -725,7 +781,7 @@ function start() {
   }
   window.__v3d = app;
   const bien = params.get('bien') || '', apt = APARTMENTS.find((a) => a.bien === bien || a.id === bien) || APARTMENTS[0];
-  const mode = { visite: 'walk', walk: 'walk', plan: 'plan' }[params.get('mode') || ''];
+  const mode = { visite: 'walk', walk: 'walk', plan: 'plan', residence: 'site', site: 'site' }[params.get('mode') || ''];
   app.load(apt, { mode, room: params.get('piece') }).catch((e) => { console.error(e); ui.loaderText.textContent = String(e.message || e); });
   app.frame();
 }
