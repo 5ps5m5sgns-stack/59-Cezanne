@@ -19,7 +19,7 @@ import { cellFree, nearestFree, findPath, pathLength } from 'v3d/nav';
 const $ = (s, r = document) => r.querySelector(s), $$ = (s, r = document) => [...r.querySelectorAll(s)];
 const rad = THREE.MathUtils.degToRad, clamp = THREE.MathUtils.clamp;
 const ease = (t) => t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
-const EYE = 1.62, FOV_WALK = 70, FOV_ORBIT = 34, FOV_PLAN = 17;
+const EYE = 1.62, FOV_ORBIT = 24, FOV_PLAN = 17;
 const params = new URLSearchParams(location.search);
 const lang = () => (document.documentElement.lang || 'fr').toLowerCase().startsWith('en') ? 'en' : 'fr';
 const T = {
@@ -43,10 +43,10 @@ const touch = matchMedia('(pointer: coarse)').matches;
 const small = Math.min(screen.width, screen.height) < 820;
 const qName = params.get('q') || (touch && small ? 'low' : touch ? 'mid' : 'high');
 const QUALITIES = {
-  low: { shadow: 2048, aniso: 4, ao: false, bloom: false, lights: 4, dpr: 1.5, trees: 22, forest: 380 },
-  mid: { shadow: 2048, aniso: 8, ao: false, bloom: true, lights: 6, dpr: 1.75, trees: 34, forest: 700 },
-  high: { shadow: 4096, aniso: 8, ao: true, bloom: true, lights: 8, dpr: 2, trees: 46, forest: 1300 },
-  test: { shadow: 2048, aniso: 4, ao: true, bloom: true, lights: 8, dpr: 1, trees: 40, forest: 1100 },
+  low: { shadow: 2048, aniso: 4, ao: false, bloom: false, lights: 4, dpr: 1.5, trees: 22, forest: 380, tex: 1024 },
+  mid: { shadow: 2048, aniso: 8, ao: false, bloom: true, lights: 6, dpr: 2, trees: 34, forest: 700, tex: 1024 },
+  high: { shadow: 4096, aniso: 16, ao: true, bloom: true, lights: 8, dpr: 2, trees: 46, forest: 1300, tex: 2048 },
+  test: { shadow: 2048, aniso: 4, ao: true, bloom: true, lights: 8, dpr: 1, trees: 40, forest: 1100, tex: 1024 },
 };
 const QUALITY = QUALITIES[qName] || QUALITIES.high;
 
@@ -105,8 +105,11 @@ class App {
     const w = Math.max(2, root.clientWidth), h = Math.max(2, root.clientHeight);
     this.renderer.setSize(w, h, false);
     if (this.composer) { this.composer.setPixelRatio(this.renderer.getPixelRatio()); this.composer.setSize(w, h); }
-    this.camera.aspect = w / h; this.camera.updateProjectionMatrix(); this.dirty = true;
+    this.camera.aspect = w / h; if (this.mode === 'walk' && !this.fly) this.camera.fov = this.walkFov(); this.camera.updateProjectionMatrix(); this.dirty = true;
   }
+
+  /* Champ de vision à hauteur d'œil : celui d'un objectif d'architecture (78° à l'horizontale sur un écran large). Plus large, les pièces et les meubles paraissent étirés. */
+  walkFov() { return clamp(THREE.MathUtils.radToDeg(2 * Math.atan(Math.tan(rad(78) / 2) / this.camera.aspect)), 48, 66); }
 
   /* ── Construction d'un logement (une seule fois, puis mis en cache) ──────── */
   build(apt) {
@@ -142,7 +145,8 @@ class App {
       this.M = makeMaterials(QUALITY);
       // miroirs et métaux reflètent un intérieur neutre plutôt que le ciel
       const room = this.env.pmrem.fromScene(new RoomEnvironment(), 0.03).texture;
-      for (const k of ['mirror', 'steel', 'brass']) { this.M[k].envMap = room; this.M[k].envMapIntensity = k === 'mirror' ? 1.5 : 1; }
+      this.roomMats = ['mirror', 'steel', 'brass', 'floor', 'tile', 'wallTile', 'marble', 'marbleDark', 'marbleGrey', 'ceramic', 'tubIn', 'glassSmoke', 'screen', 'lacquer', 'greyLacquer', 'anthracite', 'black', 'potDark', 'crystal', 'oak', 'oakV', 'walnut', 'door', 'frame', 'skirt', 'cognac'];
+      for (const k of this.roomMats) { const m = this.M[k]; m.envMap = room; m.userData.envK = k === 'mirror' ? 1.5 : k === 'floor' ? 0.75 : k === 'steel' || k === 'brass' ? 1 : (m.envMapIntensity || 1) * 0.6; m.envMapIntensity = m.userData.envK; }
       ui.loaderText.textContent = tr('loadGeo'); await new Promise((r) => setTimeout(r, 30));
     }
     const prev = this.apt && this.built.get(this.apt.id);
@@ -160,7 +164,7 @@ class App {
     const lv = apt.levels[0], bb = lv.bounds;
     const c = cur.group.localToWorld(new THREE.Vector3((bb[0] + bb[2]) / 2, 1.5, (bb[1] + bb[3]) / 2));
     this.env.setSite(apt, this.M, c, Math.hypot(bb[2] - bb[0], bb[3] - bb[1]) / 2 + 3);
-    this.setHour(this.hour, true);
+    this.setHour(Number(params.get('h')) || apt.hour || 11, true);      // l'heure où le soleil entre dans le séjour
     this.fillUI();
     const room = opts.room && this.findRoom(opts.room);
     if (opts.mode === 'walk' || room) { const r = room || this.findRoom(apt.start.room); this.enterWalk(r.room, r.level, true); }
@@ -188,9 +192,16 @@ class App {
   orbitPose(plan) {
     const a = this.apt, lv = a.levels[this.viewLevel], bb = lv.bounds, y = lv.y;
     if (plan) { const cx = (bb[0] + bb[2]) / 2, cz = (bb[1] + bb[3]) / 2, span = Math.max(bb[2] - bb[0], (bb[3] - bb[1]) * this.camera.aspect * 1.05) / this.camera.aspect; const d = (span / 2) / Math.tan(rad(FOV_PLAN) / 2) * 1.12; return { target: new THREE.Vector3(cx, y, cz), pos: new THREE.Vector3(cx, y + d, cz + 0.01) }; }
-    const t = new THREE.Vector3(...a.orbit.target); t.y += y;
-    const dist = a.orbit.dist * (this.camera.aspect < 1 ? 1.55 : this.camera.aspect < 1.5 ? 1.2 : 1);
-    return { target: t, pos: t.clone().add(new THREE.Vector3(0.25, 0.866, 0.433).multiplyScalar(dist)) };   // même point de vue que les axonométries du graphiste
+    const cut = Math.min(1.25, lv.h), t = new THREE.Vector3((bb[0] + bb[2]) / 2, y + cut * 0.4, (bb[1] + bb[3]) / 2);
+    const dir = new THREE.Vector3(0.2, 0.777, 0.596).normalize(), fwd = dir.clone().negate();
+    const right = new THREE.Vector3().crossVectors(fwd, new THREE.Vector3(0, 1, 0)).normalize(), up = new THREE.Vector3().crossVectors(right, fwd);
+    const tv = Math.tan(rad(FOV_ORBIT) / 2), th = tv * this.camera.aspect, H = root.clientHeight || 600, mx = 0.95, my = Math.max(0.6, 1 - 118 / H);   // marges : barres d'outils en haut et en bas
+    let dist = 8; const p = new THREE.Vector3();
+    for (const cx of [bb[0], bb[2]]) for (const cz of [bb[1], bb[3]]) for (const cy of [y, y + cut]) {
+      p.set(cx, cy, cz).sub(t); const px = Math.abs(p.dot(right)), py = Math.abs(p.dot(up)), pz = p.dot(fwd);
+      dist = Math.max(dist, px / (th * mx) - pz, py / (tv * my) - pz);
+    }
+    return { target: t, pos: t.clone().addScaledVector(dir, dist) };
   }
 
   /* Fondu enchaîné : l'image se voile, la vue change à couvert, puis elle revient. Aucune géométrie ne « saute » à l'écran. */
@@ -212,7 +223,7 @@ class App {
       c.target.copy(pose.target); c.enabled = true; c.enableRotate = !plan;
       c.minPolarAngle = plan ? 0.02 : 0.05; c.maxPolarAngle = plan ? 0.02 : 1.44;
       c.minAzimuthAngle = plan ? 0 : -Infinity; c.maxAzimuthAngle = plan ? 0 : Infinity;      // en plan, l'orientation est verrouillée
-      c.minDistance = plan ? 14 : 5; c.maxDistance = plan ? 150 : 70;
+      c.minDistance = plan ? 14 : 6; c.maxDistance = plan ? 150 : 170;
       c.mouseButtons.LEFT = plan ? THREE.MOUSE.PAN : THREE.MOUSE.ROTATE; c.touches.ONE = plan ? THREE.TOUCH.PAN : THREE.TOUCH.ROTATE;
       c.update(); this.dirty = true;
     };
@@ -231,9 +242,9 @@ class App {
     const p = nearestFree(lv.nav, cam.p[0], cam.p[1], 2) || cam.p;
     this.lastRoom = room; this.lastLevel = level; this.spotSnap = true;
     const w = this.walk; Object.assign(w, { level, x: p[0], z: p[1], path: null, look: null, climbing: null, onArrive: null, riding: null, spin: null, floorY: undefined, liftLock: true });
-    w.yaw = Math.atan2(p[0] - cam.t[0], p[1] - cam.t[1]); w.pitch = -0.04;
+    w.yaw = Math.atan2(p[0] - cam.t[0], p[1] - cam.t[1]); w.pitch = cam.pitch === undefined ? -0.1 : cam.pitch;
     this.mode = 'walk'; this.viewLevel = level;
-    this.camera.near = 0.08; this.camera.far = 3200; this.camera.fov = FOV_WALK; this.camera.updateProjectionMatrix();
+    this.camera.near = 0.08; this.camera.far = 3200; this.camera.fov = this.walkFov(); this.camera.updateProjectionMatrix();
     this.applyView(false); this.syncUI(); this.placeCamera(); this.updateHud();
     this.showHint(room.id === 'ascenseur' ? 'hintLift' : touch ? 'hintWalkTouch' : 'hintWalk');
   }
@@ -260,8 +271,9 @@ class App {
     this.hour = h;
     this.night = this.env.setHour(h);
     const n = this.night, M = this.M;
-    M.lampShade.emissiveIntensity = n * 1.25; M.led.emissiveIntensity = n * 1.5;
+    M.lampShade.emissiveIntensity = n * 1.25; M.led.emissiveIntensity = 1.0 + n * 0.8;      // rubans LED et lustres allumés même de jour, comme sur les images
     M.glass.opacity = 0.07 + n * 0.1;
+    if (this.roomMats) for (const k of this.roomMats) M[k].envMapIntensity = M[k].userData.envK * (1 - n * 0.8);
     if (this.bloom) { this.bloom.strength = n * 0.2; this.bloom.enabled = n > 0.03; }      // de jour, pas de halo : il faisait scintiller les reflets
     this.lightAt.set(1e9, 0, 0); this.dirty = true;
     const out = $('#v3d-time-out'); if (out) { const hh = Math.floor(h), mm = Math.round((h - hh) * 60); out.textContent = `${hh} h ${String(mm).padStart(2, '0')}`; }
@@ -278,7 +290,7 @@ class App {
       const dayK = (1 - n) * clamp(this.env.dir.y * 3 + 0.25, 0.25, 1), list = [];
       for (const l of this.cur.lights) {
         if (this.cutView && l.level > this.viewLevel) continue;
-        const k = l.day ? dayK * 3 : n * 4.2; if (k < 0.05) continue;
+        const k = l.day ? dayK * 3.6 : n * 4.2; if (k < 0.05) continue;
         const d2 = l.pos.distanceToSquared(focus) + (l.level === lvl ? 0 : 60);
         list.push({ l, I: l.power * k, s: (l.power * k) / (1 + d2 / (wide ? 900 : 30)) });
       }
@@ -366,7 +378,7 @@ class App {
       if (r.t > 1.25) { w.riding = null; w.liftLock = true; const e = this.apt.lift.exits[w.level]; this.walkTo(e[0], e[1]); }
       this.dirty = true; return;
     }
-    if (w.spin && !w.path && !w.climbing) { if (!idle) w.spin = null; else { const a = Math.min(w.spin.left, dt * 0.5); w.yaw -= a; w.spin.left -= a; w.pitch += (-0.04 - w.pitch) * Math.min(1, dt * 2); moved = true; if (w.spin.left <= 0) w.spin = null; } }
+    if (w.spin && !w.path && !w.climbing) { if (!idle) w.spin = null; else { const a = Math.min(w.spin.left, dt * 0.5); w.yaw -= a; w.spin.left -= a; w.pitch += (-0.1 - w.pitch) * Math.min(1, dt * 2); moved = true; if (w.spin.left <= 0) w.spin = null; } }
     if (w.climbing) {
       const c = w.climbing; c.d = Math.min(c.len[c.len.length - 1], c.d + dt * 1.7);
       let i = 1; while (i < c.len.length - 1 && c.len[i] < c.d) i++;
@@ -378,7 +390,7 @@ class App {
     } else if (w.path && w.path.length) {
       const tgt = w.path[0], dx = tgt[0] - w.x, dz = tgt[1] - w.z, d = Math.hypot(dx, dz), stepLen = dt * (this.tour ? 1.9 : 2.5);
       if (d <= stepLen) { w.x = tgt[0]; w.z = tgt[1]; w.path.shift(); } else { w.x += (dx / d) * stepLen; w.z += (dz / d) * stepLen; }
-      if (idle && d > 0.05) { const want = Math.atan2(-dx, -dz); let off = want - w.yaw; off = Math.abs(Math.atan2(Math.sin(off), Math.cos(off))); if (w.follow) { turnTo(want, 3.2); w.pitch += (-0.04 - w.pitch) * Math.min(1, dt * 2); } else if (off > 1.9) turnTo(want, 2.4); }   // sans suivi : on ne se retourne que si la cible est dans le dos
+      if (idle && d > 0.05) { const want = Math.atan2(-dx, -dz); let off = want - w.yaw; off = Math.abs(Math.atan2(Math.sin(off), Math.cos(off))); if (w.follow) { turnTo(want, 3.2); w.pitch += (-0.1 - w.pitch) * Math.min(1, dt * 2); } else if (off > 1.9) turnTo(want, 2.4); }   // sans suivi : on ne se retourne que si la cible est dans le dos
       moved = true;
       if (!w.path.length) { w.path = null; if (!w.look && w.onArrive) { const f = w.onArrive; w.onArrive = null; f(); } }
     } else if (w.look) {
@@ -608,7 +620,7 @@ class App {
       if (pts.size >= 2) { if (pts.size === 2) { const g = gap(); if (Math.abs(g - pinch) > 44) { this.stopTour(); this.advance(g > pinch ? 0.9 : -0.9); pinch = g; } } return; }
       if (down && down.id === e.pointerId) {
         const dx = e.clientX - down.x, dy = e.clientY - down.y; if (Math.abs(dx) + Math.abs(dy) > 6) down.moved = true;
-        if (down.moved) { const k = (this.camera.fov / 70) * 0.0042; w.yaw = down.yaw + dx * k; w.pitch = clamp(down.pitch + dy * k, -1.1, 1.0); w.dragAt = performance.now(); w.look = null; this.reticle.visible = false; this.placeCamera(); }
+        if (down.moved) { const k = (this.camera.fov / 55) * 0.0036; w.yaw = down.yaw + dx * k; w.pitch = clamp(down.pitch + dy * k, -1.1, 1.0); w.dragAt = performance.now(); w.look = null; this.reticle.visible = false; this.placeCamera(); }
       } else if (!touch && !w.climbing) { const h = floorHit(e); this.reticle.visible = !!h; if (h) this.reticle.position.set(h.p[0], h.y + 0.02, h.p[1]); this.dirty = true; }
     });
     const up = (e) => {
@@ -665,7 +677,7 @@ class App {
     canvas.addEventListener('webglcontextrestored', () => setTimeout(() => {
       if (!this.M) return;
       const room = this.env.pmrem.fromScene(new RoomEnvironment(), 0.03).texture;
-      for (const k of ['mirror', 'steel', 'brass']) this.M[k].envMap = room;
+      for (const k of this.roomMats) this.M[k].envMap = room;
       this.env.envRT = null; this.env.envDirty = true; this.env.flushEnv();
       this.renderer.shadowMap.needsUpdate = true; this.resize(); this.dirty = true;
     }, 60));

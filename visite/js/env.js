@@ -111,9 +111,9 @@ export class Environment {
     const L = b.build(this.near);
     if (L.land) L.land.traverse(o => { if (o.isMesh) { o.castShadow = false; o.receiveShadow = false; } });
     // la « mer d'arbres » du pays d'Aix : houppiers instanciés jusqu'aux premières collines
-    const N = this.quality.forest, geo = new THREE.IcosahedronGeometry(1, 1);
-    const forest = new THREE.InstancedMesh(geo, new THREE.MeshStandardMaterial({ roughness: 1, flatShading: true }), N);
-    const m4 = new THREE.Matrix4(), q = new THREE.Quaternion(), col = new THREE.Color(), pal = [0x4c7743, 0x3f6a3a, 0x5a8249, 0x33592f, 0x748a5c, 0x486f3c];
+    const N = this.quality.forest, geo = new THREE.IcosahedronGeometry(1, 2);
+    const forest = new THREE.InstancedMesh(geo, new THREE.MeshStandardMaterial({ roughness: 1, map: M.hedge.map }), N);
+    const m4 = new THREE.Matrix4(), q = new THREE.Quaternion(), col = new THREE.Color(), pal = [0x8fae7c, 0x7a9c6c, 0xa3b88a, 0x6f8f62, 0xb4bf98, 0x86a674];      // teintes claires : elles multiplient la texture de feuillage
     for (let i = 0; i < N; i++) {
       const a = R() * 6.283, d = 48 + Math.pow(R(), 0.62) * 540, s = 2.4 + R() * 3.4, pine = R() < 0.6;
       q.setFromAxisAngle(new THREE.Vector3(0, 1, 0), R() * 6.283);
@@ -138,30 +138,39 @@ export class Environment {
     const e = this.envSky.material.uniforms; for (const k of ['turbidity', 'rayleigh', 'mieCoefficient', 'mieDirectionalG']) e[k].value = u[k].value; e.sunPosition.value.copy(sd);
     // soleil : blanc chaud en journée, orangé à l'heure dorée
     const warm = new THREE.Color().setHSL(lerp(0.105, 0.07, golden), lerp(0.3, 0.85, golden), lerp(0.93, 0.62, golden));
-    this.sun.color.copy(warm); this.sun.intensity = 3.1 * day * lerp(1, 0.75, golden);
+    this.sun.color.copy(warm); this.sun.intensity = 3.5 * day * lerp(1, 1.15, golden);      // soleil bas : taches de lumière franches sur le parquet, comme sur les images
     this.sun.visible = day > 0.01;
     const sky = new THREE.Color(0xfff3e2).lerp(new THREE.Color(0xffc48a), golden * 0.55).lerp(new THREE.Color(0x1a2238), night);
-    const gnd = new THREE.Color(0xd9bf98).lerp(new THREE.Color(0x15161c), night);
-    this.hemi.color.copy(sky); this.hemi.groundColor.copy(gnd); this.hemi.intensity = lerp(0.1, 0.62, day);
+    const gnd = new THREE.Color(0xe2c9a4).lerp(new THREE.Color(0x15161c), night);
+    this.hemi.color.copy(sky); this.hemi.groundColor.copy(gnd); this.hemi.intensity = lerp(0.1, 0.78, day);
     const fogc = new THREE.Color().setHSL(lerp(0.58, 0.07, golden * 0.8), lerp(0.3, 0.5, golden), lerp(0.84, 0.72, golden)).lerp(new THREE.Color(0x0e1322), night);
     this.fog.color.copy(fogc); this.fog.density = lerp(0.00045, 0.0008, golden);
     for (const m of this.ridges) m.material.color.setScalar(m.userData.k || 1).lerp(new THREE.Color(0xffd2a8), golden * 0.35).multiplyScalar(lerp(1.5, 0.3, night) * lerp(1, 0.8, golden));   // relief non éclairé : compensé pour l'exposition
     this.sky.material.uniforms.rayleigh.value *= lerp(1, 0.25, night);
-    this.renderer.toneMappingExposure = lerp(0.43, 0.4, golden) * lerp(1, 1.25, night);
+    this.renderer.toneMappingExposure = lerp(0.54, 0.5, golden) * lerp(1, 1.0, night);
     this.placeSun();
     this.envK = lerp(1, 0.07, night); this.envDirty = true; if (!this.envRT) this.flushEnv();
-    if (this.studio) this.setStudio(true, this.studioComposer);
+    if (this.studio) this.studioLook();
     return night;
   }
 
   /* Fond de maquette : ni ciel ni paysage, un aplat pierre comme sur les planches du graphiste.
      Avec la chaîne de post-traitement, le fond passe par la courbe ACES : on la compense pour retrouver la teinte voulue. */
   setStudio(on, composer) {
-    this.studio = on; this.studioComposer = composer;
+    const was = this.studio; this.studio = on; this.studioComposer = composer;
     this.sky.visible = !on; this.land.visible = !on; this.near.visible = !on;
     this.scene.fog = on ? null : this.fog;
-    if (!on) { this.scene.background = null; return; }
-    const target = new THREE.Color(0xeee5d4), e = this.renderer.toneMappingExposure / 0.6;
+    if (!on) { this.scene.background = null; if (was) this.setHour(this.hour); return; }
+    this.studioLook();
+  }
+  /* Lumière de maquette : soleil fixe venu du haut à gauche de l'image, ombres courtes et douces, ambiance claire ; le soir, elle baisse et les lampes prennent le relais. */
+  studioLook() {
+    const n = this.night || 0, composer = this.studioComposer;
+    this.sun.visible = true; this.sun.color.setRGB(1, 0.975, 0.94); this.sun.intensity = 2.5 * (1 - n * 0.82);
+    this.hemi.color.set(0xffffff).lerp(new THREE.Color(0x2a3350), n * 0.8); this.hemi.groundColor.set(0xe9dcc8).lerp(new THREE.Color(0x15161c), n * 0.8); this.hemi.intensity = 1.0 * (1 - n * 0.75);
+    this.renderer.toneMappingExposure = 0.6;
+    this.placeSun(this.studioDir || (this.studioDir = new THREE.Vector3(-0.25, 0.8, 0.33).normalize()));
+    const target = new THREE.Color(0xf3ece0).lerp(new THREE.Color(0x2b2622), n * 0.85), e = this.renderer.toneMappingExposure / 0.6;
     const fit = (v) => (v * (v + 0.0245786) - 0.000090537) / (v * (0.983729 * v + 0.4329510) + 0.238081);
     const inv = (L) => { let lo = 0, hi = 40; for (let i = 0; i < 40; i++) { const m = (lo + hi) / 2; if (fit(m * e) < L) lo = m; else hi = m; } return lo; };
     this.scene.background = composer ? new THREE.Color(inv(target.r), inv(target.g), inv(target.b)) : target;
@@ -173,10 +182,10 @@ export class Environment {
     this.envDirty = false; this.envAt = now; this.updateEnvMap(this.envK); return true;
   }
 
-  placeSun() {
+  placeSun(dir = this.dir) {
     const r = this.radius, c = this.center;
     this.sun.target.position.copy(c);
-    this.sun.position.copy(c).addScaledVector(this.dir, r * 3);
+    this.sun.position.copy(c).addScaledVector(dir, r * 3);
     const cam = this.sun.shadow.camera;
     cam.left = -r; cam.right = r; cam.top = r; cam.bottom = -r; cam.near = r * 0.5; cam.far = r * 6; cam.updateProjectionMatrix();
     this.renderer.shadowMap.needsUpdate = true;
@@ -186,6 +195,6 @@ export class Environment {
     if (this.envRT) this.envRT.dispose();
     this.envRT = this.pmrem.fromScene(this.envScene, 0, 1, 2000);
     this.scene.environment = this.envRT.texture;
-    this.scene.environmentIntensity = 0.32 * intensity + 0.02;
+    this.scene.environmentIntensity = 0.36 * intensity + 0.02;
   }
 }

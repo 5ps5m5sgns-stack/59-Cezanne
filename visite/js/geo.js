@@ -69,8 +69,8 @@ export class Batch {
     return this.add(mat, new THREE.BoxGeometry(w, h, d), _m.clone());
   }
   /* Boîte centrée en (cx, cz), posée à la hauteur y0, de dimensions (w, h, d) ; r = rayon d'arrondi. */
-  cbox(mat, cx, y0, cz, w, h, d, r = 0, rot = 0) {
-    const geo = r > 0 ? new RoundedBoxGeometry(w, h, d, 3, Math.min(r, w / 2 - 1e-3, h / 2 - 1e-3, d / 2 - 1e-3)) : new THREE.BoxGeometry(w, h, d);
+  cbox(mat, cx, y0, cz, w, h, d, r = 0, rot = 0, seg = 2) {
+    const geo = r > 0 ? new RoundedBoxGeometry(w, h, d, seg, Math.min(r, w / 2 - 1e-3, h / 2 - 1e-3, d / 2 - 1e-3)) : new THREE.BoxGeometry(w, h, d);
     const M = new THREE.Matrix4().compose(new THREE.Vector3(cx, y0 + h / 2, cz), new THREE.Quaternion().setFromAxisAngle(Y, rot), new THREE.Vector3(1, 1, 1));
     return this.add(mat, geo, M);
   }
@@ -81,6 +81,28 @@ export class Batch {
   sph(mat, cx, cy, cz, r, sx = 1, sy = 1, sz = 1, seg = 14) {
     const M = new THREE.Matrix4().compose(new THREE.Vector3(cx, cy, cz), new THREE.Quaternion(), new THREE.Vector3(sx, sy, sz));
     return this.add(mat, new THREE.SphereGeometry(r, seg, Math.max(8, seg - 4)), M);
+  }
+  /* Solide de révolution autour de la verticale : pts = [[rayon, hauteur], …] du bas vers le haut (faces tournées vers l'extérieur). */
+  lathe(mat, cx, y0, cz, pts, seg = 20, a0 = 0, len = Math.PI * 2) {
+    _m.makeTranslation(cx, y0, cz);
+    return this.add(mat, new THREE.LatheGeometry(pts.map(([r, y]) => new THREE.Vector2(Math.max(r, 1e-4), y)), seg, a0, len), _m.clone());
+  }
+  /* Barre droite entre deux points (pieds, montants, câbles) ; r2 = rayon à l'arrivée. */
+  rod(mat, a, c, r = 0.01, seg = 8, r2 = r) {
+    const va = new THREE.Vector3(...a), vc = new THREE.Vector3(...c), d = vc.clone().sub(va), len = d.length();
+    if (len < 1e-4) return this;
+    const M = new THREE.Matrix4().compose(va.clone().add(vc).multiplyScalar(0.5), new THREE.Quaternion().setFromUnitVectors(Y, d.normalize()), new THREE.Vector3(1, 1, 1));
+    return this.add(mat, new THREE.CylinderGeometry(r2, r, len, seg), M);
+  }
+  /* Tube le long d'une courbe lissée passant par pts = [[x, y, z], …]. */
+  tube(mat, pts, r = 0.01, seg = 6, closed = false) {
+    const curve = new THREE.CatmullRomCurve3(pts.map((q) => new THREE.Vector3(...q)), closed, 'catmullrom', 0.5);
+    return this.add(mat, new THREE.TubeGeometry(curve, Math.max(4, pts.length * 5), r, seg, closed));
+  }
+  /* Anneau (tore) : à plat par défaut ; rx, rz = inclinaisons. */
+  ring(mat, cx, cy, cz, R, r, rx = 0, rz = 0, seg = 44, tube = 8) {
+    const M = new THREE.Matrix4().compose(new THREE.Vector3(cx, cy, cz), new THREE.Quaternion().setFromEuler(new THREE.Euler(Math.PI / 2 + rx, 0, rz, 'YXZ')), new THREE.Vector3(1, 1, 1));
+    return this.add(mat, new THREE.TorusGeometry(R, r, tube, seg), M);
   }
   /* Géométrie quelconque avec matrice locale. */
   geo(mat, geo, x = 0, y = 0, z = 0, rx = 0, ry = 0, rz = 0, sx = 1, sy = 1, sz = 1) {

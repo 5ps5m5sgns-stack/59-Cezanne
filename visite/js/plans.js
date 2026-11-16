@@ -72,7 +72,7 @@ function windingStair(xa0, xa1, xb0, xb1, yFoot, yBack, H) {
    ════════════════════════════════════════════════════════════════════════════════════════════ */
 const VW = 16.69, VD = 8.67, T = 0.08;
 const villa = {
-  id: 'villa', bien: '138', north: 0, groundY: -6.75,
+  id: 'villa', bien: '138', north: 0, groundY: -6.75, hour: 18.75,
   name: { fr: 'Appartement-villa', en: 'Villa-style apartment' },
   facts: { fr: '4 pièces · 138 m² · jardin de 82 m²', en: '4 rooms · 138 m² · 82 m² garden' },
   pitch: { fr: 'Au premier et dernier étage : le séjour de plain-pied avec le jardin, la chambre parentale face à la Sainte-Victoire.', en: 'On the first and top floor: the living room level with the garden, the master bedroom facing the Sainte-Victoire.' },
@@ -99,21 +99,21 @@ const villa = {
       wv(12.8, 6.36, 7.45, T), wh(7.45, 12.8, 13.94, T), wv(13.9, 7.45, VD, T),
       // salle d'eau, WC, entrée, buanderie
       wh(6.36, 10.48, 13.94, T, 0, [op(10.6, 11.4, 'door', { hinge: 'a0', swing: 1 })]),
-      wv(10.38, 5.7, VD, 0.2), wh(6.37, 9.33, 10.28, T), wv(9.28, 5.7, VD, 0.1, 0, [op(7.45, 8.3, 'door', { hinge: 'a0', swing: 1, open: 88 })]),
-      wv(7.43, 5.74, VD, 0.1, 0, [op(7.45, 8.3, 'door', { hinge: 'a0', swing: -1, open: 88 })]), wh(5.74, 4.78, 7.48, T), wv(7.65, 5.7, 6.15, 0.5),
-      wv(4.83, 5.7, VD, 0.1, 0, [op(7.45, 8.3, 'door', { hinge: 'a0', swing: 1, open: 88 })]),
+      wv(10.38, 5.7, VD, 0.2), wh(6.37, 9.33, 10.28, T), wv(9.28, 5.7, VD, 0.1, 0, [op(7.45, 8.3, 'door', { hinge: 'a0', swing: 1, open: 172 })]),
+      wv(7.43, 5.74, VD, 0.1, 0, [op(7.45, 8.3, 'door', { hinge: 'a0', swing: -1, open: 172 })]), wh(5.74, 4.78, 7.48, T), wv(7.65, 5.7, 6.15, 0.5),
+      wv(4.83, 5.7, VD, 0.1, 0, [op(7.45, 8.3, 'door', { hinge: 'a0', swing: 1, open: 172 })]),
     ],
     rails: [[VW + E + 0.55, -0.6, VW + E + 0.55, 7.35], [VW + E, 7.35, VW + E + 0.55, 7.35], [VW + E, -0.6, VW + E + 0.55, -0.6]],
     items: [
       // séjour (40,7 m²)
-      ['diningTable', 1.5, 3.16, 90, { w: 2.2, d: 1.0, top: 'marbleDark', n: 3, ends: true, chairMat: 'greige' }], ['pendant', 1.5, 3.16, 90, { kind: 'ring', drop: 0.95 }],
-      ['rug', 4.95, 2.4, 0, { w: 2.5, d: 3.0 }], ['sofa', 3.73, 2.92, 90, { w: 2.85, d: 0.85, mat: 'cream', chaise: 'L', cl: 0.72, cw: 0.83 }],
-      ['coffeeRect', 5.02, 2.5, 90, { w: 1.15, d: 0.67, mat: 'marbleDark' }], ['armchair', 5.65, 3.85, 315, { mat: 'cognac' }],
-      ['tvWall', 7.2, 2.48, 270, { w: 2.6, tv: 1.4 }], ['floorLamp', 6.75, 0.5, 0, {}], ['plant', 0.5, 0.55, 0, { h: 1.8 }],
-      ['curtain', 0.1, 0.85, 90, { w: 0.45 }], ['curtain', 0.1, 5.3, 90, { w: 0.45 }], ['picture', 5.6, 5.695, 180, { w: 1.2, h: 0.85, mat: 'art1' }],
+      ['diningTable', 1.55, 3.1, 0, { w: 1.5, round: true, top: 'glassSmoke', n: 6, chairMat: 'terra' }], ['pendant', 1.55, 3.1, 20, { kind: 'ring', drop: 0.9 }],
+      ['rug', 4.95, 2.4, 0, { w: 2.6, d: 3.2 }], ['sofa', 3.76, 2.92, 90, { w: 2.85, d: 0.92, chaise: 'L', cl: 0.72, cw: 0.83 }],
+      ['coffeeRect', 5.06, 2.5, 90, { w: 1.2, d: 0.7 }], ['armchair', 5.65, 3.9, 315, { mat: 'walnut' }],
+      ['tvWall', 7.2, 2.48, 270, { w: 2.6, tv: 1.4 }], ['floorLamp', 6.75, 0.5, 0, {}], ['plant', 0.45, 0.5, 0, { h: 1.15, kind: 'snake', pot: 0.19 }], ['plant', 0.45, 5.32, 0, { h: 1.0, kind: 'snake', pot: 0.17 }],
+      ['curtain', 0.1, 0.95, 90, { w: 0.5 }], ['curtain', 0.1, 4.85, 90, { w: 0.5 }], ['picture', 5.6, 5.695, 180, { w: 1.1, h: 1.3, mat: 'art1' }],
       // cuisine (13,3 m²) : linéaire au Sud, retour avec évier double côté séjour
-      ['kitchenRun', 1.95, 8.35, 180, { w: 3.9, front: 'navy', top: 'marble', hob: 0.45, upper: true, splash: true }], ['kitchenTall', 4.33, 8.35, 180, { w: 0.86, front: 'oak' }],
-      ['kitchenRun', 1.87, 6.12, 0, { w: 3.15, d: 0.67, front: 'navy', top: 'marble', sink: -0.35 }], ['pendant', 1.87, 6.12, 0, { kind: 'cone', n: 2, span: 0.9, drop: 0.85 }],
+      ['kitchenRun', 1.95, 8.35, 180, { w: 3.9, hob: 0.45, upper: true, splash: true }], ['kitchenTall', 4.33, 8.35, 180, { w: 0.86 }],
+      ['kitchenRun', 1.87, 6.12, 0, { w: 3.15, d: 0.67, sink: -0.35 }], ['pendant', 2.35, 6.0, 0, { kind: 'rings3', drop: 0.75 }], ['stool', 2.05, 5.55, 0, {}], ['stool', 2.75, 5.55, 0, {}],
       // buanderie (7,2 m²) et entrée (10,4 m²)
       ['wardrobe', 6.13, 6.09, 0, { w: 2.4, d: 0.58, mat: 'lacquer' }], ['washer', 5.55, 8.36, 180, { n: 2 }], ['shelves', 6.75, 8.45, 180, { w: 1.0, d: 0.36 }],
       ['wardrobe', 9.8, 6.03, 180, { w: 0.92, d: 0.6, mat: 'lacquer' }], ['pendant', 8.55, 6.9, 0, { kind: 'globe', drop: 0.5 }],
@@ -122,7 +122,7 @@ const villa = {
       // salle d'eau (6,5 m²)
       ['vanity', 11.25, 8.42, 180, { w: 1.4, double: true }], ['toilet', 12.47, 6.95, 270, {}], ['shower', 13.38, 8.08, 270, { w: 1.14, d: 0.95, glass: ['front'] }], ['towelRail', 12.0, 6.41, 0, {}],
       // chambre 1 — suite parentale (22,7 m² avec son passage-dressing)
-      ['bed', 14.62, 1.89, 90, { w: 1.8, l: 2.0, hw: 0.7, throwMat: 'terra' }], ['rug', 15.3, 1.9, 0, { w: 2.2, d: 2.9 }], ['armchair', 15.95, 4.1, 205, { mat: 'cream' }],
+      ['bed', 14.62, 1.89, 90, { w: 1.8, l: 2.0, hw: 0.7 }], ['rug', 15.3, 1.9, 0, { w: 2.2, d: 2.9, mat: 'rug' }], ['armchair', 15.95, 4.1, 205, { mat: 'sand' }], ['picture', 14.6, 0.005, 0, { w: 0.9, h: 1.1, mat: 'art3', frame: 'brass' }],
       ['curtain', 16.6, 0.42, 270, { w: 0.4 }], ['wardrobe', 15.85, 5.04, 180, { w: 1.66, d: 0.58 }],
       ['wardrobe', 12.75, 4.14, 0, { w: 2.3, d: 0.6 }], ['wardrobe', 12.75, 6.03, 180, { w: 2.3, d: 0.58 }],
       // salle de bains (9,2 m²)
@@ -132,16 +132,16 @@ const villa = {
       ['bed', 8.31, 1.75, 90, { w: 0.9, l: 2.0, nights: false, hw: 0.06, throwMat: 'ochre' }], ['wardrobe', 8.2, 4.19, 180, { w: 1.8, d: 0.62 }],
     ],
     rooms: [
-      { id: 'entree', fr: 'Entrée', en: 'Entrance', m2: 10.4, rs: [[7.48, 5.78, 9.23, VD], [7.28, 4.59, 11.5, 5.7]], at: [8.55, 5.2], cam: { p: [9.0, 5.15], t: [2.5, 2.6] } },
+      { id: 'entree', fr: 'Entrée', en: 'Entrance', m2: 10.4, rs: [[7.48, 5.78, 9.23, VD], [7.28, 4.59, 11.5, 5.7]], at: [8.55, 5.2], cam: { p: [7.65, 5.2], t: [2.5, 4.3] } },
       { id: 'sejour', fr: 'Séjour', en: 'Living room', m2: 40.7, rs: [[0, 0, 7.2, 5.72]], at: [3.6, 2.8], cam: { p: [6.3, 4.9], t: [1.2, 1.6] } },
       { id: 'cuisine', fr: 'Cuisine', en: 'Kitchen', m2: 13.3, rs: [[0, 5.72, 4.78, VD]], at: [2.3, 7.3], cam: { p: [4.2, 7.25], t: [0.8, 7.5] } },
-      { id: 'buanderie', fr: 'Buanderie', en: 'Laundry', m2: 7.2, rs: [[4.88, 5.78, 7.38, VD]], at: [6.1, 7.2], cam: { p: [6.6, 7.3], t: [5.3, 8.0] }, minor: true },
-      { id: 'wc', fr: 'WC', en: 'WC', m2: 2.2, rs: [[9.33, 6.41, 10.28, VD]], at: [9.8, 7.5], cam: { p: [9.8, 7.3], t: [9.8, 8.6] }, minor: true },
-      { id: 'sde', fr: 'Salle d\'eau', en: 'Shower room', m2: 6.5, rs: [[10.48, 6.4, 12.8, VD], [12.8, 7.45, 13.86, VD]], at: [11.6, 7.5], cam: { p: [11.3, 7.2], t: [13.0, 8.3] } },
-      { id: 'suite', fr: 'Chambre 1', en: 'Bedroom 1', m2: 22.7, rs: [[13.56, 0, VW, 4.7], [11.58, 4.45, 14.97, 5.7]], at: [15.1, 2.4], cam: { p: [14.45, 4.25], t: [16.7, 1.9] } },
-      { id: 'sdb', fr: 'Salle de bains', en: 'Bathroom', m2: 9.2, rs: [[13.94, 6.44, VW, VD], [15.01, 5.4, VW, 6.44], [12.84, 6.4, 13.9, 7.41]], at: [15.3, 7.4], cam: { p: [14.3, 6.85], t: [16.69, 7.35] } },
-      { id: 'ch2', fr: 'Chambre 2', en: 'Bedroom 2', m2: 12.0, rs: [[10.48, 0, 13.48, 3.75], [10.48, 3.75, 11.5, 4.55]], at: [12.0, 1.9], cam: { p: [10.95, 3.9], t: [12.9, 0.7] } },
-      { id: 'ch3', fr: 'Chambre 3', en: 'Bedroom 3', m2: 13.3, rs: [[7.28, 0, 10.28, 3.75], [9.3, 3.75, 10.28, 4.55]], at: [8.8, 1.9], cam: { p: [9.8, 3.9], t: [7.9, 0.7] } },
+      { id: 'buanderie', fr: 'Buanderie', en: 'Laundry', m2: 7.2, rs: [[4.88, 5.78, 7.38, VD]], at: [6.1, 7.2], cam: { p: [6.9, 7.2], t: [5.5, 8.6], pitch: -0.25 }, minor: true },
+      { id: 'wc', fr: 'WC', en: 'WC', m2: 2.2, rs: [[9.33, 6.41, 10.28, VD]], at: [9.8, 7.5], cam: { p: [9.8, 7.15], t: [9.8, 8.6], pitch: -0.42 }, minor: true },
+      { id: 'sde', fr: 'Salle d\'eau', en: 'Shower room', m2: 6.5, rs: [[10.48, 6.4, 12.8, VD], [12.8, 7.45, 13.86, VD]], at: [11.6, 7.5], cam: { p: [11.1, 7.0], t: [12.8, 8.5], pitch: -0.22 } },
+      { id: 'suite', fr: 'Chambre 1', en: 'Bedroom 1', m2: 22.7, rs: [[13.56, 0, VW, 4.7], [11.58, 4.45, 14.97, 5.7]], at: [15.1, 2.4], cam: { p: [14.2, 4.3], t: [15.3, 0.8], pitch: -0.22 } },
+      { id: 'sdb', fr: 'Salle de bains', en: 'Bathroom', m2: 9.2, rs: [[13.94, 6.44, VW, VD], [15.01, 5.4, VW, 6.44], [12.84, 6.4, 13.9, 7.41]], at: [15.3, 7.4], cam: { p: [14.35, 6.8], t: [16.3, 8.2], pitch: -0.3 } },
+      { id: 'ch2', fr: 'Chambre 2', en: 'Bedroom 2', m2: 12.0, rs: [[10.48, 0, 13.48, 3.75], [10.48, 3.75, 11.5, 4.55]], at: [12.0, 1.9], cam: { p: [10.85, 3.3], t: [13.0, 0.8], pitch: -0.16 } },
+      { id: 'ch3', fr: 'Chambre 3', en: 'Bedroom 3', m2: 13.3, rs: [[7.28, 0, 10.28, 3.75], [9.3, 3.75, 10.28, 4.55]], at: [8.8, 1.9], cam: { p: [9.9, 3.3], t: [7.8, 0.8], pitch: -0.16 } },
       { id: 'jardin', fr: 'Jardin', en: 'Garden', m2: 82.1, rs: [[-9.15, -E, -E, VD + E]], at: [-4.6, 4.3], cam: { p: [-4.9, 3.1], t: [0.5, 3.1] } },
     ],
     tour: ['entree', 'sejour', 'jardin', 'cuisine', 'ch3', 'ch2', 'suite', 'sdb'],
@@ -186,7 +186,7 @@ const DW = 11.63, HD = 5.79, PW = 0.2, DD = 2 * HD + PW, UX = 4.0, FH = 2.9, MY 
 const stair = windingStair(4.05, 4.95, 6.1, 7.0, 1.9, 0.05, FH);
 const LIFT = { x0: 4.2, y0: 10.3, x1: 5.4, y1: 11.7 };
 const duplex = {
-  id: 'duplex', bien: 'duplex-206', north: 0, groundY: -3.55,
+  id: 'duplex', bien: 'duplex-206', north: 0, groundY: -3.55, hour: 9.25,
   name: { fr: 'Duplex', en: 'Duplex' },
   facts: { fr: '4 pièces · 206 m² · terrasse et jardin d\'environ 56 m²', en: '4 rooms · 206 m² · terrace and garden of about 56 m²' },
   pitch: { fr: 'Deux duplex réunis : plus de 100 m² de réception en rez-de-jardin, trois chambres à l\'étage, un ascenseur privatif.', en: 'Two duplexes combined: over 100 m² of reception space at garden level, three bedrooms upstairs, a private lift.' },
@@ -205,10 +205,10 @@ const duplex = {
       // mur mitoyen : conservé derrière la cuisine et derrière le meuble du salon, ouvert entre les deux séjours
       wh(HD + PW / 2, 0, 6.3, PW), wh(HD + PW / 2, 8.9, DW, PW), wv(5.93, 5.13, HD, 0.36), wv(5.93, HD + PW, MY(5.13), 0.36),
       // logement 02 : salle d'eau-buanderie, cage d'escalier
-      wh(1.95, 0, 4.0, T, 0, [op(1.7, 2.55, 'door', { hinge: 'a0', swing: -1, open: 88 })]), wv(3.96, 0, 1.95, T),
+      wh(1.95, 0, 4.0, T, 0, [op(1.7, 2.55, 'door', { hinge: 'a0', swing: -1, open: 172 })]), wv(3.96, 0, 1.95, T),
       wv(7.06, 0, 1.95, T, 0, [], { h: FH }), wh(1.94, 4.95, 7.1, T),
       // logement 03 (symétrique) : salle d'eau-buanderie, ascenseur dans la trémie de l'escalier
-      wh(MY(1.95), 0, 4.0, T, 0, [op(1.7, 2.55, 'door', { hinge: 'a0', swing: 1, open: 88 })]), wv(3.96, MY(1.95), DD, T),
+      wh(MY(1.95), 0, 4.0, T, 0, [op(1.7, 2.55, 'door', { hinge: 'a0', swing: 1, open: 172 })]), wv(3.96, MY(1.95), DD, T),
       wv(LIFT.x0 - 0.07, LIFT.y0 - 0.1, DD, 0.1, 0, [], { h: FH }), wv(LIFT.x1 + 0.07, LIFT.y0 - 0.1, DD, 0.1, 0, [], { h: FH }),
       wh(LIFT.y0 - 0.05, LIFT.x0 - 0.12, LIFT.x1 + 0.12, 0.1, 0, [op(4.35, 5.25, 'liftdoor', { head: 2.1 })], { h: FH }),
       wv(7.06, MY(1.95), DD, T), wh(MY(1.94), 5.5, 7.1, T, 0, [op(5.75, 6.65, 'door', { hinge: 'a0', swing: 1, open: 88 })]),
@@ -218,33 +218,33 @@ const duplex = {
       // logement 02 — salle d'eau-buanderie (7,3 m²)
       ['washer', 0.34, 0.45, 90, { n: 1 }], ['vanity', 0.27, 1.25, 90, { w: 0.8, double: false, d: 0.46 }], ['toilet', 2.5, 0.34, 0, {}], ['shower', 3.42, 0.5, 0, { w: 0.92, d: 0.92, glass: ['left'] }],
       // cuisine (18,1 m²) : colonnes à l'Ouest, linéaire contre le mitoyen, îlot central
-      ['kitchenTall', 0.335, 4.12, 90, { w: 1.45, front: 'oak' }], ['kitchenRun', 2.9, 5.47, 180, { w: 5.65, front: 'navy', top: 'marble', sink: -0.3, hob: 1.3, upper: true, splash: true }],
-      ['island', 3.77, 3.6, 180, { w: 3.6, d: 0.95, front: 'navy', top: 'marble', stools: 4, stoolMat: 'cognac', over: 0.22 }], ['pendant', 3.77, 3.55, 0, { kind: 'cone', n: 3, span: 1.0, drop: 0.85 }],
+      ['kitchenTall', 0.335, 4.12, 90, { w: 1.45 }], ['kitchenRun', 2.9, 5.47, 180, { w: 5.65, top: 'marble', sink: -0.3, hob: 1.3, upper: true, splash: true }],
+      ['island', 3.77, 3.6, 180, { w: 3.6, d: 0.95, stools: 4, stoolMat: 'charcoal', over: 0.22 }], ['pendant', 3.77, 3.55, 0, { kind: 'cone', n: 3, span: 1.0, drop: 0.85 }],
       // séjour (41,0 m²)
-      ['desk', 9.55, 1.44, 180, { w: 2.0, d: 0.6, top: 'walnut', chair: 'cognac' }], ['sofa', 9.38, 2.82, 0, { w: 2.8, d: 0.85, mat: 'linen', chaise: 'R', cl: 0.72, cw: 0.8, pillows: ['terra', 'sage'] }],
-      ['rug', 9.15, 4.08, 0, { w: 3.5, d: 2.3 }], ['coffeeRect', 8.95, 4.13, 0, { w: 1.1, d: 0.65, mat: 'marble' }], ['armchair', 7.57, 4.17, 90, { mat: 'cognac' }], ['armchair', 10.3, 4.72, 320, { mat: 'cognac' }],
+      ['desk', 9.55, 1.44, 180, { w: 2.0, d: 0.6, top: 'walnut', chair: 'cognac' }], ['sofa', 9.38, 2.84, 0, { w: 2.8, d: 0.9, mat: 'cognac', chaise: 'R', cl: 0.72, cw: 0.8, pillows: ['charcoal', 'cream'], plaid: false }], ['pendant', 9.0, 4.1, 0, { kind: 'tubes', drop: 0.5 }],
+      ['rug', 9.15, 4.08, 0, { w: 3.5, d: 2.3, mat: 'rug' }], ['coffeeRect', 8.95, 4.13, 0, { w: 1.1, d: 0.65, mat: 'marbleDark' }], ['armchair', 7.57, 4.17, 90, { mat: 'walnut' }], ['armchair', 10.3, 4.72, 320, { mat: 'walnut' }],
       ['tvWall', 10.2, HD, 180, { w: 2.5, tv: 1.4 }], ['curtain', DW - 0.1, 0.62, 270, { w: 0.5 }], ['picture', 9.4, 0.005, 0, { w: 1.2, h: 0.85, mat: 'art2' }],
       // logement 03 — salle d'eau-buanderie
       ['washer', 0.34, MY(0.45), 90, { n: 1 }], ['vanity', 0.27, MY(1.25), 90, { w: 0.8, double: false, d: 0.46 }], ['toilet', 2.5, MY(0.34), 180, {}], ['shower', 3.42, MY(0.5), 180, { w: 0.92, d: 0.92, glass: ['right'] }],
       // salle à manger, à l'emplacement de la cuisine du logement 03
-      ['diningTable', 3.77, MY(3.6), 0, { w: 3.0, d: 1.1, top: 'marble', n: 4, ends: true, chairMat: 'terra' }], ['pendant', 3.77, MY(3.6), 0, { kind: 'globe', n: 3, span: 0.9, drop: 0.9 }],
-      ['sideboard', 2.9, HD + PW + 0.26, 0, { w: 3.4, d: 0.48, h: 0.82, mat: 'walnut', top: 'marbleDark' }], ['picture', 2.9, HD + PW + 0.005, 0, { w: 1.5, h: 0.95, mat: 'art1' }], ['tableLamp', 1.6, HD + PW + 0.26, 0, { y: 0.845 }],
+      ['diningTable', 3.77, MY(3.6), 0, { w: 3.0, d: 1.1, n: 4, ends: true }], ['pendant', 3.77, MY(3.6), 0, { kind: 'rail', n: 5, span: 0.42, drop: 1.0 }],
+      ['sideboard', 2.9, HD + PW + 0.26, 0, { w: 3.4, d: 0.48, h: 0.82, mat: 'walnut', top: 'marbleDark' }], ['picture', 2.9, HD + PW + 0.005, 0, { w: 1.3, h: 1.0, mat: 'art2' }], ['tableLamp', 1.6, HD + PW + 0.26, 0, { y: 0.845 }],
       ['bookcase', 0.19, MY(4.12), 90, { w: 1.45, h: 2.3 }],
       // second salon (symétrique du séjour)
-      ['sofa', 9.38, MY(2.82), 180, { w: 2.8, d: 0.85, mat: 'cream', chaise: 'L', cl: 0.72, cw: 0.8, pillows: ['ochre', 'sage'] }], ['rug', 9.15, MY(4.08), 0, { w: 3.5, d: 2.3, mat: 'rugDark' }],
-      ['coffeeRound', 8.95, MY(4.13), 0, { r: 0.5 }], ['armchair', 7.57, MY(4.17), 90, { mat: 'charcoal' }], ['armchair', 10.3, MY(4.72), 220, { mat: 'charcoal' }],
-      ['bookcase', 10.2, HD + PW + 0.18, 0, { w: 2.5, h: 2.3 }], ['shelves', 6.28, 11.57, 180, { w: 1.3, d: 0.36 }], ['desk', 9.55, MY(1.44), 0, { w: 2.0, d: 0.6, top: 'marbleDark', chair: 'cream' }], ['curtain', DW - 0.1, MY(0.62), 270, { w: 0.5 }],
+      ['sofa', 9.38, MY(2.84), 180, { w: 2.8, d: 0.9, chaise: 'L', cl: 0.72, cw: 0.8, pillows: ['terra', 'charcoal'] }], ['pendant', 9.0, MY(4.1), 0, { kind: 'ring', drop: 0.55 }], ['rug', 9.15, MY(4.08), 0, { w: 3.5, d: 2.3, mat: 'rugDark' }],
+      ['coffeeRound', 8.95, MY(4.13), 0, { r: 0.5 }], ['armchair', 7.57, MY(4.17), 90, { mat: 'terra' }], ['armchair', 10.3, MY(4.72), 220, { mat: 'terra' }],
+      ['bookcase', 10.2, HD + PW + 0.18, 0, { w: 2.5, h: 2.3 }], ['shelves', 6.28, 11.57, 180, { w: 1.3, d: 0.36 }], ['desk', 9.55, MY(1.44), 0, { w: 2.0, d: 0.6, top: 'marbleDark', chair: 'sand' }], ['curtain', DW - 0.1, MY(0.62), 270, { w: 0.5 }],
     ],
     rooms: [
       { id: 'entree', fr: 'Entrée', en: 'Entrance', rs: [[0, 1.99, 2.2, 3.35]], at: [1.1, 2.65], cam: { p: [0.9, 2.6], t: [7, 3.3] }, minor: true },
       { id: 'cuisine', fr: 'Cuisine', en: 'Kitchen', rs: [[0, 3.0, 6.2, HD], [2.2, 1.99, 4.0, 3.0]], at: [3.2, 4.6], cam: { p: [6.05, 4.45], t: [2.2, 4.9] } },
       { id: 'sejour', fr: 'Séjour', en: 'Living room', rs: [[6.2, 0, DW, HD], [4.95, 1.95, 6.2, 3.0]], at: [9.3, 3.6], cam: { p: [7.3, 3.4], t: [11.8, 3.1] } },
       { id: 'escalier', fr: 'Escalier', en: 'Stairs', rs: [[4.0, 0, 7.02, 1.95], [4.0, 1.95, 4.95, 3.0]], at: [5.5, 1.0], cam: { p: [4.5, 2.75], t: [4.5, 0.4] }, minor: true },
-      { id: 'sde', fr: 'Salle d\'eau', en: 'Shower room', rs: [[0, 0, 3.92, 1.91]], at: [1.9, 1.0], cam: { p: [1.9, 1.35], t: [3.6, 0.3] }, minor: true },
+      { id: 'sde', fr: 'Salle d\'eau', en: 'Shower room', rs: [[0, 0, 3.92, 1.91]], at: [1.9, 1.0], cam: { p: [1.9, 1.35], t: [3.6, 0.3], pitch: -0.22 }, minor: true },
       { id: 'repas', fr: 'Salle à manger', en: 'Dining room', rs: [[0, HD + PW, 6.2, 9.25], [0, 9.25, 4.0, MY(1.99)]], at: [3.2, 8.2], cam: { p: [6.0, 7.1], t: [2.2, 8.6] } },
       { id: 'salon', fr: 'Salon', en: 'Lounge', rs: [[6.2, HD + PW, DW, DD]], at: [9.3, 8.3], cam: { p: [7.3, 8.4], t: [11.8, 8.7] } },
       { id: 'ascenseur', fr: 'Ascenseur privatif', en: 'Private lift', rs: [[LIFT.x0, LIFT.y0, LIFT.x1, LIFT.y1], [4.0, 9.25, 5.6, LIFT.y0]], at: [4.8, 11.0], cam: { p: [4.8, 9.5], t: [4.8, 11.3] } },
-      { id: 'sde2', fr: 'Salle d\'eau 2', en: 'Shower room 2', rs: [[0, MY(1.91), 3.92, DD]], at: [1.9, 10.8], cam: { p: [1.9, 10.45], t: [3.6, 11.5] }, minor: true },
+      { id: 'sde2', fr: 'Salle d\'eau 2', en: 'Shower room 2', rs: [[0, MY(1.91), 3.92, DD]], at: [1.9, 10.8], cam: { p: [1.9, 10.45], t: [3.6, 11.5], pitch: -0.22 }, minor: true },
       { id: 'jardin', fr: 'Terrasse et jardin', en: 'Terrace and garden', rs: [[DW + E, 0, 16.9, DD]], at: [14.4, 5.9], cam: { p: [13.4, 5.9], t: [22, 5.9] } },
     ],
     tour: ['entree', 'cuisine', 'sejour', 'jardin', 'salon', 'repas', 'ascenseur'],
@@ -261,11 +261,11 @@ const duplex = {
       wh(HD + PW / 2, UX, 6.33, PW), wh(HD + PW / 2, 7.02, DW, PW),
       // logement 02 : chambres, salle de bains, passage
       wv(7.06, 0, HD, T, 0, [op(1.95, 2.75, 'door', { hinge: 'a1', swing: 1 }), op(3.0, 3.8, 'door', { hinge: 'a0', swing: 1 })]), wh(2.85, 7.1, DW, T),
-      wh(3.36, UX, 6.31, T, 0, [op(4.9, 5.75, 'door', { hinge: 'a0', swing: 1, open: 88 })]), wv(6.27, 3.36, HD, T),
+      wh(3.36, UX, 6.31, T, 0, [op(4.9, 5.75, 'door', { hinge: 'a0', swing: 1, open: 172 })]), wv(6.27, 3.36, HD, T),
       // logement 03 : suite parentale (chambre, dressing, salle de bains), salle d'eau, palier de l'ascenseur
       wv(7.06, HD + PW, DD, T, 0, [op(MY(2.75), MY(1.95), 'door', { hinge: 'a0', swing: 1 })]), wh(MY(2.85), 7.1, DW, T, 0, [op(7.4, 8.3, 'door', { hinge: 'a0', swing: -1 })]),
       wv(9.15, HD + PW, MY(2.89), T, 0, [op(7.0, 7.85, 'door', { hinge: 'a1', swing: 1 })]),
-      wh(MY(3.36), UX, 6.31, T, 0, [op(4.9, 5.75, 'door', { hinge: 'a0', swing: -1, open: 88 })]), wv(6.27, HD + PW, MY(3.36), T),
+      wh(MY(3.36), UX, 6.31, T, 0, [op(4.9, 5.75, 'door', { hinge: 'a0', swing: -1, open: 172 })]), wv(6.27, HD + PW, MY(3.36), T),
       wv(LIFT.x0 - 0.07, LIFT.y0 - 0.1, DD, 0.1), wv(LIFT.x1 + 0.07, LIFT.y0 - 0.1, DD, 0.1), wh(LIFT.y0 - 0.05, LIFT.x0 - 0.12, LIFT.x1 + 0.12, 0.1, 0, [op(4.35, 5.25, 'liftdoor', { head: 2.1 })]),
       wv(5.5, MY(1.95), DD, T),
     ],
@@ -280,19 +280,19 @@ const duplex = {
       // logement 03 : salle d'eau (douche, vasque, WC)
       ['shower', 4.9, HD + PW + 0.46, 0, { w: 1.5, d: 0.9, glass: ['front'] }], ['vanity', 6.0, MY(4.1), 270, { w: 1.1, double: false, d: 0.46 }], ['toilet', 4.43, 7.5, 90, {}],
       // suite parentale : chambre, dressing, salle de bains
-      ['bed', 9.67, MY(1.03), 180, { w: 1.6, l: 1.9, hw: 0.7, throwMat: 'terra' }], ['wardrobe', 7.42, MY(0.95), 90, { w: 1.75, d: 0.6 }], ['armchair', 10.9, MY(2.45), 250, { mat: 'cream' }],
+      ['bed', 9.67, MY(1.03), 180, { w: 1.6, l: 1.9, hw: 0.7 }], ['wardrobe', 7.42, MY(0.95), 90, { w: 1.75, d: 0.6 }], ['armchair', 10.9, MY(2.45), 250, { mat: 'sand' }],
       ['wardrobe', 7.42, 7.42, 90, { w: 1.5, d: 0.6 }], ['wardrobe', 8.1, HD + PW + 0.31, 0, { w: 1.9, d: 0.6 }], ['mirror', 9.105, 8.3, 270, { w: 0.6, h: 1.7, y: 1.1 }],
       ['bathtub', 10.25, HD + PW + 0.48, 90, { free: true, w: 0.78, l: 1.6 }], ['toilet', 11.35, HD + PW + 0.34, 0, {}], ['vanity', 10.9, 8.63, 180, { w: 1.3, double: true }], ['shower', 9.67, 8.42, 180, { w: 0.9, d: 0.9, glass: ['left'] }],
     ],
     rooms: [
-      { id: 'palier', fr: 'Palier', en: 'Landing', rs: [[UX, 1.9, 7.02, 3.32], [6.33, 3.32, 7.02, MY(3.32)]], at: [5.3, 2.6], cam: { p: [5.2, 2.75], t: [6.7, 5.6] } },
+      { id: 'palier', fr: 'Palier', en: 'Landing', rs: [[UX, 1.9, 7.02, 3.32], [6.33, 3.32, 7.02, MY(3.32)]], at: [5.3, 2.6], cam: { p: [4.5, 2.9], t: [6.9, 2.5] } },
       { id: 'ch2', fr: 'Chambre 2', en: 'Bedroom 2', rs: [[7.1, 0, DW, 2.81]], at: [9.4, 1.4], cam: { p: [7.6, 2.35], t: [10.9, 0.9] } },
       { id: 'ch3', fr: 'Chambre 3', en: 'Bedroom 3', rs: [[7.1, 2.89, DW, HD]], at: [9.4, 4.3], cam: { p: [7.6, 3.4], t: [10.9, 4.9] } },
-      { id: 'sdb2', fr: 'Salle de bains', en: 'Bathroom', rs: [[4.1, 3.4, 6.23, HD]], at: [5.1, 4.6], cam: { p: [5.3, 3.85], t: [4.5, 5.5] }, minor: true },
+      { id: 'sdb2', fr: 'Salle de bains', en: 'Bathroom', rs: [[4.1, 3.4, 6.23, HD]], at: [5.1, 4.6], cam: { p: [5.2, 3.75], t: [5.2, 5.6], pitch: -0.38 }, minor: true },
       { id: 'suite', fr: 'Suite parentale', en: 'Master suite', rs: [[7.1, MY(2.81), DW, DD]], at: [9.4, 10.4], cam: { p: [7.65, 9.4], t: [11.2, 10.6] } },
-      { id: 'dressing', fr: 'Dressing', en: 'Dressing room', rs: [[7.1, HD + PW, 9.11, 8.89]], at: [8.1, 7.4], cam: { p: [8.55, 8.3], t: [7.7, 6.5] } },
-      { id: 'sdbs', fr: 'Salle de bains de la suite', en: 'En-suite bathroom', rs: [[9.19, HD + PW, DW, 8.89]], at: [10.4, 7.4], cam: { p: [9.75, 7.45], t: [11.2, 6.6] } },
-      { id: 'sde', fr: 'Salle d\'eau', en: 'Shower room', rs: [[4.1, HD + PW, 6.23, MY(3.4)]], at: [5.1, 7.2], cam: { p: [5.3, 7.95], t: [4.5, 6.3] }, minor: true },
+      { id: 'dressing', fr: 'Dressing', en: 'Dressing room', rs: [[7.1, HD + PW, 9.11, 8.89]], at: [8.1, 7.4], cam: { p: [8.75, 8.6], t: [7.5, 6.4] } },
+      { id: 'sdbs', fr: 'Salle de bains de la suite', en: 'En-suite bathroom', rs: [[9.19, HD + PW, DW, 8.89]], at: [10.4, 7.4], cam: { p: [9.55, 7.55], t: [10.7, 6.3], pitch: -0.34 } },
+      { id: 'sde', fr: 'Salle d\'eau', en: 'Shower room', rs: [[4.1, HD + PW, 6.23, MY(3.4)]], at: [5.1, 7.2], cam: { p: [5.3, 7.95], t: [4.5, 6.3], pitch: -0.22 }, minor: true },
       { id: 'ascenseur', fr: 'Ascenseur privatif', en: 'Private lift', rs: [[LIFT.x0, LIFT.y0, LIFT.x1, LIFT.y1], [UX, MY(3.32), 7.02, LIFT.y0]], at: [4.8, 11.0], cam: { p: [5.6, 9.0], t: [4.8, 11.3] } },
     ],
     tour: ['palier', 'ch2', 'ch3', 'suite', 'dressing', 'sdbs'],

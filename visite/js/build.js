@@ -37,12 +37,22 @@ function glazing(b, M, x0, x1, y0, y1, n = 1, z = 0, fr = 0.05) {
 const JOINERY = {
   door(b, M, L, w, t, o, lv) {
     const H = o.head, s = L.s, hx = (o.hinge === 'a1' ? 1 : -1) * s * (w / 2 - 0.045), sw = (o.swing || 1) * L.z, ang = THREE.MathUtils.degToRad(o.open === undefined ? 86 : o.open);
-    b.box(M.door, -w / 2, 0, -t / 2 - 0.012, -w / 2 + 0.045, H, t / 2 + 0.012); b.box(M.door, w / 2 - 0.045, 0, -t / 2 - 0.012, w / 2, H, t / 2 + 0.012);
-    b.box(M.door, -w / 2, H - 0.045, -t / 2 - 0.012, w / 2, H, t / 2 + 0.012);
+    b.box(M.door, -w / 2, 0, -t / 2 - 0.004, -w / 2 + 0.045, H, t / 2 + 0.004); b.box(M.door, w / 2 - 0.045, 0, -t / 2 - 0.004, w / 2, H, t / 2 + 0.004);
+    b.box(M.door, -w / 2, H - 0.045, -t / 2 - 0.004, w / 2, H, t / 2 + 0.004);
+    for (const sz of [-1, 1]) {                                   // chambranles des deux côtés
+      const z0 = sz * (t / 2), z1 = sz * (t / 2 + 0.014), za = Math.min(z0, z1), zb = Math.max(z0, z1);
+      b.box(M.door, -w / 2 - 0.05, 0, za, -w / 2 + 0.012, H + 0.05, zb); b.box(M.door, w / 2 - 0.012, 0, za, w / 2 + 0.05, H + 0.05, zb); b.box(M.door, -w / 2 + 0.012, H - 0.012, za, w / 2 - 0.012, H + 0.05, zb);
+      const lx = (hx < 0 ? 1 : -1) * (w / 2 + 0.16);              // interrupteur côté béquille, à 1,10 m
+      b.box(M.skirt, lx - 0.04, 1.06, sz > 0 ? t / 2 : -t / 2 - 0.008, lx + 0.04, 1.14, sz > 0 ? t / 2 + 0.008 : -t / 2); b.box(M.white, lx - 0.016, 1.078, sz > 0 ? t / 2 + 0.008 : -t / 2 - 0.011, lx + 0.016, 1.122, sz > 0 ? t / 2 + 0.011 : -t / 2 - 0.008);
+    }
     const dir = hx < 0 ? 1 : -1, lw = w - 0.1;
     b.push(hx, 0, sw * (t / 2), dir * -ang * sw);
     b.box(M.door, 0, 0.008, -0.02, dir * lw, H - 0.05, 0.02);
-    b.box(M.brass, dir * (lw - 0.13), 1.0, -0.05, dir * (lw - 0.03), 1.02, 0.05);
+    for (const sz of [-1, 1]) {                                   // béquille noire sur rosace, des deux côtés
+      b.geo(M.black, new THREE.CylinderGeometry(0.026, 0.026, 0.008, 16), dir * (lw - 0.07), 1.02, sz * 0.024, Math.PI / 2, 0, 0);
+      b.rod(M.black, [dir * (lw - 0.07), 1.02, sz * 0.024], [dir * (lw - 0.07), 1.02, sz * 0.06], 0.009, 8); b.rod(M.black, [dir * (lw - 0.07), 1.02, sz * 0.055], [dir * (lw - 0.2), 1.02, sz * 0.055], 0.009, 8);
+    }
+    for (const hy of [0.22, 1.05, H - 0.28]) b.cyl(M.black, 0, hy, 0, 0.009, 0.09, 8);   // paumelles
     b.pop();
   },
   entry(b, M, L, w, t, o) {
@@ -114,6 +124,11 @@ function buildWall(b, M, lv, w) {
       } else put(M[w.mat || 'plaster'], w.c - t / 2, w.c + t / 2);
     };
     seg(L, ya, Math.min(yb, cut)); seg(top, Math.max(ya, cut), yb);
+    if (ya === 0 && !w.mat && !w.noSkirt && a1 - a0 > 0.06) {
+      b.on(L);
+      const sk = (c0, c1) => { if (w.k === 'h') b.box(M.skirt, a0, y0, Math.min(c0, c1), a1, y0 + 0.08, Math.max(c0, c1)); else b.box(M.skirt, Math.min(c0, c1), y0, a0, Math.max(c0, c1), y0 + 0.08, a1); };
+      if (w.ext) { const inner = w.c - zs * t / 2; sk(inner, inner - zs * 0.012); } else { sk(w.c - t / 2, w.c - t / 2 - 0.012); sk(w.c + t / 2, w.c + t / 2 + 0.012); }
+    }
   };
   const ops = (w.ops || []).slice().sort((p, q) => p.a0 - q.a0);
   let a = w.a0;
@@ -186,7 +201,7 @@ export function buildLevel(b, M, lv, index) {
     b.box(M.ceiling, c[0], y0 + lv.h, c[1], c[2], y0 + lv.h + 0.05, c[3]);
     // spots encastrés
     const nx = Math.max(1, Math.round((c[2] - c[0]) / 1.7)), nz = Math.max(1, Math.round((c[3] - c[1]) / 1.7));
-    for (let i = 0; i < nx; i++) for (let j = 0; j < nz; j++) b.cyl(M.led, c[0] + ((c[2] - c[0]) / nx) * (i + 0.5), y0 + lv.h - 0.006, c[1] + ((c[3] - c[1]) / nz) * (j + 0.5), 0.045, 0.008, 12);
+    for (let i = 0; i < nx; i++) for (let j = 0; j < nz; j++) { const sx = c[0] + ((c[2] - c[0]) / nx) * (i + 0.5), sz = c[1] + ((c[3] - c[1]) / nz) * (j + 0.5); b.cyl(M.skirt, sx, y0 + lv.h - 0.005, sz, 0.058, 0.005, 20); b.cyl(M.led, sx, y0 + lv.h - 0.008, sz, 0.04, 0.008, 16); }
   }
   for (const r of lv.rails || []) { b.on(r[5] ? lv.layer + ':top' : lv.layer); railing(b, M, r[0], r[1], r[2], r[3], y0 + (r[4] || 0)); lv.blocks.push([Math.min(r[0], r[2]) - 0.04, Math.min(r[1], r[3]) - 0.04, Math.max(r[0], r[2]) + 0.04, Math.max(r[1], r[3]) + 0.04]); }
   // mobilier : [type, x, y, rotation en degrés, options]
@@ -209,6 +224,12 @@ export function buildLevel(b, M, lv, index) {
     }
   }
   for (const r of lv.blockers || []) lv.blocks.push(r);
+  // éclairage d'appoint de chaque pièce (spots allumés, comme sur les images) : plus soutenu dans les pièces sans fenêtre
+  for (const r of lv.rooms || []) {
+    if (r.id === 'jardin' || !r.at) continue;
+    const lit = lv.dayLights.some((l) => r.rs.some((q) => l.pos.x > q[0] - 0.8 && l.pos.x < q[2] + 0.8 && l.pos.z > q[1] - 0.8 && l.pos.z < q[3] + 0.8));
+    lv.dayLights.push({ pos: new THREE.Vector3(r.at[0], y0 + 2.0, r.at[1]), power: lit ? 0.8 : 2.2, layer: lv.layer });
+  }
   b.on(lv.layer);
 }
 
