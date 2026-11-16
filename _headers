@@ -14,9 +14,9 @@ https://:version.:project.pages.dev/*
   X-Frame-Options: DENY
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
-  Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(), usb=(), interest-cohort=()
+  Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(), usb=()
   Strict-Transport-Security: max-age=2592000
-  Content-Security-Policy-Report-Only: default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://www.googletagmanager.com https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://*.google-analytics.com https://*.googletagmanager.com; connect-src 'self' https://formspree.io https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com https://cloudflareinsights.com; frame-src https://maps.google.com https://www.google.com; frame-ancestors 'none'; base-uri 'self'; form-action 'self' https://formspree.io; object-src 'none'
+  Content-Security-Policy-Report-Only: default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: https://*.google-analytics.com https://*.googletagmanager.com; connect-src 'self' https://formspree.io https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com https://cloudflareinsights.com; frame-src https://maps.google.com https://www.google.com; frame-ancestors 'none'; base-uri 'self'; form-action 'self' https://formspree.io; object-src 'none'
 
 # --- Cache : le HTML garde le comportement Pages (max-age=0, must-revalidate), avec no-transform :
 #     sans lui Cloudflare injecte le script Web Analytics (erreur console /cdn-cgi/rum). Routes HTML listées une à une
@@ -58,6 +58,8 @@ https://:version.:project.pages.dev/*
   Cache-Control: public, max-age=2592000
 /*.png
   Cache-Control: public, max-age=2592000
+/*.svg
+  Cache-Control: public, max-age=2592000
 /*.ico
   Cache-Control: public, max-age=2592000
 /*.mp4
@@ -68,4 +70,8 @@ https://:version.:project.pages.dev/*
   Cache-Control: public, max-age=2592000
 /*.pdf
   Cache-Control: public, max-age=86400
+  X-Robots-Tag: noindex
+
+# --- Documents PDF : jamais dans les résultats de recherche (plaquette à jour seulement sur demande, pièces du dossier) ---
+/*.pdf
   X-Robots-Tag: noindex

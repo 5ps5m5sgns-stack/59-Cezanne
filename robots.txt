@@ -1,4 +1,37 @@
+# robots.txt — 59-cezanne.com
+# Tout le site est ouvert, aux moteurs de recherche comme aux robots d'IA (recherche avec citation et entraînement).
+# Règle de lecture : un robot n'applique que le groupe le plus précis qui le nomme ; toute ligne « Disallow » ajoutée
+# un jour sous « User-agent: * » devra être recopiée dans les deux groupes nommés.
+
 User-agent: *
+Allow: /
+
+# Recherche et réponses avec citation
+User-agent: Googlebot
+User-agent: bingbot
+User-agent: OAI-SearchBot
+User-agent: ChatGPT-User
+User-agent: Claude-SearchBot
+User-agent: Claude-User
+User-agent: PerplexityBot
+User-agent: Perplexity-User
+User-agent: Applebot
+User-agent: DuckAssistBot
+User-agent: MistralAI-User
+User-agent: meta-externalfetcher
+User-agent: Amazonbot
+User-agent: YouBot
+Allow: /
+
+# Collecte pour l'entraînement des modèles (pour la refuser sans toucher à la recherche : « Disallow: / » dans ce seul groupe)
+User-agent: GPTBot
+User-agent: ClaudeBot
+User-agent: Google-Extended
+User-agent: Applebot-Extended
+User-agent: CCBot
+User-agent: meta-externalagent
+User-agent: Bytespider
+User-agent: cohere-ai
 Allow: /
 
 Sitemap: https://59-cezanne.com/sitemap.xml

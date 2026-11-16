@@ -28,3 +28,8 @@
 # Le promoteur est désormais une section de /contact (id="promoteur") ; même remarque : la 301 arrive en haut de /contact.
 /promoteur           /contact     301
 /promoteur.html      /contact     301
+
+# Visite 3D : alias plausibles
+/visite              /visite-3d   301
+/visite-virtuelle    /visite-3d   301
+/visite-3d-residence /visite-3d?mode=residence 302
