@@ -81,6 +81,8 @@
       .legal-dl > div { grid-template-columns: 1fr; gap: 0; padding: .7rem 1rem; }
       .legal-toc { padding: 1.7rem 1.2rem 1rem; }
     }
+      /* Pas de barre d'appel fixe sur cette page : pas de réserve de 54 px sous le pied de page (bande vide sur mobile) */
+    @media (max-width: 700px) { body { padding-bottom: 0; } }
   </style>
 
   <script type="application/ld+json">

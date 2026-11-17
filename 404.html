@@ -64,6 +64,8 @@
       .nf-inner { padding: 0 1.25rem; }
       .nf-actions .btn { width: 100%; justify-content: center; }
     }
+      /* Pas de barre d'appel fixe sur cette page : pas de réserve de 54 px sous le pied de page (bande vide sur mobile) */
+    @media (max-width: 700px) { body { padding-bottom: 0; } }
   </style>
 
 </head>
@@ -131,6 +133,7 @@
           <ul>
             <li><a href="/" data-lang-fr="Accueil" data-lang-en="Home">Accueil</a></li>
             <li><a href="/logements" data-lang-fr="Les logements" data-lang-en="The apartments">Les logements</a></li>
+            <li><a href="/visite-3d" data-lang-fr="La visite 3D" data-lang-en="The 3D tour">La visite 3D</a></li>
             <li><a href="/localisation" data-lang-fr="La localisation" data-lang-en="The location">La localisation</a></li>
             <li><a href="/contact" data-lang-fr="Nous contacter" data-lang-en="Contact us">Nous contacter</a></li>
           </ul>
