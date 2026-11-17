@@ -42,3 +42,16 @@
 /visite              /visite-3d   301
 /visite-virtuelle    /visite-3d   301
 /visite-3d-residence /visite-3d?mode=residence 302
+
+# Adresses anglaises plausibles (les pages anglaises gardent les noms français : /en/logements, /en/localisation)
+/en/apartments       /en/logements    301
+/en/homes            /en/logements    301
+/en/location         /en/localisation 301
+/en/home             /en              301
+/en/blog             /blog            301
+/en/visite-3d        /visite-3d?lang=en 301
+/en/3d-tour          /visite-3d?lang=en 301
+
+# Préfixe /fr saisi par habitude : le français est servi à la racine
+/fr                  /                301
+/fr/*                /:splat          301
