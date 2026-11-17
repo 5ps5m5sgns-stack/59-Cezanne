@@ -46,7 +46,7 @@ https://:version.:project.pages.dev/*
 /404
   Cache-Control: public, max-age=0, must-revalidate, no-transform
 
-# --- Cache : CSS/JS référencés avec ?v=<empreinte> (docs/version_assets.py, à relancer après chaque modification) ;
+# --- Cache : CSS/JS référencés avec ?v=<empreinte> (outils/version_assets.py, à relancer après chaque modification) ;
 #     pas de stale-while-revalidate : un visiteur ne doit jamais recevoir un HTML neuf avec un ancien CSS ---
 /*.css
   Cache-Control: public, max-age=3600
@@ -74,4 +74,8 @@ https://:version.:project.pages.dev/*
 
 # --- Documents PDF : jamais dans les résultats de recherche (plaquette à jour seulement sur demande, pièces du dossier) ---
 /*.pdf
+  X-Robots-Tag: noindex
+
+# --- Outils de maintenance du dépôt (scripts Python) : sans intérêt pour les moteurs ---
+/outils/*
   X-Robots-Tag: noindex
