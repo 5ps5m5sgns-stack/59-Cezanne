@@ -221,13 +221,12 @@
       if (e.target.closest && e.target.closest('a') && isMenuOpen()) applyMenuState(false, false);
     });
 
-    // Passage en grand écran avec le menu ouvert : on le referme
-    if (win.matchMedia) {
-      var mq = win.matchMedia('(min-width: 769px)');
-      var onChange = function (e) { if (e.matches && isMenuOpen()) applyMenuState(false, false); };
-      if (mq.addEventListener) mq.addEventListener('change', onChange);
-      else if (mq.addListener) mq.addListener(onChange);
-    }
+    // Passage en grand écran avec le menu ouvert : on le referme dès que le burger n'est plus affiché.
+    // Le seuil est lu dans le CSS (aujourd'hui 1300 px) au lieu d'être recopié ici : l'ancien seuil de 769 px
+    // laissait le menu ouvert, sans bouton pour le fermer, quand la fenêtre passait de 769-1300 px à plus large.
+    win.addEventListener('resize', function () {
+      if (isMenuOpen() && getComputedStyle(burger).display === 'none') applyMenuState(false, false);
+    }, { passive: true });
   });
 
   /* ─── Révélation au défilement (IntersectionObserver) ──────── */

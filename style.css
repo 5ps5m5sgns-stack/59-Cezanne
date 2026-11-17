@@ -437,7 +437,9 @@ button { cursor: pointer; border: none; background: none; font-family: inherit; 
   transform: translateX(100%);
   visibility: hidden;
   transition: transform 0.5s cubic-bezier(0.77,0,0.175,1), visibility 0s linear 0.5s;
-  padding: 2rem;
+  /* Haut et bas = hauteur de la barre fixe (posée au-dessus du menu) : en paysage ou dans une fenêtre basse, le premier
+     lien ne commence plus sous la barre, qui interceptait le clic. Marges égales : le centrage ne bouge pas quand tout tient. */
+  padding: var(--nav-height) 2rem;
   overflow-y: auto;
 }
 
@@ -2386,6 +2388,28 @@ html[data-lang-lock]:not([data-lang-pair]) .lang-btn { display: none !important;
   .nav-links,
   .lang-toggle { display: none; }
   .nav-burger { display: flex; }
+}
+/* Sans JavaScript, le burger (onclick) ne peut pas ouvrir le menu et la barre n'offrait plus aucun lien sous 1300 px.
+   Les liens du menu sont alors affichés en bande en tête de page, sous la barre fixe (ils défilent avec la page) ;
+   le burger et les boutons de bascule FR/EN sur place, sans effet sans script, sont retirés (les liens de langue restent). */
+@media (scripting: none) {
+  button.lang-btn { display: none; }
+}
+@media (scripting: none) and (max-width: 1300px) {
+  .nav-burger { display: none; }
+  .nav-mobile {
+    position: static;
+    transform: none;
+    visibility: visible;
+    transition: none;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 0 1.25rem;
+    padding: calc(var(--nav-height) + 0.25rem) 1rem 0.25rem;
+    overflow: visible;
+  }
+  .nav-mobile a { font-size: 1.05rem; line-height: var(--tap); }
+  .nav-mobile-lang { margin-top: 0; align-items: center; }
 }
 /* Illustrations : jamais plus petites que la largeur de leur colonne, coins francs, légendes discrètes. */
 .img-xl { width: 100%; height: auto; display: block; }

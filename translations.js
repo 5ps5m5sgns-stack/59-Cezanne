@@ -12,6 +12,11 @@
    - <html data-lang-lock> (pages de blog : français seul, ou anglais natif) :
        setLang() ne fait RIEN, la langue mémorisée est ignorée et jamais modifiée,
        et les boutons de langue éventuels sont masqués par style.css.
+   - <html data-lang-lock data-lang-pair> (pages /en…, anglais natif avec page jumelle française) : setLang() ne
+       fait rien non plus, mais la langue de la page est mémorisée, pour que les pages bilingues sans jumelle
+       (mentions légales, remerciement…) s'ouvrent ensuite dans cette langue.
+   - liens de langue <a class="lang-btn" lang="fr|en"> : la langue visée est mémorisée au clic, avant la navigation
+       (sinon la page d'arrivée rétablirait la langue mémorisée précédente).
    - événement document « 59c:langchange » ({detail:{lang}}) pour les autres scripts
      (libellés ARIA de animations.js, bandeau de cookie.js).
    - window.getLang() renvoie 'fr' ou 'en' (langue courante de l'interface).
@@ -61,7 +66,13 @@
       if (!bl) continue;
       var on = bl === lang;
       buttons[i].classList.toggle('active', on);
-      buttons[i].setAttribute('aria-pressed', on ? 'true' : 'false');
+      if (buttons[i].tagName === 'A') {
+        // Lien vers la page jumelle : aria-pressed n'existe pas sur un lien ; même repère que sur les pages /en
+        if (on) buttons[i].setAttribute('aria-current', 'true');
+        else buttons[i].removeAttribute('aria-current');
+      } else {
+        buttons[i].setAttribute('aria-pressed', on ? 'true' : 'false');
+      }
     }
   }
 
@@ -112,9 +123,21 @@
   window.setLang = setLang;
   window.getLang = currentLang;
 
+  /* Liens de langue (FR / EN des pages /en et de leurs jumelles) : le choix du visiteur est mémorisé avant de
+     quitter la page. Sans cela, « FR » cliqué sur /en/logements ouvrait /logements… de nouveau en anglais. */
+  document.addEventListener('click', function (e) {
+    var link = e.target && e.target.closest ? e.target.closest('a.lang-btn') : null;
+    var lang = link ? buttonLang(link) : '';
+    if (lang) writeStored(lang);
+  });
+
   /* Restauration de la langue au chargement (même session, autres pages) */
   function init() {
-    if (isLocked()) return;                // on ne lit ni n'écrit la langue mémorisée
+    if (isLocked()) {                      // langue figée : on ne lit pas la langue mémorisée…
+      // … mais une page anglaise native jumelée (/en…) la mémorise, comme le font les articles anglais du blog
+      if (root.hasAttribute('data-lang-pair')) writeStored(currentLang());
+      return;
+    }
     if (readStored() === 'en') {
       setLang('en');
     } else {

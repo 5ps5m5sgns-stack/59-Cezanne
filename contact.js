@@ -67,6 +67,16 @@
     el.textContent = '';
   }
 
+  /* Le message d'échec s'affiche sous le bouton d'envoi, souvent hors de l'écran (bas de fenêtre, barre flottante
+     sur mobile) : s'il n'est pas entièrement visible, on l'amène au milieu de l'écran, le bouton restant visible au-dessus. */
+  function reveal(el) {
+    if (!el || !el.getBoundingClientRect) return;
+    var r = el.getBoundingClientRect();
+    var vh = window.innerHeight || document.documentElement.clientHeight;
+    if (r.top >= 0 && r.bottom <= vh - 80) return;
+    try { el.scrollIntoView({ block: 'center' }); } catch (e) { /* ancien navigateur : le message reste annoncé (role="alert") */ }
+  }
+
   function addDescribedBy(input, id) {
     var ids = (input.getAttribute('aria-describedby') || '').split(/\s+/).filter(Boolean);
     if (ids.indexOf(id) === -1) ids.push(id);
@@ -186,6 +196,8 @@
     var submitLabel = $('ct-submit-label');
     var honeypot = form.querySelector('[name="_gotcha"]');
     var originField = $('page_origine');
+    // Libellé du bouton tel qu'écrit dans la page : repli quand elle ne porte pas d'attributs data-lang-* (/en/contact)
+    var idleLabel = submitLabel ? submitLabel.textContent : '';
 
     var startedAt = Date.now();
     var sending = false;
@@ -318,7 +330,7 @@
       if (on) {
         submitLabel.textContent = lang() === 'en' ? 'Sending…' : 'Envoi en cours…';
       } else {
-        submitLabel.textContent = submitLabel.getAttribute('data-lang-' + lang()) || 'Envoyer ma demande';
+        submitLabel.textContent = submitLabel.getAttribute('data-lang-' + lang()) || idleLabel || 'Envoyer ma demande';
       }
     }
 
@@ -349,6 +361,7 @@
       say(failEl, 'error',
         'Votre demande n\'a pas pu être envoyée. Veuillez réessayer dans un instant ou nous joindre par téléphone ou par e-mail (coordonnées sur cette page).',
         'Your enquiry could not be sent. Please try again in a moment, or reach us by phone or email (details on this page).');
+      reveal(failEl);
     }
 
     /* — Soumission — */
@@ -379,6 +392,7 @@
         say(failEl, 'error',
           'Votre demande n\'a pas été envoyée : le formulaire a été validé trop rapidement. Merci de patienter quelques secondes, puis de réessayer.',
           'Your enquiry was not sent: the form was submitted too quickly. Please wait a few seconds and try again.');
+        reveal(failEl);
         return;
       }
 
