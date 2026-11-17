@@ -76,6 +76,8 @@
       .th-actions .btn { width: 100%; justify-content: center; }
     }
     @media (prefers-reduced-motion: reduce) { .th-links a { transition: none; } }
+      /* Pas de barre d'appel fixe sur cette page : pas de réserve de 54 px sous le pied de page (bande vide sur mobile) */
+    @media (max-width: 700px) { body { padding-bottom: 0; } }
   </style>
 
 </head>
