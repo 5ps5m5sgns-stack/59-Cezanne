@@ -2509,6 +2509,7 @@ html[data-lang-lock]:not([data-lang-pair]) .lang-btn { display: none !important;
   .floating-cta .float-btn:hover { transform: none; box-shadow: none; }
   .floating-cta .float-btn::after { content: attr(data-label); }
   body { padding-bottom: 54px; }
+  body:not(:has(.floating-cta)) { padding-bottom: 0; }      /* pages sans barre d'appel (blog) : pas de bande vide sous le pied de page */
 }
 
 /* Boutons de zoom : dans le flux, pour que la figure prenne la hauteur de son image (sans proportions fixes).
