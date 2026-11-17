@@ -113,7 +113,7 @@ class App {
   }
 
   /* Champ de vision à hauteur d'œil : celui d'un objectif d'architecture (78° à l'horizontale sur un écran large). Plus large, les pièces et les meubles paraissent étirés. */
-  walkFov() { return clamp(THREE.MathUtils.radToDeg(2 * Math.atan(Math.tan(rad(78) / 2) / this.camera.aspect)), 48, 66); }
+  walkFov() { return clamp(THREE.MathUtils.radToDeg(2 * Math.atan(Math.tan(rad(100) / 2) / this.camera.aspect)), 55, 82); }
 
   /* ── Construction d'un logement (une seule fois, puis mis en cache) ──────── */
   build(apt) {
@@ -170,6 +170,8 @@ class App {
     this.env.setSite(apt, this.M, c, Math.hypot(bb[2] - bb[0], bb[3] - bb[1]) / 2 + 3);
     this.setHour(Number(params.get('h')) || apt.hour || 11, true);      // l'heure où le soleil entre dans le séjour
     this.fillUI();
+    ui.loaderText.textContent = tr('loadEnv'); await new Promise((r) => setTimeout(r, 30));
+    this.warmUp();
     const room = opts.room && this.findRoom(opts.room);
     if (opts.mode === 'walk' || room) { const r = room || this.findRoom(apt.start.room); this.enterWalk(r.room, r.level, true); }
     else if (opts.mode === 'plan') this.setMode('plan', true);
@@ -177,6 +179,28 @@ class App {
     else this.setMode('orbit', true);
     this.ready = true; ui.loader.hidden = true; root.classList.add('is-ready'); this.dirty = true; setTimeout(() => root.classList.add('is-seen'), 1200);
     window.__v3dReady = true;
+  }
+
+  /* Préchauffage : tout ce que le visiteur verra plus tard est préparé ici, pendant le chargement. Sans lui, la première
+     entrée dans une pièce compilait une quinzaine de programmes de rendu et envoyait des centaines de géométries et de
+     textures à la carte graphique en une seule image : l'écran se figeait plus d'une seconde. */
+  warmUp() {
+    const c = this.cur, layers = Object.values(c.layers), was = layers.map((g) => g.visible), cw = c.catcher.visible, pw = c.pucks.visible;
+    for (const g of layers) g.visible = true; c.catcher.visible = true; c.pucks.visible = true;
+    for (const m of Object.values(this.M)) for (const k of ['map', 'bumpMap', 'roughnessMap', 'normalMap', 'alphaMap', 'emissiveMap', 'aoMap']) if (m && m[k] && m[k].isTexture) this.renderer.initTexture(m[k]);
+    // un objet hors du champ de la caméra n'est envoyé à la carte graphique qu'à sa première apparition : on désactive l'élimination
+    // hors champ le temps de ce rendu, pour que tout soit prêt avant la première promenade
+    const culled = []; this.scene.traverse((o) => { if (o.isMesh && o.frustumCulled) { culled.push(o); o.frustumCulled = false; } });
+    const sunWas = this.env.sun.visible;
+    try {
+      for (const sun of [true, false]) {            // jour et nuit : le nombre de lumières change, donc les programmes aussi
+        this.env.sun.visible = sun;
+        for (const studio of [false, true]) { this.env.setStudio(studio, !!this.composer); this.renderer.compile(this.scene, this.camera); if (this.composer) this.composer.render(); else this.renderer.render(this.scene, this.camera); }
+      }
+    } catch (e) { console.warn('préchauffage', e); }
+    this.env.sun.visible = sunWas; for (const o of culled) o.frustumCulled = true;
+    layers.forEach((g, i) => { g.visible = was[i]; }); c.catcher.visible = cw; c.pucks.visible = pw;
+    this.renderer.shadowMap.needsUpdate = true; this.dirty = true;
   }
 
   findRoom(id) { for (let i = 0; i < this.apt.levels.length; i++) { const room = this.apt.levels[i].rooms.find((r) => r.id === id); if (room) return { room, level: i }; } return null; }
