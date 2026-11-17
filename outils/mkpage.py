@@ -6,6 +6,8 @@ import re, hashlib, glob, io
 import os
 R=os.path.dirname(os.path.dirname(os.path.abspath(__file__)))+'/'       # racine du dépôt
 src=open(R+'logements.html',encoding='utf-8').read()
+# la visite 3D n'a pas de page anglaise : son sélecteur de langue reste une bascule sur place
+src=src.replace('<a href="/en/logements" hreflang="en" lang="en" class="lang-btn">EN</a>','<button type="button" class="lang-btn" lang="en" aria-pressed="false" onclick="setLang(\'en\')">EN</button>')
 nav=src[src.index('<a class="skip-link"'):src.index('<main id="contenu">')]
 nav=nav.replace(' class="active" aria-current="page"',' class="active"')
 foot=src[src.index('<!-- ─── Footer'):src.index('<script src="/animations.js')]
