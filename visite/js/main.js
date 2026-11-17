@@ -96,9 +96,16 @@ class App {
     this.composer.addPass(new RenderPass(this.scene, this.camera));
     if (QUALITY.ao) {
       this.ao = new GTAOPass(this.scene, this.camera, 4, 4);
-      this.ao.updateGtaoMaterial({ radius: 0.42, distanceExponent: 1.4, thickness: 1.2, scale: 1.25, samples: 12 });
+      this.ao.updateGtaoMaterial({ radius: 0.55, distanceExponent: 1.4, thickness: 1.2, scale: 1.5, samples: 12 });
       this.ao.updatePdMaterial({ lumaPhi: 10, depthPhi: 2, normalPhi: 3, radius: 5, rings: 2, samples: 12 });
       this.ao.blendIntensity = 0.85;
+      // la passe de profondeur ignore la transparence : cartes de feuillage, vitres et voilages y seraient des plans pleins (carrés sombres dans le ciel, voile sur le paysage vu à travers les baies) ; le paysage lointain y serait assombri en silhouette. On les écarte
+      const ro = this.ao.renderOverride.bind(this.ao);
+      this.ao.renderOverride = (...args) => {
+        const hid = []; this.scene.traverseVisible((o) => { const m = o.isMesh && o.material; if (m && (m.alphaTest > 0 || m.transparent)) { hid.push(o); o.visible = false; } });
+        for (const o of this.env.far) if (o.visible) { hid.push(o); o.visible = false; }
+        ro(...args); for (const o of hid) o.visible = true;
+      };
       this.composer.addPass(this.ao);
     }
     if (QUALITY.bloom) { this.bloom = new UnrealBloomPass(new THREE.Vector2(4, 4), 0.1, 0.55, 2.6); this.composer.addPass(this.bloom); }

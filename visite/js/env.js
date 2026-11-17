@@ -163,10 +163,11 @@ function groundTexture(S = 256) {
 /* Profil de la Sainte-Victoire vue depuis Aix (de l'Ouest) : longue échine, sommet, falaise côté Sud. */
 const SV = [[-1, 0.03], [-0.82, 0.07], [-0.66, 0.13], [-0.52, 0.2], [-0.4, 0.3], [-0.3, 0.44], [-0.22, 0.6], [-0.15, 0.76], [-0.09, 0.9], [-0.04, 0.975], [0, 1], [0.045, 0.95], [0.09, 0.93], [0.15, 0.86], [0.22, 0.8], [0.3, 0.7], [0.38, 0.6], [0.47, 0.52], [0.57, 0.43], [0.68, 0.33], [0.8, 0.22], [0.9, 0.12], [1, 0.04]];
 
-const RIDGE_VERT = `attribute float aTop; varying float vTop; varying vec3 vP;
+const RIDGE_VERT = `attribute float aTop; varying float vTop; varying vec3 vP; uniform float uFogScale;
 #include <fog_pars_vertex>
 void main() { vTop = aTop; vP = position; vec4 mvPosition = modelViewMatrix * vec4( position, 1.0 ); gl_Position = projectionMatrix * mvPosition;
 #include <fog_vertex>
+	vFogDepth *= uFogScale;
 }`;
 const RIDGE_FRAG = `varying float vTop; varying vec3 vP;
 uniform vec3 uTop, uLow, uLight; uniform float uCell, uRock; uniform sampler2D uNoise;
@@ -183,7 +184,7 @@ void main() {
 }`;
 
 /* Ruban vertical dont la crête suit un profil : une ligne de relief. */
-function ridge(profile, noise, { dist, width, height, base, color, seed = 1, rough = 0.12, center = 0, cell = 18, rock = 0 }) {
+function ridge(profile, noise, { dist, width, height, base, color, seed = 1, rough = 0.12, center = 0, cell = 18, rock = 0, fogScale = 1 }) {
   const R = rng(seed), pts = [];
   for (let i = 0; i < profile.length - 1; i++) {
     const [x0, h0] = profile[i], [x1, h1] = profile[i + 1], n = 6;
@@ -201,7 +202,7 @@ function ridge(profile, noise, { dist, width, height, base, color, seed = 1, rou
   g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3)); g.setAttribute('aTop', new THREE.Float32BufferAttribute(top, 1));
   const c = new THREE.Color(color);
   const mat = new THREE.ShaderMaterial({
-    uniforms: THREE.UniformsUtils.merge([THREE.UniformsLib.fog, { uTop: { value: c.clone() }, uLow: { value: c.clone().multiplyScalar(0.72) }, uLight: { value: new THREE.Color(1, 1, 1) }, uCell: { value: cell }, uRock: { value: rock }, uNoise: { value: noise } }]),
+    uniforms: THREE.UniformsUtils.merge([THREE.UniformsLib.fog, { uTop: { value: c.clone() }, uLow: { value: c.clone().multiplyScalar(0.72) }, uLight: { value: new THREE.Color(1, 1, 1) }, uCell: { value: cell }, uRock: { value: rock }, uNoise: { value: noise }, uFogScale: { value: fogScale } }]),
     vertexShader: RIDGE_VERT, fragmentShader: RIDGE_FRAG, fog: true, side: THREE.DoubleSide,
   });
   const m = new THREE.Mesh(g, mat);
@@ -246,27 +247,27 @@ export class Environment {
     this.land = new THREE.Group(); this.near = new THREE.Group(); scene.add(this.land, this.near); this.theta = 0;
     this.ridges = [];
     this.center = new THREE.Vector3(); this.radius = 14;
-    this.exposure = 0.55; this.post = {}; this.shadowDir = new THREE.Vector3(); this.envAlt = 99;
+    this.exposure = 0.55; this.post = {}; this.far = []; this.shadowDir = new THREE.Vector3(); this.envAlt = 99;
   }
 
   /* Paysage autour d'un logement : sol lointain, lignes de collines, Sainte-Victoire plein Est, arbres proches. */
   setSite(apt, M, center, radius) {
     this.center.copy(center); this.radius = radius;
     for (const g of [this.land, this.near]) for (const c of [...g.children]) { g.remove(c); c.traverse(o => { if (o.geometry) o.geometry.dispose(); }); }
-    this.ridges.length = 0;
+    this.ridges.length = 0; this.far = [];
     // le plan du logement est tourné de `north` degrés par rapport au terrain : on fait pivoter le paysage et le soleil, pas le logement
     this.theta = THREE.MathUtils.degToRad(apt.north);
     this.land.position.set(center.x, 0, center.z); this.land.rotation.y = -this.theta;
     const gy = apt.groundY;
     const gtex = this.groundTex || (this.groundTex = groundTexture()); gtex.repeat.set(7, 7);
-    const ground = new THREE.Mesh(new THREE.CircleGeometry(1500, 48), new THREE.MeshStandardMaterial({ map: gtex, roughness: 1 }));
+    const ground = this.ground = new THREE.Mesh(new THREE.CircleGeometry(1500, 48), new THREE.MeshStandardMaterial({ map: gtex, roughness: 1 }));
     ground.rotation.x = -Math.PI / 2; ground.position.set(0, gy - 0.3, 0); ground.receiveShadow = false; this.land.add(ground);
     const near = new THREE.Mesh(new THREE.CircleGeometry(95, 40), M.earth.clone());
     near.material.map = M.earth.map.clone(); near.material.map.repeat.set(26, 26); near.material.map.needsUpdate = true;
     near.rotation.x = -Math.PI / 2; near.position.set(0, gy - 0.02, 0); near.receiveShadow = true; this.land.add(near);
     const add = (m, n) => { this.land.add(m); this.ridges.push(m); m.userData.n = n || new THREE.Vector3(-1, 0, 0); return m; };
     // de l'arrière-plan vers l'avant : massif, puis collines boisées de plus en plus proches
-    add(ridge(SV, this.cloudTex, { dist: 1150, width: 700, height: 92, base: gy + 12, color: 0xb8b4cc, seed: 3, rough: 0.16, center: -40, cell: 46, rock: 1 })).userData.k = 1;
+    add(ridge(SV, this.cloudTex, { dist: 1150, width: 700, height: 92, base: gy + 12, color: 0xb8b4cc, seed: 3, rough: 0.16, center: -40, cell: 46, rock: 1, fogScale: 0.62 })).userData.k = 1;
     add(ridge(hills(11, 22, 0.16), this.cloudTex, { dist: 1000, width: 2600, height: 46, base: gy + 4, color: 0x8fa294, seed: 5, cell: 60 }));
     add(ridge(hills(12, 30, 0.2), this.cloudTex, { dist: 640, width: 2000, height: 30, base: gy + 2, color: 0x6c8560, seed: 6, cell: 30 }));
     add(ridge(hills(13, 36, 0.24), this.cloudTex, { dist: 330, width: 1300, height: 17, base: gy + 1, color: 0x52713b, seed: 7, cell: 12 }));
@@ -301,7 +302,7 @@ export class Environment {
     }
     items.sort((p, q) => p.d - q.d);
     const m4 = new THREE.Matrix4(), q = new THREE.Quaternion(), col = new THREE.Color(), up = new THREE.Vector3(0, 1, 0), pos = new THREE.Vector3(), sc = new THREE.Vector3();
-    const leaf = new THREE.MeshStandardMaterial({ roughness: 1, map: M.hedge.map, emissive: 0x18260f });      // un peu d'émission : le dessous des houppiers reçoit la lumière du sol, il ne tombe pas au noir
+    const leaf = new THREE.MeshStandardMaterial({ roughness: 1, map: M.hedge.map, emissive: 0x22341a });      // un peu d'émission : le dessous des houppiers reçoit la lumière du sol, il ne tombe pas au noir
     const mk = (list, detail) => {
       const mesh = new THREE.InstancedMesh(lumpyBlob(detail), leaf, list.length);
       list.forEach((t, i) => {
@@ -312,12 +313,12 @@ export class Environment {
       return mesh;
     };
     const cut = Math.round(N * 0.35);
-    this.near.add(mk(items.slice(0, cut), 2), mk(items.slice(cut), 1));
+    const fl = [mk(items.slice(0, cut), 2), mk(items.slice(cut), 1)]; this.near.add(...fl);
     const pines = items.filter((t) => t.pine);
     const trunks = new THREE.InstancedMesh(new THREE.CylinderGeometry(0.1, 0.16, 1, 5, 1, true), new THREE.MeshStandardMaterial({ color: 0x5b4a3a, roughness: 1 }), pines.length);
     pines.forEach((t, i) => { pos.set(t.x, gy + t.s * 0.75, t.z); sc.set(t.s * 0.5, t.s * 1.5, t.s * 0.5); trunks.setMatrixAt(i, m4.compose(pos, q.identity(), sc)); });
     trunks.instanceMatrix.needsUpdate = true; trunks.frustumCulled = false; this.near.add(trunks);
-    this.siteDirty = true;
+    this.far = [...this.ridges, ground, trunks, ...fl];      // décor lointain : écarté de la passe d'occlusion ambiante (il y deviendrait un voile sombre)
   }
 
   /* Branche les passes de post-traitement : leurs réglages suivent l'heure et l'exposition. */
@@ -338,7 +339,7 @@ export class Environment {
     const zen = ramp(SKY_STOPS, deg, 1, _c1).clone(), mid = ramp(SKY_STOPS, deg, 2, _c2).clone(), hor = ramp(SKY_STOPS, deg, 3, _c3).clone();
     const sunCol = ramp(SUN_STOPS, deg, 1, new THREE.Color());
     const sunI = 5.6 * smooth(-1.2, 7, deg) * lerp(0.8, 1, smooth(4, 30, deg));      // extinction atmosphérique : soleil bas plus faible
-    const moonI = 0.42 * smooth(-4, -12, deg);
+    const moonI = 0.85 * smooth(-4, -12, deg);
     const gain = lerp(2.1, 1.3, night);                                // rayonnement du ciel, en unités de la scène
     // ciel (visible) et ciel de l'environnement : mêmes couleurs
     const glow = sunCol.clone().multiplyScalar(lerp(0.9, 1.3, golden));
@@ -362,14 +363,14 @@ export class Environment {
     // lumière d'ambiance : le ciel au-dessus, le sol éclairé en dessous (rebond)
     const hs = zen.clone().lerp(hor, 0.55).lerp(new THREE.Color(1, 1, 1), lerp(0.82, 0.55, golden)), hg = new THREE.Color(0xe0d5c6).lerp(sunCol, 0.3 * golden).multiplyScalar(lerp(0.85, 0.3, night));
     this.hemi.color.copy(hs).multiply(_warm).lerp(new THREE.Color(0x1a2238), night); this.hemi.groundColor.copy(hg);
-    this.hemi.intensity = lerp(0.08, 0.45, day) * lerp(1, 0.9, golden);
+    this.hemi.intensity = lerp(0.14, 0.45, day) * lerp(1, 0.9, golden);
     // brouillard : celui de l'horizon, plus dense quand le soleil est bas
     this.fog.color.copy(hor).multiplyScalar(gain);
-    this.fog.density = lerp(0.0008, 0.00115, golden);
+    this.fog.density = lerp(0.0011, 0.0015, golden);
     // relief : éclairé par le soleil selon son orientation (la Sainte-Victoire, vue de l'Ouest, est à contre-jour le matin et rose l'après-midi)
     for (const m of this.ridges) {
       const n = m.userData.n, lit = THREE.MathUtils.clamp(dLand.x * n.x + dLand.z * n.z, 0, 1) * smooth(-2, 10, deg), u = m.material.uniforms;
-      u.uLight.value.copy(sunCol).multiplyScalar(0.62 * lit * lerp(1, 1.1, golden)).add(_c1.copy(mid).lerp(new THREE.Color(1, 1, 1), 0.3).multiplyScalar(0.5 * lerp(1, 0.16, night))).multiplyScalar(1.45);
+      u.uLight.value.copy(sunCol).multiplyScalar(0.62 * lit * lerp(1, 1.1, golden)).add(_c1.copy(mid).lerp(new THREE.Color(1, 1, 1), 0.3).multiplyScalar(0.5 * lerp(1, 0.16, night))).multiplyScalar(2.1);
     }
     // exposition : un peu plus ouverte quand la lumière baisse
     this.exposureTarget = lerp(0.92, 0.95, golden) + 0.06 * night;
@@ -379,7 +380,7 @@ export class Environment {
     if (P.bloom) { P.bloom.strength = lerp(0.1, 0.24, night); P.bloom.threshold = lerp(2.6, 0.85, night); P.bloom.enabled = true; }
     if (P.grade) P.grade.uniforms.uVig.value = lerp(0.2, 0.32, night);
     this.placeSun();
-    this.envK = lerp(1, 0.1, night); this.envDirty = true; this.envPending = true; this.envAlt = deg;
+    this.envK = lerp(1, 0.16, night); this.envDirty = true; this.envPending = true; this.envAlt = deg; this.hourAt = performance.now();
     if (!this.envRT) this.flushEnv();
     if (this.studio) this.studioLook();
     return night;
@@ -409,13 +410,17 @@ export class Environment {
   }
 
   /* Recalcul différé de la carte d'environnement ; renvoie true si elle vient d'être refaite.
-     Elle ne change que lentement (la couleur du ciel) : on ne la refait que si le soleil a bougé de quelques degrés, au plus quatre fois par seconde.
-     Entre deux, son intensité suit l'heure à chaque image, sans coût. */
+     Elle ne change que lentement (la couleur du ciel). Pendant que l'heure glisse, on n'en refait une qu'au plus toutes les 0,8 s et si le soleil
+     a bougé de plus de 5° ; une fois l'heure posée (0,2 s sans changement), on la met à jour d'un coup. Entre deux, seule son intensité suit
+     l'heure, à chaque image, sans coût : le changement d'heure ne déclenche donc qu'une ou deux régénérations, jamais une par image. */
   flushEnv(now = performance.now()) {
-    if (this.envPending) { const k = this.envK; this.scene.environmentIntensity = 0.25 * k + 0.02; this.envPending = false; }
-    if (!this.envDirty || (this.envRT && now - (this.envAt || 0) < 240)) return false;
-    if (this.envRT && Math.abs(this.envAlt - (this.envBuiltAlt ?? 99)) < 1.5 && !this.siteDirty && this.envBuiltNight === Math.round(this.night * 8)) { this.envDirty = false; return false; }
-    this.envDirty = false; this.envAt = now; this.siteDirty = false; this.envBuiltAlt = this.envAlt; this.envBuiltNight = Math.round(this.night * 8); this.updateEnvMap(this.envK); return true;
+    if (this.envPending) { this.scene.environmentIntensity = 0.25 * this.envK + 0.02; this.envPending = false; }
+    if (!this.envDirty) return false;
+    const first = !this.envRT, dAlt = Math.abs(this.envAlt - (this.envBuiltAlt ?? 99)), dNight = Math.round(this.night * 8) !== this.envBuiltNight;
+    if (!first && dAlt < 0.6 && !dNight) { this.envDirty = false; return false; }
+    const since = now - (this.envAt || 0), idle = now - (this.hourAt || 0);
+    if (!first && !(idle > 200 && since > 240) && !(since > 800 && dAlt > 5)) return false;
+    this.envDirty = false; this.envAt = now; this.envBuiltAlt = this.envAlt; this.envBuiltNight = Math.round(this.night * 8); this.updateEnvMap(this.envK); return true;
   }
 
   /* Recentre les ombres portées : sur le logement (visite), ou sur toute la résidence (vue d'ensemble). */
