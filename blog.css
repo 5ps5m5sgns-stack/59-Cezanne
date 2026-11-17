@@ -20,7 +20,8 @@
    - Contrastes (calculés sur le point le plus sombre de fonds/travertin.webp, sous voile) : texte courant --text
      ≥ 9:1 ; liens --or-texte ≥ 4,8:1 sur la pierre ; sur travertin les liens passent en --brun-profond.
    - Figures d'articles en grand format, jamais recadrées, sans vide à côté (voir §5).
-   - Hub /blog : grille asymétrique de cartes de tailles variées, un seul angle très arrondi par photo (§8).
+   - Hub /blog « Les carnets des Lauves » : à la une en grille asymétrique (§8), parcours d'achat et rubriques (§8 ter).
+   - Charte éditoriale des guides (En bref, Conseil de terrain, signature) : §8 bis.
    ============================================================ */
 
 
@@ -1056,7 +1057,7 @@
 
 
 /* ─── 8. Hub /blog ─────────────────────────────────────────── */
-/* Budget de texte : un trait manuscrit, un titre, une phrase, 14 cartes (pilier + titre + extrait), un appel. */
+/* « À la une » : 8 cartes (pilier + titre + extrait) sur la grille asymétrique ci-dessous ; rubriques et parcours : §8 ter. */
 
 /* Couverture : mêmes règles que l'en-tête d'article (§2). Ici le texte est plus grand. */
 .blog-hero-inner {
@@ -1289,6 +1290,414 @@
   .blog-card:nth-child(14n+8) .blog-card-excerpt { grid-column: 2; grid-row: 1 / span 2; color: rgba(255, 255, 255, 0.92); }
 }
 
+
+
+/* ─── 8 bis. Identité éditoriale « Les carnets des Lauves » ──────────────
+   Charte : chaque guide s'ouvre sur une accroche concrète, puis « En bref » (la réponse en quelques lignes,
+   reprise telle quelle par les moteurs de réponse), des sections qui commencent par leur réponse,
+   des « Conseils de terrain » (ce que l'on voit sur un chantier, pas ce que l'on lit dans une plaquette),
+   une FAQ visible et des sources datées. La signature « Qui écrit ces carnets ? » ferme chaque article. */
+
+/* En bref : feuille de carnet claire, filet ocre en tête, une seule arche */
+.post-body > .post-essentiel {
+  position: relative;
+  margin-block: 0 clamp(2.5rem, 5vw, 3.5rem);
+  padding: clamp(1.6rem, 3vw, 2.2rem) clamp(1.4rem, 3vw, 2.2rem) clamp(1.4rem, 2.6vw, 1.9rem);
+  background: #fffdf8;
+  border: 1px solid rgba(123, 69, 56, 0.18);
+  border-top: 3px solid var(--ocre);
+  border-radius: 0 0 var(--blog-r) 0;
+  box-shadow: 0 10px 30px rgba(59, 35, 29, 0.06);
+  font-size: 1.05rem;
+  line-height: 1.6;
+}
+.post-essentiel-titre {
+  display: flex;
+  align-items: baseline;
+  gap: 0.75rem;
+  margin: 0 0 0.9rem;
+  font-family: var(--font-serif);
+  font-size: 0.95rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-mid);
+}
+.post-essentiel-titre .script {
+  display: inline;
+  margin: 0;
+  font-size: clamp(2rem, 1.6rem + 1vw, 2.5rem);
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--terra-texte);
+}
+.post-body .post-essentiel ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: essentiel;
+}
+.post-body .post-essentiel li {
+  position: relative;
+  margin: 0;
+  padding: 0.7rem 0 0.7rem 2.6rem;
+  border-top: 1px solid rgba(123, 69, 56, 0.12);
+  counter-increment: essentiel;
+}
+.post-body .post-essentiel li:first-child { border-top: 0; padding-top: 0.2rem; }
+.post-body .post-essentiel li::before {
+  content: counter(essentiel);
+  position: absolute;
+  left: 0;
+  top: 0.55rem;
+  width: 1.75rem;
+  font-family: var(--font-serif);
+  font-size: 1.5rem;
+  line-height: 1;
+  font-variant-numeric: lining-nums;
+  text-align: center;
+  color: var(--ocre);
+}
+.post-body .post-essentiel li:first-child::before { top: 0.05rem; }
+.post-body .post-essentiel strong { color: var(--brun); }
+@media (max-width: 560px) {
+  .post-body > .post-essentiel {
+    margin-left: calc(-0.5 * var(--blog-pad));
+    margin-right: calc(-0.5 * var(--blog-pad));
+    padding: 1.35rem 1.1rem 1.2rem;
+    font-size: 1rem;
+  }
+  .post-body .post-essentiel li { padding-left: 1.9rem; }
+  .post-body .post-essentiel li::before { width: 1.2rem; font-size: 1.3rem; }
+}
+
+/* Conseil de terrain : un filet terracotta, un brin d'olivier, pas de fond (il se lit comme une note en marge) */
+.post-body > .post-conseil {
+  position: relative;
+  margin-block: 2.5rem;
+  padding: 0.35rem 0 0.35rem clamp(1.25rem, 3vw, 1.75rem);
+  border-left: 3px solid var(--terra);
+  font-size: 1.05rem;
+  line-height: 1.62;
+}
+.post-conseil-titre {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin: 0 0 0.45rem;
+  font-family: var(--font-serif);
+  font-size: 1.35rem;
+  font-style: italic;
+  font-weight: 500;
+  line-height: 1.25;
+  color: var(--terra-texte);
+}
+.post-conseil-titre::before {
+  content: "";
+  flex: none;
+  width: 2.6rem;
+  aspect-ratio: 600 / 231;
+  background-color: var(--ocre);
+  -webkit-mask: url("/fonds/olivier-mask.png") no-repeat center / contain;
+          mask: url("/fonds/olivier-mask.png") no-repeat center / contain;
+}
+.post-body .post-conseil p { margin-bottom: 0.6em; }
+.post-body .post-conseil > :last-child { margin-bottom: 0; }
+
+/* Signature : qui écrit ces carnets */
+.post-body > .post-auteur {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 0 1.25rem;
+  align-items: start;
+  margin-block: clamp(2.75rem, 5vw, 3.5rem) 0;
+  padding-top: 1.75rem;
+  border-top: 1px solid rgba(123, 69, 56, 0.2);
+  font-size: 0.98rem;
+  line-height: 1.6;
+  color: var(--text-mid);
+}
+.post-auteur-monogramme {
+  display: grid;
+  place-items: center;
+  width: 3.4rem;
+  height: 3.4rem;
+  border-radius: 50%;
+  background: var(--brun-profond);
+  font-family: var(--font-serif);
+  font-size: 1.35rem;
+  line-height: 1;
+  color: #f1dcc6;
+}
+.post-auteur-titre {
+  margin: 0.1rem 0 0.3rem;
+  font-family: var(--font-serif);
+  font-size: 1.3rem;
+  font-style: italic;
+  color: var(--brun);
+}
+.post-body .post-auteur p { margin-bottom: 0.5em; }
+.post-body .post-auteur > div > :last-child { margin-bottom: 0; }
+
+/* Bloc d'appel : deux liens texte côte à côte sous les boutons */
+.post-cta .post-cta-actions .post-cta-link + .post-cta-link { margin-left: 0.25rem; }
+
+
+/* ─── 8 ter. Hub /blog : rubriques, parcours, cartes compactes ─── */
+.blog-hero-sub { max-width: 40rem; }
+.blog-hero-sub strong { font-weight: 500; color: var(--brun); }
+
+/* Pastilles de rubriques (ancres) */
+.blog-themes {
+  margin-top: clamp(1.6rem, 3vw, 2.25rem);
+}
+.blog-themes ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.blog-themes a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: var(--tap, 44px);
+  padding: 0.45rem 1.05rem;
+  border: 1px solid rgba(123, 69, 56, 0.35);
+  border-radius: 999px;
+  background: rgba(246, 241, 231, 0.9);
+  font-size: 0.95rem;
+  line-height: 1.2;
+  color: var(--text);
+  transition: background-color var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast);
+}
+.blog-themes a:hover { background: #fff; border-color: var(--terra-texte); color: var(--terra-texte); }
+.blog-themes a:focus-visible { outline: 2px solid var(--blog-focus); outline-offset: 2px; }
+.blog-themes .num {
+  font-family: var(--font-serif);
+  font-size: 0.85rem;
+  color: var(--text-light);
+}
+@media (max-width: 700px) {
+  .blog-themes ul {
+    flex-wrap: nowrap;
+    margin: 0 calc(-1 * var(--blog-pad));
+    padding: 0.1rem var(--blog-pad) 0.3rem;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .blog-themes ul::-webkit-scrollbar { display: none; }
+  .blog-themes li { flex: none; }
+  .blog-themes a { white-space: nowrap; }
+}
+
+/* Intertitre de section du hub (« À la une », rubriques) */
+.blog-section-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.5rem 2rem;
+  margin-bottom: clamp(1.75rem, 4vw, 2.75rem);
+}
+.blog-section-head h2 {
+  font-family: var(--font-serif);
+  font-size: clamp(2rem, 1.45rem + 1.9vw, 2.9rem);
+  font-weight: 400;
+  line-height: 1.12;
+  font-variant-numeric: lining-nums;
+  color: var(--brun);
+}
+.blog-section-head h2::before {
+  content: "";
+  display: block;
+  width: 2.25rem;
+  height: 2px;
+  margin-bottom: 1rem;
+  background: var(--ocre);
+}
+.blog-section-head p {
+  max-width: 34rem;
+  font-size: 1.05rem;
+  line-height: 1.55;
+  color: var(--text-mid);
+}
+.blog-section-head .script { color: var(--terra-texte); font-size: clamp(1.7rem, 1.4rem + 1vw, 2.3rem); }
+
+/* Parcours d'achat : six étapes, chacune renvoie au guide qui la détaille */
+.blog-parcours {
+  position: relative;
+  z-index: 1;
+  padding: clamp(3.5rem, 7vw, 5.5rem) 0;
+  background: var(--travertin);
+  border-radius: 0 var(--arche) 0 0;
+}
+.blog-parcours ol {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 15.5rem), 1fr));
+  gap: 1.25rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: etape;
+}
+.blog-parcours li {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  padding: 1.5rem 1.4rem 1.35rem;
+  background: var(--pierre);
+  border: 1px solid rgba(123, 69, 56, 0.14);
+  border-radius: 0 var(--blog-r) 0 0;
+  counter-increment: etape;
+}
+.blog-parcours li::before {
+  content: counter(etape, decimal-leading-zero);
+  font-family: var(--font-serif);
+  font-size: 2.3rem;
+  line-height: 1;
+  font-variant-numeric: lining-nums;
+  color: var(--ocre);
+}
+.blog-parcours h3 {
+  font-family: var(--font-serif);
+  font-size: 1.45rem;
+  font-weight: 500;
+  line-height: 1.2;
+  color: var(--text);
+}
+.blog-parcours p {
+  font-size: 0.98rem;
+  line-height: 1.55;
+  color: var(--text-mid);
+}
+.blog-parcours li a {
+  margin-top: auto;
+  padding-top: 0.35rem;
+  font-size: 0.98rem;
+  color: var(--brun);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.22em;
+}
+.blog-parcours li a:hover { color: var(--terra-texte); text-decoration-thickness: 2px; }
+.blog-parcours li a:focus-visible { outline: 2px solid var(--blog-focus); outline-offset: 2px; border-radius: 2px; }
+
+/* Mobile : étapes compactes, numéro dans la marge gauche */
+@media (max-width: 699px) {
+  .blog-parcours ol { gap: 0.75rem; }
+  .blog-parcours li {
+    display: grid;
+    grid-template-columns: 2.6rem minmax(0, 1fr);
+    gap: 0.25rem 0.75rem;
+    padding: 1.1rem 1.1rem 1rem;
+  }
+  .blog-parcours li::before { grid-row: 1 / span 3; font-size: 1.8rem; }
+  .blog-parcours li a { margin-top: 0.15rem; padding-top: 0; }
+}
+
+/* Rubriques : une bande par thème, cartes compactes sur une grille régulière */
+.blog-rubriques {
+  position: relative;
+  padding: clamp(3.5rem, 7vw, 5.5rem) 0 calc(var(--arche) + clamp(2.5rem, 5vw, 4rem));
+  background: var(--pierre);
+}
+.blog-rubrique + .blog-rubrique {
+  margin-top: clamp(3.5rem, 7vw, 5.5rem);
+  padding-top: clamp(3rem, 6vw, 4.5rem);
+  border-top: 1px solid rgba(123, 69, 56, 0.16);
+}
+.blog-mini-list {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1.1rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+/* Les cartes compactes héritent de .post-card (lien étendu, titre) : on retire cadre, fond et arrondis de la carte */
+.post-card.blog-mini,
+.post-card.blog-mini:hover {
+  background: none;
+  border: 0;
+  border-radius: 0;
+}
+.blog-mini {
+  position: relative;
+  display: grid;
+  align-content: start;
+  grid-template-columns: 6.5rem minmax(0, 1fr);
+  gap: 1rem;
+  align-items: start;
+}
+.blog-mini-media {
+  overflow: hidden;
+  aspect-ratio: 1 / 1;
+  border-radius: 0 0 var(--arche-s) 0;
+  background: var(--stone-light);
+}
+.blog-mini:nth-child(even) .blog-mini-media { border-radius: 0 var(--arche-s) 0 0; }
+.blog-mini-media img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.6s ease;
+}
+.blog-mini-media img[src*="Axonometrie"] { object-fit: contain; mix-blend-mode: multiply; }
+.blog-mini:hover .blog-mini-media img { transform: scale(1.03); }
+.blog-mini-body { display: flex; flex-direction: column; gap: 0.3rem; }
+.blog-mini .post-card-title {
+  font-size: clamp(1.25rem, 1.12rem + 0.4vw, 1.45rem);
+  font-weight: 500;
+  line-height: 1.22;
+}
+.blog-mini .post-card-title > a:hover { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 0.18em; }
+.blog-mini-excerpt {
+  font-size: 0.95rem;
+  line-height: 1.5;
+  color: var(--text-mid);
+}
+.blog-mini-tag {
+  align-self: flex-start;
+  padding: 0.05rem 0.6rem;
+  border: 1px solid var(--terra-texte);
+  border-radius: 999px;
+  font-size: 0.75rem;
+  letter-spacing: 0.06em;
+  color: var(--terra-texte);
+}
+@media (min-width: 700px) {
+  .blog-mini-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: clamp(1.75rem, 3vw, 2.5rem) clamp(1.5rem, 3vw, 2.25rem);
+  }
+  .blog-mini { grid-template-columns: minmax(0, 1fr); gap: 0.9rem; }
+  .blog-mini-media { aspect-ratio: 3 / 2; }
+}
+@media (min-width: 1000px) {
+  .blog-mini-list { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  /* Le premier guide de chaque rubrique (le plus complet) prend deux colonnes */
+  .blog-mini:first-child { grid-column: span 2; grid-row: span 2; }
+  .blog-mini:first-child .blog-mini-media { aspect-ratio: 16 / 10; border-radius: var(--arche) 0 0 0; }
+  .blog-mini:first-child .post-card-title { font-size: clamp(1.7rem, 1.3rem + 1vw, 2.2rem); }
+  .blog-mini:first-child .blog-mini-excerpt { font-size: 1.02rem; max-width: 36rem; }
+}
+
+/* À la une : la grille asymétrique (§8) n'a que 8 cartes ; elle s'arrête à la carte « immense » */
+.blog-grid .blog-section-head { position: relative; z-index: 1; }
+
+@media (prefers-reduced-motion: reduce) {
+  .blog-mini-media img { transition: none; }
+  .blog-mini:hover .blog-mini-media img { transform: none; }
+}
+@media print {
+  .blog-themes, .blog-parcours li a::after { display: none; }
+  .post-body > .post-essentiel { box-shadow: none; border: 1px solid #999; }
+  .blog-mini-media { display: none; }
+}
 
 /* ─── 9. Mouvements réduits ────────────────────────────────── */
 /* style.css neutralise déjà transitions et animations. */
