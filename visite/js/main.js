@@ -14,7 +14,7 @@ import { makeMaterials, FLOOR_FINISHES, setFloorFinish } from 'v3d/materials';
 import { buildLevel, buildStair, buildLift, buildNav } from 'v3d/build';
 import { APARTMENTS } from 'v3d/plans';
 import { SITE } from 'v3d/site';
-import { Environment } from 'v3d/env';
+import { Environment, makeGradePass } from 'v3d/env';
 import { cellFree, nearestFree, findPath, pathLength } from 'v3d/nav';
 
 const $ = (s, r = document) => r.querySelector(s), $$ = (s, r = document) => [...r.querySelectorAll(s)];
@@ -101,8 +101,27 @@ class App {
       this.ao.blendIntensity = 0.85;
       this.composer.addPass(this.ao);
     }
-    if (QUALITY.bloom) { this.bloom = new UnrealBloomPass(new THREE.Vector2(4, 4), 0.0, 0.5, 0.98); this.composer.addPass(this.bloom); }
+    if (QUALITY.bloom) { this.bloom = new UnrealBloomPass(new THREE.Vector2(4, 4), 0.1, 0.55, 2.6); this.composer.addPass(this.bloom); }
+    this.grade = makeGradePass(); this.composer.addPass(this.grade);       // étalonnage : contraste, saturation, vignettage, netteté (env.js)
     this.composer.addPass(new OutputPass());
+    this.env.attachPost({ bloom: this.bloom, grade: this.grade });
+    // premier rendu avec toutes les passes actives : leurs programmes sont compilés tout de suite, pas au moment où l'une d'elles s'allume (AO en entrant dans une pièce, lueur la nuit)
+    const render = this.composer.render.bind(this.composer); let warm = false;
+    this.composer.render = (dt) => {
+      if (!warm) { warm = true; const st = this.composer.passes.map((p) => p.enabled); this.composer.passes.forEach((p) => { p.enabled = true; }); render(dt); this.composer.passes.forEach((p, i) => { p.enabled = st[i]; }); }
+      render(dt);
+    };
+  }
+
+  /* Occlusion ambiante : plus franche à l'arrêt, atténuée (jamais coupée) pendant le déplacement, avec des transitions lentes : l'image ne « respire » pas. Renvoie true tant qu'elle évolue. */
+  updateAO(dt, now) {
+    if (!this.ao) return false;
+    const goal = this.mode === 'site' ? 0 : this.mode !== 'walk' || now - this.movedAt > 260 ? 0.85 : 0.55;
+    if (Math.abs(goal - this.aoK) < 0.004) return false;
+    this.aoK += (goal - this.aoK) * (1 - Math.exp(-dt * (goal > this.aoK ? 2.6 : 3.2)));
+    if (Math.abs(goal - this.aoK) < 0.004) this.aoK = goal;
+    this.ao.blendIntensity = this.aoK; this.ao.enabled = this.aoK > 0.004;
+    return true;
   }
 
   resize() {
@@ -331,7 +350,6 @@ class App {
     M.lampShade.emissiveIntensity = n * 1.25; M.led.emissiveIntensity = 1.0 + n * 0.8;      // rubans LED et lustres allumés même de jour, comme sur les images
     M.glass.opacity = 0.07 + n * 0.1;
     if (this.roomMats) for (const k of this.roomMats) M[k].envMapIntensity = M[k].userData.envK * (1 - n * 0.8);
-    if (this.bloom) { this.bloom.strength = n * 0.2; this.bloom.enabled = n > 0.03; }      // de jour, pas de halo : il faisait scintiller les reflets
     this.lightAt.set(1e9, 0, 0); this.dirty = true;
     const out = $('#v3d-time-out'); if (out) { const hh = Math.floor(h), mm = Math.round((h - hh) * 60); out.textContent = `${hh} h ${String(mm).padStart(2, '0')}`; }
     const range = $('#v3d-time'); if (range && Number(range.value) !== h) range.value = h;
@@ -340,14 +358,14 @@ class App {
 
   /* Réattribue les sources d'appoint aux lampes (le soir) ou aux baies (le jour) les plus proches du regard. */
   updateLights(dt = 0.016) {
-    const focus = this.mode === 'walk' ? this.camera.position : this.controls.target, set = (p, l) => { p.position.copy(l.pos); p.color.set(l.day ? 0xfff4e2 : 0xffc98a); p.distance = l.day ? 9 : 7.5; };
+    const focus = this.mode === 'walk' ? this.camera.position : this.controls.target, set = (p, l) => { p.position.copy(l.pos); if (l.day) p.color.copy(this.env.bounce); else p.color.set(0xffc98a); p.distance = l.day ? 9 : 7.5; };
     if (focus.distanceToSquared(this.lightAt) > 0.25) {
       this.lightAt.copy(focus);
       const n = this.night, lvl = this.mode === 'walk' ? this.walk.level : this.viewLevel, wide = this.mode !== 'walk';
       const dayK = (1 - n) * clamp(this.env.dir.y * 3 + 0.25, 0.25, 1), list = [];
       for (const l of this.cur.lights) {
         if (this.cutView && l.level > this.viewLevel) continue;
-        const k = l.day ? dayK * 3.6 : n * 4.2; if (k < 0.05) continue;
+        const k = l.day ? dayK * 2.1 : n * 4.2; if (k < 0.05) continue;
         const d2 = l.pos.distanceToSquared(focus) + (l.level === lvl ? 0 : 60);
         list.push({ l, I: l.power * k, s: (l.power * k) / (1 + d2 / (wide ? 900 : 30)) });
       }
@@ -363,6 +381,7 @@ class App {
     let busy = false;
     for (const p of this.pool) {
       const u = p.userData, d = u.goal - p.intensity;
+      if (u.src && u.src.day) p.color.copy(this.env.bounce);      // le rebond des baies suit la couleur du ciel, même quand l'heure glisse
       if (Math.abs(d) > 0.02) { p.intensity += d * Math.min(1, dt * 5); busy = true; }
       else { p.intensity = u.goal; if (u.goal === 0 && u.src) { u.src = null; if (u.next) { u.src = u.next.l; u.goal = u.next.I; u.next = null; set(p, u.src); busy = true; } } }
     }
@@ -758,11 +777,7 @@ class App {
     if (this.env.flushEnv(now)) this.dirty = true;
     const cam = this.camera;
     if (!this.camP.equals(cam.position) || !this.camQ.equals(cam.quaternion) || this.camF !== cam.fov) { this.camP.copy(cam.position); this.camQ.copy(cam.quaternion); this.camF = cam.fov; this.movedAt = now; }
-    let refine = false;
-    if (this.ao) {
-      const goal = this.mode === 'site' ? 0 : this.mode !== 'walk' || now - this.movedAt > 260 ? 0.85 : 0;
-      if (Math.abs(goal - this.aoK) > 0.004) { this.aoK = goal > this.aoK ? Math.min(goal, this.aoK + slow * 1.9) : Math.max(0, this.aoK - slow * 6.5); this.ao.blendIntensity = this.aoK; this.ao.enabled = this.aoK > 0.004; refine = true; }
-    }
+    const refine = this.updateAO(slow, now);
     this.updateSpots();                                        // repères : suivis à chaque image, même sans nouveau rendu (leur hystérésis est temporelle)
     if (!this.dirty && !refine) return; this.dirty = false;
     this.updateLabels(); this.updateLots();
