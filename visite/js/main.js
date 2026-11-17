@@ -108,7 +108,15 @@ class App {
       };
       this.composer.addPass(this.ao);
     }
-    if (QUALITY.bloom) { this.bloom = new UnrealBloomPass(new THREE.Vector2(4, 4), 0.1, 0.55, 2.6); this.composer.addPass(this.bloom); }
+    if (QUALITY.bloom) {
+      this.bloom = new UnrealBloomPass(new THREE.Vector2(4, 4), 0.1, 0.55, 2.6); this.composer.addPass(this.bloom);
+      // pas de « lucioles » : un point minuscule et très lumineux (pastille d'un spot, reflet sur une poignée) tombe tantôt sur un pixel,
+      // tantôt entre deux selon la position de l'œil ; le halo l'amplifiait en une lueur qui clignotait au moindre mouvement.
+      // La lumière confiée au halo est donc plafonnée un peu au-dessus du seuil.
+      const hp = this.bloom.materialHighPassFilter;
+      hp.fragmentShader = hp.fragmentShader.replace('vec4 texel = texture2D( tDiffuse, vUv );', 'vec4 texel = texture2D( tDiffuse, vUv ); texel.rgb *= min( 1.0, ( luminosityThreshold + 2.0 ) / max( luminance( texel.rgb ), 1e-4 ) );');
+      hp.needsUpdate = true;
+    }
     this.grade = makeGradePass(); this.composer.addPass(this.grade);       // étalonnage : contraste, saturation, vignettage, netteté (env.js)
     this.composer.addPass(new OutputPass());
     this.env.attachPost({ bloom: this.bloom, grade: this.grade });
@@ -120,10 +128,11 @@ class App {
     };
   }
 
-  /* Occlusion ambiante : plus franche à l'arrêt, atténuée (jamais coupée) pendant le déplacement, avec des transitions lentes : l'image ne « respire » pas. Renvoie true tant qu'elle évolue. */
-  updateAO(dt, now) {
+  /* Occlusion ambiante : constante pendant la promenade. Atténuée pendant le déplacement et renforcée à l'arrêt, elle faisait
+     « respirer » les angles et le pied des meubles à chaque pas ; seule la vue d'ensemble de la résidence s'en passe. Renvoie true tant qu'elle évolue. */
+  updateAO(dt) {
     if (!this.ao) return false;
-    const goal = this.mode === 'site' ? 0 : this.mode !== 'walk' || now - this.movedAt > 260 ? 0.85 : 0.55;
+    const goal = this.mode === 'site' ? 0 : 0.8;
     if (Math.abs(goal - this.aoK) < 0.004) return false;
     this.aoK += (goal - this.aoK) * (1 - Math.exp(-dt * (goal > this.aoK ? 2.6 : 3.2)));
     if (Math.abs(goal - this.aoK) < 0.004) this.aoK = goal;
@@ -411,7 +420,7 @@ class App {
     for (const p of this.pool) {
       const u = p.userData, d = u.goal - p.intensity;
       if (u.src && u.src.day) p.color.copy(this.env.bounce);      // le rebond des baies suit la couleur du ciel, même quand l'heure glisse
-      if (Math.abs(d) > 0.02) { p.intensity += d * Math.min(1, dt * 5); busy = true; }
+      if (Math.abs(d) > 0.02) { p.intensity += d * Math.min(1, dt * 1.6); busy = true; }      // relais lent entre lampes d'appoint : rien ne s'allume d'un coup en marchant
       else { p.intensity = u.goal; if (u.goal === 0 && u.src) { u.src = null; if (u.next) { u.src = u.next.l; u.goal = u.next.I; u.next = null; set(p, u.src); busy = true; } } }
     }
     if (busy) this.dirty = true;
@@ -806,7 +815,7 @@ class App {
     if (this.env.flushEnv(now)) this.dirty = true;
     const cam = this.camera;
     if (!this.camP.equals(cam.position) || !this.camQ.equals(cam.quaternion) || this.camF !== cam.fov) { this.camP.copy(cam.position); this.camQ.copy(cam.quaternion); this.camF = cam.fov; this.movedAt = now; }
-    const refine = this.updateAO(slow, now);
+    const refine = this.updateAO(slow);
     this.updateSpots();                                        // repères : suivis à chaque image, même sans nouveau rendu (leur hystérésis est temporelle)
     if (!this.dirty && !refine) return; this.dirty = false;
     this.updateLabels(); this.updateLots();

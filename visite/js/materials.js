@@ -727,8 +727,10 @@ export function makeMaterials(quality) {
 
   // ── Lumières (émissifs : rubans LED et lustres restent allumés en journée, comme sur les images ; les abat-jour s'allument le soir)
   M.lampShade = std({ color: 0xf6ecd8, roughness: 0.9, emissive: 0xffd9a0, emissiveIntensity: 0, userData: { cast: false } });
-  M.led = std({ color: 0xfff1d6, roughness: 0.6, emissive: 0xffdfae, emissiveIntensity: 0.9, userData: { cast: false } });
-  M.liftLight = std({ color: 0xfff6e6, roughness: 0.6, emissive: 0xfff0d8, emissiveIntensity: 2.2, userData: { cast: false } });
+  // sources lumineuses : leur éclat vient de l'émission seule. Éclairées en plus par la lampe d'appoint voisine, elles montaient à des
+  // valeurs extrêmes sur un ou deux pixels, qui scintillaient en se déplaçant ; la couleur sombre et mate les rend insensibles aux lampes.
+  M.led = std({ color: 0x1c1a17, roughness: 1, envMapIntensity: 0, emissive: 0xffdfae, emissiveIntensity: 0.9, userData: { cast: false } });
+  M.liftLight = std({ color: 0x1c1a17, roughness: 1, envMapIntensity: 0, emissive: 0xfff0d8, emissiveIntensity: 2.2, userData: { cast: false } });
   // nappe de lumière d'un ruban LED sur le mur (dégradé additif, du haut vers le bas)
   M.glow = new THREE.MeshBasicMaterial({ map: T(canvas(64, (g, S) => { const gd = g.createLinearGradient(0, 0, 0, S); gd.addColorStop(0, '#ffd08a'); gd.addColorStop(0.35, '#7a5a30'); gd.addColorStop(1, '#000'); g.fillStyle = gd; g.fillRect(0, 0, S, S); })), transparent: true, opacity: 0.6, blending: THREE.AdditiveBlending, depthWrite: false });
   M.glow.userData = { cast: false, receive: false, order: 3 };
