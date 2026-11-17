@@ -307,6 +307,7 @@ export function buildStair(b, M, st, lv0) {
   if (st.core) {                                                // mur d'échiffre entre les volées, prolongé en garde-corps plein à l'étage
     const k = st.core;
     b.on(lv0.layer); b.box(M.plaster, k[0], y0, k[1], k[2], y0 + st.H, k[3]);
+    for (const [kk, a0, a1, c, d] of [['h', k[0], k[2], k[1], -1], ['h', k[0], k[2], k[3], 1], ['v', k[1], k[3], k[0], -1], ['v', k[1], k[3], k[2], 1]]) { wallRun(b, M.skirt, SKIRT, kk, a0, a1, c, d, y0); wallRun(b, M.seam, SKIRT_GAP, kk, a0, a1, c, d, y0); }   // plinthe au pied du mur d'échiffre
     b.on('L1'); b.box(M.plaster, k[0], y0 + st.H, k[1], k[2], y0 + st.H + 1.0, k[3]); b.box(M.oak, k[0] - 0.01, y0 + st.H + 1.0, k[1] - 0.01, k[2] + 0.01, y0 + st.H + 1.03, k[3] + 0.01);
   }
   st.path = [[...st.foot, 0], [...st.trig0, 0], ...(st.line || st.steps.map(c)).map((p, i) => [p[0], p[1], (i + 1) * rise]), [...st.trig1, st.H], [...st.head, st.H]];
@@ -361,8 +362,17 @@ export function buildLevel(b, M, lv, index) {
   // bouches de ventilation dans les pièces d'eau et la cuisine, détecteurs de fumée dans les dégagements : jamais sous un spot
   const inCeil = (x, z) => (lv.ceilings || []).some((c) => x > c[0] + 0.25 && x < c[2] - 0.25 && z > c[1] + 0.25 && z < c[3] - 0.25);
   for (const r of lv.rooms || []) {
+    if (!r.at) continue;
+    if (/^(couloir|buanderie|arriere|palier)$/.test(r.id)) {     // trappe de visite 40 × 40 : cadre en saillie de 3 mm, vantail en retrait de 4 mm de plus
+      for (const [dx, dz] of [[-0.7, 0.55], [0.7, -0.55], [-0.7, -0.55], [0.7, 0.55], [0, 0.7], [0, -0.7]]) {
+        const x = r.at[0] + dx, z = r.at[1] + dz;
+        if (!inCeil(x, z) || !r.rs.some((q) => x > q[0] + 0.35 && x < q[2] - 0.35 && z > q[1] + 0.35 && z < q[3] - 0.35) || spots.some(([a, c]) => Math.hypot(a - x, c - z) < 0.45)) continue;
+        b.box(M.concrete, x - 0.22, y0 + lv.h - 0.003, z - 0.22, x + 0.22, y0 + lv.h, z + 0.22); b.box(M.ceiling, x - 0.2, y0 + lv.h - 0.007, z - 0.2, x + 0.2, y0 + lv.h - 0.003, z + 0.2);
+        break;
+      }
+    }
     const vent = /^(sdb|sde|wc|cuisine|arriere|buanderie|dressing)/.test(r.id), smoke = /^(couloir|entree|palier)$/.test(r.id);
-    if ((!vent && !smoke) || !r.at) continue;
+    if (!vent && !smoke) continue;
     for (const [dx, dz] of [[0, 0], [0.5, 0], [-0.5, 0], [0, 0.5], [0, -0.5], [0.5, 0.5], [-0.5, -0.5], [0.5, -0.5], [-0.5, 0.5]]) {
       const x = r.at[0] + dx, z = r.at[1] + dz;
       if (!inCeil(x, z) || !r.rs.some((q) => x > q[0] + 0.3 && x < q[2] - 0.3 && z > q[1] + 0.3 && z < q[3] - 0.3) || spots.some(([a, c]) => Math.hypot(a - x, c - z) < 0.36)) continue;
