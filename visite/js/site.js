@@ -27,6 +27,8 @@ function hip(b, mat, x0, z0, x1, z1, y, rise) {
   const n = g.attributes.normal; let up = 0; for (let i = 0; i < n.count; i++) up += n.getY(i);
   if (up < 0) { const p = g.attributes.position.array; for (let i = 0; i < p.length; i += 9) for (let q = 0; q < 3; q++) { const t = p[i + 3 + q]; p[i + 3 + q] = p[i + 6 + q]; p[i + 6 + q] = t; } g.computeVertexNormals(); }
   b.add(mat, g);
+  b.rod(mat, R1, R2, 0.085, 6);                                  // faîtage et arêtiers : tuiles faîtières posées sur les lignes de rencontre des pans
+  for (const [p, q] of [[A, R1], [B, R1], [C, R2], [D, R2]]) b.rod(mat, p, q, 0.07, 6);
 }
 
 /* Voiture stationnée : caisse arrondie, pavillon vitré, quatre roues. */
@@ -41,9 +43,11 @@ function car(b, M, x, y, z, rot, paint) {
 function house(b, M, x, y, z, w, d, rot, h = 5.6, tint = 'stucco') {
   b.push(x, y, z, rot);
   b.box(M[tint], -w / 2, 0, -d / 2, w / 2, h, d / 2);
-  for (const lv of h > 4 ? [0.3, 3.1] : [0.3]) for (let i = 0; i < Math.round(w / 3.2); i++) { const a = -w / 2 + (w / Math.round(w / 3.2)) * (i + 0.5); for (const s of [-1, 1]) b.box(M.glassDark, a - 0.7, lv, s > 0 ? d / 2 : -d / 2 - 0.03, a + 0.7, lv + 2.1, s > 0 ? d / 2 + 0.03 : -d / 2); }
+  for (const lv of h > 4 ? [0.3, 3.1] : [0.3]) for (let i = 0; i < Math.round(w / 3.2); i++) { const a = -w / 2 + (w / Math.round(w / 3.2)) * (i + 0.5); for (const s of [-1, 1]) { b.box(M.glassDark, a - 0.7, lv, s > 0 ? d / 2 : -d / 2 - 0.03, a + 0.7, lv + 2.1, s > 0 ? d / 2 + 0.03 : -d / 2); for (const e of [-1, 1]) b.box(M.shutter, a + e * 0.95 - 0.25, lv, s > 0 ? d / 2 : -d / 2 - 0.045, a + e * 0.95 + 0.25, lv + 2.1, s > 0 ? d / 2 + 0.045 : -d / 2); } }
   if (w >= d) { b.push(0, 0, 0, Math.PI / 2); hip(b, M.roof, -d / 2 - 0.5, -w / 2 - 0.5, d / 2 + 0.5, w / 2 + 0.5, h, Math.min(w, d) * 0.19); b.pop(); } else hip(b, M.roof, -w / 2 - 0.5, -d / 2 - 0.5, w / 2 + 0.5, d / 2 + 0.5, h, Math.min(w, d) * 0.19);
   b.box(M.stuccoDark, -w / 2 - 0.5, h - 0.14, -d / 2 - 0.5, w / 2 + 0.5, h, d / 2 + 0.5);
+  const rz = Math.min(w, d) * 0.19, cx = w >= d ? w * 0.18 : 0, cz = w >= d ? 0 : d * 0.18;                // souche de cheminée sur le faîtage
+  b.box(M.stucco, cx - 0.3, h + rz - 0.45, cz - 0.3, cx + 0.3, h + rz + 0.75, cz + 0.3); b.box(M.stuccoDark, cx - 0.36, h + rz + 0.75, cz - 0.36, cx + 0.36, h + rz + 0.83, cz + 0.36);
   b.pop();
 }
 
@@ -51,7 +55,10 @@ function house(b, M, x, y, z, w, d, rot, h = 5.6, tint = 'stucco') {
 export function buildSite(b, M, { o, skip }) {
   const { W, L, FH, EAVE, RISE } = SITE, has = (k) => !skip.includes(k), G = 0.012;
   b.push(-o[0], -o[1], -o[2]); b.on('ctx');
-  const box = (m, x0, y0, z0, x1, y1, z1) => b.box(M[m], x0, y0, z0, x1, y1, z1);
+  const box = (m, x0, y0, z0, x1, y1, z1) => {
+    b.box(M[m], x0, y0, z0, x1, y1, z1);
+    if (m === 'stone' && y1 - y0 > 0.6 && Math.min(x1 - x0, z1 - z0) < 0.5) b.box(M.ashlar, x0 - 0.03, y1 - 0.05, z0 - 0.03, x1 + 0.03, y1 + 0.004, z1 + 0.03);   // couvertine : 4 mm au-dessus du mur, jamais dans son plan
+  };
 
   // ── Volumes de l'immeuble (les logements détaillés sont laissés vides) ────────────────────────────
   // Les volumes s'arrêtent sous les planchers des logements détaillés : jamais deux surfaces dans le même plan (le parquet scintillerait).
@@ -100,7 +107,13 @@ export function buildSite(b, M, { o, skip }) {
   hip(b, M.roof, -0.7, -0.7, W + 0.7, L + 0.7, EAVE + 0.02, RISE); box('cadre', -0.7, EAVE - 0.1, -0.7, W + 0.7, EAVE + 0.02, L + 0.7);
   box('stucco', -0.45, EAVE - 0.28, -0.45, W + 0.45, EAVE - 0.1, L + 0.45);
   for (const z of [7.5, 16, 24.5]) for (const s of [-1, 1]) b.geo(M.glassDark, new THREE.BoxGeometry(1.34, 0.05, 0.98), W / 2 + s * 4.6, EAVE + 0.02 + (W / 2 + 0.7 - 4.6) * 0.3 + 0.04, z, 0, 0, s * -0.29);
+  const gy = EAVE + 0.0, gx0 = -0.76, gx1 = W + 0.76, gz0 = -0.76, gz1 = L + 0.76;                  // gouttières demi-rondes au bord du débord
+  b.rod(M.cadre, [gx0, gy, gz0], [gx0, gy, gz1], 0.05, 8); b.rod(M.cadre, [gx1, gy, gz0], [gx1, gy, gz1], 0.05, 8); b.rod(M.cadre, [gx0, gy, gz0], [gx1, gy, gz0], 0.05, 8); b.rod(M.cadre, [gx0, gy, gz1], [gx1, gy, gz1], 0.05, 8);
+  for (let x = -0.62; x < W + 0.7; x += 0.55) for (const z of [-0.7, L + 0.7]) box('oak', x, EAVE - 0.21, z < 0 ? z : z - 0.25, x + 0.07, EAVE - 0.09, z < 0 ? z + 0.25 : z);   // bouts de chevrons sous le débord
+  for (let z = -0.62; z < L + 0.7; z += 0.55) for (const x of [-0.7, W + 0.7]) box('oak', x < 0 ? x : x - 0.25, EAVE - 0.21, z, x < 0 ? x + 0.25 : x, EAVE - 0.09, z + 0.07);
+  for (const z of [12, 21]) { box('stucco', W / 2 - 0.35, EAVE + RISE - 0.5, z - 0.3, W / 2 + 0.35, EAVE + RISE + 0.85, z + 0.3); box('cadre', W / 2 - 0.42, EAVE + RISE + 0.85, z - 0.37, W / 2 + 0.42, EAVE + RISE + 0.93, z + 0.37); }   // souches sur le faîtage
   b.on('ctx');
+  for (const [x, z] of [[0.18, -0.04], [W - 0.18, -0.04], [0.18, L + 0.04], [W - 0.18, L + 0.04]]) b.rod(M.cadre, [x, EAVE - 0.1, z], [x, -0.05, z], 0.04, 8);   // descentes d'eau pluviale aux angles
 
   // ── Jardins hauts à l'Ouest (logements 05 à 08), au niveau de l'étage ──
   const GW = -9.5, R = (s) => { let q = s; return () => { q = (q * 9301 + 49297) % 233280; return q / 233280; }; };
@@ -135,7 +148,8 @@ export function buildSite(b, M, { o, skip }) {
   box('socle', W, -0.3, 25.88, 22.71, -0.1, L + 0.02); box('terrace', W, -0.1, 25.88, 22.31, -0.015, L); box('stone', 22.31, -1.3, 25.88, 22.71, 0.45, 41.4);   // terrasse du logement 04
   box('stone', 22.31, -1.3, 9.62, 22.71, 0.45, 13.15); box('earth', W, -3.3, 9.6, 22.31, -0.3, 41.4); box('terrace', W, -0.3, 9.62, 22.31, -0.02, 13.15);   // parvis de l'entrée
   box('terrace', 22.71, -1.6, 9.62, 33.4, -1.3, 29.6);                                                                           // plage en travertin
-  box('wallTile', 26.75, -1.3, 14.95, 33.25, -1.27, 27.75); box('water', 27.0, -1.36, 15.2, 33.0, -1.265, 27.5);                 // bassin de 6 × 12,3 m
+  box('wallTile', 26.75, -1.3, 14.95, 33.25, -1.27, 27.75); box('water', 27.0, -1.36, 15.2, 33.0, -1.265, 27.5);
+  for (const [x0, z0, x1, z1] of [[26.7, 14.9, 33.3, 15.23], [26.7, 27.47, 33.3, 27.8], [26.7, 15.23, 27.03, 27.47], [32.97, 15.23, 33.3, 27.47]]) box('ashlar', x0, -1.3, z0, x1, -1.245, z1);   // margelle en pierre autour du bassin                 // bassin de 6 × 12,3 m
   for (let i = 0; i < 6; i++) { b.push(24.7, -1.3, 15.9 + i * 2.05, Math.PI / 2); F.lounger(b, M, {}); b.pop(); if (i % 2 === 0) { b.push(24.0, -1.3, 16.9 + i * 2.05, 0); F.parasol(b, M, { r: 1.5, h: 2.4 }); b.pop(); } }
   box('earth', 22.71, -3.4, 9.6, 33.4, -1.6, 41.4); V.hedge(b, M, 33.4, 11.2, 34.0, 29.6, { h: 1.2, y: -1.3 });
 
@@ -162,6 +176,7 @@ export function buildSite(b, M, { o, skip }) {
     g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3)); g.setAttribute('normal', new THREE.Float32BufferAttribute(nor, 3)); g.setAttribute('uv', new THREE.Float32BufferAttribute(uv, 2)); b.add(M.leafBroad, g); }
   car(b, M, 21.9, -3.3, -1.6, 0, 'carGrey'); car(b, M, 26.9, -3.3, -1.5, 0, 'white'); car(b, M, 31.5, -3.3, 6.4, 1.3, 'carDark');
   for (const z of [4.6, 8.9]) { box('stucco', 36.0, -3.4, z - 0.3, 36.7, -1.2, z + 0.3); box('stuccoDark', 35.9, -1.2, z - 0.4, 36.8, -1.05, z + 0.4); }      // piliers du portail
+  railing(b, M, 36.35, 4.95, 36.35, 8.55, -3.3, 1.75, 'cadre');                                  // vantaux du portail, entre les piliers
   box('stone', 36.2, -3.6, -5.9, 36.6, -1.6, 4.3); V.hedge(b, M, 30.5, -5.4, 36.0, -4.6, { h: 1.6, y: -3.3 });
   V.oleander(b, M, 33.5, -2.6, { r: 1.0, y: -3.3, seed: 5 }); V.oleander(b, M, 33.8, 1.6, { r: 0.8, y: -3.3, seed: 6 }); V.cypress(b, M, 32.4, -3.6, { h: 6.5, y: -3.3 });
 
