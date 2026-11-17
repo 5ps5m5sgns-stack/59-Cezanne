@@ -115,28 +115,13 @@ const soft = (b, mat, cx, y0, cz, w, h, d, r, o = {}) => {
 /* Bruit de plis à basse fréquence (somme de sinusoïdes de phases tirées de la graine). */
 const folds = (seed) => { const R = rng(seed), P = Array.from({ length: 5 }, () => [R() * TAU, R() * TAU, 0.6 + R() * 1.4, 0.6 + R() * 1.4]); return (x, z) => P.reduce((s, [a, c, fx, fz]) => s + Math.sin(x * fx * 7 + a + z * fz * 3.3) * Math.cos(z * fz * 6.1 + c - x * fx * 2.1), 0) / 5; };
 
-/* Coussin décoratif : deux nappes bombées (oreiller carré aux coins pincés), grille de n×n ; legère dépression au centre. */
+/* Coussin décoratif : volume carré aux coins pincés, bombé sur les deux faces, légère dépression centrale (≈ 220 triangles). */
 function pillowGeo(w, h, d, n = 8, seed = 1) {
-  const R = rng(seed), pos = [], nor = [], uv = [], idx = [], A = 0.3, ph = R() * TAU;
-  const hf = (u, v) => Math.pow(Math.max(0, 1 - u * u), A) * Math.pow(Math.max(0, 1 - v * v), A);
-  for (const sg of [1, -1]) {
-    const base = pos.length / 3;
-    for (let i = 0; i <= n; i++) for (let j = 0; j <= n; j++) {
-      const su = (i / n) * 2 - 1, sv = (j / n) * 2 - 1, u = Math.sign(su) * Math.pow(Math.abs(Math.sin(su * PI / 2)), 0.8), v = Math.sign(sv) * Math.pow(Math.abs(Math.sin(sv * PI / 2)), 0.8);
-      const pinch = 1 - 0.07 * u * u * v * v * 4, dent = 1 - 0.18 * Math.exp(-(u * u + v * v) * 3.2) + 0.04 * Math.sin(u * 5 + ph) * Math.cos(v * 4 - ph);
-      const x = u * w / 2 * pinch, z = v * d / 2 * pinch, y = sg * (h / 2) * hf(u, v) * dent;
-      pos.push(x, y, z); const eu = 0.012, nx = (hf(Math.min(1, u + eu), v) - hf(Math.max(-1, u - eu), v)) / (2 * eu) * (h / 2) / (w / 2), nz = (hf(u, Math.min(1, v + eu)) - hf(u, Math.max(-1, v - eu))) / (2 * eu) * (h / 2) / (d / 2);
-      const l = Math.hypot(nx, 1, nz); nor.push(-sg * nx / l * sg, sg / l, -sg * nz / l * sg); uv.push(u * 0.5 + 0.5, v * 0.5 + 0.5);
-    }
-    for (let i = 0; i < n; i++) for (let j = 0; j < n; j++) {
-      const a = base + i * (n + 1) + j, c = a + n + 1;
-      if (sg > 0) idx.push(a, a + 1, c, c, a + 1, c + 1); else idx.push(a, c, a + 1, c, c + 1, a + 1);
-    }
-  }
-  const g = new THREE.BufferGeometry();
-  g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3)); g.setAttribute('normal', new THREE.Float32BufferAttribute(nor, 3)); g.setAttribute('uv', new THREE.Float32BufferAttribute(uv, 2)); g.setIndex(idx);
-  g.computeVertexNormals();
-  return g;
+  const R = rng(seed), ph = R() * TAU, k = n > 8 ? 5 : 4, fl = folds(seed + 11);
+  return softGeo(w, h, d, h * 0.42, [k, 2, k], 1, (x, y, z) => {
+    const ax = x / (w / 2), az = z / (d / 2), bu = Math.max(0, (1 - ax * ax) * (1 - az * az)), s = Math.sign(y) || 1, corner = ax * ax * az * az;
+    return [-x * 0.06 * corner - x * 0.03 * az * az, s * (h * 0.3 * bu - (s > 0 ? h * 0.1 * Math.exp(-(ax * ax + az * az) * 4) : 0) + fl(x, z) * h * 0.06 + 0.004 * Math.sin(ax * 5 + ph)), -z * 0.06 * corner - z * 0.03 * ax * ax];
+  });
 }
 const pillow = (b, mat, x, y, z, w, h, d, rx = 0, ry = 0, rz = 0, seed = 1, n = 8) => b.geo(mat, pillowGeo(w, h, d, n, seed), x, y, z, rx, ry, rz);
 
@@ -770,7 +755,10 @@ export const F = {
     const sx = w / 2 - 0.12;
     b.lathe(M.potDark, sx, 0.85, -0.1, [[0.028, 0], [0.028, 0.14], [0.001, 0.14]], 12); b.cyl(M.steel, sx, 0.99, -0.1, 0.008, 0.035, 6); b.rod(M.steel, [sx, 1.02, -0.1], [sx + 0.02, 1.03, -0.085], 0.004, 4);        // distributeur de savon
     cb(b, M.cream, double ? 0 : -w / 2 + 0.16, 0.85, 0.08, 0.2, 0.05, 0.28, 0.012); cb(b, M.white, double ? 0 : -w / 2 + 0.16, 0.9, 0.08, 0.19, 0.045, 0.27, 0.012);   // serviettes pliées
-    b.lathe(M.crystal, double ? w * 0.4 : -w / 2 + 0.1, 0.85, -0.15, [[0.01, 0], [0.04, 0.0], [0.04, 0.09], [0.035, 0.09]], 10);
+    const ex = double ? w * 0.4 : -w / 2 + 0.1, RR = rng(Math.round(w * 40));
+    b.lathe(M.crystal, ex, 0.85, -0.15, [[0.01, 0], [0.04, 0.0], [0.04, 0.09], [0.035, 0.09]], 10);                    // verre et tiges d'eucalyptus
+    for (let k = 0; k < 4; k++) b.rod(M.leafCypress, [ex, 0.9, -0.15], [ex + (k - 1.5) * 0.035, 1.1 + k * 0.025, -0.15 + (k % 2 - 0.5) * 0.05], 0.0028, 3);
+    leaves(b, M.leafOlive, ex, 1.12, -0.15, 0.07, 9, 0.13, RR, 0.9);
     b.light(0, 1.6, 0.1, 0.7, 'led');
     return [w, d];
   },
@@ -842,7 +830,8 @@ export const F = {
   boiler(b, M, { r = 0.27, h = 1.5 }) {
     for (let i = 0; i < 3; i++) { const a = i * 2.094; b.cyl(M.steel, Math.sin(a) * r * 0.7, 0, Math.cos(a) * r * 0.7, 0.015, 0.26, 8); }
     b.cyl(M.steel, 0, 0.24, 0, r * 0.92, 0.04, 24);
-    b.lathe(M.white, 0, 0.28, 0, [[0.001, 0], [r * 0.9, 0], [r, 0.02], [r, h - 0.1], [r * 0.9, h - 0.03], [r * 0.6, h + 0.02], [0.001, h + 0.045]], 32);
+    b.cyl(M.white, 0, 0.28, 0, r, h - 0.1, 32);
+    b.lathe(M.white, 0, 0.28 + h - 0.1, 0, [[r, 0], [r * 0.9, 0.07], [r * 0.6, 0.12], [0.001, 0.145]], 32);
     for (const [sx, sy] of [[-0.06, 0], [0.06, 0]]) { b.cyl(M.steel, sx, 0.28 + h + 0.02, sy, 0.016, 0.07, 10); b.cyl(M.black, sx, 0.28 + h + 0.09, sy, 0.02, 0.02, 10); }
     b.cyl(M.potDark, 0, 0.9, r + 0.001, 0.045, 0.004, 14);
     return [2 * r, 2 * r];
@@ -1029,6 +1018,7 @@ export const V = {
       for (let k = 0; k < 3; k++) { const a = k * 2.1 + R(), ex = top[0] + Math.cos(a) * r * 0.3, ez = top[2] + Math.sin(a) * r * 0.3; b.tube(M.bark, [[x, fy - 0.05, z], [x + Math.cos(a) * 0.18 + (R() - 0.5) * 0.1, fy + (y + th - fy) * 0.5, z + Math.sin(a) * 0.18], [ex, y + th, ez]], tr * 0.62, 6); }
     } else b.tube(M.bark, [[x, y - 0.1, z], [x + lean * th * 0.3 + (R() - 0.5) * 0.12, y + th * 0.45, z + (R() - 0.5) * 0.12], top], tr, 8);
     b.cyl(M.bark, x, y, z, tr * 1.7, 0.25, 9, tr * 1.05);
+    for (let k = 0; k < 4; k++) { const a = k * 1.57 + R() * 0.8, L = tr * (3.2 + R() * 1.5); b.rod(M.bark, [x + Math.cos(a) * tr * 0.5, y + tr * 1.1, z + Math.sin(a) * tr * 0.5], [x + Math.cos(a) * L, y - 0.04, z + Math.sin(a) * L], tr * 0.55, 5, tr * 0.12); }   // empattements
     const mat = pine ? M.leafPine : olive ? M.leafOlive : M.leafBroad, n = pine ? 9 : 8, cy = y + th + (pine ? r * 0.2 : r * 0.42), fl = pine ? 0.42 : 0.8;
     b.sph(M.hedge, top[0], cy, top[2], r * 0.5, 1, fl * 0.9, 1, 10);                      // cœur sombre du houppier
     for (let i = 0; i < n; i++) {
@@ -1046,8 +1036,8 @@ export const V = {
     const prof = [[0.1, 0], [w, h * 0.12], [w * 1.05, h * 0.3], [w * 0.92, h * 0.55], [w * 0.6, h * 0.78], [w * 0.22, h * 0.9], [0.001, h * 0.94]];
     b.lathe(M.leafCypress, x, y + h * 0.06, z, prof.map(([r, yy]) => [r * 0.9, yy]), 10);
     const rAt = (t) => { for (let i = 1; i < prof.length; i++) if (t <= prof[i][1]) { const k = (t - prof[i - 1][1]) / (prof[i][1] - prof[i - 1][1]); return prof[i - 1][0] + (prof[i][0] - prof[i - 1][0]) * k; } return 0.001; };
-    const n = Math.round(h * 26);
-    for (let i = 0; i < n; i++) { const t = (0.05 + 0.88 * Math.pow(R(), 0.9)) * h * 0.9, a = R() * 6.283, rr = rAt(t) * (0.8 + R() * 0.3); leaves(b, M.leafPine, x + Math.cos(a) * rr, y + h * 0.06 + t, z + Math.sin(a) * rr, 0.14, 3, 0.42, R, 1); }
+    const n = Math.round(h * 30);
+    for (let i = 0; i < n; i++) { const t = (0.05 + 0.88 * Math.pow(R(), 0.9)) * h * 0.9, a = R() * 6.283, rr = rAt(t) * (0.8 + R() * 0.3); leaves(b, M.leafPine, x + Math.cos(a) * rr, y + h * 0.06 + t, z + Math.sin(a) * rr, 0.1, 1, 0.5, R, 1); }
     return [x - 0.3, z - 0.3, x + 0.3, z + 0.3];
   },
   /* Haie taillée : volume plein habillé de feuilles sur le dessus et sur les deux grandes faces. */
@@ -1071,7 +1061,7 @@ export const V = {
     for (let i = 0; i < n; i++) {
       const t = (i + 0.5) / n, x = x0 + (x1 - x0) * t, z = z0 + (z1 - z0) * t;
       b.sph(M.hedge, x, y + 0.1, z, 0.26, 1, 0.55, 1, 6); leaves(b, M.leafOlive, x, y + 0.16, z, 0.27, 26, 0.26, R, 0.5);
-      for (let k = 0; k < 32; k++) {
+      for (let k = 0; k < 24; k++) {
         const a = R() * 6.283, rr = Math.sqrt(R()) * 0.24, lean = 0.1 + rr * 1.6, sl = 0.28 + R() * 0.1, px = x + Math.cos(a) * rr * 0.6, pz = z + Math.sin(a) * rr * 0.6, tx = Math.sin(a) * lean, tz = -Math.cos(a) * lean;
         b.geo(M.leafCypress, stem, px + Math.cos(a) * Math.sin(lean) * sl * 0.5, y + 0.17 + Math.cos(lean) * sl * 0.5, pz + Math.sin(a) * Math.sin(lean) * sl * 0.5, tx, 0, tz, 1, sl / 0.3, 1);
         b.geo(M.lavender, spike, px + Math.cos(a) * Math.sin(lean) * (sl + 0.04), y + 0.17 + Math.cos(lean) * (sl + 0.04), pz + Math.sin(a) * Math.sin(lean) * (sl + 0.04), tx, 0, tz);
