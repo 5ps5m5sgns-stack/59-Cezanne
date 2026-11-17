@@ -16,6 +16,7 @@
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="59 Cézanne" />
   <meta property="og:locale" content="fr_FR" />
+  <meta property="og:locale:alternate" content="en_GB" />
   <meta property="og:title" content="Appartement neuf avenue Paul Cézanne, Aix-en-Provence | 59 Cézanne" />
   <meta property="og:description" content="59 avenue Paul Cézanne, Aix-en-Provence : centre-ville à environ 4 min en voiture, A51 à 3 min, gare TGV à 15 min (selon la plaquette)." />
   <meta property="og:url" content="https://59-cezanne.com/localisation" />
@@ -24,6 +25,9 @@
   <meta property="og:image:height" content="630" />
   <meta property="og:image:alt" content="Vue aérienne d'un secteur résidentiel d'Aix-en-Provence avec la montagne Sainte-Victoire à l'horizon (illustration non contractuelle)" />
   <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Appartement neuf avenue Paul Cézanne, Aix-en-Provence | 59 Cézanne" />
+  <meta name="twitter:description" content="59 avenue Paul Cézanne, Aix-en-Provence : centre-ville à environ 4 min en voiture, A51 à 3 min, gare TGV à 15 min (selon la plaquette)." />
+  <meta name="twitter:image" content="https://59-cezanne.com/og/og-localisation.jpg" />
 
   <link rel="icon" type="image/x-icon" href="/favicon.ico" />
   <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
@@ -227,7 +231,6 @@
   </style>
 
   <link rel="preload" as="font" type="font/woff2" href="/fonts/whisper-400-latin.woff2" crossorigin />
-  <link rel="preload" as="font" type="font/woff2" crossorigin href="/fonts/cinzel-latin.woff2" />
   <link rel="preload" as="image" href="/ambiance/aix-fontaine-rotonde.avif" imagesrcset="/ambiance/aix-fontaine-rotonde-800w.avif 800w, /ambiance/aix-fontaine-rotonde-1200w.avif 1200w, /ambiance/aix-fontaine-rotonde.avif 2400w" imagesizes="(min-width: 901px) 58vw, 100vw" fetchpriority="high" type="image/avif">
 
   <script type="application/ld+json">
@@ -259,10 +262,9 @@
       "name": "Appartement neuf avenue Paul Cézanne, Aix | 59 Cézanne",
       "description": "Appartements neufs avenue Paul Cézanne, dans le quartier des Lauves, Aix-en-Provence : centre-ville à environ 4 min en voiture, A51 à 3 min.",
       "inLanguage": "fr-FR",
+      "dateModified": "2026-11-17",
       "isPartOf": {
-        "@type": "WebSite",
-        "name": "59 Cézanne",
-        "url": "https://59-cezanne.com/"
+        "@id": "https://59-cezanne.com/#website"
       },
       "breadcrumb": {
         "@id": "https://59-cezanne.com/localisation#breadcrumb"
@@ -270,26 +272,6 @@
       "about": {
         "@id": "https://59-cezanne.com/#residence"
       }
-    },
-    {
-      "@type": "ApartmentComplex",
-      "@id": "https://59-cezanne.com/#residence",
-      "name": "59 Cézanne",
-      "url": "https://59-cezanne.com/",
-      "address": {
-        "@type": "PostalAddress",
-        "streetAddress": "59 avenue Paul Cézanne",
-        "postalCode": "13100",
-        "addressLocality": "Aix-en-Provence",
-        "addressRegion": "Provence-Alpes-Côte d'Azur",
-        "addressCountry": "FR"
-      },
-      "geo": {
-        "@type": "GeoCoordinates",
-        "latitude": 43.5465,
-        "longitude": 5.4451
-      },
-      "hasMap": "https://www.openstreetmap.org/?mlat=43.5465&mlon=5.4451#map=17/43.5465/5.4451"
     }
   ]
 }
@@ -316,7 +298,7 @@
     <div class="d-flex align-center gap-2">
       <div class="lang-toggle" role="group" aria-label="Langue / Language">
         <button type="button" class="lang-btn active" lang="fr" aria-pressed="true" onclick="setLang('fr')">FR</button>
-        <button type="button" class="lang-btn" lang="en" aria-pressed="false" onclick="setLang('en')">EN</button>
+        <a href="/en/localisation" hreflang="en" lang="en" class="lang-btn">EN</a>
       </div>
       <button type="button" class="nav-burger" id="burger" aria-label="Ouvrir le menu" aria-expanded="false" aria-controls="mobileMenu" onclick="toggleMobile()">
         <span></span><span></span><span></span>
@@ -332,7 +314,7 @@
   <a href="/contact" onclick="toggleMobile()" data-lang-fr="Contact" data-lang-en="Contact">Contact</a>
   <div class="nav-mobile-lang" role="group" aria-label="Langue / Language">
     <button type="button" class="lang-btn active" lang="fr" aria-pressed="true" onclick="setLang('fr')">FR</button>
-    <button type="button" class="lang-btn" lang="en" aria-pressed="false" onclick="setLang('en')">EN</button>
+    <a href="/en/localisation" hreflang="en" lang="en" class="lang-btn">EN</a>
   </div>
 </div>
 
@@ -542,11 +524,11 @@
     <picture id="mapPic">
       <source media="(max-width: 700px)" srcset="/carte/carte-localisation-m.webp" width="1000" height="1000">
       <img class="loc-map-img" src="/carte/carte-localisation.webp" srcset="/carte/carte-localisation-800w.webp 800w, /carte/carte-localisation.webp 1600w" sizes="(min-width: 1372px) 1320px, 100vw" width="1600" height="800" loading="lazy" decoding="async"
-           alt="Plan du secteur : la résidence 59 Cézanne, avenue Paul Cézanne, le Jardin des Peintres à environ 200 m à vol d'oiseau et l'Atelier des Lauves, au n° 13, à environ 850 m à pied." data-alt-fr="Plan du secteur : la résidence 59 Cézanne, avenue Paul Cézanne, le Jardin des Peintres à environ 200 m à vol d'oiseau et l'Atelier des Lauves, au n° 13, à environ 850 m à pied." data-alt-en="Area map: the 59 Cézanne residence on avenue Paul Cézanne, the Jardin des Peintres about 200 m as the crow flies and the Atelier des Lauves, at no. 13, about 850 m on foot." />
+           alt="Plan du secteur : la résidence 59 Cézanne, avenue Paul Cézanne, le Jardin des Peintres à environ 300 m à pied et l'Atelier des Lauves, au n° 13, à environ 850 m à pied." data-alt-fr="Plan du secteur : la résidence 59 Cézanne, avenue Paul Cézanne, le Jardin des Peintres à environ 300 m à pied et l'Atelier des Lauves, au n° 13, à environ 850 m à pied." data-alt-en="Area map: the 59 Cézanne residence on avenue Paul Cézanne, the Jardin des Peintres about 300 m on foot and the Atelier des Lauves, at no. 13, about 850 m on foot." />
     </picture>
     <ul class="map-pins" id="mapPins">
       <li class="map-pin map-pin--res" style="--x:51.33%;--y:20.05%;--mx:52.13%;--my:26.04%"><span data-lang-fr="59 Cézanne" data-lang-en="59 Cézanne">59 Cézanne</span></li>
-      <li class="map-pin map-pin--below" style="--x:49.2%;--y:35.43%;--mx:48.73%;--my:38.35%"><span data-lang-fr="Jardin des Peintres" data-lang-en="Jardin des Peintres">Jardin des Peintres</span><small data-lang-fr="env. 200 m" data-lang-en="approx. 200 m">env. 200 m</small></li>
+      <li class="map-pin map-pin--below" style="--x:49.2%;--y:35.43%;--mx:48.73%;--my:38.35%"><span data-lang-fr="Jardin des Peintres" data-lang-en="Jardin des Peintres">Jardin des Peintres</span><small data-lang-fr="env. 300 m à pied" data-lang-en="approx. 300 m on foot">env. 300 m à pied</small></li>
       <li class="map-pin map-pin--below" style="--x:54.33%;--y:78.71%;--mx:56.93%;--my:72.97%"><span data-lang-fr="Atelier des Lauves" data-lang-en="Atelier des Lauves">Atelier des Lauves</span><small data-lang-fr="env. 850 m à pied" data-lang-en="approx. 850 m on foot">env. 850 m à pied</small></li>
     </ul>
   </div>

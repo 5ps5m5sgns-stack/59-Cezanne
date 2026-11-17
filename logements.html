@@ -16,6 +16,7 @@
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="59 Cézanne" />
   <meta property="og:locale" content="fr_FR" />
+  <meta property="og:locale:alternate" content="en_GB" />
   <meta property="og:title" content="Un appartement-villa de 138 m² et un duplex de 206 m² à Aix-en-Provence | 59 Cézanne" />
   <meta property="og:description" content="Dernières disponibilités avenue Paul Cézanne : un 4 pièces de 138 m² avec 82 m² de jardin, un duplex de 206 m² avec ascenseur privatif, piscine chauffée et parking en sous-sol." />
   <meta property="og:url" content="https://59-cezanne.com/logements" />
@@ -24,6 +25,9 @@
   <meta property="og:image:height" content="630" />
   <meta property="og:image:alt" content="Rendu 3D non contractuel : séjour et salle à manger d'un appartement de la résidence 59 Cézanne, baies vitrées ouvertes sur la montagne" />
   <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Un appartement-villa de 138 m² et un duplex de 206 m² à Aix-en-Provence | 59 Cézanne" />
+  <meta name="twitter:description" content="Dernières disponibilités avenue Paul Cézanne : un 4 pièces de 138 m² avec 82 m² de jardin, un duplex de 206 m² avec ascenseur privatif, piscine chauffée et parking en sous-sol." />
+  <meta name="twitter:image" content="https://59-cezanne.com/og/og-logements.jpg" />
 
   <link rel="icon" type="image/x-icon" href="/favicon.ico" />
   <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
@@ -34,7 +38,6 @@
   <link rel="preload" as="font" type="font/woff2" crossorigin href="/fonts/gilda-display-latin.woff2" />
   <link rel="preload" as="font" type="font/woff2" crossorigin href="/fonts/jost-latin.woff2" />
   <link rel="preload" as="font" type="font/woff2" crossorigin href="/fonts/whisper-400-latin.woff2" />
-  <link rel="preload" as="font" type="font/woff2" crossorigin href="/fonts/cinzel-latin.woff2" />
   <link rel="preload" as="image" crossorigin href="/fonds/logo-59-cezanne-mask.png" />
   <link rel="preload" as="image" crossorigin href="/fonds/trace-1-mask.png" />
 
@@ -63,10 +66,12 @@
     .lg-breadcrumb a:hover { color: var(--terra-texte); }
     .lg-mark { justify-self: end; align-self: center; }
     .lg-mark .orn { width: clamp(170px, 25vw, 380px); --orn-color: var(--terra); }
-    .lg-cover h1 { max-width: none; font-size: clamp(2.6rem, 5vw, 4.6rem); }
+    .lg-cover h1 { max-width: 15em; font-size: clamp(2.1rem, 3.5vw, 3.3rem); line-height: 1.1; text-wrap: balance; }
     .lg-cover .cover-lead { max-width: 34rem; font-size: clamp(1.1rem, 1.6vw, 1.35rem); text-wrap: balance; margin-top: 1.1rem; }
     .lg-pill-row { display: flex; flex-wrap: wrap; align-items: center; gap: .6rem 1.2rem; margin-top: 1.4rem; }
     .lg-pill { display: inline-flex; align-items: center; gap: .65rem; padding: .55rem 1.2rem .55rem 1rem; border: 1px solid var(--terra); border-radius: 999px; background: rgba(255, 255, 255, .38); color: var(--brun); font-size: .98rem; font-weight: 700; letter-spacing: .02em; }
+    .lg-maj { font-size: .95rem; color: var(--text-mid); }
+    .lg-maj time { white-space: nowrap; }
     .lg-cover .cover-cta { margin-top: 1.5rem; }
     .lg-trace { position: absolute; z-index: -1; left: -2%; bottom: -.5%; width: 104%; --orn-color: #ba8352; --orn-opacity: .95;
       animation: lg-draw 2.6s cubic-bezier(.45, .05, .2, 1) .2s both; }
@@ -100,6 +105,26 @@
     .lg-dispo .dispo-pitch { font-family: var(--font-serif); font-size: clamp(1.35rem, 1.8vw, 1.65rem); line-height: 1.35; color: var(--brun); text-wrap: balance; }
     .lg-dispo .dispo-list li { color: var(--text); }
     .lg-dispo .dispo-note { margin-top: clamp(2rem, 3.5vw, 3rem); }
+
+    /* ── 2 bis. Synthèse des deux logements : phrase autonome et tableau ── */
+    .lg-synth { max-width: 62rem; margin: clamp(2.5rem, 5vw, 4rem) auto 0; }
+    .lg-synth-title { font-family: var(--font-serif); font-weight: 400; font-size: clamp(1.7rem, 2.6vw, 2.3rem); line-height: 1.15; color: var(--brun); text-wrap: balance; }
+    .lg-synth-lead { max-width: 46rem; margin: .8rem 0 1.5rem; font-size: 1.08rem; line-height: 1.65; color: var(--text); }
+    .lg-table-wrap { overflow-x: auto; }
+    .lg-table { width: 100%; border-collapse: collapse; }
+    .lg-table caption { caption-side: top; padding: 0 0 .6rem; text-align: left; font-size: .95rem; color: var(--text-mid); }
+    .lg-table th, .lg-table td { padding: .8rem 1rem .8rem 0; text-align: left; vertical-align: top; line-height: 1.4; }
+    .lg-table thead th { vertical-align: bottom; border-bottom: 1px solid var(--terra); }
+    .lg-table thead th[scope="col"] { font-family: var(--font-serif); font-weight: 400; font-size: clamp(1.15rem, 1.6vw, 1.4rem); line-height: 1.2; color: var(--brun); }
+    .lg-table tbody tr { border-bottom: 1px solid rgba(123, 69, 56, .28); }
+    .lg-table th[scope="row"] { width: 22%; font-size: .82rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--brun); }
+    .lg-table td { width: 39%; color: var(--text); }
+    @media (max-width: 700px) {
+      .lg-table th, .lg-table td { padding: .7rem .6rem .7rem 0; font-size: .92rem; }
+      .lg-table thead th[scope="col"] { font-size: 1.05rem; }
+      .lg-table th[scope="row"] { width: 28%; font-size: .78rem; letter-spacing: 0; text-transform: none; }
+      .lg-table td { width: 36%; }
+    }
 
     /* ── 3. La résidence ── */
     .lg-res .rg { padding-block: clamp(2.5rem, 4vw, 3.6rem); }
@@ -176,6 +201,23 @@
       .ch-past .ch-video { grid-column: 9 / 13; grid-row: 1 / 3; align-self: end; width: min(100%, 21rem); }
     }
 
+    /* ── 4 ter. Questions fréquentes : même balisage et mêmes règles que la FAQ de l'accueil (.home-faq) ── */
+    #questions { scroll-margin-top: 4.25rem; }
+    .home-faq { --rg-gutter: max(clamp(1.25rem, 4vw, 3rem), calc((100vw - var(--container)) / 2)); padding: clamp(3.5rem, 7vw, 6.5rem) var(--rg-gutter); background: var(--pierre); }
+    .home-faq-in { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); column-gap: clamp(2rem, 6vw, 6rem); align-items: start; }
+    .home-faq .script { color: var(--terra-texte); }
+    .home-faq .section-title { margin-bottom: 1.1rem; font-size: clamp(2rem, 3.2vw, 3rem); text-wrap: balance; }
+    .home-faq details { padding: 1.15rem 0; border-top: 1px solid rgba(123, 69, 56, .28); }
+    .home-faq details:last-child { border-bottom: 1px solid rgba(123, 69, 56, .28); }
+    .home-faq summary { display: flex; align-items: baseline; justify-content: space-between; gap: 1.2rem; cursor: pointer; list-style: none; font-family: var(--font-serif); font-size: clamp(1.2rem, 1.7vw, 1.45rem); line-height: 1.3; color: var(--brun); }
+    .home-faq summary::-webkit-details-marker { display: none; }
+    .home-faq summary::after { content: "+"; flex: none; font-family: var(--font-sans); font-size: 1.5rem; font-weight: 300; line-height: 1; color: var(--terra-texte); }
+    .home-faq details[open] summary::after { content: "\2212"; }
+    .home-faq details p { max-width: 38rem; margin: .9rem 0 0; font-size: 1.04rem; line-height: 1.7; color: var(--text); }
+    .home-faq details a { color: var(--brun); text-decoration: underline; text-underline-offset: 4px; text-decoration-color: rgba(123, 69, 56, .45); }
+    .home-faq details a:hover { color: var(--terra-texte); }
+    @media (max-width: 900px) { .home-faq-in { grid-template-columns: minmax(0, 1fr); row-gap: 2rem; } }
+
     /* ── 5. Appel final ── */
     .lg-cta { position: relative; isolation: isolate; overflow: hidden; text-align: center; padding: clamp(3.2rem, 5vw, 4.5rem) var(--rg-gutter) clamp(3.2rem, 5vw, 4.5rem); }
     .lg-cta .section-title { font-size: clamp(2.2rem, 3.8vw, 3.5rem); line-height: 1.1; margin-bottom: .3rem; }
@@ -243,7 +285,7 @@
       "name": "Appartement avec jardin et duplex neufs à Aix | 59 Cézanne",
       "description": "Deux logements neufs à Aix-en-Provence : un 4 pièces de 138 m² avec jardin privatif de 82 m² et un duplex de 206 m² avec ascenseur privatif.",
       "inLanguage": "fr-FR",
-      "dateModified": "2026-10-09",
+      "dateModified": "2026-11-17",
       "isPartOf": {
         "@id": "https://59-cezanne.com/#website"
       },
@@ -266,7 +308,7 @@
       "name": "Le chantier de 59 Cézanne vu du ciel, début juillet 2026",
       "description": "Survol en drone du chantier de la résidence 59 Cézanne, avenue Paul Cézanne à Aix-en-Provence, le 6 juillet 2026.",
       "thumbnailUrl": "https://59-cezanne.com/chantier/video-poster.webp",
-      "uploadDate": "2026-10-09",
+      "uploadDate": "2026-10-09T00:00:00+02:00",
       "duration": "PT20S",
       "contentUrl": "https://59-cezanne.com/chantier/chantier-juillet-2026.mp4",
       "inLanguage": "fr-FR",
@@ -280,7 +322,7 @@
       "name": "Le chantier de 59 Cézanne vu du ciel, 11 novembre 2026",
       "description": "Survol en drone du chantier de la résidence 59 Cézanne, avenue Paul Cézanne à Aix-en-Provence, le 11 novembre 2026 : la toiture en tuiles est posée.",
       "thumbnailUrl": "https://59-cezanne.com/chantier/video-novembre-ciel-poster.webp",
-      "uploadDate": "2026-11-15",
+      "uploadDate": "2026-11-15T00:00:00+01:00",
       "duration": "PT26S",
       "contentUrl": "https://59-cezanne.com/chantier/chantier-novembre-2026-ciel.mp4",
       "inLanguage": "fr-FR",
@@ -294,7 +336,7 @@
       "name": "Le chantier de 59 Cézanne vu de l'intérieur, 11 novembre 2026",
       "description": "Image du chantier de la résidence 59 Cézanne, à Aix-en-Provence, le 11 novembre 2026 : la charpente en bois sous la toiture et les grandes ouvertures donnant sur les cyprès.",
       "thumbnailUrl": "https://59-cezanne.com/chantier/video-novembre-interieur-poster.webp",
-      "uploadDate": "2026-11-15",
+      "uploadDate": "2026-11-15T00:00:00+01:00",
       "duration": "PT14S",
       "contentUrl": "https://59-cezanne.com/chantier/chantier-novembre-2026-interieur.mp4",
       "inLanguage": "fr-FR",
@@ -303,83 +345,146 @@
       }
     },
     {
-      "@type": "ApartmentComplex",
-      "@id": "https://59-cezanne.com/#residence",
-      "name": "59 Cézanne",
-      "description": "Résidence neuve et confidentielle avec piscine commune chauffée, jardins et stationnement en sous-sol, avenue Paul Cézanne à Aix-en-Provence.",
-      "url": "https://59-cezanne.com/",
-      "image": "https://59-cezanne.com/og/og-logements.jpg",
-      "address": {
-        "@type": "PostalAddress",
-        "streetAddress": "59 avenue Paul Cézanne",
-        "postalCode": "13100",
-        "addressLocality": "Aix-en-Provence",
-        "addressCountry": "FR",
-        "addressRegion": "Provence-Alpes-Côte d'Azur"
+      "@type": "Apartment",
+      "@id": "https://59-cezanne.com/logements#appartement-138",
+      "url": "https://59-cezanne.com/logements#appartement-138",
+      "name": "Appartement 4 pièces de 138 m²",
+      "numberOfRooms": 4,
+      "numberOfBedrooms": 3,
+      "floorSize": {
+        "@type": "QuantitativeValue",
+        "value": 138,
+        "unitCode": "MTK"
       },
-      "amenityFeature": [
-        {
-          "@type": "LocationFeatureSpecification",
-          "name": "Piscine commune chauffée avec système de nage à contre-courant (notice descriptive du 8 avril 2025)",
-          "value": true
-        },
-        {
-          "@type": "LocationFeatureSpecification",
-          "name": "Jardins privatifs et espaces verts communs paysagers",
-          "value": true
-        },
-        {
-          "@type": "LocationFeatureSpecification",
-          "name": "Stationnement privatif en sous-sol",
-          "value": true
-        },
-        {
-          "@type": "LocationFeatureSpecification",
-          "name": "Local vélos clos et couvert",
-          "value": true
-        },
-        {
-          "@type": "LocationFeatureSpecification",
-          "name": "Ascenseur accessible aux personnes à mobilité réduite",
-          "value": true
-        }
+      "description": "Appartement-villa au premier et dernier étage : 3 chambres, jardin privatif de 82 m², triple exposition, vue dégagée sur la Sainte-Victoire côté Est, 2 places de stationnement en sous-sol et cave privative.",
+      "image": [
+        "https://59-cezanne.com/Photo%2059%20C%C3%A9zanne/3D%20interieur/CHAMBRE_VUE_SAINTE-VICTOIRE.webp",
+        "https://59-cezanne.com/Photo%2059%20C%C3%A9zanne/3D%20Exterieur/JARDIN_LOT_8.webp"
       ],
-      "containsPlace": [
-        {
-          "@type": "Apartment",
-          "@id": "https://59-cezanne.com/logements#appartement-138",
-          "url": "https://59-cezanne.com/logements#appartement-138",
-          "name": "Appartement 4 pièces de 138 m²",
-          "numberOfRooms": 4,
-          "numberOfBedrooms": 3,
-          "floorSize": {
-            "@type": "QuantitativeValue",
-            "value": 138,
-            "unitCode": "MTK"
-          },
-          "description": "Appartement-villa au premier et dernier étage : 3 chambres, jardin privatif de 82 m², triple exposition, vue dégagée sur la Sainte-Victoire côté Est, 2 places de stationnement en sous-sol et cave privative."
-        },
-        {
-          "@type": "Apartment",
-          "@id": "https://59-cezanne.com/logements#duplex-206",
-          "url": "https://59-cezanne.com/logements#duplex-206",
-          "name": "Duplex 4 pièces de 206 m²",
-          "numberOfRooms": 4,
-          "numberOfBedrooms": 3,
-          "floorSize": {
-            "@type": "QuantitativeValue",
-            "value": 206,
-            "unitCode": "MTK"
-          },
-          "description": "Duplex aux volumes d'une maison : 3 chambres dont une suite parentale, séjour de plus de 100 m² aux larges baies vitrées, ascenseur privatif depuis le sous-sol, terrasse et jardin privatif d'environ 56 m², 3 stationnements privatifs et grande cave."
-        }
-      ],
-      "geo": {
-        "@type": "GeoCoordinates",
-        "latitude": 43.5465,
-        "longitude": 5.4451
+      "containedInPlace": {
+        "@id": "https://59-cezanne.com/#residence"
+      }
+    },
+    {
+      "@type": "Apartment",
+      "@id": "https://59-cezanne.com/logements#duplex-206",
+      "url": "https://59-cezanne.com/logements#duplex-206",
+      "name": "Duplex 4 pièces de 206 m²",
+      "numberOfRooms": 4,
+      "numberOfBedrooms": 3,
+      "floorSize": {
+        "@type": "QuantitativeValue",
+        "value": 206,
+        "unitCode": "MTK"
       },
-      "hasMap": "https://www.openstreetmap.org/?mlat=43.5465&mlon=5.4451#map=17/43.5465/5.4451"
+      "description": "Duplex aux volumes d'une maison : 3 chambres dont une suite parentale, séjour de plus de 100 m² aux larges baies vitrées, ascenseur privatif depuis le sous-sol, terrasse et jardin privatif d'environ 56 m², 3 stationnements privatifs et grande cave.",
+      "image": "https://59-cezanne.com/Photo%2059%20C%C3%A9zanne/3D%20interieur/LOGEMENT_2_02.webp",
+      "containedInPlace": {
+        "@id": "https://59-cezanne.com/#residence"
+      }
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "https://59-cezanne.com/logements#faq",
+      "inLanguage": "fr-FR",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "Où se trouve la résidence 59 Cézanne ?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "La résidence 59 Cézanne se trouve au 59 avenue Paul Cézanne, à Aix-en-Provence (13100), dans le quartier des Lauves. Selon la plaquette du programme, le centre-ville est à environ 4 minutes en voiture, 8 minutes en bus ou 20 minutes à pied, et l'autoroute A51 à 3 minutes."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Quels logements restent disponibles à 59 Cézanne ?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Deux logements restent disponibles à 59 Cézanne. Le premier est un appartement 4 pièces de 138 m², au premier et dernier étage, avec 3 chambres, une triple exposition, un jardin privatif de 82 m², 2 places de stationnement en sous-sol et une cave privative. Le second est un duplex 4 pièces de 206 m², avec 3 chambres dont une suite parentale, plus de 100 m² de réception, un ascenseur privatif depuis le sous-sol, une terrasse et un jardin privatif d'environ 56 m², 3 stationnements privatifs et une grande cave."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Quel est le prix des appartements de 59 Cézanne ?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Le site de 59 Cézanne ne publie aucun prix. Les conditions des deux logements disponibles sont présentées de vive voix, par téléphone au 06 09 20 45 90 ou lors d'une visite."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Quand la résidence 59 Cézanne sera-t-elle livrée, et où en est le chantier ?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Aucune date de livraison n'est publiée pour 59 Cézanne : le calendrier se demande par message ou par téléphone. Le chantier, lui, est documenté : la fouille était terrassée et le ferraillage des fondations avançait le 6 juillet 2026, les murs en béton sortaient de terre le 8 octobre 2026 et la toiture était posée le 11 novembre 2026. Des photos et des vidéos datées sont publiées sur la page Logements."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Y a-t-il une piscine à 59 Cézanne ?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Oui. La résidence 59 Cézanne prévoit une piscine commune chauffée, avec nage à contre-courant et un solarium aménagé de transats, selon la notice descriptive du 8 avril 2025. L'accès se fait par badge. Le mode de chauffage du bassin n'est pas précisé dans la notice."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Quels sont les équipements communs de la résidence 59 Cézanne ?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "La résidence 59 Cézanne est un seul bâtiment sur deux niveaux, aux toits de tuiles canal. Elle comprend un niveau de parking enterré accessible de plain-pied depuis l'avenue Paul Cézanne, un ascenseur accessible aux personnes à mobilité réduite, un local vélos clos et couvert, une piscine chauffée et des espaces communs plantés d'oliviers, d'amandiers, de pins et de lavande. Les jardins privatifs sont de plain-pied ou à l'étage."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Les appartements de 59 Cézanne ont-ils vue sur la Sainte-Victoire ?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Selon le logement, la vue s'ouvre sur la Sainte-Victoire ou sur le jardin. L'appartement de 138 m² a une vue dégagée sur la Sainte-Victoire côté Est, et le salon, la salle à manger et la cuisine du duplex de 206 m² ont de larges baies vitrées tournées vers la montagne."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Peut-on visiter les logements de 59 Cézanne en 3D ?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Oui. La page Visite 3D de 59 Cézanne permet de parcourir les deux logements disponibles : une vue « Résidence » montre l'immeuble entier, la piscine et le quartier, une maquette montre chaque logement vu de dessus, et une visite libre se fait à hauteur d'œil, pièce par pièce. Ce sont des images de synthèse non contractuelles, établies d'après les plans de vente de l'architecte ; les surfaces des pièces sont indicatives, avec une tolérance de 5 %."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Qui est le promoteur de 59 Cézanne ?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Le promoteur de 59 Cézanne est PONTHIEU DH (anciennement Ponthieu Développement Holding), une société par actions simplifiée dont le siège est à Aix-en-Provence (La Cara, 418 ancienne route des Alpes, 13080), immatriculée sous le SIREN 440 312 791. Créée en 2001 par Stéphane Ponthieu, la société est active dans la promotion immobilière et la restauration de bâtiments anciens. Elle indique avoir réalisé 84 projets et livré 420 logements."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Comment visiter 59 Cézanne ou recevoir la plaquette ?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Les visites de 59 Cézanne se font sur rendez-vous. L'équipe répond au 06 09 20 45 90 du lundi au vendredi, de 9 h à 18 h, et le samedi sur rendez-vous ; vous pouvez aussi écrire par WhatsApp, par le formulaire de la page Contact ou à ventes@ponthieu.fr. La plaquette du programme est envoyée sur demande."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Comment achète-t-on un appartement à 59 Cézanne ?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Les appartements de 59 Cézanne sont vendus en l'état futur d'achèvement (VEFA), avec une garantie d'achèvement déposée chez le notaire, selon le contrat de réservation. Les prestations sont personnalisables selon l'avancement du chantier : les sols des pièces sèches sont prévus en grès cérame 80 × 80 cm ou en parquet, au choix de l'acquéreur, selon la notice descriptive du 8 avril 2025. Dans le neuf, les frais de notaire sont réduits."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Qu'y a-t-il à proximité de 59 Cézanne ?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Depuis 59 Cézanne, la plaquette du programme indique, en voiture, l'hôpital à 7 minutes, la gare TGV à 15 minutes (Paris en environ 3 heures), l'aéroport Marseille Provence à 22 minutes et Marseille à 26 minutes. Les lignes de bus 5 et 12 desservent le centre-ville. À pied, l'école maternelle des Lauves est à 11 minutes, l'Atelier des Lauves (dernier atelier de Cézanne) à environ 850 m et le Jardin des Peintres à environ 300 m."
+          }
+        }
+      ]
     }
   ]
 }
@@ -404,7 +509,7 @@
     <div class="d-flex align-center gap-2">
       <div class="lang-toggle" role="group" aria-label="Langue / Language">
         <button type="button" class="lang-btn active" lang="fr" aria-pressed="true" onclick="setLang('fr')">FR</button>
-        <button type="button" class="lang-btn" lang="en" aria-pressed="false" onclick="setLang('en')">EN</button>
+        <a href="/en/logements" hreflang="en" lang="en" class="lang-btn">EN</a>
       </div>
       <button type="button" class="nav-burger" id="burger" aria-label="Ouvrir le menu" aria-expanded="false" aria-controls="mobileMenu" onclick="toggleMobile()">
         <span></span><span></span><span></span>
@@ -420,7 +525,7 @@
   <a href="/contact" onclick="toggleMobile()" data-lang-fr="Contact" data-lang-en="Contact">Contact</a>
   <div class="nav-mobile-lang" role="group" aria-label="Langue / Language">
     <button type="button" class="lang-btn active" lang="fr" aria-pressed="true" onclick="setLang('fr')">FR</button>
-    <button type="button" class="lang-btn" lang="en" aria-pressed="false" onclick="setLang('en')">EN</button>
+    <a href="/en/logements" hreflang="en" lang="en" class="lang-btn">EN</a>
   </div>
 </div>
 
@@ -438,13 +543,14 @@
     <div class="lg-mark"><i class="orn orn--logo" aria-hidden="true"></i></div>
     <div class="cover-inner">
       <p class="script" data-lang-fr="Vivre à 59 Cézanne" data-lang-en="Living at 59 Cézanne">Vivre à 59 Cézanne</p>
-      <h1 id="titre-page" data-lang-fr="Les logements" data-lang-en="The apartments">Les logements</h1>
+      <h1 id="titre-page" data-lang-fr="Appartement avec jardin et duplex neufs à Aix-en-Provence" data-lang-en="New garden apartment and duplex in Aix-en-Provence">Appartement avec jardin et duplex neufs à Aix-en-Provence</h1>
       <p class="cover-lead" data-lang-fr="Deux grands logements neufs, encore disponibles, dans une résidence confidentielle d'Aix-en-Provence." data-lang-en="Two large new homes, still available, in an intimate residence in Aix-en-Provence.">Deux grands logements neufs, encore disponibles, dans une résidence confidentielle d'Aix-en-Provence.</p>
       <p class="lg-pill-row">
         <span class="lg-pill" data-lang-fr="Dernières disponibilités&nbsp;: 2 logements" data-lang-en="Last two homes available">Dernières disponibilités&nbsp;: 2 logements</span>
+        <span class="lg-maj"><span data-lang-fr="Informations mises à jour le" data-lang-en="Information updated on">Informations mises à jour le</span> <time datetime="2026-11-17" data-lang-fr="17 novembre 2026" data-lang-en="17 November 2026">17 novembre 2026</time></span>
       </p>
       <div class="cover-cta">
-        <a class="btn btn-primary" href="tel:+33609204590" aria-label="Appeler le 06 09 20 45 90" data-aria-label-fr="Appeler le 06 09 20 45 90" data-aria-label-en="Call 06 09 20 45 90"><span data-lang-fr="Appeler le 06 09 20 45 90" data-lang-en="Call 06 09 20 45 90">Appeler le 06 09 20 45 90</span></a>
+        <a class="btn btn-primary" href="tel:+33609204590" aria-label="Appeler le 06 09 20 45 90" data-aria-label-fr="Appeler le 06 09 20 45 90" data-aria-label-en="Call +33 6 09 20 45 90"><span data-lang-fr="Appeler le 06 09 20 45 90" data-lang-en="Call +33 6 09 20 45 90">Appeler le 06 09 20 45 90</span></a>
         <a class="btn btn-outline-dark" href="#disponibles" data-lang-fr="Voir les deux logements" data-lang-en="See the two homes">Voir les deux logements</a>
       </div>
     </div>
@@ -463,7 +569,7 @@
       <article class="dispo-card" id="appartement-138" aria-labelledby="t-138">
         <div class="dispo-body">
           <h3 class="dispo-type" id="t-138"><small data-lang-fr="Appartement-villa" data-lang-en="Villa-style apartment">Appartement-villa</small><span data-lang-fr="4 pièces, 138&nbsp;m²" data-lang-en="4 rooms, 138&nbsp;m²">4 pièces, 138&nbsp;m²</span></h3>
-          <p class="dispo-pitch" data-lang-fr="Un appartement-villa au premier et dernier étage, avec 82&nbsp;m² de jardin et la Sainte-Victoire à l'Est." data-lang-en="A villa-style apartment on the first and top floor, with an 82&nbsp;m² garden and the Sainte-Victoire to the east.">Un appartement-villa au premier et dernier étage, avec 82&nbsp;m² de jardin et la Sainte-Victoire à l'Est.</p>
+          <p class="dispo-pitch" data-lang-fr="Un appartement-villa au premier et dernier étage, avec 82&nbsp;m² de jardin et la Sainte-Victoire à l'Est." data-lang-en="A villa-style apartment on the top floor (level 1, one level above the ground floor), with an 82&nbsp;m² garden and the Sainte-Victoire to the east.">Un appartement-villa au premier et dernier étage, avec 82&nbsp;m² de jardin et la Sainte-Victoire à l'Est.</p>
           <ul class="dispo-list">
             <li data-lang-fr="3 chambres sur un vaste plateau à concevoir sur mesure&nbsp;: séjour, cuisine ouverte, suite parentale, bureau, dressings" data-lang-en="3 bedrooms on a vast open floor plan designed to your needs: living room, open kitchen, master suite, study, dressing rooms">3 chambres sur un vaste plateau à concevoir sur mesure&nbsp;: séjour, cuisine ouverte, suite parentale, bureau, dressings</li>
             <li data-lang-fr="Triple exposition, vue dégagée sur la Sainte-Victoire côté Est" data-lang-en="Triple aspect, open view of the Sainte-Victoire to the east">Triple exposition, vue dégagée sur la Sainte-Victoire côté Est</li>
@@ -471,7 +577,7 @@
             <li data-lang-fr="Piscine chauffée de la résidence" data-lang-en="The residence's heated pool">Piscine chauffée de la résidence</li>
           </ul>
           <div class="dispo-cta">
-            <a class="btn btn-primary" href="tel:+33609204590" aria-label="Appeler le 06 09 20 45 90" data-aria-label-fr="Appeler le 06 09 20 45 90" data-aria-label-en="Call 06 09 20 45 90"><span data-lang-fr="Appeler le 06 09 20 45 90" data-lang-en="Call 06 09 20 45 90">Appeler le 06 09 20 45 90</span></a>
+            <a class="btn btn-primary" href="tel:+33609204590" aria-label="Appeler le 06 09 20 45 90" data-aria-label-fr="Appeler le 06 09 20 45 90" data-aria-label-en="Call +33 6 09 20 45 90"><span data-lang-fr="Appeler le 06 09 20 45 90" data-lang-en="Call +33 6 09 20 45 90">Appeler le 06 09 20 45 90</span></a>
             <a class="btn btn-outline-dark" href="/contact?bien=138" data-lang-fr="Demander une visite" data-lang-en="Request a visit">Demander une visite</a>
             <a class="btn btn-outline-dark" href="/visite-3d?bien=138" data-lang-fr="Visite 3D" data-lang-en="3D tour">Visite 3D</a>
           </div>
@@ -502,7 +608,7 @@
             <li data-lang-fr="Piscine chauffée de la résidence" data-lang-en="The residence's heated pool">Piscine chauffée de la résidence</li>
           </ul>
           <div class="dispo-cta">
-            <a class="btn btn-primary" href="tel:+33609204590" aria-label="Appeler le 06 09 20 45 90" data-aria-label-fr="Appeler le 06 09 20 45 90" data-aria-label-en="Call 06 09 20 45 90"><span data-lang-fr="Appeler le 06 09 20 45 90" data-lang-en="Call 06 09 20 45 90">Appeler le 06 09 20 45 90</span></a>
+            <a class="btn btn-primary" href="tel:+33609204590" aria-label="Appeler le 06 09 20 45 90" data-aria-label-fr="Appeler le 06 09 20 45 90" data-aria-label-en="Call +33 6 09 20 45 90"><span data-lang-fr="Appeler le 06 09 20 45 90" data-lang-en="Call +33 6 09 20 45 90">Appeler le 06 09 20 45 90</span></a>
             <a class="btn btn-outline-dark" href="/contact?bien=duplex-206" data-lang-fr="Demander une visite" data-lang-en="Request a visit">Demander une visite</a>
             <a class="btn btn-outline-dark" href="/visite-3d?bien=duplex-206" data-lang-fr="Visite 3D" data-lang-en="3D tour">Visite 3D</a>
           </div>
@@ -519,6 +625,28 @@
     </div>
 
     <p class="dispo-note" data-lang-fr="Prestations personnalisables selon l'avancement du chantier. Frais de notaire réduits dans le neuf." data-lang-en="Finishes can be personalised depending on construction progress. Reduced notary fees on new builds.">Prestations personnalisables selon l'avancement du chantier. Frais de notaire réduits dans le neuf.</p>
+
+    <div class="lg-synth" id="synthese">
+      <h3 class="lg-synth-title" data-lang-fr="Les logements de 59 Cézanne à Aix-en-Provence" data-lang-en="The homes at 59 Cézanne in Aix-en-Provence">Les logements de 59 Cézanne à Aix-en-Provence</h3>
+      <p class="lg-synth-lead" data-lang-fr="59 Cézanne, au 59 avenue Paul Cézanne à Aix-en-Provence, propose encore deux logements neufs&nbsp;: un appartement 4 pièces de 138&nbsp;m² avec jardin et un duplex 4 pièces de 206&nbsp;m² avec ascenseur privatif." data-lang-en="59 Cézanne, at 59 avenue Paul Cézanne in Aix-en-Provence, still has two new homes available: a 138&nbsp;m² four-room apartment with a garden and a 206&nbsp;m² four-room duplex with a private lift.">59 Cézanne, au 59 avenue Paul Cézanne à Aix-en-Provence, propose encore deux logements neufs&nbsp;: un appartement 4 pièces de 138&nbsp;m² avec jardin et un duplex 4 pièces de 206&nbsp;m² avec ascenseur privatif.</p>
+      <div class="lg-table-wrap">
+        <table class="lg-table">
+          <caption data-lang-fr="Les deux logements disponibles à 59 Cézanne" data-lang-en="The two homes available at 59 Cézanne">Les deux logements disponibles à 59 Cézanne</caption>
+          <thead>
+            <tr><th scope="row" data-lang-fr="Type" data-lang-en="Type">Type</th><th scope="col" data-lang-fr="Appartement-villa 4&nbsp;pièces" data-lang-en="Villa-style apartment, 4&nbsp;rooms">Appartement-villa 4&nbsp;pièces</th><th scope="col" data-lang-fr="Duplex 4&nbsp;pièces" data-lang-en="Duplex, 4&nbsp;rooms">Duplex 4&nbsp;pièces</th></tr>
+          </thead>
+          <tbody>
+            <tr><th scope="row" data-lang-fr="Surface" data-lang-en="Floor area">Surface</th><td data-lang-fr="138&nbsp;m²" data-lang-en="138&nbsp;m²">138&nbsp;m²</td><td data-lang-fr="206&nbsp;m²" data-lang-en="206&nbsp;m²">206&nbsp;m²</td></tr>
+            <tr><th scope="row" data-lang-fr="Niveau" data-lang-en="Level">Niveau</th><td data-lang-fr="Premier et dernier étage" data-lang-en="Top floor (level 1, one level above the ground floor)">Premier et dernier étage</td><td data-lang-fr="Deux niveaux" data-lang-en="Two levels">Deux niveaux</td></tr>
+            <tr><th scope="row" data-lang-fr="Chambres" data-lang-en="Bedrooms">Chambres</th><td data-lang-fr="3" data-lang-en="3">3</td><td data-lang-fr="3, dont une suite parentale" data-lang-en="3, including a master suite">3, dont une suite parentale</td></tr>
+            <tr><th scope="row" data-lang-fr="Extérieur" data-lang-en="Outdoor space">Extérieur</th><td data-lang-fr="Jardin privatif de 82&nbsp;m²" data-lang-en="82&nbsp;m² private garden">Jardin privatif de 82&nbsp;m²</td><td data-lang-fr="Terrasse et jardin privatif d'environ 56&nbsp;m²" data-lang-en="Terrace and private garden of about 56&nbsp;m²">Terrasse et jardin privatif d'environ 56&nbsp;m²</td></tr>
+            <tr><th scope="row" data-lang-fr="Vue" data-lang-en="View">Vue</th><td data-lang-fr="Sainte-Victoire côté Est, triple exposition" data-lang-en="Sainte-Victoire to the east, triple aspect">Sainte-Victoire côté Est, triple exposition</td><td data-lang-fr="Larges baies vitrées vers la Sainte-Victoire" data-lang-en="Large glazed bays facing the Sainte-Victoire">Larges baies vitrées vers la Sainte-Victoire</td></tr>
+            <tr><th scope="row" data-lang-fr="Stationnement" data-lang-en="Parking">Stationnement</th><td data-lang-fr="2 places en sous-sol" data-lang-en="2 underground spaces">2 places en sous-sol</td><td data-lang-fr="3 places privatives" data-lang-en="3 private spaces">3 places privatives</td></tr>
+            <tr><th scope="row" data-lang-fr="Cave" data-lang-en="Cellar">Cave</th><td data-lang-fr="Cave privative" data-lang-en="Private cellar">Cave privative</td><td data-lang-fr="Grande cave" data-lang-en="Large cellar">Grande cave</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
   </section>
 
   <!-- ─── 3. La résidence : architecture, piscine, jardins, stationnement ─── -->
@@ -678,6 +806,66 @@
     </div>
   </section>
 
+  <!-- ─── 4 ter. Questions fréquentes (même modèle que l'accueil ; texte repris mot pour mot dans le JSON-LD FAQPage) ─── -->
+  <section class="home-faq" id="questions" aria-labelledby="questions-titre">
+    <div class="home-faq-in">
+      <div class="home-faq-intro">
+        <p class="script" data-lang-fr="Vos questions" data-lang-en="Your questions">Vos questions</p>
+        <h2 class="section-title" id="questions-titre" data-lang-fr="Les questions fréquentes sur 59 Cézanne" data-lang-en="Frequently asked questions about 59 Cézanne">Les questions fréquentes sur 59 Cézanne</h2>
+      </div>
+      <div class="home-faq-list">
+      <details>
+        <summary data-lang-fr="Où se trouve la résidence 59 Cézanne&amp;nbsp;?" data-lang-en="Where is the 59 Cézanne residence?">Où se trouve la résidence 59 Cézanne&nbsp;?</summary>
+        <p data-lang-fr="La résidence 59 Cézanne se trouve au &lt;a href=&quot;/localisation&quot;&gt;59 avenue Paul Cézanne&lt;/a&gt;, à Aix-en-Provence (13100), dans le quartier des Lauves. Selon la plaquette du programme, le centre-ville est à environ 4 minutes en voiture, 8 minutes en bus ou 20 minutes à pied, et l&#x27;autoroute A51 à 3 minutes." data-lang-en="The 59 Cézanne residence is at &lt;a href=&quot;/localisation&quot;&gt;59 avenue Paul Cézanne&lt;/a&gt;, Aix-en-Provence (13100), France, in the Lauves district. According to the programme brochure, the city centre is about 4 minutes away by car, 8 minutes by bus or 20 minutes on foot, and the A51 motorway is 3 minutes away.">La résidence 59 Cézanne se trouve au <a href="/localisation">59 avenue Paul Cézanne</a>, à Aix-en-Provence (13100), dans le quartier des Lauves. Selon la plaquette du programme, le centre-ville est à environ 4 minutes en voiture, 8 minutes en bus ou 20 minutes à pied, et l'autoroute A51 à 3 minutes.</p>
+      </details>
+      <details>
+        <summary data-lang-fr="Quels logements restent disponibles à 59 Cézanne&amp;nbsp;?" data-lang-en="Which homes are still available at 59 Cézanne?">Quels logements restent disponibles à 59 Cézanne&nbsp;?</summary>
+        <p data-lang-fr="Deux logements restent disponibles à 59 Cézanne. Le premier est un appartement 4 pièces de 138&amp;nbsp;m², au premier et dernier étage, avec 3 chambres, une triple exposition, un jardin privatif de 82&amp;nbsp;m², 2 places de stationnement en sous-sol et une cave privative. Le second est un duplex 4 pièces de 206&amp;nbsp;m², avec 3 chambres dont une suite parentale, plus de 100&amp;nbsp;m² de réception, un ascenseur privatif depuis le sous-sol, une terrasse et un jardin privatif d&#x27;environ 56&amp;nbsp;m², 3 stationnements privatifs et une grande cave." data-lang-en="Two homes are still available at 59 Cézanne. The first is a 138 m² four-room apartment on the top floor (level 1, one level above the ground floor), with 3 bedrooms, a triple aspect, an 82 m² private garden, 2 underground parking spaces and a private cellar. The second is a 206 m² four-room duplex with 3 bedrooms including a master suite, over 100 m² of reception space, a private lift from the basement, a terrace and a private garden of about 56 m², 3 private parking spaces and a large cellar.">Deux logements restent disponibles à 59 Cézanne. Le premier est un appartement 4 pièces de 138&nbsp;m², au premier et dernier étage, avec 3 chambres, une triple exposition, un jardin privatif de 82&nbsp;m², 2 places de stationnement en sous-sol et une cave privative. Le second est un duplex 4 pièces de 206&nbsp;m², avec 3 chambres dont une suite parentale, plus de 100&nbsp;m² de réception, un ascenseur privatif depuis le sous-sol, une terrasse et un jardin privatif d'environ 56&nbsp;m², 3 stationnements privatifs et une grande cave.</p>
+      </details>
+      <details>
+        <summary data-lang-fr="Quel est le prix des appartements de 59 Cézanne&amp;nbsp;?" data-lang-en="How much do the apartments at 59 Cézanne cost?">Quel est le prix des appartements de 59 Cézanne&nbsp;?</summary>
+        <p data-lang-fr="Le site de 59 Cézanne ne publie aucun prix. Les conditions des deux logements disponibles sont présentées de vive voix, par téléphone au &lt;a href=&quot;tel:+33609204590&quot;&gt;06 09 20 45 90&lt;/a&gt; ou lors d&#x27;une visite." data-lang-en="The 59 Cézanne website does not publish any price. The terms for the two available homes are discussed in person, by phone on &lt;a href=&quot;tel:+33609204590&quot;&gt;+33 6 09 20 45 90&lt;/a&gt; or during a visit.">Le site de 59 Cézanne ne publie aucun prix. Les conditions des deux logements disponibles sont présentées de vive voix, par téléphone au <a href="tel:+33609204590">06 09 20 45 90</a> ou lors d'une visite.</p>
+      </details>
+      <details>
+        <summary data-lang-fr="Quand la résidence 59 Cézanne sera-t-elle livrée, et où en est le chantier&amp;nbsp;?" data-lang-en="When will 59 Cézanne be delivered, and how far along is the building work?">Quand la résidence 59 Cézanne sera-t-elle livrée, et où en est le chantier&nbsp;?</summary>
+        <p data-lang-fr="Aucune date de livraison n&#x27;est publiée pour 59 Cézanne&amp;nbsp;: le calendrier se demande par message ou par téléphone. Le chantier, lui, est documenté&amp;nbsp;: la fouille était terrassée et le ferraillage des fondations avançait le 6 juillet 2026, les murs en béton sortaient de terre le 8 octobre 2026 et la toiture était posée le 11 novembre 2026. Des &lt;a href=&quot;#chantier&quot;&gt;photos et des vidéos datées&lt;/a&gt; sont publiées sur la page Logements." data-lang-en="No delivery date is published for 59 Cézanne: the schedule is available on request, by message or by phone. The building work is documented: the excavation was dug and the foundation reinforcement was under way on 6 July 2026, the concrete walls were rising from the ground on 8 October 2026 and the roof was on by 11 November 2026. &lt;a href=&quot;#chantier&quot;&gt;Dated photos and videos&lt;/a&gt; are published on the Apartments page.">Aucune date de livraison n'est publiée pour 59 Cézanne&nbsp;: le calendrier se demande par message ou par téléphone. Le chantier, lui, est documenté&nbsp;: la fouille était terrassée et le ferraillage des fondations avançait le 6 juillet 2026, les murs en béton sortaient de terre le 8 octobre 2026 et la toiture était posée le 11 novembre 2026. Des <a href="#chantier">photos et des vidéos datées</a> sont publiées sur la page Logements.</p>
+      </details>
+      <details>
+        <summary data-lang-fr="Y a-t-il une piscine à 59 Cézanne&amp;nbsp;?" data-lang-en="Is there a swimming pool at 59 Cézanne?">Y a-t-il une piscine à 59 Cézanne&nbsp;?</summary>
+        <p data-lang-fr="Oui. La résidence 59 Cézanne prévoit une piscine commune chauffée, avec nage à contre-courant et un solarium aménagé de transats, selon la notice descriptive du 8 avril 2025. L&#x27;accès se fait par badge. Le mode de chauffage du bassin n&#x27;est pas précisé dans la notice." data-lang-en="Yes. The 59 Cézanne residence is planned with a heated communal pool with counter-current swimming and a sun deck with loungers, according to the descriptive notice of 8 April 2025. Access is by badge.">Oui. La résidence 59 Cézanne prévoit une piscine commune chauffée, avec nage à contre-courant et un solarium aménagé de transats, selon la notice descriptive du 8 avril 2025. L'accès se fait par badge. Le mode de chauffage du bassin n'est pas précisé dans la notice.</p>
+      </details>
+      <details>
+        <summary data-lang-fr="Quels sont les équipements communs de la résidence 59 Cézanne&amp;nbsp;?" data-lang-en="What shared facilities does the 59 Cézanne residence have?">Quels sont les équipements communs de la résidence 59 Cézanne&nbsp;?</summary>
+        <p data-lang-fr="La résidence 59 Cézanne est un seul bâtiment sur deux niveaux, aux toits de tuiles canal. Elle comprend un niveau de parking enterré accessible de plain-pied depuis l&#x27;avenue Paul Cézanne, un ascenseur accessible aux personnes à mobilité réduite, un local vélos clos et couvert, une piscine chauffée et des espaces communs plantés d&#x27;oliviers, d&#x27;amandiers, de pins et de lavande. Les jardins privatifs sont de plain-pied ou à l&#x27;étage." data-lang-en="59 Cézanne is a single building on two levels with canal-tile roofs. It has one underground parking level reached at street level from avenue Paul Cézanne, a lift accessible to people with reduced mobility, an enclosed and covered bicycle room, a heated pool and shared spaces planted with olive trees, almond trees, pines and lavender. The private gardens are at ground level or on the upper floor.">La résidence 59 Cézanne est un seul bâtiment sur deux niveaux, aux toits de tuiles canal. Elle comprend un niveau de parking enterré accessible de plain-pied depuis l'avenue Paul Cézanne, un ascenseur accessible aux personnes à mobilité réduite, un local vélos clos et couvert, une piscine chauffée et des espaces communs plantés d'oliviers, d'amandiers, de pins et de lavande. Les jardins privatifs sont de plain-pied ou à l'étage.</p>
+      </details>
+      <details>
+        <summary data-lang-fr="Les appartements de 59 Cézanne ont-ils vue sur la Sainte-Victoire&amp;nbsp;?" data-lang-en="Do the apartments at 59 Cézanne have a view of Mont Sainte-Victoire?">Les appartements de 59 Cézanne ont-ils vue sur la Sainte-Victoire&nbsp;?</summary>
+        <p data-lang-fr="Selon le logement, la vue s&#x27;ouvre sur la Sainte-Victoire ou sur le jardin. L&#x27;appartement de 138&amp;nbsp;m² a une vue dégagée sur la Sainte-Victoire côté Est, et le salon, la salle à manger et la cuisine du duplex de 206&amp;nbsp;m² ont de larges baies vitrées tournées vers la montagne." data-lang-en="Depending on the home, the view opens onto Mont Sainte-Victoire or onto the garden. The 138 m² apartment has an open view of the Sainte-Victoire to the east, and the living room, dining room and kitchen of the 206 m² duplex have large glazed bays facing the mountain.">Selon le logement, la vue s'ouvre sur la Sainte-Victoire ou sur le jardin. L'appartement de 138&nbsp;m² a une vue dégagée sur la Sainte-Victoire côté Est, et le salon, la salle à manger et la cuisine du duplex de 206&nbsp;m² ont de larges baies vitrées tournées vers la montagne.</p>
+      </details>
+      <details>
+        <summary data-lang-fr="Peut-on visiter les logements de 59 Cézanne en 3D&amp;nbsp;?" data-lang-en="Can I tour the 59 Cézanne homes in 3D?">Peut-on visiter les logements de 59 Cézanne en 3D&nbsp;?</summary>
+        <p data-lang-fr="Oui. La &lt;a href=&quot;/visite-3d&quot;&gt;page Visite 3D&lt;/a&gt; de 59 Cézanne permet de parcourir les deux logements disponibles&amp;nbsp;: une vue «&amp;nbsp;Résidence&amp;nbsp;» montre l&#x27;immeuble entier, la piscine et le quartier, une maquette montre chaque logement vu de dessus, et une visite libre se fait à hauteur d&#x27;œil, pièce par pièce. Ce sont des images de synthèse non contractuelles, établies d&#x27;après les plans de vente de l&#x27;architecte&amp;nbsp;; les surfaces des pièces sont indicatives, avec une tolérance de 5&amp;nbsp;%." data-lang-en="Yes. The 59 Cézanne &lt;a href=&quot;/visite-3d&quot;&gt;3D tour page&lt;/a&gt; lets you explore the two available homes: a Residence view shows the whole building, the pool and the neighbourhood, a model shows each home from above, and a walk-through takes you room by room at eye level. These are computer-generated, non-contractual images based on the architect&#x27;s sales plans; room areas are indicative, with a 5% tolerance.">Oui. La <a href="/visite-3d">page Visite 3D</a> de 59 Cézanne permet de parcourir les deux logements disponibles&nbsp;: une vue «&nbsp;Résidence&nbsp;» montre l'immeuble entier, la piscine et le quartier, une maquette montre chaque logement vu de dessus, et une visite libre se fait à hauteur d'œil, pièce par pièce. Ce sont des images de synthèse non contractuelles, établies d'après les plans de vente de l'architecte&nbsp;; les surfaces des pièces sont indicatives, avec une tolérance de 5&nbsp;%.</p>
+      </details>
+      <details>
+        <summary data-lang-fr="Qui est le promoteur de 59 Cézanne&amp;nbsp;?" data-lang-en="Who is the developer of 59 Cézanne?">Qui est le promoteur de 59 Cézanne&nbsp;?</summary>
+        <p data-lang-fr="Le &lt;a href=&quot;/contact#promoteur&quot;&gt;promoteur de 59 Cézanne&lt;/a&gt; est PONTHIEU DH (anciennement Ponthieu Développement Holding), une société par actions simplifiée dont le siège est à Aix-en-Provence (La Cara, 418 ancienne route des Alpes, 13080), immatriculée sous le SIREN 440&amp;nbsp;312&amp;nbsp;791. Créée en 2001 par Stéphane Ponthieu, la société est active dans la promotion immobilière et la restauration de bâtiments anciens. Elle indique avoir réalisé 84 projets et livré 420 logements." data-lang-en="The &lt;a href=&quot;/contact#promoteur&quot;&gt;developer of 59 Cézanne&lt;/a&gt; is PONTHIEU DH (formerly Ponthieu Développement Holding), a French simplified joint-stock company (SAS) based in Aix-en-Provence (La Cara, 418 ancienne route des Alpes, 13080), registered under SIREN 440 312 791. Founded in 2001 by Stéphane Ponthieu, the company works in property development and in the restoration of older buildings. It reports 84 completed projects and 420 homes delivered.">Le <a href="/contact#promoteur">promoteur de 59 Cézanne</a> est PONTHIEU DH (anciennement Ponthieu Développement Holding), une société par actions simplifiée dont le siège est à Aix-en-Provence (La Cara, 418 ancienne route des Alpes, 13080), immatriculée sous le SIREN 440&nbsp;312&nbsp;791. Créée en 2001 par Stéphane Ponthieu, la société est active dans la promotion immobilière et la restauration de bâtiments anciens. Elle indique avoir réalisé 84 projets et livré 420 logements.</p>
+      </details>
+      <details>
+        <summary data-lang-fr="Comment visiter 59 Cézanne ou recevoir la plaquette&amp;nbsp;?" data-lang-en="How can I visit 59 Cézanne or get the brochure?">Comment visiter 59 Cézanne ou recevoir la plaquette&nbsp;?</summary>
+        <p data-lang-fr="Les visites de 59 Cézanne se font sur rendez-vous. L&#x27;équipe répond au &lt;a href=&quot;tel:+33609204590&quot;&gt;06 09 20 45 90&lt;/a&gt; du lundi au vendredi, de 9&amp;nbsp;h à 18&amp;nbsp;h, et le samedi sur rendez-vous&amp;nbsp;; vous pouvez aussi écrire par WhatsApp, par le formulaire de la &lt;a href=&quot;/contact&quot;&gt;page Contact&lt;/a&gt; ou à &lt;a href=&quot;mailto:ventes@ponthieu.fr&quot;&gt;ventes@ponthieu.fr&lt;/a&gt;. La plaquette du programme est envoyée sur demande." data-lang-en="Visits to 59 Cézanne are by appointment. The team answers on &lt;a href=&quot;tel:+33609204590&quot;&gt;+33 6 09 20 45 90&lt;/a&gt; from Monday to Friday, 9am to 6pm, and on Saturday by appointment; you can also write on WhatsApp, through the form on the &lt;a href=&quot;/contact&quot;&gt;Contact page&lt;/a&gt; or to &lt;a href=&quot;mailto:ventes@ponthieu.fr&quot;&gt;ventes@ponthieu.fr&lt;/a&gt;. The programme brochure is sent on request.">Les visites de 59 Cézanne se font sur rendez-vous. L'équipe répond au <a href="tel:+33609204590">06 09 20 45 90</a> du lundi au vendredi, de 9&nbsp;h à 18&nbsp;h, et le samedi sur rendez-vous&nbsp;; vous pouvez aussi écrire par WhatsApp, par le formulaire de la <a href="/contact">page Contact</a> ou à <a href="mailto:ventes@ponthieu.fr">ventes@ponthieu.fr</a>. La plaquette du programme est envoyée sur demande.</p>
+      </details>
+      <details>
+        <summary data-lang-fr="Comment achète-t-on un appartement à 59 Cézanne&amp;nbsp;?" data-lang-en="How do you buy an apartment at 59 Cézanne?">Comment achète-t-on un appartement à 59 Cézanne&nbsp;?</summary>
+        <p data-lang-fr="Les appartements de 59 Cézanne sont vendus en l&#x27;état futur d&#x27;achèvement (&lt;a href=&quot;/blog/vefa-achat-sur-plan-etapes-garanties&quot;&gt;VEFA&lt;/a&gt;), avec une garantie d&#x27;achèvement déposée chez le notaire, selon le contrat de réservation. Les prestations sont personnalisables selon l&#x27;avancement du chantier&amp;nbsp;: les sols des pièces sèches sont prévus en grès cérame 80&amp;nbsp;×&amp;nbsp;80&amp;nbsp;cm ou en parquet, au choix de l&#x27;acquéreur, selon la notice descriptive du 8 avril 2025. Dans le neuf, les frais de notaire sont réduits." data-lang-en="Apartments at 59 Cézanne are sold off-plan under the French &lt;a href=&quot;/blog/buying-new-build-apartment-aix-en-provence&quot;&gt;VEFA scheme&lt;/a&gt;; according to the reservation contract, a completion guarantee is to be lodged with the notary. Finishes can be personalised depending on construction progress, with floors in porcelain stoneware or parquet according to the descriptive notice. Notary fees are reduced on new builds.">Les appartements de 59 Cézanne sont vendus en l'état futur d'achèvement (<a href="/blog/vefa-achat-sur-plan-etapes-garanties">VEFA</a>), avec une garantie d'achèvement déposée chez le notaire, selon le contrat de réservation. Les prestations sont personnalisables selon l'avancement du chantier&nbsp;: les sols des pièces sèches sont prévus en grès cérame 80&nbsp;×&nbsp;80&nbsp;cm ou en parquet, au choix de l'acquéreur, selon la notice descriptive du 8 avril 2025. Dans le neuf, les frais de notaire sont réduits.</p>
+      </details>
+      <details>
+        <summary data-lang-fr="Qu&#x27;y a-t-il à proximité de 59 Cézanne&amp;nbsp;?" data-lang-en="What is near 59 Cézanne?">Qu'y a-t-il à proximité de 59 Cézanne&nbsp;?</summary>
+        <p data-lang-fr="Depuis 59 Cézanne, la plaquette du programme indique, en voiture, l&#x27;hôpital à 7 minutes, la gare TGV à 15 minutes (Paris en environ 3 heures), l&#x27;aéroport Marseille Provence à 22 minutes et Marseille à 26 minutes. Les lignes de bus 5 et 12 desservent le centre-ville. À pied, l&#x27;école maternelle des Lauves est à 11 minutes, l&#x27;&lt;a href=&quot;/localisation#cezanne&quot;&gt;Atelier des Lauves&lt;/a&gt; (dernier atelier de Cézanne) à environ 850&amp;nbsp;m et le Jardin des Peintres à environ 300&amp;nbsp;m." data-lang-en="From 59 Cézanne, the programme brochure gives the following driving times: the hospital 7 minutes, the TGV station 15 minutes (Paris in about 3 hours), Marseille Provence international airport 22 minutes and Marseille 26 minutes. Bus lines 5 and 12 serve the city centre. On foot, the Lauves nursery school is 11 minutes away, the &lt;a href=&quot;/localisation#cezanne&quot;&gt;Atelier des Lauves&lt;/a&gt; (Cézanne&#x27;s last studio) about 850 m and the Jardin des Peintres about 300 m.">Depuis 59 Cézanne, la plaquette du programme indique, en voiture, l'hôpital à 7 minutes, la gare TGV à 15 minutes (Paris en environ 3 heures), l'aéroport Marseille Provence à 22 minutes et Marseille à 26 minutes. Les lignes de bus 5 et 12 desservent le centre-ville. À pied, l'école maternelle des Lauves est à 11 minutes, l'<a href="/localisation#cezanne">Atelier des Lauves</a> (dernier atelier de Cézanne) à environ 850&nbsp;m et le Jardin des Peintres à environ 300&nbsp;m.</p>
+      </details>
+      </div>
+    </div>
+  </section>
+
   <!-- ─── 5. Appel final ─── -->
   <section class="lg-cta fond-brun-pierre" aria-labelledby="cta-titre">
     <p class="script script--blanc" data-lang-fr="Parlons-en" data-lang-en="Let's talk">Parlons-en</p>
@@ -685,7 +873,7 @@
     <a class="lg-tel" href="tel:+33609204590" aria-label="Appeler le 06 09 20 45 90" data-aria-label-fr="Appeler le 06 09 20 45 90" data-aria-label-en="Call 06 09 20 45 90">06 09 20 45 90</a>
     <div class="lg-cta-btns">
       <a class="btn btn-primary" href="/contact" data-lang-fr="Demander une visite" data-lang-en="Request a visit">Demander une visite</a>
-      <a class="btn btn-outline" href="https://wa.me/33609204590" target="_blank" rel="noopener" aria-label="Écrire sur WhatsApp au 06 09 20 45 90 (nouvelle fenêtre)" data-aria-label-fr="Écrire sur WhatsApp au 06 09 20 45 90 (nouvelle fenêtre)" data-aria-label-en="Message us on WhatsApp at 06 09 20 45 90 (new window)"><span data-lang-fr="Écrire sur WhatsApp" data-lang-en="Message us on WhatsApp">Écrire sur WhatsApp</span></a>
+      <a class="btn btn-outline" href="https://wa.me/33609204590" target="_blank" rel="noopener" aria-label="Écrire sur WhatsApp au 06 09 20 45 90 (nouvelle fenêtre)" data-aria-label-fr="Écrire sur WhatsApp au 06 09 20 45 90 (nouvelle fenêtre)" data-aria-label-en="Message us on WhatsApp at +33 6 09 20 45 90 (new window)"><span data-lang-fr="Écrire sur WhatsApp" data-lang-en="Message us on WhatsApp">Écrire sur WhatsApp</span></a>
     </div>
     <nav class="lg-cta-links" aria-label="Pour aller plus loin" data-aria-label-fr="Pour aller plus loin" data-aria-label-en="Further reading">
       <a href="/localisation" data-lang-fr="L'adresse et les accès" data-lang-en="Address and access">L'adresse et les accès</a>
@@ -744,10 +932,10 @@
 </footer>
 
 <div class="floating-cta">
-  <a href="https://wa.me/33609204590" target="_blank" rel="noopener" class="float-btn float-btn-whatsapp" data-label="WhatsApp" aria-label="Écrire sur WhatsApp au 06 09 20 45 90 (nouvelle fenêtre)" data-aria-label-fr="Écrire sur WhatsApp au 06 09 20 45 90 (nouvelle fenêtre)" data-aria-label-en="Message us on WhatsApp at 06 09 20 45 90 (new window)">
+  <a href="https://wa.me/33609204590" target="_blank" rel="noopener" class="float-btn float-btn-whatsapp" data-label="WhatsApp" aria-label="Écrire sur WhatsApp au 06 09 20 45 90 (nouvelle fenêtre)" data-aria-label-fr="Écrire sur WhatsApp au 06 09 20 45 90 (nouvelle fenêtre)" data-aria-label-en="Message us on WhatsApp at +33 6 09 20 45 90 (new window)">
     <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.890-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
   </a>
-  <a href="tel:0609204590" class="float-btn float-btn-phone" data-label="Appeler" aria-label="Appeler le 06 09 20 45 90" data-aria-label-fr="Appeler le 06 09 20 45 90" data-aria-label-en="Call 06 09 20 45 90">
+  <a href="tel:+33609204590" class="float-btn float-btn-phone" data-label="Appeler" aria-label="Appeler le 06 09 20 45 90" data-aria-label-fr="Appeler le 06 09 20 45 90" data-aria-label-en="Call +33 6 09 20 45 90">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" focusable="false"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81 19.79 19.79 0 01.01 1.18 2 2 0 012 0h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
   </a>
 </div>

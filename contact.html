@@ -16,6 +16,7 @@
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="59 Cézanne" />
   <meta property="og:locale" content="fr_FR" />
+  <meta property="og:locale:alternate" content="en_GB" />
   <meta property="og:title" content="Contact et visite du programme | 59 Cézanne Aix" />
   <meta property="og:description" content="Un appel suffit : 06 09 20 45 90. Plaquette, renseignements et visite sur rendez-vous de la résidence 59 Cézanne à Aix-en-Provence, avec Ponthieu Développement Holding." />
   <meta property="og:url" content="https://59-cezanne.com/contact" />
@@ -24,6 +25,9 @@
   <meta property="og:image:height" content="630" />
   <meta property="og:image:alt" content="Rendu 3D non contractuel : séjour, salle à manger et cuisine ouverte sur le jardin d'un appartement de la résidence 59 Cézanne" />
   <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Contact et visite du programme | 59 Cézanne Aix" />
+  <meta name="twitter:description" content="Un appel suffit : 06 09 20 45 90. Plaquette, renseignements et visite sur rendez-vous de la résidence 59 Cézanne à Aix-en-Provence, avec Ponthieu Développement Holding." />
+  <meta name="twitter:image" content="https://59-cezanne.com/og/og-contact.jpg" />
 
   <link rel="icon" type="image/x-icon" href="/favicon.ico" />
   <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
@@ -34,7 +38,6 @@
   <link rel="stylesheet" href="/contact.css?v=4c5f53b8" />
   <link rel="preload" as="font" type="font/woff2" crossorigin href="/fonts/gilda-display-latin.woff2" />
   <link rel="preload" as="font" type="font/woff2" crossorigin href="/fonts/jost-latin.woff2" />
-  <link rel="preload" as="font" type="font/woff2" crossorigin href="/fonts/cinzel-latin.woff2" />
   <link rel="preload" as="font" type="font/woff2" crossorigin href="/fonts/whisper-400-latin.woff2" />
 
   <link rel="preload" as="image" href="/Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_PISCINE_NUIT_Panorama_St-Victoire%202.avif" imagesrcset="/Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_PISCINE_NUIT_Panorama_St-Victoire%202-800w.avif 800w, /Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_PISCINE_NUIT_Panorama_St-Victoire%202-1200w.avif 1200w, /Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_PISCINE_NUIT_Panorama_St-Victoire%202-1600w.avif 1600w, /Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_PISCINE_NUIT_Panorama_St-Victoire%202.avif 2400w" imagesizes="(min-width: 901px) 58vw, 100vw" fetchpriority="high" type="image/avif">
@@ -43,10 +46,13 @@
   {
     "@context": "https://schema.org",
     "@type": "ContactPage",
+    "@id": "https://59-cezanne.com/contact#webpage",
     "name": "Contact et visite du programme | 59 Cézanne Aix",
     "url": "https://59-cezanne.com/contact",
     "description": "Appelez le 06 09 20 45 90 ou écrivez-nous pour visiter 59 Cézanne à Aix-en-Provence : plaquette, derniers logements disponibles, visite sur rendez-vous.",
     "inLanguage": "fr-FR",
+    "dateModified": "2026-11-17",
+    "isPartOf": { "@id": "https://59-cezanne.com/#website" },
     "mainEntity": {
       "@type": "Organization",
       "@id": "https://59-cezanne.com/#organization",
@@ -73,6 +79,7 @@
         "name": "Stéphane Ponthieu"
       },
       "telephone": "+33609204590",
+      "email": "ventes@ponthieu.fr",
       "address": {
         "@type": "PostalAddress",
         "streetAddress": "La Cara, 418 ancienne route des Alpes",
@@ -119,7 +126,7 @@
       {
         "@type": "Question",
         "name": "Quel est le calendrier de livraison ?",
-        "acceptedAnswer": { "@type": "Answer", "text": "Aucune date n'est publiée ici : demandez-le par message ou téléphone." }
+        "acceptedAnswer": { "@type": "Answer", "text": "Aucune date de livraison n'est publiée pour 59 Cézanne : le calendrier se demande par message ou par téléphone." }
       },
       {
         "@type": "Question",
@@ -151,7 +158,7 @@
     <div class="d-flex align-center gap-2">
       <div class="lang-toggle" role="group" aria-label="Langue / Language">
         <button type="button" class="lang-btn active" lang="fr" aria-pressed="true" onclick="setLang('fr')">FR</button>
-        <button type="button" class="lang-btn" lang="en" aria-pressed="false" onclick="setLang('en')">EN</button>
+        <a href="/en/contact" hreflang="en" lang="en" class="lang-btn">EN</a>
       </div>
       <button type="button" class="nav-burger" id="burger" aria-label="Ouvrir le menu" aria-expanded="false" aria-controls="mobileMenu" onclick="toggleMobile()">
         <span></span><span></span><span></span>
@@ -167,7 +174,7 @@
   <a href="/contact" class="active" aria-current="page" onclick="toggleMobile()" data-lang-fr="Contact" data-lang-en="Contact">Contact</a>
   <div class="nav-mobile-lang" role="group" aria-label="Langue / Language">
     <button type="button" class="lang-btn active" lang="fr" aria-pressed="true" onclick="setLang('fr')">FR</button>
-    <button type="button" class="lang-btn" lang="en" aria-pressed="false" onclick="setLang('en')">EN</button>
+    <a href="/en/contact" hreflang="en" lang="en" class="lang-btn">EN</a>
   </div>
 </div>
 
@@ -188,7 +195,7 @@
       <p class="ct-hours" data-lang-fr="Du lundi au vendredi, de 9h à 18h&nbsp;; le samedi sur rendez-vous." data-lang-en="Monday to Friday, 9am to 6pm; Saturday by appointment.">Du lundi au vendredi, de 9h à 18h&nbsp;; le samedi sur rendez-vous.</p>
 
       <div class="cover-cta ct-cta">
-        <a class="btn ct-btn ct-btn--main" href="tel:+33609204590" aria-label="Appeler le 06 09 20 45 90" data-aria-label-fr="Appeler le 06 09 20 45 90" data-aria-label-en="Call 06 09 20 45 90">
+        <a class="btn ct-btn ct-btn--main" href="tel:+33609204590" aria-label="Appeler le 06 09 20 45 90" data-aria-label-fr="Appeler le 06 09 20 45 90" data-aria-label-en="Call +33 6 09 20 45 90">
           <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" focusable="false"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81 19.79 19.79 0 01.01 1.18 2 2 0 012 0h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
           <span data-lang-fr="Appeler" data-lang-en="Call">Appeler</span>
         </a>
@@ -366,7 +373,7 @@
 
           <details>
             <summary><span data-lang-fr="Quel est le calendrier de livraison ?" data-lang-en="What is the delivery schedule?">Quel est le calendrier de livraison ?</span></summary>
-            <div class="ct-faq-a"><p data-lang-fr="Aucune date n'est publiée ici : demandez-le par message ou téléphone." data-lang-en="No date is published here: ask for it by message or phone.">Aucune date n'est publiée ici : demandez-le par message ou téléphone.</p></div>
+            <div class="ct-faq-a"><p data-lang-fr="Aucune date de livraison n'est publiée pour 59 Cézanne : le calendrier se demande par message ou par téléphone." data-lang-en="No delivery date is published for 59 Cézanne: the schedule is available on request, by message or by phone.">Aucune date de livraison n'est publiée pour 59 Cézanne : le calendrier se demande par message ou par téléphone.</p></div>
           </details>
 
           <details>
@@ -393,7 +400,7 @@
     <div class="ct-pro-text">
       <p class="script" data-lang-fr="Le promoteur" data-lang-en="The developer">Le promoteur</p>
       <h2 class="section-title" id="t-promoteur" data-lang-fr="Créée en 2001 par Stéphane Ponthieu" data-lang-en="Founded in 2001 by Stéphane Ponthieu">Créée en 2001 par Stéphane Ponthieu</h2>
-      <p class="section-lead" data-lang-fr="Ponthieu Développement Holding est active dans la promotion immobilière et la restauration de bâtiments anciens." data-lang-en="Ponthieu Développement Holding works in property development and in the restoration of older buildings.">Ponthieu Développement Holding est active dans la promotion immobilière et la restauration de bâtiments anciens.</p>
+      <p class="section-lead" data-lang-fr="Ponthieu Développement Holding est active dans la promotion immobilière et la restauration de bâtiments anciens. La société, immatriculée sous la dénomination PONTHIEU DH (SIREN 440&nbsp;312&nbsp;791, RCS Aix-en-Provence), a son siège à La Cara, 418 ancienne route des Alpes, 13080 Aix-en-Provence." data-lang-en="Ponthieu Développement Holding works in property development and in the restoration of older buildings. The company, registered under the name PONTHIEU DH (SIREN 440&nbsp;312&nbsp;791, RCS Aix-en-Provence), has its registered office at La Cara, 418 ancienne route des Alpes, 13080 Aix-en-Provence.">Ponthieu Développement Holding est active dans la promotion immobilière et la restauration de bâtiments anciens. La société, immatriculée sous la dénomination PONTHIEU DH (SIREN 440&nbsp;312&nbsp;791, RCS Aix-en-Provence), a son siège à La Cara, 418 ancienne route des Alpes, 13080 Aix-en-Provence.</p>
       <p class="section-lead" data-lang-fr="La société se présente comme un acteur dynamique et innovant." data-lang-en="The company describes itself as a dynamic, innovative player.">La société se présente comme un acteur dynamique et innovant.</p>
     </div>
 

@@ -18,7 +18,8 @@
 <meta name="google-site-verification" content="SNN8bzDLw_qboNi81MOuw3SOY2NjIguz_KnPd8e9eUk"/>
 <meta property="og:type" content="website"/>
 <meta property="og:site_name" content="59 Cézanne"/>
-<meta property="og:locale" content="en_US"/>
+<meta property="og:locale" content="en_GB"/>
+<meta property="og:locale:alternate" content="fr_FR"/>
 <meta property="og:title" content="New Apartments, Avenue Paul Cézanne, Aix"/>
 <meta property="og:description" content="New apartments on avenue Paul Cézanne in the Lauves district, Aix-en-Provence: city centre about 4 minutes by car, A51 motorway about 3 minutes."/>
 <meta property="og:url" content="https://59-cezanne.com/en/localisation"/>
@@ -27,6 +28,9 @@
 <meta property="og:image:height" content="630"/>
 <meta property="og:image:alt" content="The Rotonde fountain in Aix-en-Provence under a blue sky, surrounded by plane trees"/>
 <meta name="twitter:card" content="summary_large_image"/>
+<meta name="twitter:title" content="New Apartments, Avenue Paul Cézanne, Aix"/>
+<meta name="twitter:description" content="New apartments on avenue Paul Cézanne in the Lauves district, Aix-en-Provence: city centre about 4 minutes by car, A51 motorway about 3 minutes."/>
+<meta name="twitter:image" content="https://59-cezanne.com/og/og-localisation.jpg"/>
 <link rel="icon" type="image/x-icon" href="/favicon.ico"/>
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png"/>
 <link rel="icon" type="image/png" sizes="192x192" href="/favicon-192.png"/>
@@ -227,14 +231,13 @@
     }
   </style>
 <link rel="preload" as="font" type="font/woff2" href="/fonts/whisper-400-latin.woff2" crossorigin=""/>
-  <link rel="preload" as="font" type="font/woff2" crossorigin href="/fonts/cinzel-latin.woff2" />
 <link rel="preload" as="image" href="/ambiance/aix-fontaine-rotonde.avif" imagesrcset="/ambiance/aix-fontaine-rotonde-800w.avif 800w, /ambiance/aix-fontaine-rotonde-1200w.avif 1200w, /ambiance/aix-fontaine-rotonde.avif 2400w" imagesizes="(min-width: 901px) 58vw, 100vw" fetchpriority="high" type="image/avif">
 <script type="application/ld+json">{
   "@context": "https://schema.org",
   "@graph": [
     {
       "@type": "BreadcrumbList",
-      "@id": "https://59-cezanne.com/localisation#breadcrumb",
+      "@id": "https://59-cezanne.com/en/localisation#breadcrumb",
       "itemListElement": [
         {
           "@type": "ListItem",
@@ -257,37 +260,16 @@
       "name": "New Apartments, Avenue Paul Cézanne, Aix | 59 Cézanne",
       "description": "New apartments on avenue Paul Cézanne in the Lauves district, Aix-en-Provence: city centre about 4 minutes by car, A51 motorway about 3 minutes.",
       "inLanguage": "en",
+      "dateModified": "2026-11-17",
       "isPartOf": {
-        "@type": "WebSite",
-        "name": "59 Cézanne",
-        "url": "https://59-cezanne.com/"
+        "@id": "https://59-cezanne.com/#website"
       },
       "breadcrumb": {
-        "@id": "https://59-cezanne.com/localisation#breadcrumb"
+        "@id": "https://59-cezanne.com/en/localisation#breadcrumb"
       },
       "about": {
         "@id": "https://59-cezanne.com/#residence"
       }
-    },
-    {
-      "@type": "ApartmentComplex",
-      "@id": "https://59-cezanne.com/#residence",
-      "name": "59 Cézanne",
-      "url": "https://59-cezanne.com/",
-      "address": {
-        "@type": "PostalAddress",
-        "streetAddress": "59 avenue Paul Cézanne",
-        "postalCode": "13100",
-        "addressLocality": "Aix-en-Provence",
-        "addressRegion": "Provence-Alpes-Côte d'Azur",
-        "addressCountry": "FR"
-      },
-      "geo": {
-        "@type": "GeoCoordinates",
-        "latitude": 43.5465,
-        "longitude": 5.4451
-      },
-      "hasMap": "https://www.openstreetmap.org/?mlat=43.5465&mlon=5.4451#map=17/43.5465/5.4451"
     }
   ]
 }</script>
@@ -295,9 +277,9 @@
 <body>
 <a class="skip-link" href="#contenu">Skip to content</a>
 <!-- ─── Navigation ────────────────────────────────────────────── -->
-<nav id="navbar" class="scrolled" aria-label="Navigation principale">
+<nav id="navbar" class="scrolled" aria-label="Main navigation">
 <div class="nav-inner">
-<a href="/en" class="nav-logo" aria-label="59 Cézanne — Aix-en-Provence, accueil">
+<a href="/en" class="nav-logo" aria-label="59 Cézanne — Aix-en-Provence, home">
 <span class="logo-main">59 Cézanne</span>
 <span class="logo-sub">Aix-en-Provence</span>
 </a>
@@ -313,7 +295,7 @@
 <a href="/localisation" hreflang="fr" lang="fr" class="lang-btn">FR</a>
 <a href="/en/localisation" hreflang="en" lang="en" class="lang-btn active" aria-current="true">EN</a>
 </div>
-<button type="button" class="nav-burger" id="burger" aria-label="Ouvrir le menu" aria-expanded="false" aria-controls="mobileMenu" onclick="toggleMobile()">
+<button type="button" class="nav-burger" id="burger" aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu" onclick="toggleMobile()">
 <span></span><span></span><span></span>
 </button>
 </div>
@@ -499,11 +481,11 @@
 <div class="loc-map" id="mapBox">
 <picture id="mapPic">
 <source media="(max-width: 700px)" srcset="/carte/carte-localisation-m.webp" width="1000" height="1000"/>
-<img class="loc-map-img" src="/carte/carte-localisation.webp" srcset="/carte/carte-localisation-800w.webp 800w, /carte/carte-localisation.webp 1600w" sizes="(min-width: 1372px) 1320px, 100vw" width="1600" height="800" loading="lazy" decoding="async" alt="Area map: the 59 Cézanne residence on avenue Paul Cézanne, the Jardin des Peintres about 200 m as the crow flies and the Atelier des Lauves, at no. 13, about 850 m on foot."/>
+<img class="loc-map-img" src="/carte/carte-localisation.webp" srcset="/carte/carte-localisation-800w.webp 800w, /carte/carte-localisation.webp 1600w" sizes="(min-width: 1372px) 1320px, 100vw" width="1600" height="800" loading="lazy" decoding="async" alt="Area map: the 59 Cézanne residence on avenue Paul Cézanne, the Jardin des Peintres about 300 m on foot and the Atelier des Lauves, at no. 13, about 850 m on foot."/>
 </picture>
 <ul class="map-pins" id="mapPins">
 <li class="map-pin map-pin--res" style="--x:51.33%;--y:20.05%;--mx:52.13%;--my:26.04%"><span>59 Cézanne</span></li>
-<li class="map-pin map-pin--below" style="--x:49.2%;--y:35.43%;--mx:48.73%;--my:38.35%"><span>Jardin des Peintres</span><small>approx. 200 m</small></li>
+<li class="map-pin map-pin--below" style="--x:49.2%;--y:35.43%;--mx:48.73%;--my:38.35%"><span>Jardin des Peintres</span><small>approx. 300 m on foot</small></li>
 <li class="map-pin map-pin--below" style="--x:54.33%;--y:78.71%;--mx:56.93%;--my:72.97%"><span>Atelier des Lauves</span><small>approx. 850 m on foot</small></li>
 </ul>
 </div>
@@ -533,10 +515,12 @@
 </div>
 </div>
 <p class="loc-guides">
-<span>Our guides (in French):</span>
-<a class="loc-link" href="/blog/quartier-des-lauves-aix-en-provence">The Lauves district</a>
-<a class="loc-link" href="/blog/cezanne-lauves-atelier-terrain-des-peintres">Cézanne in the Lauves</a>
-<a class="loc-link" href="/blog/quitter-paris-pour-aix-en-provence">Leaving Paris for Aix</a>
+<span>Our guides:</span>
+<a class="loc-link" href="/blog/luxury-apartment-aix-en-provence">Luxury apartment in Aix: a buyer's guide</a>
+<span>In French:</span>
+<a class="loc-link" href="/blog/quartier-des-lauves-aix-en-provence" hreflang="fr">The Lauves district</a>
+<a class="loc-link" href="/blog/cezanne-lauves-atelier-terrain-des-peintres" hreflang="fr">Cézanne in the Lauves</a>
+<a class="loc-link" href="/blog/quitter-paris-pour-aix-en-provence" hreflang="fr">Leaving Paris for Aix</a>
 </p>
 </section>
 </main>
@@ -545,12 +529,12 @@
 <div class="container">
 <div class="footer-grid">
 <div class="footer-brand">
-<a href="/en" class="nav-logo" style="margin-bottom:1rem;display:inline-block;" aria-label="59 Cézanne — accueil">
+<a href="/en" class="nav-logo" style="margin-bottom:1rem;display:inline-block;" aria-label="59 Cézanne — home">
 <span class="logo-59">59</span><span class="logo-cez">Cézanne</span>
 </a>
 <p style="font-size:0.82rem;color:rgba(255,255,255,0.45);line-height:1.7;max-width:240px;">New prestige residence in Aix-en-Provence, avenue Paul Cézanne.</p>
 </div>
-<nav class="footer-links" aria-label="Pied de page — navigation">
+<nav class="footer-links" aria-label="Footer — navigation">
 <h3>Navigation</h3>
 <ul>
 <li><a href="/en">Home</a></li>
@@ -560,9 +544,11 @@
 <li><a href="/en/contact">Contact</a></li>
 </ul>
 </nav>
-<nav class="footer-links" aria-label="Pied de page — guides">
+<nav class="footer-links" aria-label="Footer — guides">
 <h3>Guides</h3>
 <ul>
+<li><a href="/blog/buying-new-build-apartment-aix-en-provence">Buying a new-build apartment in Aix</a></li>
+<li><a href="/blog/luxury-apartment-aix-en-provence">Luxury apartment in Aix: a buyer's guide</a></li>
 <li><a lang="fr" href="/blog/acheter-appartement-neuf-aix-en-provence">Acheter un appartement neuf à Aix</a></li>
 <li><a lang="fr" href="/blog/appartement-de-luxe-aix-en-provence-criteres">Appartement de luxe à Aix</a></li>
 <li><a lang="fr" href="/blog/prix-immobilier-neuf-aix-en-provence">Prix de l'immobilier neuf à Aix</a></li>
@@ -588,10 +574,10 @@
 </footer>
 <!-- ─── Boutons flottants (WhatsApp / téléphone) ──────────────── -->
 <div class="floating-cta">
-<a href="https://wa.me/33609204590" target="_blank" rel="noopener" class="float-btn float-btn-whatsapp" data-label="WhatsApp" aria-label="Nous écrire sur WhatsApp (s'ouvre dans un nouvel onglet)" title="WhatsApp">
+<a href="https://wa.me/33609204590" target="_blank" rel="noopener" class="float-btn float-btn-whatsapp" data-label="WhatsApp" aria-label="Message us on WhatsApp (opens in a new tab)" title="WhatsApp">
 <svg viewbox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.890-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"></path></svg>
 </a>
-<a href="tel:+33609204590" class="float-btn float-btn-phone" data-label="Appeler" aria-label="Appeler le 06 09 20 45 90" title="Appeler">
+<a href="tel:+33609204590" class="float-btn float-btn-phone" data-label="Call" aria-label="Call +33 6 09 20 45 90" title="Call">
 <svg viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" focusable="false"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81 19.79 19.79 0 01.01 1.18 2 2 0 012 0h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"></path></svg>
 </a>
 </div>
