@@ -113,8 +113,8 @@ void main() {
 	#include <colorspace_fragment>
 }`;
 
-function skyMaterial(env, cloudTex, quality) {
-  const defines = env ? { ENV: '' } : quality.sky === 'lite' ? {} : { CLOUD_LIT: '' };
+function skyMaterial(env, cloudTex, lite) {
+  const defines = env ? { ENV: '' } : lite ? {} : { CLOUD_LIT: '' };
   const u = {
     uSun: { value: new THREE.Vector3(0, 1, 0) }, uMoon: { value: new THREE.Vector3(0, 1, 0) },
     uZen: { value: new THREE.Color() }, uMid: { value: new THREE.Color() }, uHor: { value: new THREE.Color() }, uGnd: { value: new THREE.Color(0x6a5a44) },
@@ -229,8 +229,9 @@ export class Environment {
     // ombres : 17 échantillons avec rayon en haute définition (pénombre de 1 à 2 cm, comme un vrai soleil), filtre bilinéaire sinon
     const hi = quality.shadow >= 4096;
     renderer.shadowMap.type = hi ? THREE.PCFShadowMap : THREE.PCFSoftShadowMap;
-    this.cloudTex = cloudTexture(quality.sky === 'lite' ? 128 : 256);
-    this.sky = new THREE.Mesh(new THREE.BoxGeometry(2, 2, 2), skyMaterial(false, this.cloudTex, quality)); this.sky.frustumCulled = false; this.sky.renderOrder = 10;      // dessiné après le décor : seuls les pixels restés vides le paient
+    const lite = !quality.ao && !quality.bloom;      // le plus léger (téléphones) : nuages sans ombrage propre, texture plus petite
+    this.cloudTex = cloudTexture(lite ? 128 : 256);
+    this.sky = new THREE.Mesh(new THREE.BoxGeometry(2, 2, 2), skyMaterial(false, this.cloudTex, lite)); this.sky.frustumCulled = false; this.sky.renderOrder = 10;      // dessiné après le décor : seuls les pixels restés vides le paient
     scene.add(this.sky);
     this.sun = new THREE.DirectionalLight(0xffffff, 3);
     this.sun.castShadow = true;
@@ -241,7 +242,7 @@ export class Environment {
     this.fog = new THREE.FogExp2(0xcfdbe6, 0.0008); scene.fog = this.fog;
     this.fog.color.getRGB = function (t) { t.r = this.r; t.g = this.g; t.b = this.b; return t; };      // couleur de brouillard fournie en linéaire (voir plus haut)
     this.pmrem = new THREE.PMREMGenerator(renderer);
-    this.envScene = new THREE.Scene(); this.envSky = new THREE.Mesh(new THREE.BoxGeometry(2, 2, 2), skyMaterial(true, this.cloudTex, quality)); this.envSky.frustumCulled = false; this.envScene.add(this.envSky);
+    this.envScene = new THREE.Scene(); this.envSky = new THREE.Mesh(new THREE.BoxGeometry(2, 2, 2), skyMaterial(true, this.cloudTex, lite)); this.envSky.frustumCulled = false; this.envScene.add(this.envSky);
     this.envRT = null; this.dir = new THREE.Vector3(); this.lightDir = new THREE.Vector3(); this.hour = 10; this.night = 0;
     this.moonDir = new THREE.Vector3(0.5, 0.66, 0.56).normalize();
     this.land = new THREE.Group(); this.near = new THREE.Group(); scene.add(this.land, this.near); this.theta = 0;
@@ -261,10 +262,11 @@ export class Environment {
     const gy = apt.groundY;
     const gtex = this.groundTex || (this.groundTex = groundTexture()); gtex.repeat.set(7, 7);
     const ground = this.ground = new THREE.Mesh(new THREE.CircleGeometry(1500, 48), new THREE.MeshStandardMaterial({ map: gtex, roughness: 1 }));
-    ground.rotation.x = -Math.PI / 2; ground.position.set(0, gy - 0.3, 0); ground.receiveShadow = false; this.land.add(ground);
+    ground.rotation.x = -Math.PI / 2; ground.position.set(0, gy - 0.3, 0); ground.receiveShadow = false; ground.frustumCulled = false; this.land.add(ground);      // jamais écartés : texture, programme et géométrie sont envoyés dès la première image, pas quand on regarde dehors pour la première fois
     const near = new THREE.Mesh(new THREE.CircleGeometry(95, 40), M.earth.clone());
     near.material.map = M.earth.map.clone(); near.material.map.repeat.set(26, 26); near.material.map.needsUpdate = true;
-    near.rotation.x = -Math.PI / 2; near.position.set(0, gy - 0.02, 0); near.receiveShadow = true; this.land.add(near);
+    near.rotation.x = -Math.PI / 2; near.position.set(0, gy - 0.02, 0); near.receiveShadow = true; near.frustumCulled = false; this.land.add(near);
+    this.renderer.initTexture(gtex); this.renderer.initTexture(this.cloudTex); this.renderer.initTexture(near.material.map);
     const add = (m, n) => { this.land.add(m); this.ridges.push(m); m.userData.n = n || new THREE.Vector3(-1, 0, 0); return m; };
     // de l'arrière-plan vers l'avant : massif, puis collines boisées de plus en plus proches
     add(ridge(SV, this.cloudTex, { dist: 1150, width: 700, height: 92, base: gy + 12, color: 0xb8b4cc, seed: 3, rough: 0.16, center: -40, cell: 46, rock: 1, fogScale: 0.62 })).userData.k = 1;
