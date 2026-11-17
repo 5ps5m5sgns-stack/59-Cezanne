@@ -145,10 +145,10 @@ function cloudTexture(S = 256) {
 }
 
 /* Sol lointain : mosaïque de forêts sombres, de prés et de champs ocre, en vue d'oiseau (le sol des collines n'est jamais vu de près). */
-function groundTexture(S = 256) {
+function groundTexture(S = 128) {
   const R = rng(909), data = new Uint8Array(S * S * 4), pts = [];
   const pal = [[74, 98, 60], [64, 88, 52], [88, 112, 66], [98, 120, 70], [120, 128, 78], [148, 138, 88], [58, 80, 50], [70, 94, 56]];
-  for (let i = 0; i < 90; i++) pts.push([R() * S, R() * S, pal[(R() * pal.length) | 0], 0.8 + R() * 0.4]);
+  for (let i = 0; i < 40; i++) pts.push([R() * S, R() * S, pal[(R() * pal.length) | 0], 0.8 + R() * 0.4]);
   for (let y = 0; y < S; y++) for (let x = 0; x < S; x++) {
     let best = 1e9, c = pal[0], k = 1;
     for (const [px, py, col, s] of pts) { let dx = Math.abs(x - px), dy = Math.abs(y - py); dx = Math.min(dx, S - dx); dy = Math.min(dy, S - dy); const d = dx * dx + dy * dy; if (d < best) { best = d; c = col; k = s; } }
@@ -353,7 +353,7 @@ export class Environment {
       u.uSunCol.value.copy(sunCol).multiplyScalar(60); u.uGlow.value.copy(glow); u.uNight.value = night; u.uGain.value = gain; u.uWarm.value = golden * day + (1 - day) * 0.4;
       u.uCloudLit.value.copy(cloudLit); u.uCloudShade.value.copy(cloudShade); u.uCloudAmt.value = lerp(0.42, 0.5, golden);
     }
-    this.envSky.material.uniforms.uGnd.value.set(0xb9a98f).multiplyScalar(lerp(0.9, 0.05, night) * lerp(1, 0.7, golden) * gain / 2);
+    this.envSky.material.uniforms.uGnd.value.set(0xc6bdb0).multiplyScalar(lerp(0.9, 0.05, night) * lerp(1, 0.7, golden) * gain / 2);
     // lumière directe : le soleil, puis la lune quand il est couché (même projecteur, même ombre : rien ne traverse les murs)
     const moonOn = deg < -1.5;
     this.lightDir.copy(moonOn ? moon : d);
@@ -361,7 +361,7 @@ export class Environment {
     else { this.sun.color.copy(sunCol); this.sun.intensity = sunI; }
     this.bounce = (this.bounce || new THREE.Color()).set(0xfff4e6).lerp(sunCol, 0.45 * golden);      // couleur du rebond des baies (utilisée par les lumières d'appoint)
     // lumière d'ambiance : le ciel au-dessus, le sol éclairé en dessous (rebond)
-    const hs = zen.clone().lerp(hor, 0.55).lerp(new THREE.Color(1, 1, 1), lerp(0.82, 0.55, golden)), hg = new THREE.Color(0xe0d5c6).lerp(sunCol, 0.3 * golden).multiplyScalar(lerp(0.85, 0.3, night));
+    const hs = zen.clone().lerp(hor, 0.55).lerp(new THREE.Color(1, 1, 1), lerp(0.82, 0.55, golden)), hg = new THREE.Color(0xe6ddd2).lerp(sunCol, 0.3 * golden).multiplyScalar(lerp(0.85, 0.3, night));
     this.hemi.color.copy(hs).multiply(_warm).lerp(new THREE.Color(0x1a2238), night); this.hemi.groundColor.copy(hg);
     this.hemi.intensity = lerp(0.14, 0.45, day) * lerp(1, 0.9, golden);
     // brouillard : celui de l'horizon, plus dense quand le soleil est bas
@@ -402,6 +402,7 @@ export class Environment {
     this.sun.visible = true; this.sun.color.setRGB(1 - n * 0.3, 0.975 - n * 0.2, 0.94 + n * 0.06); this.sun.intensity = 2.3 * (1 - n * 0.62);
     this.hemi.color.set(0xffffff).lerp(new THREE.Color(0x8a93b4), n * 0.7); this.hemi.groundColor.set(0xe9dcc8).lerp(new THREE.Color(0x4a4038), n * 0.7); this.hemi.intensity = 0.92 * (1 - n * 0.5);
     this.applyExposure(0.52);
+    const bl = this.post.bloom; if (bl) { bl.enabled = n > 0.03; bl.strength = n * 0.2; bl.threshold = 0.98; }      // maquette : lueur des lampes le soir seulement, le fond reste celui du graphiste
     this.placeSun(this.studioDir || (this.studioDir = new THREE.Vector3(-0.25, 0.8, 0.33).normalize()));
     const target = new THREE.Color(0xf3ece0).lerp(new THREE.Color(0x3a322d), n * 0.85), e = this.renderer.toneMappingExposure / 0.6;
     const fit = (v) => (v * (v + 0.0245786) - 0.000090537) / (v * (0.983729 * v + 0.4329510) + 0.238081);
@@ -454,7 +455,7 @@ export function makeGradePass() {
   const shader = {
     uniforms: {
       tDiffuse: { value: null }, uPx: { value: new THREE.Vector2(1 / 1024, 1 / 768) }, uExp: { value: 0.55 }, uContrast: { value: 1.08 }, uSat: { value: 1.1 },
-      uVig: { value: 0.2 }, uCA: { value: 0.0014 }, uSharp: { value: 0.3 }, uGrain: { value: 0.012 },
+      uVig: { value: 0.2 }, uCA: { value: 0.0014 }, uSharp: { value: 0.2 }, uGrain: { value: 0.012 },
       uShadow: { value: new THREE.Color(0.96, 0.985, 1.04) }, uHigh: { value: new THREE.Color(1.04, 1.0, 0.95) },
     },
     vertexShader: 'varying vec2 vUv; void main() { vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 ); }',
