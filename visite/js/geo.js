@@ -163,6 +163,19 @@ export class Batch {
     g.rotateX(-Math.PI / 2); g.translate(0, y0, 0);
     return this.add(mat, g, null, true);
   }
+  /* Profil extrudé : le polygone pts = [[u, v], …] est balayé le long du segment a → c ([x, y, z] dans le repère local).
+     u va vers `n` (perpendiculaire au segment, par défaut à droite dans le plan horizontal), v vers d × n : vers le haut quand le
+     segment est horizontal. Sert aux plinthes chanfreinées, chambranles, moulures et nez de marche. `solid` : face de coupe pleine (profil convexe). */
+  sweep(mat, pts, a, c, n = null, solid = true) {
+    const va = new THREE.Vector3(...a), d = new THREE.Vector3(...c).sub(va), len = d.length();
+    if (len < 1e-4) return this;
+    d.normalize();
+    const nn = n ? new THREE.Vector3(...n) : (Math.abs(d.y) > 0.99 ? new THREE.Vector3(1, 0, 0) : new THREE.Vector3(d.z, 0, -d.x));
+    nn.addScaledVector(d, -nn.dot(d)).normalize();
+    const v = new THREE.Vector3().crossVectors(d, nn);
+    const g = new THREE.ExtrudeGeometry(new THREE.Shape(pts.map(([u, w]) => new THREE.Vector2(u, w))), { depth: len, bevelEnabled: false });
+    return this.add(mat, g, new THREE.Matrix4().makeBasis(nn, v, d).setPosition(va), solid);
+  }
   /* Dalle horizontale mince (sol, plafond) sur le rectangle de plan [x0,z0,x1,z1], face supérieure à la cote y. */
   slab(mat, x0, z0, x1, z1, y, t = 0.02) { return this.box(mat, x0, y - t, z0, x1, y, z1); }
 
