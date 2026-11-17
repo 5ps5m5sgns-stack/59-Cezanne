@@ -337,6 +337,7 @@ export const F = {
   sideboard(b, M, { w = 2.2, d = 0.45, h = 0.8, mat = 'walnut', top = null }) {
     b.box(M.black, -w / 2 + 0.05, 0.02, -d / 2 + 0.03, w / 2 - 0.05, 0.14, d / 2 - 0.04);                     // retrait au sol
     cb(b, M.seam, 0, 0.14, 0, w - 0.004, h - 0.14, d - 0.004, 0.002);                                        // caisson sombre derrière les portes
+    for (const sx of [-1, 1]) b.box(M[mat], sx > 0 ? w / 2 - 0.001 : -w / 2 - 0.002, 0.14, -d / 2, sx > 0 ? w / 2 + 0.002 : -w / 2 + 0.001, h - 0.012, d / 2 - 0.004);   // joues : le caisson sombre ne se voit pas de côté
     const n = Math.max(2, Math.round(w / 0.55)), dw = (w - 0.012 - (n - 1) * 0.003) / n;
     for (let i = 0; i < n; i++) {
       const cx = -w / 2 + 0.006 + dw / 2 + i * (dw + 0.003);
@@ -535,7 +536,8 @@ export const F = {
   kitchenTall(b, M, { w = 1.8, d = 0.63, h = 2.25, front = 'anthracite' }) {
     const fz = d / 2 - 0.019;
     b.box(M.black, -w / 2 + 0.02, 0, -d / 2 + 0.03, w / 2 - 0.02, 0.1, d / 2 - 0.07);
-    b.box(M.black, -w / 2 + 0.004, 0.1, -d / 2, w / 2 - 0.004, h - 0.004, fz);
+    b.box(M[front], -w / 2 + 0.004, 0.1, -d / 2, w / 2 - 0.004, h - 0.004, fz - 0.004);         // corps : visible en coupe et de côté
+    b.box(M.black, -w / 2 + 0.006, 0.1, fz - 0.004, w / 2 - 0.006, h - 0.006, fz);             // fond sombre des joints
     const n = Math.max(1, Math.round(w / 0.6));
     for (let i = 0; i < n; i++) {
       const x0 = -w / 2 + (w / n) * i + 0.0015, x1 = -w / 2 + (w / n) * (i + 1) - 0.0015, cx = (x0 + x1) / 2, fw = x1 - x0;
@@ -558,7 +560,8 @@ export const F = {
   /* Réfrigérateur à deux portes en inox, tel que repéré « R » sur les plans. */
   fridge(b, M, { w = 0.85, d = 0.72, h = 1.92 }) {
     b.box(M.black, -w / 2 + 0.02, 0, -d / 2 + 0.03, w / 2 - 0.02, 0.08, d / 2 - 0.06);
-    b.box(M.seam, -w / 2 + 0.003, 0.08, -d / 2, w / 2 - 0.003, h - 0.004, d / 2 - 0.03);
+    b.box(M.steel, -w / 2 + 0.003, 0.08, -d / 2, w / 2 - 0.003, h - 0.004, d / 2 - 0.037);       // carrosserie : visible en coupe et de côté
+    b.box(M.seam, -w / 2 + 0.005, 0.08, d / 2 - 0.037, w / 2 - 0.005, h - 0.006, d / 2 - 0.03);
     for (const sx of [-1, 1]) {
       const x0 = sx > 0 ? 0.0015 : -w / 2, x1 = sx > 0 ? w / 2 : -0.0015, cx = (x0 + x1) / 2;
       cb(b, M.steel, cx, 0.085, d / 2 - 0.0195, x1 - x0, h - 0.09, 0.03, 0.004);
@@ -651,7 +654,10 @@ export const F = {
   wardrobe(b, M, { w = 2.2, d = 0.6, h = 2.35, mat = 'oak' }) {
     const m = M[mat === 'oak' ? 'oakV' : mat], fz = d / 2 - 0.019;
     b.box(M.black, -w / 2 + 0.02, 0, -d / 2 + 0.02, w / 2 - 0.02, 0.07, d / 2 - 0.05);
-    b.box(M.black, -w / 2, 0.07, -d / 2, w / 2, h, fz);
+    // corps dans le bois des portes : la coupe de la maquette et les flancs le montrent ; seul un mince fond sombre
+    // derrière les portes dessine les joints de 3 mm
+    b.box(m, -w / 2, 0.07, -d / 2, w / 2, h, fz - 0.004);
+    b.box(M.black, -w / 2 + 0.003, 0.07, fz - 0.004, w / 2 - 0.003, h - 0.003, fz);
     const n = Math.max(2, Math.round(w / 0.5)), dw = w / n;
     for (let i = 0; i < n; i++) {
       const x0 = -w / 2 + dw * i + 0.0015, x1 = -w / 2 + dw * (i + 1) - 0.0015, cx = (x0 + x1) / 2;
