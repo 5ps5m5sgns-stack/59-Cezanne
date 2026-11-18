@@ -127,7 +127,7 @@ float aoContact() {
    centre ; chaque prise est filtrée (PMREM) et rangée dans un atlas. Miroirs, inox, marbres, sols vernis et laques y lisent la pièce
    où ils se trouvent, corrigée par la boîte de la pièce (le reflet se place sur les vrais murs au lieu d'être à l'infini). Ailleurs, ils
    gardent l'intérieur neutre d'avant. Image fixe : aucun rendu supplémentaire pendant la visite. */
-const NZ = 4;
+const NZ = 6;                                              // au plus six prises (quatre en qualité basse)
 const ZU = {
   uZAtlas: { value: null }, uZn: { value: 0 }, uZK: { value: 1 },
   uZClamp: { value: 6e4 },                                // plafond de luminance, abaissé pendant les prises : un reflet de soleil sur un chrome dépasse ce que tient un demi-flottant et noircirait le flou
@@ -310,15 +310,15 @@ function bakeContact(renderer, scene, group, apt, M, maxTex, lights = []) {
 }
 
 /* Pièces photographiées pour les reflets : séjour, cuisine, salles de bains d'abord. */
-const ZONE_RANK = (id) => (/^sejour|^salon/.test(id) ? 6 : /^cuisine/.test(id) ? 5 : /^sdb1|^sdbs/.test(id) ? 4 : /^sdb|^sde/.test(id) ? 3 : /^suite|^ch1/.test(id) ? 1 : 0);
-function captureZones(app, apt, size) {
+const ZONE_RANK = (id) => (/^sejour|^salon/.test(id) ? 6 : /^cuisine/.test(id) ? 5 : /^sdb1|^sdbs/.test(id) ? 4 : /^sdb|^sde/.test(id) ? 3 : /^suite|^ch1/.test(id) ? 1 : /^ch\d/.test(id) ? 0.5 : 0);
+function captureZones(app, apt, size, nz) {
   const { renderer, scene } = app, list = [];
   apt.levels.forEach((lv, li) => lv.rooms.forEach((r) => { if (r.cam && ZONE_RANK(r.id) > 0) list.push({ r, lv, li, k: ZONE_RANK(r.id) }); }));
-  list.sort((a, b) => b.k - a.k); const zones = list.slice(0, NZ);
+  list.sort((a, b) => b.k - a.k); const zones = list.slice(0, nz);
   // les petites pièces d'abord : une salle de bains comprise dans la boîte d'un grand séjour en L garde sa propre prise
   const area = (z) => { const b = box(z.r); return (b[2] - b[0]) * (b[3] - b[1]); }, box = (r) => r.rs.reduce((q, s) => [Math.min(q[0], s[0]), Math.min(q[1], s[1]), Math.max(q[2], s[2]), Math.max(q[3], s[3])], [1e9, 1e9, -1e9, -1e9]);
   zones.sort((a, b) => area(a) - area(b));
-  const nc = 2, nr = Math.ceil(zones.length / nc), cw = 3 * Math.max(size, 112), ch = 4 * size;
+  const nc = zones.length > 4 ? 3 : 2, nr = Math.ceil(zones.length / nc), cw = 3 * Math.max(size, 112), ch = 4 * size;
   const atlas = new THREE.WebGLRenderTarget(cw * nc, ch * nr, { type: THREE.HalfFloatType, depthBuffer: false, generateMipmaps: false, magFilter: THREE.LinearFilter, minFilter: THREE.LinearFilter, colorSpace: THREE.LinearSRGBColorSpace });
   const cube = new THREE.WebGLCubeRenderTarget(size, { type: THREE.HalfFloatType, generateMipmaps: false });
   const cc = new THREE.CubeCamera(0.05, 1500, cube);
@@ -510,7 +510,7 @@ class App {
       const h0 = this.hour, dark = this.night > 0.3;
       this.applyView(false);
       if (dark) { this.setHour(12, true); this.env.updateEnvMap(this.env.envK); }
-      cur.zones = captureZones(this, apt, QUALITY.tex > 1024 ? 256 : 128);
+      cur.zones = captureZones(this, apt, 128, qName === 'low' ? 4 : 6);      // hors téléphones, les chambres principales ont aussi leur prise (atlas 1152 × 1024)
       if (dark) { this.setHour(h0, true); this.env.updateEnvMap(this.env.envK); }
     }
     this.useZones(cur.zones);
