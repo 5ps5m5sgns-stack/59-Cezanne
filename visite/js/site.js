@@ -72,7 +72,7 @@ const yPed = (x) => (x <= PED_X ? COUR : PED0 + (LIM_E - Math.min(LIM_E, x)) * (
 /* Limite Sud (clôture existante doublée d'une haie vive) : oblique dans le repère de l'immeuble. */
 const zS = (x) => 38.7 - (x - 16) * 0.1366;
 /* Limite Ouest (murets de soutènement existants) : s'écarte de la façade vers le Sud. */
-const xW = (z) => -8.6 - 0.17 * z;
+const xW = (z) => (z < 9.2 ? -8.40 - 0.217 * z : -10.40 - 0.17 * (z - 9.2));        // nu du muret Ouest du jardin n°8 (raccord avec plans.js), puis la limite
 
 /* Dalle polygonale [[x, z], …] dont le dessus suit y = yf(x, z) (linéaire sur le polygone : rampes, trottoirs, chaussée), épaisse de t. */
 function surf(b, mat, pts, yf, t = 0.3) {
@@ -205,7 +205,7 @@ export function buildSite(b, M, { o, skip }) {
   box('white', 0.9, 0.05, -0.7, 1.8, 0.72, -0.35); box('cadre', 1.05, 0.12, -0.704, 1.65, 0.62, -0.701); box('concrete', 0.85, -0.1, -0.75, 1.85, 0.05, -0.3);
 
   // ── Jardins hauts à l'Ouest (logements 05 à 08), au niveau de l'étage : quatre jardins séparés par des haies (9,37 · 16,27 · 23,27 · 29,4) ──
-  S('earth', [[-14.5, -5.9], [-0.2, -5.9], [-0.2, zS(-0.2)], [-14.5, zS(-14.5)]], FH - 0.32, 6.0);
+  S('earth', [[-14.5, 0.2], [-0.2, 0.2], [-0.2, zS(-0.2)], [-14.5, zS(-14.5)]], FH - 0.32, 6.0);
   const garden = (z0, z1, seed, deco) => {
     const gw = xW(z1) + 0.4;                                                                                  // le jardin s'élargit avec la limite Ouest
     box('socle', gw - 0.4, FH - 0.32, z0, 0, FH - 0.1, z1); box('grass', gw, FH - 0.1, z0, -3.2, FH - 0.02, z1); box('terrace', -3.2, FH - 0.1, z0, 0, FH - 0.015, z1);
@@ -216,7 +216,8 @@ export function buildSite(b, M, { o, skip }) {
     V.lavender(b, M, -3.5, z0 + 0.8, -3.5, z1 - 0.8, { y: FH - 0.05, seed });
   };
   if (has('villa')) garden(-0.4, 9.37, 3, 'table');
-  garden(9.37, 16.27, 4, 'sofa'); garden(16.27, 23.27, 5, 'table'); garden(23.27, 29.4, 6, 'sofa');                     // façade Ouest : 9,0 · 6,9 · 7,0
+  garden(9.2, 16.27, 4, 'sofa'); if (!has('villa')) V.hedge(b, M, xW(9.2) + 0.4, 9.25, -3.4, 9.75, { h: 1.3, y: FH - 0.05 });   // haie du n°7 le long du grillage du n°8
+  garden(16.27, 23.27, 5, 'table'); garden(23.27, 29.4, 6, 'sofa');                     // façade Ouest : 9,0 · 6,9 · 7,0
   for (const z of [9.9, 23.8]) { box('white', -0.7, FH, z - 0.45, -0.35, FH + 0.67, z + 0.45); box('cadre', -0.704, FH + 0.07, z - 0.3, -0.701, FH + 0.57, z + 0.3); }   // unités extérieures de PAC (façade Ouest)
   // oliviers et amandiers « à planter » le long de la limite Ouest (plan de masse)
   for (const [x, z, k, h, r, sd] of [[-5.4, 4.0, ALMOND, 4.2, 1.7, 41], [-7.1, 6.6, 'olive', 4.4, 1.8, 42], [-9.2, 10.6, 'olive', 4.6, 1.9, 43], [-9.7, 13.6, ALMOND, 4.4, 1.8, 44],
@@ -229,10 +230,13 @@ export function buildSite(b, M, { o, skip }) {
   box('drystone', xW(29.4), 0.9, 29.4, -0.1, FH + 0.2, 29.75); railing(b, M, xW(29.4) + 0.2, 29.57, -0.2, 29.57, FH + 0.2, 0.9, 'cadre');
   for (const [x, z, sd] of [[-3.0, 31.5, 11], [-6.5, 33.0, 12], [-9.5, 31.2, 13], [-12.0, 34.5, 14]]) shrub(x, z, { kind: 'rosemary', r: 0.6, h: 0.7, y: FH - 0.26, seed: sd });
   V.lavender(b, M, -1.0, 30.6, -8.0, 30.6, { y: FH - 0.26, seed: 15 });
-  box('socle', -14.5, FH - 0.32, -5.9, 0, FH - 0.1, -0.4); box('grass', -14.5, FH - 0.1, -5.9, 0, FH - 0.02, -0.4);   // angle Nord-Ouest
+  // angle Nord-Ouest : prolongement du jardin n°1 (y = 0), puis talus paysagé qui remonte vers la parcelle voisine
+  S('grass', [[-6, -5.6], [0, -5.6], [0, 0.1], [-6, 0.1]], -0.02, 3.3); S('grass', [[-14.5, -5.6], [-6, -5.6], [-6, 0.1], [-14.5, 0.1]], (x) => -0.02 + (-6 - x) * 0.3, 3.3);
+  if (has('villa')) { box('drystone', -8.5, -0.3, 0.0, -0.03, FH + 0.4, 0.35); railing(b, M, -8.45, 0.175, -0.05, 0.175, FH + 0.4, 1.05, 'cadre'); }   // muret Nord du jardin n°8 (dessiné avec le logement quand il est détaillé)
+  box('drystone', -14.45, -0.3, 0.0, -8.5, FH + 0.1, 0.35);
   wallPath(b, MX.drystone, [[xW(-5.9) - 1.3, -5.9], [xW(30) - 1.3, 30], [-14.2, zS(-14.2) - 0.3]], 0.4, 1.4, FH + 0.15);   // muret de soutènement existant (env. 1 m) en limite Ouest
-  V.tree(b, M, -6.5, -3.4, { kind: 'pine', h: 9, r: 3.3, seed: 21, y: FH - 0.05 }); V.tree(b, M, -2.2, -4.3, { kind: 'oak', h: 6, r: 2.4, seed: 22, y: FH - 0.05 });
-  box('stone', -0.4, -0.2, -5.9, 0, FH + 0.3, 0); box('stone', -0.4, -0.2, L, 0, FH + 0.3, zS(0));                                // soutènements en pierre sèche
+  V.tree(b, M, -9.5, -3.4, { kind: 'pine', h: 9, r: 3.3, seed: 21, y: 1.0 }); V.tree(b, M, -2.2, -4.3, { kind: 'oak', h: 6, r: 2.4, seed: 22, y: -0.04 });
+  box('stone', -0.4, -0.2, L, 0, FH + 0.3, zS(0));                                // soutènements en pierre sèche
 
   // ── Jardin du logement 01 au Nord, mur de pierre sèche conservé en limite ──
   box('socle', 0, -0.3, -5.35, W + 0.02, -0.08, 0); box('grass', 0, -0.08, -5.35, W, -0.02, -1.6); box('terrace', 0, -0.08, -1.6, W, -0.015, 0);
@@ -243,21 +247,21 @@ export function buildSite(b, M, { o, skip }) {
 
   // ── Jardins des duplex (n°2 et n°3) puis terrasse de la piscine 1,30 m plus bas ──
   if (has('duplex')) {
-    box('socle', W, -0.3, 13.15, 22.31, -0.1, 25.88); box('terrace', W, -0.1, 13.15, 20.0, -0.015, 25.88); box('grass', 20.0, -0.1, 13.15, 22.31, -0.02, 25.88);
-    for (const z of [13.2, 19.39, 25.3]) V.hedge(b, M, W + 0.3, z - 0.25, 22.3, z + 0.25, { h: 1.5, y: -0.03 });
-    box('stone', 22.31, -1.3, 13.15, 22.71, 0.45, 25.88); railing(b, M, 22.5, 13.2, 22.5, 25.6, 0.45, 0.6, 'cadre');
+    box('socle', W, -0.3, 13.15, 22.2, -0.1, 25.74); box('terrace', W, -0.1, 13.15, 20.0, -0.015, 25.74); box('grass', 20.0, -0.1, 13.15, 22.2, -0.02, 25.74);
+    for (const z of [13.6, 19.39, 25.3]) V.hedge(b, M, W + 0.3, z - 0.25, 22.15, z + 0.25, { h: 1.5, y: -0.03 });
+    box('stone', 22.2, -1.3, 13.15, 22.55, 0.0, 25.74); railing(b, M, 22.375, 13.2, 22.375, 25.6, 0.0, 1.04, 'cadre');
     for (const z of [16.3, 22.5]) { b.push(19.0, -0.015, z, 0); F.outdoorTable(b, M, { w: 1.5, d: 1.5, n: 2, ends: true }); b.pop(); }
   }
   // jardin du logement 04 (n°4) : terrasse au pied de la façade Sud, pelouse jusqu'à la clôture Sud ; muret de 1,3 m surmonté d'une grille côté piscine
-  box('socle', W, -0.3, 25.88, 22.71, -0.1, L + 0.02); box('terrace', W, -0.1, 25.88, 22.31, -0.015, L);
-  box('stone', 22.31, -1.3, 25.88, 22.71, 0.0, zS(22.5)); railing(b, M, 22.51, 25.95, 22.51, zS(22.5) - 0.1, 0.0, 1.0, 'cadre');
-  S('socle', [[0, L], [22.31, L], [22.31, zS(22.31)], [0, zS(0)]], -0.1, 3.2);
-  S('grass', [[0, L + 3.2], [22.31, L + 3.2], [22.31, zS(22.31) - 0.05], [0, zS(0) - 0.05]], -0.02, 0.05);
-  box('terrace', 0, -0.1, L, 22.31, -0.015, L + 3.2);
+  box('socle', W, -0.3, 25.74, 22.55, -0.1, L + 0.02); box('terrace', W, -0.1, 25.74, 22.2, -0.015, L);
+  box('stone', 22.2, -1.3, 25.74, 22.55, 0.0, zS(22.4)); railing(b, M, 22.375, 25.8, 22.375, zS(22.4) - 0.1, 0.0, 1.04, 'cadre');
+  S('socle', [[0, L], [22.2, L], [22.2, zS(22.2)], [0, zS(0)]], -0.1, 3.2);
+  S('grass', [[0, L + 3.2], [22.2, L + 3.2], [22.2, zS(22.2) - 0.05], [0, zS(0) - 0.05]], -0.02, 0.05);
+  box('terrace', 0, -0.1, L, 22.2, -0.015, L + 3.2);
   b.push(11.0, -0.015, L + 1.8, 0); F.outdoorTable(b, M, { w: 2.0, n: 3 }); b.pop();
   V.hedge(b, M, 0.6, L + 0.85, 8.0, L + 1.2, { h: 0.7, y: -0.02 });                                        // haie basse devant les unités de PAC
   // terrasse de la piscine en travertin (288,30) au-dessus des locaux, autour du bassin
-  for (const [x0, z0, x1, z1] of [[18.94, 10.65, 31.1, 12.95], [18.94, 12.95, 22.71, 13.15], [22.71, 12.95, 26.34, 25.6], [32.34, 10.4, 33.3, 25.6], [26.34, 25.25, 32.34, 25.6], [32.2, 10.65, 32.34, 12.95]])
+  for (const [x0, z0, x1, z1] of [[18.94, 10.65, 31.1, 12.95], [18.94, 12.95, 22.55, 13.15], [22.55, 12.95, 26.34, 25.6], [32.34, 10.4, 33.3, 25.6], [26.34, 25.25, 32.34, 25.6], [32.2, 10.65, 32.34, 12.95]])
     box('travertine', x0, TERR - 0.04, z0, x1, TERR, z1);
   box('earth', 18.94, COUR - 0.1, 13.3, 33.3, TERR - 0.04, 25.6); box('drystone', 32.2, -4.1, 10.4, 33.3, TERR - 0.04, 13.3);
   // bassin enterré de 6 × 12,3 m, margelles en travertin
@@ -278,7 +282,7 @@ export function buildSite(b, M, { o, skip }) {
     if (V.climber) V.climber(b, M, 19.4, TERR + 0.5, 9.94, 30.9, COUR + 0.2, 9.94, { seed: 93, density: 0.35 }); }   // retombées sur le mur des locaux
 
   // ── Espace commun paysagé, talus d'oliviers entre la piscine et l'avenue, mur de pierre conservé le long de l'avenue ──
-  S('grass', [[22.71, 25.6], [33.3, 25.6], [33.3, zS(33.3) - 0.05], [22.71, zS(22.71) - 0.05]], TERR - 0.03, 1.3);
+  S('grass', [[22.55, 25.6], [33.3, 25.6], [33.3, zS(33.3) - 0.05], [22.55, zS(22.55) - 0.05]], TERR - 0.03, 1.3);
   const WALL_AV = [[32.2, 10.4], [35, 10.4], [36.85, 11.15], [38.35, 12.2], [39.15, 13.5], [39.42, 15], [39.42, zS(39.42) + 0.1]];
   const talus = (x) => TERR - 0.02 - (x - 33.3) * 0.067;                                                      // de 288,28 au bord de la terrasse à 287,90 derrière le mur
   S('grass', [[33.3, 10.62], [35, 10.62], [36.72, 11.35], [38.17, 12.37], [38.93, 13.6], [39.19, 15], [39.19, zS(39.19) - 0.05], [33.3, zS(33.3) - 0.05]], (x) => talus(x), 2.6);
@@ -286,7 +290,7 @@ export function buildSite(b, M, { o, skip }) {
   wallPath(b, MX.drystone, WALL_AV, 0.45, -5.0, wallTop);
   fence(b, M, WALL_AV.slice(1), (x) => wallTop(x), 1.5);                                                      // clôture rigide de 1,5 m sur le mur
   for (const [x, z, k, h, r, sd] of [[37.1, 12.9, 'olive', 4.6, 1.8, 30], [37.2, 16.4, 'olive', 4.8, 1.9, 31], [37.2, 20.2, 'olive', 4.6, 1.8, 32], [37.2, 23.9, 'olive', 4.9, 1.9, 33], [37.1, 28.6, ALMOND, 4.6, 1.9, 34],
-    [34.6, 32.6, 'pine', 9.5, 3.4, 35], [29.75, 33.6, 'pine', 9, 3.2, 36], [19.6, 36.1, 'pine', 10, 3.5, 37]]) V.tree(b, M, x, z, { kind: k, h, r, seed: sd, y: x > 33.3 ? talus(x) : x > 22.71 ? TERR - 0.03 : -0.02 });
+    [34.6, 32.6, 'pine', 9.5, 3.4, 35], [29.75, 33.6, 'pine', 9, 3.2, 36], [19.6, 36.1, 'pine', 10, 3.5, 37]]) V.tree(b, M, x, z, { kind: k, h, r, seed: sd, y: x > 33.3 ? talus(x) : x > 22.55 ? TERR - 0.03 : -0.02 });
   for (const [x, z, sd] of [[34.6, 14.5, 51], [35.0, 18.3, 52], [34.7, 22.1, 53], [35.1, 26.2, 54], [34.2, 29.8, 55]]) shrub(x, z, { kind: 'pittosporum', r: 0.7, h: 1.2, y: talus(x), seed: sd });
   V.lavender(b, M, 33.8, 13.2, 33.8, 25.2, { y: talus(33.8), seed: 56 });
   // pas japonais en travertin de la terrasse vers le banc sous les pins, banc en teck
@@ -294,9 +298,9 @@ export function buildSite(b, M, { o, skip }) {
     b.push(31.4, TERR - 0.03, 32.3, -0.35); b.box(M.teak, -0.9, 0.42, -0.22, 0.9, 0.46, 0.22); for (const sx of [-0.75, 0.75]) b.box(M.cadre, sx - 0.03, 0, -0.2, sx + 0.03, 0.42, 0.2); b.pop(); }
   // clôture existante doublée d'une haie vive, en limite Sud (oblique)
   { const x0 = -12, x1 = 39.2, a = Math.atan2(-(zS(x1) - zS(x0)), x1 - x0), len = Math.hypot(x1 - x0, zS(x1) - zS(x0));
-    for (let u = 0; u < len - 0.1; u += 2.2) { const x = x0 + (u / len) * (x1 - x0), yy = x < 0 ? FH - 0.27 : x < 22.71 ? -0.06 : TERR - 0.06; b.push(x, yy, zS(x) - 0.45, a); V.hedge(b, M, 0, -0.32, Math.min(2.3, len - u), 0.32, { h: 1.8 }); b.pop(); }
+    for (let u = 0; u < len - 0.1; u += 2.2) { const x = x0 + (u / len) * (x1 - x0), yy = x < 0 ? FH - 0.27 : x < 22.55 ? -0.06 : TERR - 0.06; b.push(x, yy, zS(x) - 0.45, a); V.hedge(b, M, 0, -0.32, Math.min(2.3, len - u), 0.32, { h: 1.8 }); b.pop(); }
     fence(b, M, [[x0, zS(x0) + 0.05], [0, zS(0) + 0.05]], () => FH - 0.26, 1.5); fence(b, M, [[0, zS(0) + 0.05], [22.5, zS(22.5) + 0.05]], () => -0.04, 1.5); fence(b, M, [[22.9, zS(22.9) + 0.05], [x1, zS(x1) + 0.05]], () => TERR - 0.05, 1.5); }
-  for (const [x, z, k, h, r] of [[4.0, 40.2, 'pine', 11, 3.7], [11.0, 39.4, 'pine', 10.5, 3.6], [25.5, 37.0, 'oak', 7, 2.8]]) V.tree(b, M, x, z, { kind: k, h, r, seed: Math.round(x * 3), y: x < 22.71 ? -0.04 : TERR - 0.05 });
+  for (const [x, z, k, h, r] of [[4.0, 40.2, 'pine', 11, 3.7], [11.0, 39.4, 'pine', 10.5, 3.6], [25.5, 37.0, 'oak', 7, 2.8]]) V.tree(b, M, x, z, { kind: k, h, r, seed: Math.round(x * 3), y: x < 22.55 ? -0.04 : TERR - 0.05 });
 
   // ── Cour d'accès (286,30) : stationnement de 4 places dont 1 PMR, voie interne, pergola, muret de 1,6 m, massif conservé ──
   box('asphaltLight', W, COUR - 0.1, -2.15, GATE_X, COUR, 2.75);                                               // aire de stationnement : enrobé teinte claire
@@ -376,17 +380,18 @@ export function buildSite(b, M, { o, skip }) {
   for (const x of [33.5, 36.5]) borne(x, yPed(x), 8.12);
 
   // ── Avenue Paul-Cézanne : chaussée en pente vers le Nord (TN 285,92 → 284,66), trottoirs, bateau devant l'accès ──
-  S('road', [[ROAD[0], -80], [ROAD[1], -80], [ROAD[1], 90], [ROAD[0], 90]], (x, z) => yAv(z), 0.4);
-  S('paving', [[LIM_E, -80], [ROAD[0], -80], [ROAD[0], 1.65], [LIM_E, 1.65]], (x, z) => yAv(z) + 0.12, 0.5);
+  // jupes épaisses sur le pourtour : le terrain se raccorde au sol lointain (env.js), plus bas que l'avenue
+  S('road', [[ROAD[0], -45], [ROAD[1], -45], [ROAD[1], 90], [ROAD[0], 90]], (x, z) => yAv(z), 4.5);
+  S('paving', [[LIM_E, -45], [ROAD[0], -45], [ROAD[0], 1.65], [LIM_E, 1.65]], (x, z) => yAv(z) + 0.12, 4.5);
   S('paving', [[LIM_E, 1.65], [ROAD[0], 1.65], [ROAD[0], 8.0], [LIM_E, 8.0]], (x, z) => yAv(z) + 0.025 + (x - LIM_E) * -0.004, 0.5);   // bateau abaissé
-  S('paving', [[LIM_E, 8.0], [ROAD[0], 8.0], [ROAD[0], 90], [LIM_E, 90]], (x, z) => yAv(z) + 0.12, 0.5);
-  S('paving', [[ROAD[1], -80], [ROAD[1] + 1.4, -80], [ROAD[1] + 1.4, 90], [ROAD[1], 90]], (x, z) => yAv(z) + 0.12, 0.5);
-  S('earth', [[ROAD[1] + 1.4, -80], [130, -80], [130, 90], [ROAD[1] + 1.4, 90]], (x, z) => yAv(z) + 0.14, 0.6);
-  S('earth', [[-14.5, -80], [W + 0.2, -80], [W + 0.2, -5.6], [-14.5, -5.6]], 0.1, 0.5);                          // parcelles au Nord
-  S('earth', [[W + 0.2, -80], [30, -80], [30, -6.1], [W + 0.2, -6.1]], -1.6, 0.5);
-  S('earth', [[30, -80], [LIM_E, -80], [LIM_E, 1.45], [39.62, 1.45], [38.3, -2.9], [36.6, -5.2], [34.5, -6.1], [30, -6.1]], (x, z) => -1.6 + (yAv(z) + 0.12 + 1.6) * Math.max(0, x - 30) / (LIM_E - 30), 0.5);
+  S('paving', [[LIM_E, 8.0], [ROAD[0], 8.0], [ROAD[0], 90], [LIM_E, 90]], (x, z) => yAv(z) + 0.12, 4.5);
+  S('paving', [[ROAD[1], -45], [ROAD[1] + 1.4, -45], [ROAD[1] + 1.4, 90], [ROAD[1], 90]], (x, z) => yAv(z) + 0.12, 4.5);
+  S('earth', [[ROAD[1] + 1.4, -45], [130, -45], [130, 90], [ROAD[1] + 1.4, 90]], (x, z) => yAv(z) + 0.14, 4.5);
+  S('earth', [[-14.5, -80], [W + 0.2, -80], [W + 0.2, -5.6], [-14.5, -5.6]], 0.1, 6.4);                          // parcelles au Nord
+  S('earth', [[W + 0.2, -80], [30, -80], [30, -6.1], [W + 0.2, -6.1]], -1.6, 4.7);
+  S('earth', [[30, -80], [LIM_E, -80], [LIM_E, 1.45], [39.62, 1.45], [38.3, -2.9], [36.6, -5.2], [34.5, -6.1], [30, -6.1]], (x, z) => -1.6 + (yAv(z) + 0.12 + 1.6) * Math.max(0, x - 30) / (LIM_E - 30), 5);
   const kerb = (x0, x1, za, zb) => S('concrete', [[x0, za], [x1, za], [x1, zb], [x0, zb]], (x, z) => yAv(z) + 0.13, 0.35);
-  kerb(ROAD[0] - 0.14, ROAD[0], -80, 1.65); kerb(ROAD[0] - 0.14, ROAD[0], 8.0, 90); kerb(ROAD[1], ROAD[1] + 0.14, -80, 90);
+  kerb(ROAD[0] - 0.14, ROAD[0], -45, 1.65); kerb(ROAD[0] - 0.14, ROAD[0], 8.0, 90); kerb(ROAD[1], ROAD[1] + 0.14, -45, 90);
   S('concrete', [[ROAD[0] - 0.14, 1.65], [ROAD[0], 1.65], [ROAD[0], 8.0], [ROAD[0] - 0.14, 8.0]], (x, z) => yAv(z) + 0.035, 0.35);   // bordure abaissée du bateau
   for (let z = -40; z < 80; z += 9) S('white', [[43.44, z - 1.5], [43.56, z - 1.5], [43.56, z + 1.5], [43.44, z + 1.5]], (x, zz) => yAv(zz) + 0.006, 0.01);   // axe discontinu
   for (let x = ROAD[0] + 0.3; x < ROAD[1] - 0.4; x += 1.0) S('white', [[x, -18], [x + 0.5, -18], [x + 0.5, -15], [x, -15]], (xx, z) => yAv(z) + 0.006, 0.01);   // passage piéton
@@ -403,9 +408,9 @@ export function buildSite(b, M, { o, skip }) {
   house(b, M, 55, yAv(2) + 0.14, 2, 13, 9, 0.12, 5.6); house(b, M, 57, yAv(30) + 0.1, 30, 11, 10, -0.1, 3.2, 'massing'); house(b, M, 55, yAv(-24) + 0.14, -24, 12, 9, 0.2, 5.6, 'massing');
   house(b, M, 9, -0.7, 58, 14, 9, 0.08, 5.6); box('wallTile', 20.5, -0.75, 53.5, 26.5, -0.7, 57.5); box('water', 20.8, -0.8, 53.8, 26.2, -0.68, 57.2);
   house(b, M, 6, 0.2, -24, 12, 9, -0.06, 5.6, 'massing'); house(b, M, -30, 2.6, 6, 10, 13, 0.1, 5.6); house(b, M, -34, 2.6, 34, 10, 12, -0.05, 3.2, 'massing');
-  box('earth', -70, -3.4, -60, -14.5, 2.55, 80);
-  S('earth', [[-14.5, zS(-14.5)], [30, zS(30)], [30, 80], [-14.5, 80]], -0.7, 0.6);                           // parcelles au Sud
-  S('earth', [[30, zS(30)], [LIM_E, zS(LIM_E)], [LIM_E, 80], [30, 80]], (x) => -0.7 - (x - 30) * 0.1, 0.6);
+  box('earth', -70, -6.3, -60, -14.5, 2.55, 80);
+  S('earth', [[-14.5, zS(-14.5)], [30, zS(30)], [30, 80], [-14.5, 80]], -0.7, 5.6);                           // parcelles au Sud
+  S('earth', [[30, zS(30)], [LIM_E, zS(LIM_E)], [LIM_E, 80], [30, 80]], (x) => -0.7 - (x - 30) * 0.1, 5.6);
   for (const [x, z, k, h, y] of [[-17, -13, 'pine', 11, 2.55], [-19, 17, 'pine', 10, 2.55], [-16, 27, 'oak', 8, 2.55], [-19, 38, 'pine', 12, 2.55], [-24, 22, 'cypress', 9, 2.55], [-12, 48, 'pine', 10, -0.7],
     [4, -11, 'pine', 12, 0.1], [14, -13, 'oak', 8, 0.1], [24, -12, 'pine', 10, -1.6], [-6, -14, 'cypress', 9, 0.1], [30, -16, 'olive', 5, -1.6],
     [5, 47, 'pine', 11, -0.7], [16, 47, 'oak', 7, -0.7], [30, 46, 'pine', 10, -0.7], [-4, 50, 'cypress', 9, -0.7],
