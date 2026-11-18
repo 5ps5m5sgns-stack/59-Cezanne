@@ -85,8 +85,8 @@ function depthPriority(M) {
    mur-sol et mur-plafond, et au bas des meubles eux-mêmes. Elle est fixe : aucun bruit, rien ne bouge quand la vue bouge, coût nul ensuite.
    Un seul programme par matériau (les modes passent par des uniformes) ; tout est compilé au préchauffage. */
 const AO_MODE = { floor: 1, wall: 2, ceiling: 3 };        // les autres matériaux : objets (0)
-const FLOOR_MATS = ['floor', 'tile', 'terrace', 'hexPaving', 'paving', 'grass', 'earth', 'rug', 'rugDark', 'road'];
-const WALL_MATS = ['plaster', 'wallTile', 'stucco', 'stone', 'skirt', 'ashlar', 'stuccoDark'];
+const FLOOR_MATS = ['floor', 'tile', 'terrace', 'hexPaving', 'paving', 'grass', 'earth', 'rug', 'rugDark', 'road', 'travertine', 'gravel', 'mulch', 'asphaltLight'];
+const WALL_MATS = ['plaster', 'wallTile', 'stucco', 'stone', 'skirt', 'ashlar', 'stuccoDark', 'rendering'];
 const AOU = {                                              // uniformes partagés par tous les matériaux
   uAoMap: { value: null }, uAoK: { value: 0 }, uAoSplit: { value: 1e9 },
   uAoT0: { value: new THREE.Vector4() }, uAoT1: { value: new THREE.Vector4() }, uAoA: { value: new THREE.Vector4(1, 0, 1, 0) },     // emprise de chaque niveau, place dans l'atlas

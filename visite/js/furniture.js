@@ -1246,28 +1246,110 @@ export const F = {
   },
 };
 
-/* ── Végétaux de pleine terre (dessinés en coordonnées de plan ; renvoient l'emprise du tronc pour les collisions) ── */
-const ico = new THREE.IcosahedronGeometry(1, 0);
+/* ── Végétaux de pleine terre (dessinés en coordonnées de plan ; renvoient l'emprise du tronc pour les collisions) ──
+   Essences du plan de masse : oliviers, amandiers, pins parasols et d'Alep, cyprès, haies vives, massifs (laurier-rose, pittosporum,
+   romarin, lavande, graminées, rosiers), grimpantes et couvre-sols. Les feuillages sont des cartes (touffes de feuilles dessinées dans
+   materials.js, avec leurs propres niveaux de détail contre le scintillement) : pas de nouveau matériau par essence, les mêmes cartes
+   resservent, ce qui garde un seul appel de dessin par matériau et par calque. M.floraLod réduit le nombre de cartes sur téléphone. */
+const ico = new THREE.IcosahedronGeometry(1, 0), octa = new THREE.OctahedronGeometry(1, 0);
+const lod = (M, n) => Math.max(1, Math.round(n * (M.floraLod || 1)));
+/* Cartes de feuillage réparties dans une coque d'ellipsoïde (rx, ry, rz) : les feuilles sont surtout en surface, comme sur un vrai
+   houppier, le cœur reste clairsemé (on voit le jour au travers). Normales tournées vers l'extérieur et le ciel : ombrage en volume. */
+function crown(b, mat, x, y, z, rx, ry, rz, n, size, R, hollow = 0.55, down = 1) {
+  const pos = [], nor = [], uv = [], ax = new THREE.Vector3(), ay = new THREE.Vector3(), q = new THREE.Vector3();
+  for (let i = 0; i < n; i++) {
+    let u = R() * 2 - 1; if (u < 0) u *= down;                                       // down < 1 : dessous aplati (pins parasols)
+    const a = R() * 6.283, s = Math.sqrt(1 - u * u), k = hollow + (1 - hollow) * Math.cbrt(R());
+    const dx = s * Math.cos(a), dy = u, dz = s * Math.sin(a), cx = x + dx * rx * k, cy = y + dy * ry * k, cz = z + dz * rz * k;
+    ax.set(R() - 0.5, (R() - 0.5) * 0.6, R() - 0.5).normalize(); ay.set(R() - 0.5, R() - 0.5, R() - 0.5).cross(ax).normalize();
+    const h = size * (0.65 + R() * 0.7) / 2, nx = dx, ny = dy * 0.7 + 0.45, nz = dz, nl = Math.hypot(nx, ny, nz) || 1;
+    const c = (sx, sy) => { q.set(cx, cy, cz).addScaledVector(ax, sx * h).addScaledVector(ay, sy * h); pos.push(q.x, q.y, q.z); nor.push(nx / nl, ny / nl, nz / nl); uv.push((sx + 1) / 2, (sy + 1) / 2); };
+    c(-1, -1); c(1, -1); c(1, 1); c(-1, -1); c(1, 1); c(-1, 1);
+  }
+  const g = new THREE.BufferGeometry();
+  g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3)); g.setAttribute('normal', new THREE.Float32BufferAttribute(nor, 3)); g.setAttribute('uv', new THREE.Float32BufferAttribute(uv, 2));
+  b.add(mat, g);
+}
+/* Branche torse : deux tronçons droits légèrement brisés au milieu (un tube lissé coûterait dix fois plus de triangles, pour une
+   différence invisible à la taille d'une branche). */
+function limb(b, M, p0, p1, r0, R, wob = 0.12, seg = 5) {
+  const m = [(p0[0] + p1[0]) / 2 + (R() - 0.5) * wob, (p0[1] + p1[1]) / 2 + (R() - 0.5) * wob * 0.5, (p0[2] + p1[2]) / 2 + (R() - 0.5) * wob];
+  b.rod(M.bark, p0, m, r0, seg, r0 * 0.8); b.rod(M.bark, m, p1, r0 * 0.8, seg, r0 * 0.45);
+}
+/* Fleurs : petits polyèdres de couleur posés en surface d'une touffe (bouquets de trois). */
+function blooms(b, mat, x, y, z, rx, ry, n, s, R) {
+  for (let i = 0; i < n; i++) {
+    const a = R() * 6.283, u = 0.15 + R() * 0.85, rr = Math.sqrt(1 - u * u * 0.6), cx = x + Math.cos(a) * rr * rx, cz = z + Math.sin(a) * rr * rx, cy = y + u * ry;
+    for (let k = 0; k < 3; k++) b.geo(mat, octa.clone(), cx + (R() - 0.5) * s * 2, cy + (R() - 0.5) * s * 1.6, cz + (R() - 0.5) * s * 2, R() * 3, R() * 3, 0, s * (0.8 + R() * 0.5), s * (0.8 + R() * 0.5), s);
+  }
+}
+
 export const V = {
-  /* Arbre : 'olive' (tronc noueux, houppier argenté), 'pine' (pin parasol), 'oak' (feuillu). Le feuillage est fait de touffes de petites cartes. */
+  /* Arbre : 'olive' (tronc court noueux, houppier argenté aéré), 'almond' (amandier : port étalé en vase, feuillage vert clair fin),
+     'pine' (pin parasol : haut fût nu, houppier en ombrelle), 'aleppo' (pin d'Alep : fût sinueux, houppier irrégulier et étagé),
+     'oak' (feuillu arrondi). h : hauteur totale, r : rayon du houppier, y : cote du pied. */
   tree(b, M, x, z, { kind = 'pine', h = 7, r = 2.6, seed = 1, y = 0 }) {
-    const R = rng(seed * 131 + 7), pine = kind === 'pine', olive = kind === 'olive', th = h * (pine ? 0.62 : 0.38), lean = (R() - 0.5) * 0.22;
-    const top = [x + lean * th, y + th, z + (R() - 0.5) * 0.2 * th * 0.3], tr = 0.09 + r * 0.035;
-    if (olive) {                                                                          // olivier : tronc court et tourmenté qui se divise en trois charpentières
-      const fy = y + th * 0.5;
-      b.tube(M.bark, [[x, y - 0.1, z], [x + (R() - 0.5) * 0.14, y + th * 0.25, z + (R() - 0.5) * 0.14], [x + (R() - 0.5) * 0.1, fy, z + (R() - 0.5) * 0.1]], tr * 1.15, 8);
-      for (let k = 0; k < 3; k++) { const a = k * 2.1 + R(), ex = top[0] + Math.cos(a) * r * 0.3, ez = top[2] + Math.sin(a) * r * 0.3; b.tube(M.bark, [[x, fy - 0.05, z], [x + Math.cos(a) * 0.18 + (R() - 0.5) * 0.1, fy + (y + th - fy) * 0.5, z + Math.sin(a) * 0.18], [ex, y + th, ez]], tr * 0.62, 6); }
-    } else b.tube(M.bark, [[x, y - 0.1, z], [x + lean * th * 0.3 + (R() - 0.5) * 0.12, y + th * 0.45, z + (R() - 0.5) * 0.12], top], tr, 8);
-    b.cyl(M.bark, x, y, z, tr * 1.7, 0.25, 9, tr * 1.05);
-    for (let k = 0; k < 4; k++) { const a = k * 1.57 + R() * 0.8, L = tr * (3.2 + R() * 1.5); b.rod(M.bark, [x + Math.cos(a) * tr * 0.5, y + tr * 1.1, z + Math.sin(a) * tr * 0.5], [x + Math.cos(a) * L, y - 0.04, z + Math.sin(a) * L], tr * 0.55, 5, tr * 0.12); }   // empattements
-    const mat = pine ? M.leafPine : olive ? M.leafOlive : M.leafBroad, n = pine ? 9 : 8, cy = y + th + (pine ? r * 0.2 : r * 0.42), fl = pine ? 0.42 : 0.8;
-    b.sph(M.hedge, top[0], cy, top[2], r * 0.5, 1, fl * 0.9, 1, 10);                      // cœur sombre du houppier
-    for (let i = 0; i < n; i++) {
-      const a = (i / n) * 6.283 + R() * 0.6, rr = r * (0.35 + R() * 0.35), bx = top[0] + Math.cos(a) * rr, bz = top[2] + Math.sin(a) * rr, by = cy + (R() - 0.5) * r * fl * 0.7;
-      b.rod(M.bark, top, [bx, by - r * 0.1, bz], tr * 0.45, 5, tr * 0.15);
-      leaves(b, mat, bx, by, bz, r * 0.5, Math.round(26 + r * 7), pine ? 0.95 : olive ? 0.6 : 0.8, R, fl);
+    const R = rng(seed * 131 + 7), tr = 0.09 + r * 0.035;
+    b.cyl(M.bark, x, y - 0.05, z, tr * 1.6, 0.3, 9, tr * 1.02);                                       // collet évasé
+    for (let k = 0; k < 4; k++) { const a = k * 1.57 + R() * 0.8, L = tr * (3 + R() * 1.5); b.rod(M.bark, [x + Math.cos(a) * tr * 0.5, y + tr * 1.1, z + Math.sin(a) * tr * 0.5], [x + Math.cos(a) * L, y - 0.04, z + Math.sin(a) * L], tr * 0.5, 5, tr * 0.12); }   // empattements
+    if (kind === 'olive') {
+      // tronc court et tourmenté, creusé de cannelures : trois tubes torsadés serrés, qui se séparent en charpentières vers 1 m ;
+      // le houppier, large et arrondi, descend bas (jusqu'à 1,3 m environ) : un olivier n'est pas une sucette sur un fût
+      const th = Math.min(1.2, h * 0.26), ry = (h - th) * 0.42, cy = y + h - ry;
+      for (let k = 0; k < 3; k++) {
+        const a = k * 2.09 + R() * 0.5, o = tr * 0.45, ex = x + Math.cos(a + 0.9) * o * 1.3, ez = z + Math.sin(a + 0.9) * o * 1.3;
+        b.tube(M.bark, [[x + Math.cos(a) * o, y - 0.1, z + Math.sin(a) * o], [x + Math.cos(a + 0.5) * o * 0.9, y + th * 0.45, z + Math.sin(a + 0.5) * o * 0.9], [ex, y + th, ez]], tr * 0.62, 6);
+      }
+      const nb = 4 + (R() < 0.5 ? 1 : 0), tips = [];
+      for (let k = 0; k < nb; k++) {
+        const a = (k / nb) * 6.283 + R() * 0.7, d = r * (0.38 + R() * 0.25), tx = x + Math.cos(a) * d, tz = z + Math.sin(a) * d, ty = cy + (R() - 0.45) * ry * 0.7;
+        limb(b, M, [x + Math.cos(a) * tr * 0.4, y + th - 0.05, z + Math.sin(a) * tr * 0.4], [tx, ty - ry * 0.3, tz], tr * 0.42, R, 0.25, 5); tips.push([tx, ty, tz]);
+      }
+      // pas de masse pleine au cœur (elle se lisait comme une boule à travers le feuillage clair) : des touffes, et le jour au travers
+      for (const [tx, ty, tz] of tips) crown(b, M.leafOlive, tx, ty, tz, r * 0.55, ry * 0.75, r * 0.55, lod(M, 46 + r * 14), 0.55, R, 0.15);
+      crown(b, M.leafOlive, x, cy + ry * 0.1, z, r * 0.85, ry * 0.95, r * 0.85, lod(M, 60 + r * 16), 0.6, R, 0.4);
+      return [x - 0.25, z - 0.25, x + 0.25, z + 0.25];
     }
-    leaves(b, mat, top[0], cy + r * fl * 0.35, top[2], r * 0.55, Math.round(30 + r * 8), pine ? 0.95 : olive ? 0.6 : 0.8, R, fl * 0.8);
+    if (kind === 'almond') {
+      // amandier : tronc court, quatre à six branches qui montent en s'écartant (vase), houppier large et assez plat, feuilles fines
+      const th = Math.min(1.0, h * 0.2), ry = (h - th) * 0.36, cy = y + h - ry, nb = 4 + ((R() * 3) | 0), tips = [];
+      b.tube(M.bark, [[x, y - 0.1, z], [x + (R() - 0.5) * 0.1, y + th * 0.5, z + (R() - 0.5) * 0.1], [x, y + th, z]], tr * 0.95, 7);
+      for (let k = 0; k < nb; k++) {
+        const a = (k / nb) * 6.283 + R() * 0.6, d = r * (0.45 + R() * 0.3), tx = x + Math.cos(a) * d, tz = z + Math.sin(a) * d, ty = cy + (R() - 0.5) * ry * 0.5;
+        const mx = x + Math.cos(a) * d * 0.4, mz = z + Math.sin(a) * d * 0.4, my = y + th + (ty - y - th) * 0.55;
+        limb(b, M, [x, y + th - 0.05, z], [mx, my, mz], tr * 0.5, R, 0.12, 5); limb(b, M, [mx, my, mz], [tx, ty - ry * 0.3, tz], tr * 0.3, R, 0.18, 4); tips.push([tx, ty, tz]);
+      }
+      for (const [tx, ty, tz] of tips) crown(b, M.leafAlmond, tx, ty, tz, r * 0.5, ry * 0.8, r * 0.5, lod(M, 36 + r * 10), 0.5, R, 0.3);
+      crown(b, M.leafAlmond, x, cy + ry * 0.15, z, r * 0.85, ry * 0.9, r * 0.85, lod(M, 40 + r * 12), 0.5, R, 0.6);
+      return [x - 0.22, z - 0.22, x + 0.22, z + 0.22];
+    }
+    if (kind === 'pine' || kind === 'aleppo') {
+      const alep = kind === 'aleppo', ry = r * (alep ? 0.45 : 0.3), th = h - ry * (alep ? 2.2 : 1.6), lean = (R() - 0.5) * (alep ? 0.35 : 0.2), la = R() * 6.283;
+      const top = [x + Math.cos(la) * lean * th, y + th, z + Math.sin(la) * lean * th], cy = y + h - ry;
+      // fût : légèrement courbe (parasol), sinueux (Alep), écorce en plaques
+      b.tube(M.bark, [[x, y - 0.1, z], [x + Math.cos(la) * lean * th * 0.15 + (R() - 0.5) * 0.15, y + th * 0.35, z + Math.sin(la) * lean * th * 0.15 + (R() - 0.5) * 0.15],
+        [x + Math.cos(la) * lean * th * 0.55 + (R() - 0.5) * (alep ? 0.5 : 0.15), y + th * 0.72, z + Math.sin(la) * lean * th * 0.55 + (R() - 0.5) * (alep ? 0.5 : 0.15)], top], tr, 8);
+      const nb = 6;
+      b.sph(M.hedge, top[0], cy, top[2], r * 0.38, 1, ry / r * 1.2, 1, 10);                          // masse sombre au cœur de l'ombrelle
+      for (let k = 0; k < nb; k++) {
+        const a = (k / nb) * 6.283 + R() * 0.8, d = r * (0.38 + R() * 0.3), bx = top[0] + Math.cos(a) * d, bz = top[2] + Math.sin(a) * d;
+        const by = alep ? cy + (R() - 0.6) * ry * 1.2 : cy + (R() - 0.5) * ry * 0.4;
+        limb(b, M, alep ? [x + (top[0] - x) * 0.8, y + th * (0.75 + R() * 0.25), z + (top[2] - z) * 0.8] : top, [bx, by - ry * 0.4, bz], tr * 0.42, R, alep ? 0.4 : 0.2, 5);
+        crown(b, M.leafPine, bx, by, bz, r * 0.55, ry * 0.85, r * 0.55, lod(M, 52 + r * 10), 1.05, R, 0.35, 0.8);
+      }
+      crown(b, M.leafPine, top[0], cy + ry * 0.15, top[2], r * 0.7, ry * 0.9, r * 0.7, lod(M, 50 + r * 8), 0.95, R, 0.5, 0.6);
+      return [x - 0.25, z - 0.25, x + 0.25, z + 0.25];
+    }
+    // feuillu arrondi
+    const th = h * 0.36, top = [x + (R() - 0.5) * 0.3, y + th, z + (R() - 0.5) * 0.3], ry = (h - th) * 0.5, cy = y + h - ry;
+    b.tube(M.bark, [[x, y - 0.1, z], [x + (R() - 0.5) * 0.12, y + th * 0.5, z + (R() - 0.5) * 0.12], top], tr, 8);
+    b.sph(M.hedge, top[0], cy, top[2], r * 0.4, 1, ry / r, 1, 10);
+    for (let k = 0; k < 7; k++) {
+      const a = (k / 7) * 6.283 + R() * 0.6, d = r * (0.35 + R() * 0.3), bx = top[0] + Math.cos(a) * d, bz = top[2] + Math.sin(a) * d, by = cy + (R() - 0.45) * ry * 0.6;
+      limb(b, M, top, [bx, by - ry * 0.3, bz], tr * 0.45, R, 0.2, 5);
+      crown(b, M.leafBroad, bx, by, bz, r * 0.52, ry * 0.6, r * 0.52, lod(M, 36 + r * 8), 0.75, R, 0.35);
+    }
+    crown(b, M.leafBroad, top[0], cy + ry * 0.15, top[2], r * 0.8, ry * 0.85, r * 0.8, lod(M, 40 + r * 8), 0.8, R, 0.6);
     return [x - 0.25, z - 0.25, x + 0.25, z + 0.25];
   },
   /* Cyprès de Provence : fuseau, flammes de feuillage sombre en cartes posées à la surface du fuseau (silhouette irrégulière). */
@@ -1277,7 +1359,7 @@ export const V = {
     const prof = [[0.1, 0], [w, h * 0.12], [w * 1.05, h * 0.3], [w * 0.92, h * 0.55], [w * 0.6, h * 0.78], [w * 0.22, h * 0.9], [0.001, h * 0.94]];
     b.lathe(M.leafCypress, x, y + h * 0.06, z, prof.map(([r, yy]) => [r * 0.9, yy]), 10);
     const rAt = (t) => { for (let i = 1; i < prof.length; i++) if (t <= prof[i][1]) { const k = (t - prof[i - 1][1]) / (prof[i][1] - prof[i - 1][1]); return prof[i - 1][0] + (prof[i][0] - prof[i - 1][0]) * k; } return 0.001; };
-    const n = Math.round(h * 30);
+    const n = lod(M, h * 30);
     for (let i = 0; i < n; i++) { const t = (0.05 + 0.88 * Math.pow(R(), 0.9)) * h * 0.9, a = R() * 6.283, rr = rAt(t) * (0.8 + R() * 0.3); leaves(b, M.leafPine, x + Math.cos(a) * rr, y + h * 0.06 + t, z + Math.sin(a) * rr, 0.1, 1, 0.5, R, 1); }
     return [x - 0.3, z - 0.3, x + 0.3, z + 0.3];
   },
@@ -1288,10 +1370,10 @@ export const V = {
     const along = bx - ax > bz - az, len = Math.max(bx - ax, bz - az), wid = Math.min(bx - ax, bz - az), n = Math.round(len / 0.34);
     for (let i = 0; i < n; i++) {
       const t = (i + 0.5) / n, px = along ? ax + len * t : (ax + bx) / 2, pz = along ? (az + bz) / 2 : az + len * t;
-      leaves(b, M.leafBroad, px, y + h - 0.12, pz, Math.max(0.22, wid * 0.55), 9, 0.34, R, 0.5);
-      for (const s of [-1, 1]) {                                                         // feuilles sur les flancs
+      leaves(b, M.leafBroad, px, y + h - 0.12 + (R() - 0.4) * 0.12, pz, Math.max(0.22, wid * 0.55), lod(M, 9), 0.34, R, 0.5);   // dessus un peu bosselé : haie vive, pas un mur
+      for (const s of [-1, 1]) {                                                         // feuilles sur les flancs, du pied au sommet
         const fx = along ? px : (s < 0 ? ax : bx), fz = along ? (s < 0 ? az : bz) : pz;
-        leaves(b, M.leafBroad, fx, y + h * (0.35 + R() * 0.4), fz, 0.2, 4, 0.3, R, 0.8);
+        crown(b, M.leafBroad, fx + (along ? 0 : s * 0.03), y + h * 0.55, fz + (along ? s * 0.03 : 0), along ? 0.22 : 0.07, h * 0.45, along ? 0.07 : 0.22, lod(M, Math.round(h * 4.5)), 0.32, R, 0);
       }
     }
     return [ax, az, bx, bz];
@@ -1301,7 +1383,7 @@ export const V = {
     const R = rng(seed * 17 + 1), len = Math.hypot(x1 - x0, z1 - z0), n = Math.max(2, Math.round(len / 0.55)), spike = new THREE.ConeGeometry(0.014, 0.14, 4, 1, true), stem = new THREE.ConeGeometry(0.005, 0.3, 4, 1, true);
     for (let i = 0; i < n; i++) {
       const t = (i + 0.5) / n, x = x0 + (x1 - x0) * t, z = z0 + (z1 - z0) * t;
-      b.sph(M.hedge, x, y + 0.1, z, 0.26, 1, 0.55, 1, 6); leaves(b, M.leafOlive, x, y + 0.16, z, 0.27, 26, 0.26, R, 0.5);
+      b.sph(M.hedge, x, y + 0.1, z, 0.26, 1, 0.55, 1, 6); leaves(b, M.leafOlive, x, y + 0.16, z, 0.27, lod(M, 26), 0.26, R, 0.5);
       for (let k = 0; k < 24; k++) {
         const a = R() * 6.283, rr = Math.sqrt(R()) * 0.24, lean = 0.1 + rr * 1.6, sl = 0.28 + R() * 0.1, px = x + Math.cos(a) * rr * 0.6, pz = z + Math.sin(a) * rr * 0.6, tx = Math.sin(a) * lean, tz = -Math.cos(a) * lean;
         b.geo(M.leafCypress, stem, px + Math.cos(a) * Math.sin(lean) * sl * 0.5, y + 0.17 + Math.cos(lean) * sl * 0.5, pz + Math.sin(a) * Math.sin(lean) * sl * 0.5, tx, 0, tz, 1, sl / 0.3, 1);
@@ -1313,7 +1395,7 @@ export const V = {
   oleander(b, M, x, z, { r = 0.9, y = 0, seed = 5 }) {
     const R = rng(seed * 29 + 3);
     b.sph(M.hedge, x, y + r * 0.6, z, r * 0.5, 1, 0.9, 1, 6);
-    for (let i = 0; i < 14; i++) { const a = R() * 6.283, rr = R() * r * 0.5; leaves(b, M.leafBroad, x + Math.cos(a) * rr, y + r * (0.3 + R() * 0.85), z + Math.sin(a) * rr, r * 0.55, 18, 0.4, R, 0.9); }
+    for (let i = 0; i < 14; i++) { const a = R() * 6.283, rr = R() * r * 0.5; leaves(b, M.leafBroad, x + Math.cos(a) * rr, y + r * (0.3 + R() * 0.85), z + Math.sin(a) * rr, r * 0.55, lod(M, 18), 0.4, R, 0.9); }
     for (let i = 0; i < 26; i++) {                                                       // grappes : trois fleurs par bouquet
       const a = R() * 6.283, u = 0.2 + R() * 0.8, rr = Math.sqrt(1 - u * u * 0.55) * r * 0.82, yy = y + r * (0.55 + u * 0.75), cx = x + Math.cos(a) * rr, cz = z + Math.sin(a) * rr;
       for (let k = 0; k < 3; k++) b.geo(M.oleander, ico.clone(), cx + (R() - 0.5) * 0.09, yy + (R() - 0.5) * 0.07, cz + (R() - 0.5) * 0.09, R() * 3, R() * 3, 0, 0.042 + R() * 0.02, 0.042 + R() * 0.02, 0.042);
@@ -1330,5 +1412,64 @@ export const V = {
       for (let k = 1; k <= 4; k++) leaves(b, M.leafBroad, pts[k][0], pts[k][1], pts[k][2], 0.2, 5, 0.6, R, 0.5);
     }
     return [x - 0.3, z - 0.3, x + 0.3, z + 0.3];
+  },
+  /* Arbuste de massif : 'rosemary' (romarin : coussin d'aiguilles gris-vert, fleurs bleu pâle), 'pittosporum' (boule dense vert
+     franc), 'grass' (graminée : touffe de fines feuilles arquées, épis blonds), 'rose' (rosier ou bougainvillée : feuillage et
+     nombreuses fleurs roses, comme sur la perspective). r : rayon, h : hauteur. Renvoie l'emprise au sol. */
+  shrub(b, M, x, z, { kind = 'pittosporum', r = 0.6, h, y = 0, seed = 1 }) {
+    const R = rng(seed * 53 + Math.round(x * 7 + z * 3));
+    if (kind === 'grass') {
+      const hh = h || r * 1.4, n = lod(M, 34), blade = new THREE.ConeGeometry(0.012, 1, 3, 1, true), ear = new THREE.ConeGeometry(0.022, 1, 4, 1, true);
+      for (let i = 0; i < n; i++) {
+        const a = R() * 6.283, lean = 0.15 + R() * 0.55, l = hh * (0.6 + R() * 0.45), o = R() * r * 0.25, tx = Math.sin(a) * lean, tz = -Math.cos(a) * lean;
+        const px = x + Math.cos(a) * (o + Math.sin(lean) * l * 0.5), pz = z + Math.sin(a) * (o + Math.sin(lean) * l * 0.5);
+        b.geo(M.leafCypress, blade, px, y + Math.cos(lean) * l * 0.5, pz, tx, 0, tz, 1, l, 1);
+        if (i % 3 === 0) { const e = l * 0.3, d = o + Math.sin(lean) * (l + e * 0.4); b.geo(M.pampas, ear, x + Math.cos(a) * d, y + Math.cos(lean) * (l + e * 0.4), z + Math.sin(a) * d, tx, 0, tz, 1, e, 1); }
+      }
+      return [x - r * 0.4, z - r * 0.4, x + r * 0.4, z + r * 0.4];
+    }
+    const hh = h || r * (kind === 'rosemary' ? 1.1 : kind === 'rose' ? 1.4 : 1.6), cy = y + hh * 0.5;
+    const mat = kind === 'rosemary' ? M.leafPine : kind === 'pittosporum' ? M.leafBroad : M.leafBroad;
+    b.sph(M.hedge, x, cy - hh * 0.05, z, r * 0.8, 1, (hh / 2) / r * 0.85, 1, 7);
+    crown(b, mat, x, cy, z, r, hh * 0.5, r, lod(M, kind === 'rosemary' ? 60 + r * 60 : 40 + r * 50), kind === 'rosemary' ? 0.3 : 0.32, R, 0.55, 0.6);
+    if (kind === 'rose') blooms(b, M.oleander, x, cy - hh * 0.1, z, r * 0.9, hh * 0.55, Math.round(10 + r * 26), 0.035, R);
+    if (kind === 'rosemary') blooms(b, M.lavender, x, cy - hh * 0.2, z, r * 0.95, hh * 0.6, Math.round(6 + r * 10), 0.014, R);
+    return [x - r * 0.7, z - r * 0.7, x + r * 0.7, z + r * 0.7];
+  },
+  /* Plante grimpante entre deux points : si les deux cotes sont voisines, elle couvre le rectangle horizontal (x0, z0)-(x1, z1) à la
+     cote y (treille, pergola), en retombant un peu sur les bords ; sinon elle tapisse la bande verticale qui suit le segment de plan
+     (x0, z0)-(x1, z1) entre les cotes y0 et y1 (mur, clôture), plus dense en haut d'où elle retombe. density : 1 = couvert ordinaire.
+     Quelques grappes de fleurs (bougainvillée) selon la graine. Pas d'emprise : elle ne gêne pas le passage. */
+  climber(b, M, x0, y0, z0, x1, y1, z1, { seed = 1, density = 1 } = {}) {
+    const R = rng(seed * 97 + 11), flat = Math.abs(y1 - y0) < 0.3, flowers = seed % 3 !== 0;
+    if (flat) {
+      const ax = Math.min(x0, x1), bx = Math.max(x0, x1), az = Math.min(z0, z1), bz = Math.max(z0, z1), yy = Math.max(y0, y1), area = (bx - ax) * (bz - az);
+      const n = lod(M, area * 10 * density), cells = Math.max(1, Math.round(n / 22));
+      for (let i = 0; i < cells; i++) {
+        const cx = ax + R() * (bx - ax), cz = az + R() * (bz - az), s = Math.sqrt(area / cells) * 0.75;
+        crown(b, M.leafBroad, cx, yy + 0.08, cz, s, 0.14, s, 22, 0.32, R, 0.2, 0.5);
+        if (R() < 0.35) crown(b, M.leafBroad, cx, yy - 0.25, cz, s * 0.35, 0.3, s * 0.35, 8, 0.28, R, 0.2);     // rameaux qui pendent sous la treille
+        if (flowers && R() < 0.5) blooms(b, M.oleander, cx, yy + 0.02, cz, s * 0.8, 0.12, Math.round(1 + R() * 2), 0.035, R);
+      }
+      return;
+    }
+    const len = Math.hypot(x1 - x0, z1 - z0), ya = Math.min(y0, y1), yb = Math.max(y0, y1), ht = yb - ya;
+    const ux = len ? (x1 - x0) / len : 1, uz = len ? (z1 - z0) / len : 0, n = lod(M, len * ht * 16 * density), cells = Math.max(1, Math.round(n / 14));
+    for (let i = 0; i < cells; i++) {
+      const t = R() * len, f = Math.pow(R(), 0.7), cy = yb - f * ht * 0.95, side = R() < 0.5 ? -1 : 1, off = side * (0.04 + R() * 0.08);
+      const cx = x0 + ux * t - uz * off, cz = z0 + uz * t + ux * off, s = 0.3 + R() * 0.35;
+      crown(b, M.leafBroad, cx, cy, cz, s * Math.abs(ux) + 0.1, s * 0.9, s * Math.abs(uz) + 0.1, 14, 0.26, R, 0.25);
+    }
+    if (flowers) for (let i = 0; i < Math.round(len * 2 * density); i++) { const t = R() * len; blooms(b, M.oleander, x0 + ux * t, yb - R() * ht * 0.5, z0 + uz * t, 0.12, 0.2, 1, 0.03, R); }
+  },
+  /* Couvre-sol (rectangle de plan) : tapis bas et irrégulier de petites feuilles, quelques fleurs ; posé à la cote y. */
+  groundcover(b, M, x0, z0, x1, z1, { y = 0, seed = 1 } = {}) {
+    const R = rng(seed * 61 + 5), ax = Math.min(x0, x1), bx = Math.max(x0, x1), az = Math.min(z0, z1), bz = Math.max(z0, z1), area = (bx - ax) * (bz - az);
+    const cells = Math.max(1, Math.round(area / 0.35));
+    for (let i = 0; i < cells; i++) {
+      const cx = ax + 0.1 + R() * (bx - ax - 0.2), cz = az + 0.1 + R() * (bz - az - 0.2), s = 0.25 + R() * 0.2;
+      crown(b, R() < 0.5 ? M.leafBroad : M.leafOlive, cx, y + 0.06, cz, s, 0.07, s, lod(M, 10), 0.2, R, 0.2, 0.3);
+    }
+    blooms(b, M.lavender, (ax + bx) / 2, y + 0.06, (az + bz) / 2, Math.min(bx - ax, bz - az) * 0.45, 0.04, Math.round(area * 1.5), 0.012, R);
   },
 };

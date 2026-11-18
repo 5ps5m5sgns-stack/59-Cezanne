@@ -317,6 +317,39 @@ Object.assign(F, {
     b.geo(M.frame, new THREE.CylinderGeometry(0.2, 0.2, 0.01, 3), 0, 0.22, 0, 0, 0.5, 0);
     return [0.62, 0.62];
   },
+  /* Table ronde de jardin (plan du logement 02 : table ronde et six chaises) : plateau en teck sur fût central en aluminium sombre,
+     chaises à dossier latté et galette anthracite, tournées vers la table. Matériaux déjà présents au jardin (teck, aluminium, galettes). */
+  outdoorRound(b, M, { r = 0.6, n = 6 }) {
+    b.lathe(M.teak, 0, 0.715, 0, [[0.001, 0], [r - 0.01, 0], [r, 0.012], [r, 0.03], [r - 0.006, 0.036], [0.001, 0.036]], 36);
+    b.cyl(M.frame, 0, 0.06, 0, 0.045, 0.66, 12); b.cyl(M.frame, 0, E, 0, 0.3, 0.012, 20, 0.26); b.cyl(M.frame, 0, 0.012, 0, 0.09, 0.05, 12, 0.05);
+    const R = r + 0.36;
+    for (let i = 0; i < n; i++) {
+      const a = (i / n) * 2 * PI + PI / n;
+      b.push(Math.sin(a) * R, 0, Math.cos(a) * R, a + PI);                                     // face avant (+z) tournée vers la table
+      for (const [sx, sz] of [[-1, -1], [1, -1], [-1, 1], [1, 1]]) b.rod(M.frame, [sx * 0.19, 0.42, sz * 0.19], [sx * 0.22, 0, sz * (sz < 0 ? 0.25 : 0.21)], 0.012, 6);
+      b.cbox(M.frame, 0, 0.405, 0, 0.44, 0.022, 0.44, 0.006);
+      b.cbox(M.charcoal, 0, 0.427, 0.01, 0.4, 0.045, 0.4, 0.018);
+      for (let k = 0; k < 4; k++) b.geo(M.frame, new THREE.BoxGeometry(0.42, 0.05, 0.02), 0, 0.52 + k * 0.085, -0.215 - k * 0.012, -0.14, 0, 0);   // dossier latté, légèrement incliné
+      b.pop();
+    }
+    return [2 * (R + 0.26), 2 * (R + 0.26)];
+  },
+  /* Borne d'éclairage de jardin basse : fût anthracite, diffuseur opalin sous un chapeau débordant (éclairage rasant, sans éblouissement). */
+  gardenLight(b, M, { h = 0.5 }) {
+    b.cyl(M.frame, 0, E, 0, 0.07, 0.015, 12); b.cyl(M.frame, 0, 0.015, 0, 0.045, h - 0.12, 10);
+    b.cyl(M.white, 0, h - 0.105, 0, 0.042, 0.07, 10); b.cyl(M.frame, 0, h - 0.035, 0, 0.075, 0.03, 12, 0.07);
+    return [0.16, 0.16];
+  },
+  /* Robinet de puisage en façade et dévidoir mural avec son tuyau enroulé (arrosage) ; l'origine est sur le nu du mur. */
+  gardenTap(b, M, { }) {
+    b.box(M.frame, -0.05, 0.62, 0, 0.05, 0.74, 0.012); b.rod(M.frame, [0, 0.68, 0.012], [0, 0.68, 0.07], 0.012, 8); b.rod(M.frame, [0, 0.68, 0.07], [0, 0.63, 0.085], 0.009, 6);
+    b.rod(M.frame, [0, 0.7, 0.05], [0, 0.73, 0.05], 0.006, 5); b.box(M.frame, -0.03, 0.73, 0.045, 0.03, 0.736, 0.055);
+    b.box(M.frame, 0.25, 0.35, 0, 0.45, 0.6, 0.012);                                             // dévidoir : platine, axe, tuyau enroulé
+    b.rod(M.frame, [0.35, 0.47, 0.012], [0.35, 0.47, 0.2], 0.015, 8);
+    for (let k = 0; k < 4; k++) b.ring(M.charcoal, 0.35, 0.47, 0.06 + k * 0.032, 0.13 - (k % 2) * 0.006, 0.014, -PI / 2, 0, 24, 5);
+    b.tube(M.charcoal, [[0.35, 0.34, 0.16], [0.3, 0.2, 0.2], [0.25, 0.04, 0.25], [0.05, 0.015, 0.3]], 0.012, 5);
+    return null;
+  },
 });
 
 export const DECOR = Object.keys(SMALL);
