@@ -20,7 +20,7 @@ h=hashlib.md5()
 for f in sorted(glob.glob(R+'visite/**/*',recursive=True)):
     if f.endswith(('.js','.css')): h.update(open(f,'rb').read())
 V=h.hexdigest()[:8]
-mods=['geo','materials','furniture','build','site','plans','env','nav','main']
+mods=['geo','materials','furniture','build','site','decor','plans','env','nav','main']
 imap='{"imports":{"three":"/vendor/three/three.module.min.js?v=r170","three/addons/":"/vendor/three/addons/",'+','.join('"v3d/%s":"/visite/js/%s.js?v=%s"'%(m,m,V) for m in mods)+'}}'
 def t(fr,en,tag='span',cls=''):
     c=(' class="%s"'%cls) if cls else ''

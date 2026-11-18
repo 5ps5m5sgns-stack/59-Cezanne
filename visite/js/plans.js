@@ -13,6 +13,7 @@
    Illustrations non contractuelles. */
 import * as THREE from 'three';
 import { V } from 'v3d/furniture';
+import 'v3d/decor';                               // objets de vie (types ajoutés au catalogue F avant la construction)
 import { railing } from 'v3d/build';
 import { buildSite } from 'v3d/site';
 
@@ -121,7 +122,7 @@ const villa = {
       // 6 — bureau : plan de travail de 2,05 m contre la chambre 2, deux assises ; gaine dans l'angle
       ['desk', 2.255, 3.795, 0, { w: 2.05, d: 0.55, top: 'oak', chair: 'greige' }], ['stool', 1.55, 4.3, 0, { mat: 'greige', h: 0.46 }], ['duct', 0.145, 5.395, 0, { w: 0.29, d: 0.65 }],
       // 5 — couloir : deux placards
-      ['wardrobe', 4.055, CS + 0.3, 180, { w: 1.39, d: 0.6, mat: 'lacquer' }], ['wardrobe', 6.595, CS + 0.3, 180, { w: 1.47, d: 0.6, mat: 'lacquer' }], ['duct', 7.62, 5.62, 0, { w: 0.58, d: 1.02 }],
+      ['wardrobe', 4.055, CS + 0.3, 180, { w: 1.39, d: 0.6, mat: 'lacquer', open: false }], ['wardrobe', 6.595, CS + 0.3, 180, { w: 1.47, d: 0.6, mat: 'lacquer', open: false }], ['duct', 7.62, 5.62, 0, { w: 0.58, d: 1.02 }],
       // 7 — chambre 1 : lit de 140 tête au Nord
       ['bed', 1.62, 6.5, 0, { w: 1.4, l: 2.0, hw: 0.4 }],
       // 8 — dressing : coiffeuse au Nord, penderie de 2,40 m au Sud
@@ -131,6 +132,40 @@ const villa = {
       ['bathtub', 8.36, 7.85, 0, { w: 0.72, l: 1.62 }], ['vanity', 6.63, 8.425, 180, { w: 1.57, d: 0.49, double: true }],
       // 10 — WC : cuvette contre la gaine, lave-mains en alcôve
       ['toilet', 8.24, 5.6, 90, {}], ['basin', 9.11, 6.44, 180, { w: 0.42 }],
+      // objets de vie (ajouts d'ameublement, hors plan) : rien au sol dans les passages ni devant les portes et les baies
+      // entrée : console et miroir sur la cloison du WC, patères au bout, parapluies à côté de la porte palière
+      ['console', 9.49, 5.72, 90, { w: 0.9, d: 0.3 }], ['hooks', 9.49, 6.42, 90, { w: 0.42, y: 1.75, coats: ['taupe', 'cream'] }],
+      ['shoes', 9.49, 6.42, 90, { set: [[-0.1, 0.17, 0.15, 'taupe'], [0.13, 0.16, -0.1, 'cream']] }], ['umbrella', 10.68, 8.5, 0, {}],
+      // séjour : grande toile et lampadaire au-dessus du fauteuil, corbeille à plaids, plantes dans les angles, enceinte sur le meuble TV
+      ['frames', 12.35, VD, 180, { set: [[0, 1.5, 0.9, 1.1, 'art2', 'oak']] }], ['floorLamp', 11.65, 8.25, 0, {}], ['basket', 12.95, 7.95, 0, {}],
+      ['fig', 16.33, 5.6, 0, { h: 1.7 }], ['fig', 15.7, 8.33, 0, { h: 1.35, seed: 4, dark: true }], ['fig', 12.25, 0.35, 0, { h: 1.8, pot: 0.24, seed: 21 }],
+      ['objs', 14.13, 8.44, 180, { y: 0.5, set: [['speaker', 0.74, 0.02, 0]] }],
+      // cuisine : machine à expresso côté réfrigérateur, huile et vinaigre près de l'évier, sansevière près de la porte-fenêtre
+      ['objs', 8.755, 1.755, 90, { y: 0.91, set: [['coffee', -0.6, -0.12, 0], ['bottles', 0.72, -0.2, 0]] }], ['plant', 10.85, 0.32, 0, { kind: 'snake', h: 0.9, pot: 0.18 }],
+      // buanderie : étagère à linge au-dessus des machines, planche à repasser, panier
+      ['wallShelf', 7.2, 2.19, 180, { w: 1.1, d: 0.25, ys: [1.55], kind: 'laundry' }], ['ironing', 6.54, 0.75, 90, {}], ['hamper', 6.85, 1.25, 0, {}],
+      // salle de bains 2
+      ['bathMat', 7.7, 3.3, 0, { w: 0.6, d: 0.4 }], ['hamper', 6.8, 2.6, 0, { r: 0.17, h: 0.5 }], ['frames', 6.54, 2.8, 90, { set: [[0, 1.5, 0.35, 0.45, 'art4', 'oak']] }],
+      // couloir : trois cadres entre les portes
+      ['frames', 5.4, CN, 0, { set: [[-0.65, 1.5, 0.45, 0.6, 'art4', 'black'], [0, 1.5, 0.45, 0.6, 'art2', 'black'], [0.65, 1.5, 0.45, 0.6, 'art4', 'black']] }],
+      // bureau : étagères au-dessus du plan de travail, tableau d'affichage et cadre en face
+      ['wallShelf', 2.35, 3.5, 0, { w: 1.5, ys: [1.45, 1.8], seed: 2 }], ['pinboard', 2.0, 5.31, 180, {}], ['frames', 0.9, 5.31, 180, { set: [[0, 1.5, 0.45, 0.6, 'art4', 'oak']] }],
+      // chambre 2
+      ['frames', 3.26, 0.5, 270, { set: [[0, 1.55, 0.7, 0.5, 'art4', 'oak']] }], ['frames', 1.6, 0, 0, { set: [[-0.25, 1.45, 0.3, 0.4, 'art2', 'black'], [0.2, 1.5, 0.4, 0.5, 'art4', 'black']] }],
+      ['basket', 0.35, 0.4, 0, { fill: 'linen' }], ['floorMirror', 3.26, 2.25, 270, {}], ['objs', 2.98, 1.2, 0, { y: 0.5, set: [['vase', 0.05, -0.04, 0], ['candle', -0.09, 0.07, 0]] }],
+      ['objs', 1.45, 0.5, 0, { y: 0.645, set: [['sweater', 0, 0, 0.3]] }],
+      // chambre 3
+      ['frames', 6.46, 1.45, 270, { set: [[0, 1.55, 0.8, 0.55, 'art2', 'black']] }], ['fig', 3.62, 0.36, 0, { h: 1.4, seed: 5 }], ['floorMirror', 3.34, 2.2, 90, { frame: 'oak' }],
+      ['objs', 6.28, 2.15, 0, { y: 0.5, set: [['candle', 0, 0, 0]] }], ['objs', 4.68, 1.45, 0, { y: 0.645, set: [['plaid', 0, 0, 1.4]] }],
+      // chambre 1
+      ['frames', 1.62, 5.41, 0, { set: [[0, 1.6, 1.0, 0.6, 'art4', 'oak']] }], ['fig', 0.35, 8.3, 0, { h: 1.6, seed: 7 }],
+      ['objs', 1.85, 7.25, 0, { y: 0.645, set: [['sweater', 0, 0, 0.2]] }],
+      // dressing : miroir sur pied
+      ['floorMirror', 5.76, 6.55, 270, { w: 0.6, h: 1.8 }],
+      // salle de bains 1 : tapis le long de la baignoire, tabouret, panier à linge
+      ['bathMat', 7.72, 7.85, 90, { w: 0.8, d: 0.45 }], ['bathStool', 7.7, 8.45, 0, {}], ['hamper', 7.35, 6.27, 0, { r: 0.17, h: 0.5 }],
+      // WC
+      ['frames', 8.35, 6.05, 180, { set: [[0, 1.5, 0.3, 0.4, 'art2', 'oak']] }],
     ],
     rooms: [
       { id: 'entree', fr: 'Entrée', en: 'Entrance', m2: 9.5, rs: [[9.49, CN, 11.27, VD]], at: [10.4, 6.2], cam: { p: [10.05, 7.9], t: [12.6, 3.6] } },
@@ -152,7 +187,10 @@ const villa = {
   }],
   start: { room: 'sejour' },
   orbit: { target: [4.6, 0, 4.3], dist: 35 },
-  garden: [['parasol', -6.8, 2.7, 0, { r: 1.5 }], ['lounger', -4.75, 3.15, 160, {}], ['lounger', -5.6, 3.6, 160, {}]],
+  garden: [['parasol', -6.8, 2.7, 0, { r: 1.5 }], ['lounger', -4.75, 3.15, 160, {}], ['lounger', -5.6, 3.6, 160, {}],
+    // terrasse : table de jardin devant le bureau, oliviers en pot et lanternes contre la façade, arrosoir, barbecue dans l'angle
+    ['outdoorTable', -2.5, 3.0, 90, { w: 1.8, d: 0.9, n: 2 }], ['plant', -0.75, 5.65, 0, { kind: 'olive', h: 1.5, pot: 0.26 }],
+    ['lantern', -0.6, 2.75, 0, { h: 0.55 }], ['lantern', -0.62, 3.2, 0, { h: 0.4 }], ['wateringCan', -4.5, 0.55, 30, {}], ['bbq', -3.6, 8.0, 0, {}]],
   exterior(b, M, lv) {
     const gz0 = -E, gz1 = VD + E, gN = -8.92, gS = -10.86;       // limite Ouest du jardin, en biais : 8,9 m au Nord, 10,9 m au Sud
     b.on('ext');
@@ -238,7 +276,7 @@ const duplex = {
     blockers: [[SX, SZ, 6.25, 4.2], [SX, 4.2, 5.33, NH]],
     items: [
       // 1 — entrée : placard à portes pliantes
-      ['wardrobe', 1.11, 7.775, 180, { w: 2.22, d: 0.63, mat: 'lacquer' }],
+      ['wardrobe', 1.11, 7.775, 180, { w: 2.22, d: 0.63, mat: 'lacquer', open: false }],
       // 2 — séjours : coin salon au Nord-Ouest (table ronde, trois fauteuils), canapé d'angle au Nord-Est face au mur TV
       ['rug', 2.175, 2.61, 0, { w: 3.21, d: 4.04, mat: 'rug' }], ['coffeeRound', 2.2, 2.5, 0, { r: 0.59, h: 0.42 }],
       ['armchair', 1.33, 1.48, 40, { mat: 'walnut' }], ['armchair', 3.03, 1.48, 321, { mat: 'walnut' }], ['armchair', 2.17, 3.91, 180, { mat: 'walnut' }],
@@ -253,12 +291,24 @@ const duplex = {
       ['diningTable', 9.63, 8.79, 90, { w: 2.8, d: 1.19, n: 4, ends: 'b' }], ['pendant', 9.63, 8.79, 90, { kind: 'rail', n: 5, span: 0.45, drop: 1.0 }],
       ['curtain', DW - 0.1, 6.8, 270, { w: 0.5 }], ['curtain', DW - 0.1, 11.35, 270, { w: 0.5 }],
       // 4 — arrière-cuisine : placards à portes pliantes et réfrigérateur contre la gaine, plan de travail le long du mur Sud
-      ['wardrobe', 5.03, 9.9, 0, { w: 2.72, d: 0.88, mat: 'lacquer' }], ['fridge', 6.815, 9.9, 0, { w: 0.85, d: 0.88 }],
+      ['wardrobe', 5.03, 9.9, 0, { w: 2.72, d: 0.88, mat: 'lacquer', open: false }], ['fridge', 6.815, 9.9, 0, { w: 0.85, d: 0.88 }],
       ['kitchenRun', 4.32, 11.705, 180, { w: 4.0, d: 0.65, upper: true, splash: true }], ['kitchenRun', 6.78, 11.705, 180, { w: 0.92, d: 0.65, deco: false }], ['duct', 6.78, 11.845, 0, { w: 0.92, d: 0.37 }],
       // 5 — buanderie : placards le long du mur Ouest, de part et d'autre d'une gaine
       ['wardrobe', 0.26, 9.09, 90, { w: 1.78, d: 0.7, mat: 'lacquer' }], ['duct', 0.26, 10.265, 90, { w: 0.57, d: 0.7 }], ['wardrobe', 0.26, 11.29, 90, { w: 1.48, d: 0.7, mat: 'lacquer' }],
       // 6 — WC PMR : plan vasque au Nord, cuvette contre la gaine
       ['vanity', 4.3, 7.77, 0, { w: 1.3, d: 0.42, double: false, mirrorH: 0.7 }], ['duct', 5.145, 8.46, 0, { w: 0.39, d: 1.8 }], ['toilet', 4.62, 8.9, 270, {}],
+      // objets de vie (ajouts d'ameublement, hors plan) : rien au sol dans les passages ni devant les portes et les baies
+      // entrée : console et miroir contre le refend, patères et chaussures en face, parapluies près de la porte palière
+      ['console', 4.75, SH, 0, { w: 1.0, d: 0.3 }], ['hooks', 4.45, SHAFT[1], 180, { w: 0.7, bag: true }], ['umbrella', 0.28, 6.25, 0, {}],
+      ['shoes', 4.45, SHAFT[1], 180, { set: [[-0.2, 0.16, 0.1, 'taupe'], [0.15, 0.17, -0.1, 'charcoal']] }],
+      // séjours : grande toile au-dessus du coin salon, deux cadres et lampadaire, plantes dans les angles, corbeille à plaids
+      ['frames', 2.2, 0, 0, { set: [[0, 1.55, 1.2, 0.8, 'art3', 'oak']] }], ['floorLamp', 0.45, 0.5, 0, {}],
+      ['frames', 0, 2.6, 90, { set: [[-0.45, 1.5, 0.5, 0.7, 'art3', 'black'], [0.45, 1.5, 0.5, 0.7, 'art1', 'black']] }],
+      ['fig', 0.4, 5.3, 0, { h: 1.8, seed: 11 }], ['basket', 0.45, 3.6, 0, {}], ['plant', 11.1, 0.35, 0, { kind: 'snake', h: 1.15, pot: 0.2 }], ['fig', 11.1, 6.45, 0, { h: 1.6, seed: 9, dark: true }],
+      // buanderie : lave-linge et sèche-linge contre la cloison Est, étagère à linge au-dessus, planche à repasser au Sud (le Sud reste au visiteur)
+      ['washer', 1.91, 8.85, 270, { n: 2 }], ['wallShelf', 2.22, 8.85, 270, { w: 1.2, ys: [1.5], kind: 'laundry' }], ['ironing', 1.9, DD, 180, {}],
+      // WC
+      ['frames', 4.3, 9.36, 180, { set: [[0, 1.5, 0.3, 0.4, 'art1', 'oak']] }],
     ],
     rooms: [
       { id: 'entree', fr: 'Entrée', en: 'Entrance', rs: [[0, SH, SHAFT[0], SHAFT[1]]], at: [1.9, 6.8], cam: { p: [0.75, 6.85], t: [8, 6.6] } },
@@ -314,6 +364,21 @@ const duplex = {
       // 10 — chambre 1 : placards au Nord et au Sud, lit de 160 adossé à la tête de lit, banc, tapis
       ['wardrobe', 9.955, 6.39, 0, { w: 3.41, d: 0.6 }], ['wardrobe', 9.895, 11.73, 180, { w: 3.53, d: 0.6 }], ['shelves', 7.68, 11.74, 180, { w: 0.86, d: 0.56, h: 2.3 }],
       ['rug', 10.135, 9.08, 0, { w: 1.93, d: 2.82, mat: 'rug' }], ['bed', 9.36, 9.1, 90, { w: 1.6, l: 1.9, hw: 0.9 }], ['bench', 10.485, 9.085, 90, { w: 1.21, d: 0.35 }],
+      // objets de vie (ajouts d'ameublement, hors plan)
+      // salle de bains 2 : tapis devant la baignoire (rien au sol : c'est là que se tient le visiteur)
+      ['bathMat', 5.0, 1.05, 0, { w: 0.8, d: 0.45 }],
+      // palier : deux cadres entre les portes des chambres
+      ['frames', 7.15, 3.89, 270, { set: [[-0.45, 1.5, 0.5, 0.7, 'art1', 'black'], [0.45, 1.5, 0.5, 0.7, 'art3', 'black']] }],
+      // chambre 3
+      ['frames', 9.66, 0, 0, { set: [[0, 1.55, 0.9, 0.6, 'art3', 'oak']] }], ['fig', 11.3, 0.38, 0, { h: 1.5, seed: 13 }], ['objs', 9.9, 1.72, 0, { y: 0.645, set: [['sweater', 0, 0, -0.2]] }],
+      // chambre 2
+      ['frames', 9.66, 3.01, 0, { set: [[-0.3, 1.55, 0.4, 0.5, 'art3', 'black'], [0.3, 1.55, 0.4, 0.5, 'art1', 'black']] }], ['floorMirror', 10.95, NH, 180, {}],
+      // chambre 1 : ficus entre les portes-fenêtres, plaid et livres sur le banc
+      ['fig', 11.3, 9.08, 0, { h: 1.7, seed: 17 }], ['objs', 10.485, 9.085, 90, { y: 0.44, set: [['plaid', 0.25, 0, 0, 'ochre'], ['books', -0.3, 0, 0.2]] }],
+      // salle de bains 1 : tapis devant la double vasque, tabouret
+      ['bathMat', 5.12, 11.2, 0, { w: 1.1, d: 0.5 }], ['bathStool', 4.3, 10.75, 0, {}],
+      // WC
+      ['frames', UX, 7.2, 90, { set: [[0, 1.5, 0.3, 0.4, 'art3', 'oak']] }],
     ],
     rooms: [
       { id: 'palier', fr: 'Palier', en: 'Landing', rs: [[6.29, 1.92, 7.15, NH], [5.57, 4.98, 6.29, NH], [5.57, NH, 7.15, SH], [5.44, SH, 7.15, 6.2], [5.44, 6.2, 5.84, SHAFT[1]], [6.74, 6.2, 7.15, SHAFT[1]]], at: [6.72, 4.2], cam: { p: [6.72, 2.9], t: [6.4, 7.4] } },
@@ -332,6 +397,9 @@ const duplex = {
   garden: [
     ['outdoorTable', 14.085, 6.11, 90, { w: 2.2, d: 0.97, n: 3, ends: true }], ['lounger', 13.57, 9.98, 132, {}], ['lounger', 14.31, 10.72, 132, {}],
     ['acUnit', 12.86, 0.03, 0, {}], ['acUnit', 12.2, 11.56, 90, { w: 0.74 }],
+    // coin salon au Nord, face à la maison ; olivier en pot entre les baies, lanterne, barbecue et arrosoir au Sud
+    ['outdoorSofa', 15.45, 3.0, 270, { w: 2.1, d: 0.85 }], ['sideTable', 14.5, 3.0, 0, { r: 0.3, h: 0.4, mat: 'teak' }],
+    ['plant', 12.3, 6.0, 0, { kind: 'olive', h: 1.6, pot: 0.26 }], ['lantern', 12.2, 0.6, 0, { h: 0.6 }], ['bbq', 15.5, 8.55, 0, {}], ['wateringCan', 15.8, 11.4, 200, {}],
   ],
   exterior(b, M, lv) {
     const gx0 = DW + E, gx1 = 16.65, gz0 = -0.15, gz1 = DD + 0.15;

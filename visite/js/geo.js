@@ -31,13 +31,16 @@ function worldUV(geo, scale, swap) {
   uv.needsUpdate = true;
 }
 
-/* Coupe horizontale d'une géométrie à la cote y : renvoie [dessous, dessus]. Les triangles traversés sont recoupés ;
+/* Coupe horizontale d'une géométrie à la cote y : renvoie [dessous, dessus, face de coupe]. Les triangles traversés sont recoupés ;
    un solide convexe (boîte, cylindre, coussin…) reçoit une face de coupe pleine, comme une maquette sciée net. */
 function splitY(g, y, solid) {
   const P = g.attributes.position.array, N = g.attributes.normal.array, U = g.attributes.uv.array, n = P.length / 9;
-  const lo = [[], [], []], hi = [[], [], []], ring = [];
+  const lo = [[], [], []], hi = [[], [], []], cap = [[], [], []], ring = [];
   const V = (i) => [P[i * 3], P[i * 3 + 1], P[i * 3 + 2], N[i * 3], N[i * 3 + 1], N[i * 3 + 2], U[i * 2], U[i * 2 + 1]];
-  const mix = (a, b) => { const t = (y - a[1]) / (b[1] - a[1]), r = a.map((v, k) => v + (b[k] - v) * t); r[1] = y; return r; };
+  /* Point de coupe d'une arête, toujours calculé depuis la même extrémité (la plus basse) : deux triangles voisins parcourent
+     leur arête commune en sens inverse et, sans cela, obtiendraient deux points différents au dernier bit près — une fente
+     d'un pixel s'ouvrait entre le dessous et le dessus, et laissait voir la face de coupe éclairée par-dessus. */
+  const mix = (a, b) => { if (a[1] > b[1] || (a[1] === b[1] && (a[0] > b[0] || (a[0] === b[0] && a[2] > b[2])))) [a, b] = [b, a]; const t = (y - a[1]) / (b[1] - a[1]), r = a.map((v, k) => v + (b[k] - v) * t); r[1] = y; return r; };
   const emit = (dst, poly) => { for (let k = 1; k < poly.length - 1; k++) for (const v of [poly[0], poly[k], poly[k + 1]]) { dst[0].push(v[0], v[1], v[2]); dst[1].push(v[3], v[4], v[5]); dst[2].push(v[6], v[7]); } };
   for (let t = 0; t < n; t++) {
     const tri = [V(t * 3), V(t * 3 + 1), V(t * 3 + 2)], up = tri.map((v) => v[1] > y), c = up[0] + up[1] + up[2];
@@ -56,11 +59,11 @@ function splitY(g, y, solid) {
     ring.sort((a, b) => Math.atan2(a[2] - cz, a[0] - cx) - Math.atan2(b[2] - cz, b[0] - cx));
     for (let k = 0; k < ring.length; k++) {
       const a = ring[k], b = ring[(k + 1) % ring.length];
-      lo[0].push(cx, y, cz, b[0], y, b[2], a[0], y, a[2]); lo[1].push(0, 1, 0, 0, 1, 0, 0, 1, 0); lo[2].push(0.5, 0.5, b[6], b[7], a[6], a[7]);
+      cap[0].push(cx, y, cz, b[0], y, b[2], a[0], y, a[2]); cap[1].push(0, 1, 0, 0, 1, 0, 0, 1, 0); cap[2].push(0.5, 0.5, b[6], b[7], a[6], a[7]);
     }
   }
   const mk = (d) => { if (!d[0].length) return null; const q = new THREE.BufferGeometry(); q.setAttribute('position', new THREE.Float32BufferAttribute(d[0], 3)); q.setAttribute('normal', new THREE.Float32BufferAttribute(d[1], 3)); q.setAttribute('uv', new THREE.Float32BufferAttribute(d[2], 2)); return q; };
-  return [mk(lo), mk(hi)];
+  return [mk(lo), mk(hi), mk(cap)];
 }
 
 export class Batch {
@@ -93,9 +96,13 @@ export class Batch {
       if (y0 >= cy - 1e-4) return this.put(this.layer + ':top', mat, g);
       if (y1 > cy + 1e-4) {
         if (cy - y0 < 0.3 && cy - y0 < 0.35 * (y1 - y0)) return this.put(this.layer + ':top', mat, g);   // il n'en resterait qu'un moignon (tableau, miroir, écran) : tout passe au-dessus
-        const [lo, hi] = splitY(g, cy, solid && !mat.transparent);      // pas de face de coupe dans un vitrage : elle se verrait par transparence
+        const [lo, hi, cap] = splitY(g, cy, solid && !mat.transparent);   // pas de face de coupe dans un vitrage : elle se verrait par transparence
         if (lo) this.put(this.layer, mat, lo);
         if (hi) this.put(this.layer + ':top', mat, hi);
+        /* La face de coupe ne sert qu'à la maquette sciée : rangée dans « calque:cap », affiché seulement quand le dessus est masqué.
+           Laissée avec le dessous, elle restait dessinée en promenade, à fleur de l'arête de coupe : un trait clair (face horizontale
+           éclairée d'en haut) apparaissait à 1,25 m sur les portes et les meubles hauts. */
+        if (cap) this.put(this.layer + ':cap', mat, cap);
         return this;
       }
     }
@@ -110,11 +117,17 @@ export class Batch {
   }
 
   /* Boîte par ses coins opposés (repère local). */
-  box(mat, x0, y0, z0, x1, y1, z1) {
+  /* skip : 'top' et/ou 'bottom' pour omettre la face haute ou basse (faces internes d'un empilement, qui marquaient le joint d'ombres). */
+  box(mat, x0, y0, z0, x1, y1, z1, skip = '') {
     const w = Math.abs(x1 - x0), h = Math.abs(y1 - y0), d = Math.abs(z1 - z0);
     if (w < 1e-4 || h < 1e-4 || d < 1e-4) return this;
-    _m.makeTranslation((x0 + x1) / 2, (y0 + y1) / 2, (z0 + z1) / 2);
-    return this.add(mat, new THREE.BoxGeometry(w, h, d), _m.clone(), true);
+    /* Sommets posés exactement sur les cotes demandées (et non centre ± demi-côté) : deux boîtes empilées, comme le bas et le haut
+       d'un mur scié à la cote de coupe, partagent alors leur arête au bit près, sans fente claire entre elles. */
+    const g = new THREE.BoxGeometry(w, h, d), P = g.attributes.position;
+    const xa = Math.min(x0, x1), xb = Math.max(x0, x1), ya = Math.min(y0, y1), yb = Math.max(y0, y1), za = Math.min(z0, z1), zb = Math.max(z0, z1);
+    for (let i = 0; i < P.count; i++) P.setXYZ(i, P.getX(i) < 0 ? xa : xb, P.getY(i) < 0 ? ya : yb, P.getZ(i) < 0 ? za : zb);
+    if (skip) { const I = g.index.array, keep = []; for (const gr of g.groups) if (!((gr.materialIndex === 2 && skip.includes('top')) || (gr.materialIndex === 3 && skip.includes('bottom')))) for (let k = gr.start; k < gr.start + gr.count; k++) keep.push(I[k]); g.setIndex(keep); }
+    return this.add(mat, g, null, !skip);
   }
   /* Boîte centrée en (cx, cz), posée à la hauteur y0, de dimensions (w, h, d) ; r = rayon d'arrondi. */
   cbox(mat, cx, y0, cz, w, h, d, r = 0, rot = 0, seg = 2) {
