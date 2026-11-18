@@ -230,8 +230,8 @@ export function buildSite(b, M, { o, skip }) {
   bay('S', 0, 2.06, 14.98, [['w', 2.18, 3.39, 2], ['s', 3.39, 4.79], ['w', 4.79, 5.98, 2], ['s', 5.98, 7.32], ['w', 7.32, 8.53, 2], ['s', 8.53, 9.91], ['w', 9.91, 13.68, 3], ['s', 13.68, 14.98]], { h: 2.4 });
   bay('S', FH, 2.06, 12.15, [['w', 2.1, 3.34, 2, true], ['s', 3.34, 4.6], ['w', 4.6, 5.83, 2, true], ['s', 5.83, 7.12], ['s', 7.12, 8.41], ['w', 8.41, 9.62, 2, true], ['s', 9.62, 10.92, 0.75], ['w', 10.92, 12.1, 2, true]]);
   // soubassement taloché plus sombre au pied des façades Nord et Sud, hors cadres (1 cm en saillie)
-  for (const [x0, x1] of [[0, 2.88], [13.44, W]]) box('socle', x0, -0.12, -0.01, x1, 0.22, 0);
-  for (const [x0, x1] of [[0, 1.94], [15.1, W]]) box('socle', x0, -0.12, L, x1, 0.22, L + 0.01);
+  for (const [x0, x1] of [[0, 2.88], [13.44, W]]) box('socle', x0, -0.12, -0.01, x1, 0.22, 0.02);         // dos noyé dans le mur : aucune face dans le plan
+  for (const [x0, x1] of [[0, 1.94], [15.1, W]]) box('socle', x0, -0.12, L - 0.02, x1, 0.22, L + 0.01);     // de celles des terrasses
 
 
   // ── Tour de circulation commune : pierre de taille, fente vitrée ; toit-terrasse inaccessible gravillonné derrière l'acrotère (296,3) ──
