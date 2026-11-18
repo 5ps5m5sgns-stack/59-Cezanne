@@ -158,7 +158,7 @@ const villa = {
       ['frames', 6.46, 1.45, 270, { set: [[0, 1.55, 0.8, 0.55, 'art2', 'black']] }], ['fig', 3.62, 0.36, 0, { h: 1.4, seed: 5 }], ['floorMirror', 3.34, 2.2, 90, { frame: 'oak' }],
       ['objs', 6.28, 2.15, 0, { y: 0.5, set: [['candle', 0, 0, 0]] }], ['objs', 4.68, 1.45, 0, { y: 0.645, set: [['plaid', 0, 0, 1.4]] }],
       // chambre 1
-      ['frames', 1.62, 5.41, 0, { set: [[0, 1.6, 1.0, 0.6, 'art4', 'oak']] }], ['basket', 2.95, 8.35, 0, { fill: 'linen' }], ['fig', 0.35, 8.3, 0, { h: 1.6, seed: 7 }],
+      ['frames', 1.62, 5.41, 0, { set: [[0, 1.6, 1.0, 0.6, 'art4', 'oak']] }], ['fig', 0.35, 8.3, 0, { h: 1.6, seed: 7 }],
       ['objs', 1.85, 7.25, 0, { y: 0.645, set: [['sweater', 0, 0, 0.2]] }],
       // dressing : miroir sur pied
       ['floorMirror', 5.76, 6.55, 270, { w: 0.6, h: 1.8 }],
@@ -305,8 +305,8 @@ const duplex = {
       ['frames', 2.2, 0, 0, { set: [[0, 1.55, 1.2, 0.8, 'art3', 'oak']] }], ['floorLamp', 0.45, 0.5, 0, {}],
       ['frames', 0, 2.6, 90, { set: [[-0.45, 1.5, 0.5, 0.7, 'art3', 'black'], [0.45, 1.5, 0.5, 0.7, 'art1', 'black']] }],
       ['fig', 0.4, 5.3, 0, { h: 1.8, seed: 11 }], ['basket', 0.45, 3.6, 0, {}], ['plant', 11.1, 0.35, 0, { kind: 'snake', h: 1.15, pot: 0.2 }], ['fig', 11.1, 6.45, 0, { h: 1.6, seed: 9, dark: true }],
-      // buanderie : lave-linge et sèche-linge au Sud, étagère à linge, planche à repasser, panier
-      ['washer', 1.4, 11.72, 180, { n: 2 }], ['wallShelf', 1.4, DD, 180, { w: 1.2, ys: [1.5], kind: 'laundry' }], ['ironing', 2.22, 9.0, 270, {}], ['hamper', 1.9, 8.5, 0, {}],
+      // buanderie : lave-linge et sèche-linge contre la cloison Est, étagère à linge au-dessus, planche à repasser au Sud (le Sud reste au visiteur)
+      ['washer', 1.91, 8.85, 270, { n: 2 }], ['wallShelf', 2.22, 8.85, 270, { w: 1.2, ys: [1.5], kind: 'laundry' }], ['ironing', 1.9, DD, 180, {}],
       // WC
       ['frames', 4.3, 9.36, 180, { set: [[0, 1.5, 0.3, 0.4, 'art1', 'oak']] }],
     ],
@@ -365,8 +365,8 @@ const duplex = {
       ['wardrobe', 9.955, 6.39, 0, { w: 3.41, d: 0.6 }], ['wardrobe', 9.895, 11.73, 180, { w: 3.53, d: 0.6 }], ['shelves', 7.68, 11.74, 180, { w: 0.86, d: 0.56, h: 2.3 }],
       ['rug', 10.135, 9.08, 0, { w: 1.93, d: 2.82, mat: 'rug' }], ['bed', 9.36, 9.1, 90, { w: 1.6, l: 1.9, hw: 0.9 }], ['bench', 10.485, 9.085, 90, { w: 1.21, d: 0.35 }],
       // objets de vie (ajouts d'ameublement, hors plan)
-      // salle de bains 2 : tapis devant la baignoire, panier à linge
-      ['bathMat', 5.0, 1.05, 0, { w: 0.8, d: 0.45 }], ['hamper', 5.6, 2.5, 0, { r: 0.16, h: 0.5 }],
+      // salle de bains 2 : tapis devant la baignoire (rien au sol : c'est là que se tient le visiteur)
+      ['bathMat', 5.0, 1.05, 0, { w: 0.8, d: 0.45 }],
       // palier : deux cadres entre les portes des chambres
       ['frames', 7.15, 3.89, 270, { set: [[-0.45, 1.5, 0.5, 0.7, 'art1', 'black'], [0.45, 1.5, 0.5, 0.7, 'art3', 'black']] }],
       // chambre 3
