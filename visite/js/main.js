@@ -13,7 +13,7 @@ import { Batch } from 'v3d/geo';
 import { makeMaterials, FLOOR_FINISHES, setFloorFinish } from 'v3d/materials';
 import { buildLevel, buildStair, buildLift, buildNav } from 'v3d/build';
 import { APARTMENTS } from 'v3d/plans';
-import { SITE } from 'v3d/site';
+import { SITE, makeArrival } from 'v3d/site';
 import { Environment, makeGradePass } from 'v3d/env';
 import { cellFree, nearestFree, findPath, pathLength } from 'v3d/nav';
 
@@ -161,6 +161,8 @@ class App {
     if (apt.lift) buildLift(b, this.M, apt.lift, apt.levels);
     apt.exterior(b, this.M, lv0, apt.levels[1]);
     const layers = b.build(group);
+    // arrivée animée à la résidence (voiture, portail, porte du garage) : rangée avec le décor du site, visible avec lui
+    const arrival = apt.site && layers.ctx ? makeArrival(this.M, apt.site.o) : null; if (arrival) layers.ctx.add(arrival.group);
     apt.levels.forEach((lv, i) => { const st = i === 0 && lv.rooms.find((r) => r.id === apt.start.room); buildNav(lv, ((st && st.cam) || lv.rooms.find((r) => r.cam).cam).p); });
     const lamps = b.lights.map((l) => ({ pos: l.pos, power: l.power, level: /^L(\d)/.test(l.layer) ? +l.layer[1] : 0, day: false }));
     const days = apt.levels.flatMap((lv, i) => lv.dayLights.map((l) => ({ pos: l.pos, power: l.power, level: i, day: true })));
@@ -171,7 +173,7 @@ class App {
     const pucks = new THREE.Group(); pucks.visible = false; group.add(pucks);
     const ring = new THREE.RingGeometry(0.15, 0.21, 40), dot = new THREE.CircleGeometry(0.05, 20), pm = new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.82, toneMapped: false });
     apt.levels.forEach((lv, i) => lv.rooms.forEach((room) => { if (!room.cam) return; const g = new THREE.Group(); g.add(new THREE.Mesh(ring, pm), new THREE.Mesh(dot, pm)); g.rotation.x = -Math.PI / 2; g.position.set(room.cam.p[0], lv.y + 0.02, room.cam.p[1]); g.userData = { room, level: i }; pucks.add(g); }));
-    const out = { group, layers, lights: lamps.concat(days), catcher, pucks };
+    const out = { group, layers, lights: lamps.concat(days), catcher, pucks, arrival };
     this.built.set(apt.id, out);
     return out;
   }
@@ -311,12 +313,14 @@ class App {
     const done = () => {
       c.target.copy(t); c.enabled = true; c.enableRotate = true; c.minPolarAngle = 0.25; c.maxPolarAngle = 1.5; c.minAzimuthAngle = -Infinity; c.maxAzimuthAngle = Infinity;
       c.minDistance = 28; c.maxDistance = 170; c.mouseButtons.LEFT = THREE.MOUSE.ROTATE; c.touches.ONE = THREE.TOUCH.ROTATE; c.update(); this.dirty = true;
+      if (this.mode === 'site' && this.cur.arrival && !this.cur.arrival.active) this.cur.arrival.start();      // la voiture arrive par l'avenue
     };
     c.enabled = false;
     this.flyTo({ pos, look: t, fov: 32, dur: instant ? 0 : 1.2, done });
     this.showHint('hintSite');
   }
   leaveSite() {
+    if (this.cur.arrival) this.cur.arrival.reset();
     if (this.hourBack !== undefined) { const h = this.hourBack; this.hourBack = undefined; this.setHour(h, true); }
     this.lotMarks.visible = false;
     const bb = this.apt.levels[0].bounds; this.env.focus(this.cur.group.localToWorld(new THREE.Vector3((bb[0] + bb[2]) / 2, 1.5, (bb[1] + bb[3]) / 2)), Math.hypot(bb[2] - bb[0], bb[3] - bb[1]) / 2 + 3);
@@ -815,6 +819,7 @@ class App {
     if (this.env.flushEnv(now)) this.dirty = true;
     const cam = this.camera;
     if (!this.camP.equals(cam.position) || !this.camQ.equals(cam.quaternion) || this.camF !== cam.fov) { this.camP.copy(cam.position); this.camQ.copy(cam.quaternion); this.camF = cam.fov; this.movedAt = now; }
+    if (this.mode === 'site' && this.cur.arrival && this.cur.arrival.update(dt)) this.dirty = true;
     const refine = this.updateAO(slow);
     this.updateSpots();                                        // repères : suivis à chaque image, même sans nouveau rendu (leur hystérésis est temporelle)
     if (!this.dirty && !refine) return; this.dirty = false;

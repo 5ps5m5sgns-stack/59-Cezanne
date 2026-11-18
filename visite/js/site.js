@@ -7,6 +7,7 @@
 import * as THREE from 'three';
 import { F, V } from 'v3d/furniture';
 import { railing } from 'v3d/build';
+import { Batch } from 'v3d/geo';
 
 export const SITE = {
   W: 17.39, L: 32.2, FH: 2.9, EAVE: 5.82, RISE: 2.75,
@@ -167,16 +168,15 @@ export function buildSite(b, M, { o, skip }) {
   // ── Cour d'accès au Nord-Est : stationnement sous pergola végétalisée, porte du garage, portail ──
   box('paving', W + 0.02, -3.36, -5.5, 36.6, -3.3, 9.6);
   box('stone', W, -3.3, 9.2, 22.71, 0.45, 9.62); box('stone', 22.71, -3.3, 9.2, 36.2, -0.85, 9.62); box('cadre', 24, -3.3, 9.17, 26.4, -1.5, 9.2); box('cadre', 28.2, -3.3, 9.17, 29.4, -1.3, 9.2);   // locaux vélos, technique, déchets
-  box('garage', W + 0.02, -3.28, 3.4, W + 0.06, -0.75, 8.3);                                                                     // porte du garage
+  // la porte du garage, les vantaux du portail et la voiture qui arrive sont animés : voir makeArrival() plus bas
   for (const x of [19.4, 24.4, 29.4]) for (const z of [-4.6, 1.4]) box('cadre', x - 0.06, -3.3, z - 0.06, x + 0.06, -0.85, z + 0.06);
   for (const z of [-4.6, 1.4]) box('cadre', 19.3, -0.85, z - 0.05, 29.5, -0.75, z + 0.05); for (let x = 19.4; x <= 29.41; x += 1.25) box('cadre', x - 0.02, -0.8, -4.7, x + 0.02, -0.75, 1.5);
   { const g = new THREE.BufferGeometry(), pos = [], nor = [], uv = [], rr = R(77);                                             // feuillage de la pergola
     for (let i = 0; i < 420; i++) { const x = 19.2 + rr() * 10.4, z = -4.8 + rr() * 6.4, y = -0.72 + rr() * 0.22, s = 0.28 + rr() * 0.22, a = rr() * 6.28, cx = Math.cos(a) * s, cz = Math.sin(a) * s;
       for (const [u, v] of [[-1, -1], [1, -1], [1, 1], [-1, -1], [1, 1], [-1, 1]]) { pos.push(x + u * cx - v * cz, y + (u + v) * 0.03, z + u * cz + v * cx); nor.push(0, 1, 0); uv.push((u + 1) / 2, (v + 1) / 2); } }
     g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3)); g.setAttribute('normal', new THREE.Float32BufferAttribute(nor, 3)); g.setAttribute('uv', new THREE.Float32BufferAttribute(uv, 2)); b.add(M.leafBroad, g); }
-  car(b, M, 21.9, -3.3, -1.6, 0, 'carGrey'); car(b, M, 26.9, -3.3, -1.5, 0, 'white'); car(b, M, 31.5, -3.3, 6.4, 1.3, 'carDark');
+  car(b, M, 21.9, -3.3, -1.6, 0, 'carGrey'); car(b, M, 26.9, -3.3, -1.5, 0, 'white');      // l'allée vers le garage reste libre
   for (const z of [4.6, 8.9]) { box('stucco', 36.0, -3.4, z - 0.3, 36.7, -1.2, z + 0.3); box('stuccoDark', 35.9, -1.2, z - 0.4, 36.8, -1.05, z + 0.4); }      // piliers du portail
-  railing(b, M, 36.35, 4.95, 36.35, 8.55, -3.3, 1.75, 'cadre');                                  // vantaux du portail, entre les piliers
   box('stone', 36.2, -3.6, -5.9, 36.6, -1.6, 4.3); V.hedge(b, M, 30.5, -5.4, 36.0, -4.6, { h: 1.6, y: -3.3 });
   V.oleander(b, M, 33.5, -2.6, { r: 1.0, y: -3.3, seed: 5 }); V.oleander(b, M, 33.8, 1.6, { r: 0.8, y: -3.3, seed: 6 }); V.cypress(b, M, 32.4, -3.6, { h: 6.5, y: -3.3 });
 
@@ -199,4 +199,152 @@ export function buildSite(b, M, { o, skip }) {
   }
   V.hedge(b, M, 46.4, -40, 47.0, 5.5, { h: 1.8, y: -3.25 }); V.hedge(b, M, -10.5, -5.9, -9.9, 41.4, { h: 1.8, y: 2.55 });
   b.pop(); b.on('ext');
+}
+
+/* ── Arrivée à la résidence : un SUV sombre remonte l'avenue, tourne vers le portail, attend qu'il s'ouvre, traverse la cour,
+   attend la porte du garage et y entre ; portail et porte se referment derrière lui. Ce sont des objets à part (pas fusionnés
+   avec le décor) : la voiture, ses roues, les deux vantaux et la porte bougent. Ils ne projettent pas d'ombre (la carte d'ombre
+   du site n'est pas recalculée à chaque image) : une ombre de contact douce suit la voiture. Tout est créé au chargement. */
+const GATE_X = 36.35, GATE_Z = [4.95, 8.55], LANE_Z = 6.75, DOOR = { x: 17.39 + 0.053, y0: -3.28, y1: -0.75, z0: 3.4, z1: 8.3 };
+
+/* SUV de luxe (5 × 2 m) : caisse aux passages de roues découpés, vitrage sombre, pavillon couleur caisse, barres de toit,
+   feux avant à LED, bandeau de feux arrière sur toute la largeur, jantes à cinq branches qui tournent. Avant vers +z. */
+function makeSuv(M) {
+  const paint = new THREE.MeshStandardMaterial({ color: 0x14161a, roughness: 0.26, metalness: 0.55 });
+  const rimM = new THREE.MeshStandardMaterial({ color: 0x9c9fa3, roughness: 0.32, metalness: 0.85 });
+  const tail = new THREE.MeshStandardMaterial({ color: 0x2a0503, roughness: 0.4, emissive: 0xff2414, emissiveIntensity: 0.9 });
+  const ext = (pts, depth, bevel) => {                     // profil (z, y) extrudé selon x et centré
+    const sh = new THREE.Shape(pts.map(([z, y]) => new THREE.Vector2(-z, y)));
+    const g = new THREE.ExtrudeGeometry(sh, { depth: depth - 2 * bevel, bevelEnabled: true, bevelThickness: bevel, bevelSize: bevel * 0.8, bevelSegments: 3, curveSegments: 6 });
+    g.rotateY(Math.PI / 2); g.translate(-(depth - 2 * bevel) / 2, 0, 0); return g;
+  };
+  const arch = (zc) => { const p = []; for (let k = 0; k <= 12; k++) { const a = Math.PI - (Math.PI * k) / 12; p.push([zc + 0.43 * Math.cos(a), 0.3 + 0.43 * Math.sin(a)]); } return p; };
+  const body = [[-2.38, 0.3], ...arch(-1.45), ...arch(1.45), [2.36, 0.3], [2.46, 0.44], [2.47, 0.68], [2.41, 0.86], [2.24, 0.97], [0.98, 1.07], [-2.14, 1.07], [-2.37, 1.02], [-2.45, 0.85], [-2.45, 0.5]];
+  const glass = [[0.97, 1.0], [0.04, 1.57], [-1.62, 1.6], [-2.16, 1.1], [-2.18, 1.0]];
+  const roof = [[0.12, 1.555], [-1.66, 1.585], [-1.62, 1.655], [0.06, 1.625]];
+  const parts = new Map(); const put = (m, g) => { if (!parts.has(m)) parts.set(m, []); parts.get(m).push(g); };
+  put(paint, ext(body, 1.96, 0.06)); put(M.glassDark, ext(glass, 1.66, 0.04)); put(paint, ext(roof, 1.52, 0.03));
+  const box = (m, x0, y0, z0, x1, y1, z1) => { const g = new THREE.BoxGeometry(x1 - x0, y1 - y0, z1 - z0); g.translate((x0 + x1) / 2, (y0 + y1) / 2, (z0 + z1) / 2); put(m, g); };
+  const rod = (m, a, c, r) => { const d = new THREE.Vector3(...c).sub(new THREE.Vector3(...a)), g = new THREE.CylinderGeometry(r, r, d.length(), 8); g.translate(0, d.length() / 2, 0); g.applyQuaternion(new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(0, 1, 0), d.clone().normalize())); g.translate(...a); put(m, g); };
+  for (const s of [-1, 1]) {
+    box(M.black, s * 0.862, 1.06, -0.62, s * 0.872, 1.56, -0.5);                                 // montant central
+    rod(M.black, [s * 0.8, 1.05, 0.96], [s * 0.76, 1.57, 0.06], 0.028);                          // montants de pare-brise
+    rod(M.cadre, [s * 0.66, 1.69, 0.0], [s * 0.66, 1.69, -1.55], 0.018);                          // barres de toit
+    box(M.black, s * 0.98, 1.05, 0.78, s * 1.08, 1.16, 0.9);                                       // rétroviseurs
+    box(M.led, s * 0.42, 0.8, 2.46, s * 0.86, 0.845, 2.5);                                         // feux avant
+    box(M.black, s * 0.99, 0.32, -0.98, s * 1.0, 0.42, 0.98);                                      // bas de caisse
+  }
+  box(M.black, -0.55, 0.42, 2.49, 0.55, 0.68, 2.51); box(M.black, -0.95, 0.3, 2.42, 0.95, 0.4, 2.52);   // calandre, bouclier
+  box(tail, -0.9, 0.93, -2.478, 0.9, 0.975, -2.462);                                              // bandeau des feux arrière
+  box(M.black, -0.85, 0.3, -2.49, 0.85, 0.44, -2.4);
+  const car = new THREE.Group();
+  for (const [m, gs] of parts) { const mesh = new THREE.Mesh(mergeAll(gs), m); mesh.castShadow = false; mesh.receiveShadow = true; car.add(mesh); }
+  // roues : pneu, jante à cinq branches ; les roues avant braquent
+  const tire = new THREE.CylinderGeometry(0.37, 0.37, 0.27, 26); tire.rotateZ(Math.PI / 2);
+  const wheels = [];
+  for (const sz of [-1.45, 1.45]) for (const sx of [-1, 1]) {
+    const steer = new THREE.Group(); steer.position.set(sx * 0.86, 0.37, sz); car.add(steer);
+    const spin = new THREE.Group(); steer.add(spin);
+    spin.add(new THREE.Mesh(tire, M.black));
+    const rg = [new THREE.CylinderGeometry(0.255, 0.255, 0.02, 24).rotateZ(Math.PI / 2).translate(sx * 0.13, 0, 0)];
+    for (let k = 0; k < 5; k++) { const g = new THREE.BoxGeometry(0.02, 0.05, 0.24); g.translate(sx * 0.142, 0, 0.12); g.rotateX((k * 2 * Math.PI) / 5); rg.push(g); }
+    spin.add(new THREE.Mesh(mergeAll(rg.slice(0, 1)), rimM), new THREE.Mesh(mergeAll(rg.slice(1)), M.black));
+    spin.children.forEach((m) => { m.castShadow = false; m.receiveShadow = true; });
+    wheels.push({ steer, spin, front: sz > 0 });
+  }
+  // ombre de contact : dégradé doux sous la caisse
+  const c = document.createElement('canvas'); c.width = 64; c.height = 128; const g2 = c.getContext('2d');
+  const grd = g2.createRadialGradient(32, 64, 6, 32, 64, 62); grd.addColorStop(0, 'rgba(0,0,0,0.62)'); grd.addColorStop(0.55, 'rgba(0,0,0,0.42)'); grd.addColorStop(1, 'rgba(0,0,0,0)');
+  g2.setTransform(1, 0, 0, 2, 0, -64); g2.fillStyle = grd; g2.fillRect(0, 0, 64, 128);
+  const sh = new THREE.Mesh(new THREE.PlaneGeometry(2.5, 5.5), new THREE.MeshBasicMaterial({ map: new THREE.CanvasTexture(c), transparent: true, depthWrite: false, toneMapped: false, color: 0xffffff }));
+  sh.rotation.x = -Math.PI / 2; sh.position.y = 0.025; sh.renderOrder = 2; car.add(sh);
+  return { car, wheels, tail };
+}
+function mergeAll(gs) {
+  if (gs.length === 1) return gs[0];
+  const pos = [], nor = [], uv = [];
+  for (const g of gs) { const n = g.index ? g.toNonIndexed() : g; pos.push(...n.attributes.position.array); nor.push(...n.attributes.normal.array); if (n.attributes.uv) uv.push(...n.attributes.uv.array); else for (let i = 0; i < n.attributes.position.count; i++) uv.push(0, 0); }
+  const m = new THREE.BufferGeometry(); m.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3)); m.setAttribute('normal', new THREE.Float32BufferAttribute(nor, 3)); m.setAttribute('uv', new THREE.Float32BufferAttribute(uv, 2));
+  m.computeBoundingSphere(); return m;
+}
+
+/* Trajet : remontée de l'avenue dans la voie de droite, virage à gauche vers le portail, puis tout droit jusqu'au fond du garage. */
+function arrivalPath() {
+  const pts = [], add = (x, z) => { const l = pts[pts.length - 1]; if (!l || Math.hypot(x - l[0], z - l[1]) > 1e-6) pts.push([x, z]); };
+  const LX = 43.2, R = 5.4, cx = LX - R, cz = LANE_Z + R;
+  for (let z = 58; z > cz; z -= 0.1) add(LX, z);
+  for (let k = 0; k <= 90; k++) { const a = (-Math.PI / 2) * (k / 90); add(cx + R * Math.cos(a), cz + R * Math.sin(a)); }
+  for (let x = cx - 0.1; x > 17.39 - 3.2; x -= 0.1) add(x, LANE_Z);
+  const s = [0]; for (let i = 1; i < pts.length; i++) s.push(s[i - 1] + Math.hypot(pts[i][0] - pts[i - 1][0], pts[i][1] - pts[i - 1][1]));
+  return { pts, s, len: s[s.length - 1] };
+}
+
+export function makeArrival(M, o) {
+  const group = new THREE.Group(); group.name = 'arrivee'; group.position.set(-o[0], -o[1], -o[2]);
+  // ouverture du garage : un fond sombre derrière la porte (la voiture qui entre disparaît derrière lui, dans le volume du soubassement)
+  const dark = new THREE.Mesh(new THREE.PlaneGeometry(DOOR.z1 - DOOR.z0 - 0.04, DOOR.y1 - DOOR.y0 - 0.02), new THREE.MeshStandardMaterial({ color: 0x0c0c0d, roughness: 1 }));
+  dark.rotation.y = Math.PI / 2; dark.position.set(17.39 + 0.027, (DOOR.y0 + DOOR.y1) / 2 - 0.01, (DOOR.z0 + DOOR.z1) / 2); group.add(dark);
+  // porte de garage : se replie vers le haut (pivot sous le linteau)
+  const door = new THREE.Group(); door.position.set(DOOR.x, DOOR.y1, (DOOR.z0 + DOOR.z1) / 2); group.add(door);
+  { const b = new Batch(); b.box(M.garage, -0.019, DOOR.y0 - DOOR.y1, -(DOOR.z1 - DOOR.z0) / 2, 0.019, 0, (DOOR.z1 - DOOR.z0) / 2); b.build(door); }
+  // portail : deux vantaux à barreaudage, pivotant sur les piliers vers l'intérieur de la cour
+  const vanes = GATE_Z.map((zh, i) => {
+    const p = new THREE.Group(); p.position.set(GATE_X, -3.3, zh); group.add(p);
+    const b = new Batch(), L = Math.abs(GATE_Z[1] - GATE_Z[0]) / 2 - 0.03; railing(b, M, 0, 0, 0, i ? -L : L, 0, 1.75, 'cadre'); b.build(p);
+    return { p, sign: i ? 1 : -1 };
+  });
+  const { car, wheels, tail } = makeSuv(M); group.add(car);
+  group.traverse((m) => { if (m.isMesh) m.castShadow = false; });
+  const P = arrivalPath();
+  const frontAt = (i) => { const [x, z] = P.pts[i], j = Math.min(i + 1, P.pts.length - 1), k = Math.max(i - 1, 0); const dx = P.pts[j][0] - P.pts[k][0], dz = P.pts[j][1] - P.pts[k][1], l = Math.hypot(dx, dz) || 1; return [x + (dx / l) * 2.5, z + (dz / l) * 2.5]; };
+  const idx = (s) => { let lo = 0, hi = P.s.length - 1; while (hi - lo > 1) { const m = (lo + hi) >> 1; if (P.s[m] < s) lo = m; else hi = m; } return lo; };
+  let stopGate = P.len, stopDoor = P.len;
+  for (let i = 0; i < P.pts.length; i++) { const f = frontAt(i); if (stopGate === P.len && f[0] <= GATE_X + 0.9) stopGate = P.s[i]; if (f[0] <= DOOR.x + 0.75) { stopDoor = P.s[i]; break; } }
+  // hauteur du sol sous un point : avenue en pente douce au Sud, trottoir surélevé de 12 cm, cour à −3,30
+  const ss = (a, b, x) => { const t = Math.min(1, Math.max(0, (x - a) / (b - a))); return t * t * (3 - 2 * t); };
+  const ground = (x, z) => { const road = -3.3 + Math.max(0, z - 6) * 0.05; const kerb = ss(36.45, 36.75, x) * (1 - ss(37.85, 38.15, x)) * 0.12; return -3.3 + (road + 3.3) * ss(36.45, 36.75, x) + kerb; };
+  const ease = (t) => (t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2);
+  const st = { s: 0, v: 0, phase: 'idle', t: 0, gate: 0, door: 0, roll: 0, active: false };
+
+  function place() {
+    const i = idx(st.s), j = Math.min(i + 1, P.pts.length - 1), f = P.s[j] > P.s[i] ? (st.s - P.s[i]) / (P.s[j] - P.s[i]) : 0;
+    const x = P.pts[i][0] + (P.pts[j][0] - P.pts[i][0]) * f, z = P.pts[i][1] + (P.pts[j][1] - P.pts[i][1]) * f;
+    const a = P.pts[Math.max(0, i - 3)], c = P.pts[Math.min(P.pts.length - 1, i + 3)], yaw = Math.atan2(c[0] - a[0], c[1] - a[1]);
+    const dx = Math.sin(yaw), dz = Math.cos(yaw), yf = ground(x + dx * 1.45, z + dz * 1.45), yr = ground(x - dx * 1.45, z - dz * 1.45);
+    car.position.set(x, (yf + yr) / 2, z); car.rotation.set(0, 0, 0); car.rotation.y = yaw; car.rotateX(-Math.atan2(yf - yr, 2.9));
+    // braquage des roues avant : d'après la courbure du trajet
+    const b0 = P.pts[Math.min(P.pts.length - 1, i + 8)], yaw2 = Math.atan2(b0[0] - c[0], b0[1] - c[1]); let dy = yaw2 - yaw; dy = Math.atan2(Math.sin(dy), Math.cos(dy));
+    for (const w of wheels) { w.spin.rotation.x = st.roll; if (w.front) w.steer.rotation.y = Math.max(-0.5, Math.min(0.5, dy * 6)); }
+    for (const v of vanes) v.p.rotation.y = v.sign * (Math.PI / 2) * ease(st.gate) * 0.97;
+    door.scale.y = Math.max(0.02, 1 - ease(st.door) * 0.98);
+  }
+  function drive(dt, stop, vmax) {
+    const rem = stop - st.s, vb = Math.sqrt(Math.max(0, 2 * 2.2 * rem)), cruise = car.position.z > LANE_Z + 8 ? vmax : Math.min(vmax, 3.2);          // allure de ville sur l'avenue, au pas dans le virage et la cour
+    const v0 = st.v; st.v = Math.max(0, Math.min(st.v + 2.4 * dt, cruise, vb)); st.s = Math.min(stop, st.s + st.v * dt); st.roll += (st.v * dt) / 0.37;
+    tail.emissiveIntensity = st.v < v0 - 1e-3 || st.v < 0.05 ? 2.6 : 0.9;                // feux stop au freinage et à l'arrêt
+    return rem < 0.02;
+  }
+  const api = {
+    group, car,
+    reset() { Object.assign(st, { s: P.len, v: 0, phase: 'idle', t: 0, gate: 0, door: 0, active: false }); tail.emissiveIntensity = 0.9; place(); },
+    start() { Object.assign(st, { s: 0, v: 7, phase: 'toGate', t: 0, gate: 0, door: 0, active: true }); place(); },
+    get active() { return st.active; },
+    /* Avance l'animation ; renvoie true tant que quelque chose bouge (l'image doit être redessinée). */
+    update(dt) {
+      if (!st.active) return false;
+      st.t += dt;
+      const gateBehind = car.position.x < GATE_X - 5.4;
+      if (st.phase === 'toGate') { if (drive(dt, stopGate, 7.5)) { st.phase = 'gateOpen'; st.t = 0; } }
+      else if (st.phase === 'gateOpen') { st.gate = Math.min(1, Math.max(0, (st.t - 0.5) / 3.4)); if (st.t > 4.2) { st.phase = 'toDoor'; st.t = 0; } }
+      else if (st.phase === 'toDoor') { if (drive(dt, stopDoor, 3.4)) { st.phase = 'doorOpen'; st.t = 0; } }
+      else if (st.phase === 'doorOpen') { st.door = Math.min(1, Math.max(0, (st.t - 0.4) / 3.6)); if (st.t > 4.3) { st.phase = 'inside'; st.t = 0; } }
+      else if (st.phase === 'inside') { if (drive(dt, P.len, 2.2)) { st.phase = 'doorClose'; st.t = 0; } }
+      else if (st.phase === 'doorClose') { st.door = Math.max(0, 1 - Math.max(0, st.t - 0.8) / 3.6); if (st.door <= 0 && st.gate <= 0) { st.active = false; tail.emissiveIntensity = 0.9; } }
+      if (gateBehind && st.phase !== 'gateOpen' && st.phase !== 'toGate') st.gate = Math.max(0, st.gate - dt / 3.4);   // le portail se referme derrière la voiture
+      place();
+      return true;
+    },
+  };
+  api.reset();
+  return api;
 }
