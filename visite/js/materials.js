@@ -669,19 +669,19 @@ function photo(name, S = 512) {
 /* Travertin en dalles de 60 × 40 cm posées à joints décalés, sur un carreau de 2,4 m (4 × 6 dalles) : chaque dalle est découpée à un
    endroit différent de la photographie (retournée une fois sur deux, teinte légèrement propre), les bandes du travertin suivent
    la longueur de la dalle ; joints clairs à peine creux, arête vive éclairée, quelques cavités. Sans photographie : dalles procédurales. */
-function travertineSet(seed, S = 1024) {
-  const nx = 4, ny = 6, base = [224, 210, 186];
-  const pr = slabSet(base, seed, nx, { ny, joint: 3, veins: 0.9, shift: 0.5, rs: 0.62, pit: 1.1, bump: 1.1, jointCol: [196, 186, 166] });
+function travertineSet(seed, { S = 1024, nx = 4, ny = 6, shift = 0.5, base = [224, 210, 186], joint = 3, warm = 1 } = {}) {
+  const pr = slabSet(base, seed, nx, { ny, joint, veins: 0.9, shift, rs: 0.62, pit: 1.1, bump: 1.1, jointCol: [196, 186, 166] });
   const im = IMG.travertin; if (!im) return pr;
   const R = rng(seed + 1), tw = S / nx, th = S / ny, k = im.width / S;           // même échelle que la photo (512 px pour 1,2 m)
   const C = canvas(S, (g) => {
     g.fillStyle = rgb(196, 186, 166); g.fillRect(0, 0, S, S);
     for (let j = 0; j < ny; j++) for (let i = -1; i <= nx; i++) {
-      const ox = i * tw + (j % 2 ? 0.5 * tw : 0), oy = j * th, sx = R() * (im.width - tw * k), sy = R() * (im.height - th * k), fl = R() < 0.5, t = R();
+      const ox = i * tw + (j % 2 ? shift * tw : 0), oy = j * th, sx = R() * (im.width - tw * k), sy = R() * (im.height - th * k), fl = R() < 0.5, t = R();
       g.save(); g.beginPath(); g.rect(ox + 1.5, oy + 1.5, tw - 3, th - 3); g.clip();
       if (fl) { g.translate(ox * 2 + tw, 0); g.scale(-1, 1); }
       g.drawImage(im, sx, sy, tw * k, th * k, ox, oy, tw, th); g.restore();
       g.fillStyle = t < 0.5 ? rgb(255, 250, 238, 0.03 + t * 0.1) : rgb(120, 100, 70, (t - 0.5) * 0.12); g.fillRect(ox, oy, tw, th);   // chaque dalle a sa teinte
+      if (warm !== 1) { g.fillStyle = rgb(176, 134, 84, Math.abs(warm - 1)); g.globalCompositeOperation = 'multiply'; g.fillRect(ox, oy, tw, th); g.globalCompositeOperation = 'source-over'; }
       g.fillStyle = rgb(255, 255, 250, 0.22); g.fillRect(ox + 1.5, oy + 1.5, tw - 3, 1.2); g.fillRect(ox + 1.5, oy + 1.5, 1.2, th - 3);
       g.fillStyle = rgb(0, 0, 0, 0.08); g.fillRect(ox + 1.5, oy + th - 2.7, tw - 3, 1.2); g.fillRect(ox + tw - 2.7, oy + 1.5, 1.2, th - 3);
     }
@@ -776,7 +776,8 @@ export function makeMaterials(quality) {
   M.floor = std({ ...M.floorDef('floorOak'), metalness: 0, envMapIntensity: 1.15, userData: { wuv: TILE, cast: false } });   // matériau courant des pièces de vie
   const tileSet = slabSet([214, 208, 198], 15, 2, { ny: 4, veins: 0.6, cloud: 0.04, joint: 2.5, jointCol: [172, 166, 158], shift: 0.5, rs: 0.3, pit: 0.1 }), tilePk = L(tileSet.pk);
   M.tile = std({ map: T(tileSet.map), bumpMap: tilePk, roughnessMap: tilePk, roughness: 1, bumpScale: 0.5, userData: { wuv: 2.4, cast: false } });   // grès 60 × 120
-  const terr = slabSet([224, 208, 178], 16, 4, { veins: 0.8, joint: 4, rs: 0.8, pit: 0.9, bump: 1.4 }), terrPk = L(terr.pk);
+  // dallage des terrasses : pierre claire en dalles de 60 × 60 (photographie de travertin découpée dalle par dalle si elle est là)
+  const terr = IMG.travertin ? travertineSet(16, { nx: 4, ny: 4, shift: 0, joint: 4, warm: 1.08 }) : slabSet([224, 208, 178], 16, 4, { veins: 0.8, joint: 4, rs: 0.8, pit: 0.9, bump: 1.4 }), terrPk = L(terr.pk);
   M.terrace = std({ map: T(terr.map), bumpMap: terrPk, roughnessMap: terrPk, roughness: 1, bumpScale: 0.8, userData: { wuv: 2.4 } });
   const hexs = hexTiles([230, 209, 188], 41), hexPk = L(hexs.pk);
   M.hexPaving = std({ map: T(hexs.map), bumpMap: hexPk, roughnessMap: hexPk, roughness: 1, bumpScale: 0.8, userData: { wuv: 1.2 } });
@@ -798,7 +799,7 @@ export function makeMaterials(quality) {
   M.wallTile = std({ map: T(wt.map), bumpMap: wtPk, roughnessMap: wtPk, roughness: 1, bumpScale: 0.4, userData: { wuv: 2.4 } });
   // pierre sèche calcaire (murs et murets) : photographie retouchée si elle est là, sinon le dessin procédural ; « drystone » est le même matériau
   const dsP = photo('pierre-seche'), dsR = photo('pierre-seche-r');
-  if (dsP && dsR) { const pk = L(dsR); M.stone = std({ map: T(dsP), bumpMap: pk, roughnessMap: pk, bumpScale: 3, roughness: 1, userData: { wuv: 2.6 } }); macro(M.stone, dsP, 0.25); }
+  if (dsP && dsR) { const pk = L(dsR); M.stone = std({ map: T(dsP), bumpMap: pk, roughnessMap: pk, bumpScale: 3, roughness: 1, userData: { wuv: 2.6 } }); macro(M.stone, dsP, 0.14); }
   else { const [dsC, dsB] = dryStoneSet(24); M.stone = std({ map: T(dsC), bumpMap: L(dsB), bumpScale: 3.5, roughness: 0.95, userData: { wuv: 2.2 } }); }
   Object.defineProperty(M, 'drystone', { value: M.stone, enumerable: false });   // non énumérable : main.js et les bancs voient un seul matériau, sous son nom d'origine
   // tuiles romanes ton panaché vieilli (toit de l'immeuble et des maisons voisines) ; « roofTile » est le même matériau
@@ -904,7 +905,7 @@ export function makeMaterials(quality) {
   M.oleander = std({ color: 0xe07a94, roughness: 1 });
   M.pampas = std({ color: 0xe6d6b8, roughness: 1 });
   const bkP = photo('ecorce'), bkR = photo('ecorce-r');
-  if (bkP && bkR) { const pk = L(bkR); M.bark = std({ map: T(bkP), bumpMap: pk, roughnessMap: pk, bumpScale: 3, roughness: 1, userData: { wuv: 0.9, wuvSwap: true } }); }
+  if (bkP && bkR) { const pk = L(bkR); M.bark = std({ map: T(bkP), color: 0xc8bcae, bumpMap: pk, roughnessMap: pk, bumpScale: 3, roughness: 1, userData: { wuv: 0.9, wuvSwap: true } }); }
   else { const [bkC, bkB] = barkSet(59); M.bark = std({ map: T(bkC), bumpMap: L(bkB), bumpScale: 2, color: 0xf0e4d8, roughness: 1, userData: { wuv: 0.6 } }); }
   const eaC = foliage([120, 128, 84], 57, { S: 512, soft: true, gain: 1.18 });
   M.earth = macro(std({ map: T(eaC), roughness: 1, userData: { wuv: 6, cast: false } }), eaC, 0.45, 0.09);
@@ -916,7 +917,8 @@ export function makeMaterials(quality) {
   const tv = travertineSet(17), tvPk = L(tv.pk);
   M.travertine = rank(std({ map: T(tv.map), bumpMap: tvPk, roughnessMap: tvPk, roughness: 1, bumpScale: 0.8, userData: { wuv: 2.4 } }), 1);   // margelles et plage de la piscine
   const gvP = photo('gravillons'), gvR = photo('gravillons-r'), [gvC, gvB] = gvP && gvR ? [gvP, gvR] : gravelSet(18);
-  M.gravel = rank(macro(std({ map: T(gvC), bumpMap: L(gvB), roughnessMap: L(gvB), roughness: 1, bumpScale: 2, userData: { wuv: 1.1, cast: false } }), gvC, 0.3), 1);
+  const gvPk = L(gvB);
+  M.gravel = rank(macro(std({ map: T(gvC), bumpMap: gvPk, roughnessMap: gvPk, roughness: 1, bumpScale: 2, userData: { wuv: 1.1, cast: false } }), gvC, 0.3), 1);
   const asP = photo('enrobe'), asR = photo('enrobe-r');
   if (asP && asR) { const pk = L(asR); M.asphaltLight = std({ map: T(asP), bumpMap: pk, roughnessMap: pk, roughness: 1, bumpScale: 1.2, userData: { wuv: 3, cast: false } }); macro(M.asphaltLight, asP, 0.3); }
   else { const [aC, aB] = grainSet([170, 164, 152], 19, GS >> 1, { tone: 0.05, grain: 0.1, rel: 30, cx: 4, fine: 200 }); M.asphaltLight = std({ map: T(aC), bumpMap: L(aB), bumpScale: 1.2, roughness: 0.92, userData: { wuv: 3, cast: false } }); }
