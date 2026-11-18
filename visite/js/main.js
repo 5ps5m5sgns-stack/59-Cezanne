@@ -91,11 +91,14 @@ const AOU = {                                              // uniformes partagé
   uAoMap: { value: null }, uAoK: { value: 0 }, uAoSplit: { value: 1e9 },
   uAoT0: { value: new THREE.Vector4() }, uAoT1: { value: new THREE.Vector4() }, uAoA: { value: new THREE.Vector4(1, 0, 1, 0) },     // emprise de chaque niveau, place dans l'atlas
   uAoLv: { value: new THREE.Vector4(0, 2.6, 0, 2.6) },    // cote et hauteur sous plafond des deux niveaux
+  uAoMap2: { value: null }, uAoDay: { value: 1 }, uAoNight: { value: 0 }, uAoCf: { value: 0.3 },
+  uAoWarm: { value: new THREE.Color(1.16, 1.0, 0.8) }, uAoLamp: { value: new THREE.Color(1.0, 0.62, 0.3) },
 };
 const AO_VERT = `#include <worldpos_vertex>
 	vAoW = ( modelMatrix * vec4( transformed, 1.0 ) ).xyz; vAoN = normalize( mat3( modelMatrix ) * objectNormal );`;
 const AO_PARS = `varying vec3 vAoW; varying vec3 vAoN;
-uniform sampler2D uAoMap; uniform vec4 uAoT0, uAoT1, uAoA, uAoLv; uniform float uAoK, uAoSplit, uAoMode;
+uniform sampler2D uAoMap, uAoMap2; uniform vec4 uAoT0, uAoT1, uAoA, uAoLv; uniform float uAoK, uAoSplit, uAoMode, uAoDay, uAoNight, uAoCf; uniform vec3 uAoWarm, uAoLamp;
+vec3 aoTint = vec3( 1.0 ); float aoLamp = 0.0;
 float aoContact() {
 	if ( uAoK <= 0.0 ) return 1.0;
 	bool up = vAoW.y > uAoSplit; vec4 T = up ? uAoT1 : uAoT0; float fy = up ? uAoLv.z : uAoLv.x, fh = up ? uAoLv.w : uAoLv.y, h = vAoW.y - fy;
@@ -103,12 +106,20 @@ float aoContact() {
 	vec3 n = normalize( vAoN );
 	vec2 q = ( vAoW.xz + ( uAoMode == 1.0 || uAoMode == 3.0 ? vec2( 0.0 ) : n.xz * 0.05 ) - T.xy ) * T.zw;      // les faces verticales lisent la carte juste devant elles
 	if ( q.x < 0.0 || q.y < 0.0 || q.x > 1.0 || q.y > 1.0 ) return 1.0;
-	vec4 s = texture2D( uAoMap, vec2( q.x, ( up ? uAoA.w : uAoA.y ) + q.y * ( up ? uAoA.z : uAoA.x ) ) );     // r : meubles (large), g : murs (large), b : contact serré
-	float occ;
+	vec2 uv = vec2( q.x, ( up ? uAoA.w : uAoA.y ) + q.y * ( up ? uAoA.z : uAoA.x ) );
+	vec4 s = texture2D( uAoMap, uv );     // r : meubles (large), g : murs (large), b : contact serré
+	vec4 l = texture2D( uAoMap2, uv );    // r : jour venu des baies, g : lampes, b : murs (serré, pour les angles)
+	float occ, lo = exp( -max( h, 0.0 ) / 0.7 );
 	if ( uAoMode == 1.0 ) occ = 0.5 * s.r + 0.45 * s.g + 0.5 * s.b;
 	else if ( uAoMode == 3.0 ) occ = 0.34 * s.g * smoothstep( fh - 0.5, fh - 0.02, h );
-	else if ( uAoMode == 2.0 ) occ = ( 0.4 * s.r + 0.25 * s.b ) * exp( -max( h, 0.0 ) / 0.3 ) + 0.16 * exp( -max( h, 0.0 ) / 0.07 ) + 0.13 * exp( -max( fh - h, 0.0 ) / 0.1 );
+	else if ( uAoMode == 2.0 ) occ = ( 0.4 * s.r + 0.25 * s.b ) * exp( -max( h, 0.0 ) / 0.3 ) + 0.16 * exp( -max( h, 0.0 ) / 0.07 ) + 0.13 * exp( -max( fh - h, 0.0 ) / 0.1 ) + 0.32 * smoothstep( uAoCf + 0.03, uAoCf + 0.3, l.b );
 	else occ = ( 0.32 * s.r + 0.22 * s.g + 0.3 * s.b ) * ( 1.0 - smoothstep( 0.0, 0.32, h ) ) * ( 0.55 + 0.45 * max( -n.y, 0.0 ) + 0.45 * ( 1.0 - abs( n.y ) ) );
+	// lumière du jour : plus vive près des baies, plus sourde au fond ; le parquet ensoleillé réchauffe le bas des murs et le plafond
+	float f = mix( 1.0, 0.62 + 0.62 * l.r, uAoDay );
+	float warm = ( uAoMode == 2.0 ? 0.55 * lo : uAoMode == 3.0 ? 0.45 : uAoMode == 1.0 ? 0.0 : 0.25 * lo ) * l.r * uAoDay;
+	aoTint = f * mix( vec3( 1.0 ), uAoWarm, warm );
+	// le soir : halo doux des lampes sur les murs et le sol, plus marqué à hauteur de lampe
+	aoLamp = l.g * uAoNight * ( uAoMode == 3.0 ? 0.55 : uAoMode == 2.0 ? 0.6 + 0.4 * exp( -abs( h - 1.1 ) / 0.9 ) : 0.8 );
 	return clamp( 1.0 - uAoK * occ, 0.35, 1.0 );
 }`;
 /* ── Reflets des pièces ──────────────────────────────────────────────────────
@@ -163,7 +174,7 @@ function patchAO(shader) {
   shader.vertexShader = shader.vertexShader.replace('#include <common>', '#include <common>\nvarying vec3 vAoW; varying vec3 vAoN;').replace('#include <worldpos_vertex>', AO_VERT);
   shader.fragmentShader = shader.fragmentShader.replace('#include <common>', '#include <common>\n' + AO_PARS)
     .replace('#include <lights_fragment_begin>', 'float aoC = aoContact();\n' + THREE.ShaderChunk.lights_fragment_begin.replace('getPointLightInfo( pointLight, geometryPosition, directLight );', 'getPointLightInfo( pointLight, geometryPosition, directLight ); directLight.color *= aoC;'))   // les lampes d'appoint figurent un rebond : occultées comme lui
-    .replace('#include <aomap_fragment>', '#include <aomap_fragment>\nreflectedLight.indirectDiffuse *= aoC; reflectedLight.indirectSpecular *= mix( 1.0, aoC, 0.7 ); reflectedLight.directDiffuse *= mix( 1.0, aoC, 0.4 );');
+    .replace('#include <aomap_fragment>', '#include <aomap_fragment>\nreflectedLight.indirectDiffuse *= aoC * aoTint; reflectedLight.indirectDiffuse += diffuseColor.rgb * uAoLamp * aoLamp; reflectedLight.indirectSpecular *= mix( 1.0, aoC, 0.7 ); reflectedLight.directDiffuse *= mix( 1.0, aoC, 0.4 );');
   patchClamp.call(this, shader);
 }
 function patchClamp(shader) {
@@ -187,8 +198,61 @@ function boxBlur(a, W, H, r, passes = 3) {
   }
   return a;
 }
+/* Lumière précalculée, sur une grille de 20 cm par niveau : le jour qui entre par les baies et la lueur des lampes se diffusent de
+   proche en proche dans les pièces (les murs l'arrêtent, les portes la laissent passer, elle s'éteint avec la distance), puis la
+   grille est agrandie à la taille de la carte d'ombres. Troisième canal : les murs à peine floutés, qui révèlent les angles rentrants. */
+function bakeLight(lvs, ext, sz, W, HT, px, Graw, lights, r) {
+  const data = new Uint8Array(W * HT * 4), cell = 0.2, outdoor = /jardin|balcon|terrasse/;
+  const Gs = boxBlur(Float32Array.from(Graw), W, HT, r(0.12));
+  // valeur de ce flou à 5 cm d'un mur droit : au-delà, on est dans un angle
+  const n1 = 400, line = new Float32Array(n1); for (let i = 0; i < n1 / 2; i++) line[i] = 1; boxBlur(line, n1, 1, r(0.12));
+  const cf = line[n1 / 2 + Math.round(0.05 / px)];
+  let row0 = 0;
+  lvs.forEach((lv, li) => {
+    const e = ext[li], H = sz.H[li], gw = Math.ceil(W * px / cell), gh = Math.ceil(H * px / cell), N = gw * gh;
+    const wall = new Uint8Array(N), inside = new Uint8Array(N);
+    for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) if (Graw[(row0 + y) * W + x] > 0.5) wall[Math.min(gh - 1, Math.floor(y * px / cell)) * gw + Math.min(gw - 1, Math.floor(x * px / cell))] = 1;
+    for (const room of lv.rooms) if (!outdoor.test(room.id)) for (const q of room.rs) {
+      for (let j = Math.max(0, Math.floor((q[1] - e[1]) / cell)); j < Math.min(gh, Math.ceil((q[3] - e[1]) / cell)); j++) for (let i = Math.max(0, Math.floor((q[0] - e[0]) / cell)); i < Math.min(gw, Math.ceil((q[2] - e[0]) / cell)); i++) inside[j * gw + i] = 1;
+    }
+    const diffuse = (src, decay, iters) => {
+      let L = Float32Array.from(src), T = new Float32Array(N);
+      for (let k = 0; k < iters; k++) {
+        for (let j = 0; j < gh; j++) for (let i = 0; i < gw; i++) {
+          const c = j * gw + i; if (wall[c]) { T[c] = src[c]; continue; }
+          const m = (L[c - 1 >= j * gw ? c - 1 : c] + L[i + 1 < gw ? c + 1 : c] + L[j > 0 ? c - gw : c] + L[j + 1 < gh ? c + gw : c]) * 0.25;
+          T[c] = Math.max(src[c], m * decay);
+        }
+        [L, T] = [T, L];
+      }
+      return L;
+    };
+    const splat = (src, x, z, rad, v) => { for (let j = Math.floor((z - rad - e[1]) / cell); j <= Math.ceil((z + rad - e[1]) / cell); j++) for (let i = Math.floor((x - rad - e[0]) / cell); i <= Math.ceil((x + rad - e[0]) / cell); i++) { if (i < 0 || j < 0 || i >= gw || j >= gh) continue; const d = Math.hypot((i + 0.5) * cell + e[0] - x, (j + 0.5) * cell + e[1] - z); if (d < rad) src[j * gw + i] = Math.max(src[j * gw + i], v * (1 - d / rad * 0.3)); } };
+    const sd = new Float32Array(N), sl = new Float32Array(N);
+    for (const l of lights) {
+      if (l.level !== li) continue; const hy = l.pos.y - lv.y;
+      if (l.day && hy < 1.5) splat(sd, l.pos.x, l.pos.z, 0.7, Math.min(1, l.power / 1.6));          // baies (les appoints de pièce, à 2 m, n'en sont pas)
+      else if (!l.day) splat(sl, l.pos.x, l.pos.z, 0.3, Math.min(1, l.power / 0.9));
+    }
+    // portée : environ 2,4 m pour le jour (d = 1 / (1 + 1 / (4 λ²)), λ en cellules), 1,2 m pour les lampes
+    const D = diffuse(sd, 0.99827, 700), Lm = diffuse(sl, 0.9931, 260);
+    // agrandissement bilinéaire de la grille vers la carte
+    const at = (A, fx, fy) => { const x0 = Math.max(0, Math.min(gw - 1, Math.floor(fx))), y0 = Math.max(0, Math.min(gh - 1, Math.floor(fy))), x1 = Math.min(gw - 1, x0 + 1), y1 = Math.min(gh - 1, y0 + 1), tx = Math.min(1, Math.max(0, fx - x0)), ty = Math.min(1, Math.max(0, fy - y0)); return (A[y0 * gw + x0] * (1 - tx) + A[y0 * gw + x1] * tx) * (1 - ty) + (A[y1 * gw + x0] * (1 - tx) + A[y1 * gw + x1] * tx) * ty; };
+    const In = Float32Array.from(inside);
+    for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
+      const fx = (x + 0.5) * px / cell - 0.5, fy = (y + 0.5) * px / cell - 0.5, o = ((row0 + y) * W + x) * 4, ins = at(In, fx, fy);
+      const day = 1 - Math.exp(-4 * at(D, fx, fy));
+      data[o] = 255 * (day * ins + 0.613 * (1 - ins));                                  // dehors : aucun effet (0,613 ↔ facteur 1)
+      data[o + 1] = 255 * Math.min(1, at(Lm, fx, fy) * 2.2) * ins;
+      data[o + 2] = 255 * Math.min(1, Gs[(row0 + y) * W + x]); data[o + 3] = 255;
+    }
+    row0 += H;
+  });
+  const tex = new THREE.DataTexture(data, W, HT, THREE.RGBAFormat); tex.magFilter = tex.minFilter = THREE.LinearFilter; tex.generateMipmaps = false; tex.needsUpdate = true;
+  return { tex, cf };
+}
 /* Rend la carte d'ombres de contact d'un logement (tous ses niveaux dans un atlas). Renvoie { tex, t0, t1, a, lv, split }. */
-function bakeContact(renderer, scene, group, apt, M, maxTex) {
+function bakeContact(renderer, scene, group, apt, M, maxTex, lights = []) {
   const lvs = apt.levels.slice(0, 2), pad = 0.6;
   const ext = lvs.map((lv) => { const b = lv.bounds; return [b[0] - pad, b[1] - pad, b[2] + pad, b[3] + pad]; });
   let px = 0.025; const fit = () => ({ W: Math.max(...ext.map((e) => Math.ceil((e[2] - e[0]) / px))), H: ext.map((e) => Math.ceil((e[3] - e[1]) / px)) });
@@ -233,6 +297,7 @@ function bakeContact(renderer, scene, group, apt, M, maxTex) {
   // deux échelles : un contact serré (4 cm) et un voile large (meubles 22 cm, murs 30 cm)
   const r = (m) => Math.max(1, Math.round(m / px / 2.2));
   const C = new Float32Array(W * HT); for (let i = 0; i < C.length; i++) C[i] = Math.max(R[i], G[i]);
+  const lightTex = bakeLight(lvs, ext, sz, W, HT, px, G, lights, r);
   boxBlur(C, W, HT, r(0.05)); boxBlur(R, W, HT, r(0.24)); boxBlur(G, W, HT, r(0.32));
   const data = new Uint8Array(W * HT * 4);
   for (let i = 0; i < W * HT; i++) { data[i * 4] = Math.min(255, R[i] * 255 * 1.15); data[i * 4 + 1] = Math.min(255, G[i] * 255); data[i * 4 + 2] = Math.min(255, C[i] * 255); data[i * 4 + 3] = 255; }
@@ -240,7 +305,7 @@ function bakeContact(renderer, scene, group, apt, M, maxTex) {
   for (const [o, k, v] of saved) o[k] = v; for (const o of hidden) o.visible = true;
   scene.fog = fog; scene.background = bg; renderer.shadowMap.needsUpdate = sh; renderer.setRenderTarget(prevRT); renderer.setClearColor(cc, ca);
   ovObj.dispose(); ovWall.dispose();
-  out.tex = tex; renderer.initTexture(tex);
+  out.tex = tex; renderer.initTexture(tex); out.tex2 = lightTex.tex; out.cf = lightTex.cf; renderer.initTexture(lightTex.tex);
   return out;
 }
 
@@ -424,8 +489,8 @@ class App {
     if (prev) this.scene.remove(prev.group);
     this.scene.add(cur.group); cur.group.add(this.camera, this.reticle, this.hl);
     // ombres de contact : calculées une fois par logement, au premier chargement
-    if (!cur.ao) { cur.group.updateMatrixWorld(true); cur.ao = bakeContact(this.renderer, this.scene, cur.group, apt, this.M, QUALITY.tex); }
-    AOU.uAoMap.value = cur.ao.tex; AOU.uAoT0.value.copy(cur.ao.t0); AOU.uAoT1.value.copy(cur.ao.t1); AOU.uAoA.value.copy(cur.ao.a); AOU.uAoLv.value.copy(cur.ao.lv); AOU.uAoSplit.value = cur.ao.split;
+    if (!cur.ao) { cur.group.updateMatrixWorld(true); cur.ao = bakeContact(this.renderer, this.scene, cur.group, apt, this.M, QUALITY.tex, cur.lights); }
+    AOU.uAoMap.value = cur.ao.tex; AOU.uAoT0.value.copy(cur.ao.t0); AOU.uAoT1.value.copy(cur.ao.t1); AOU.uAoA.value.copy(cur.ao.a); AOU.uAoLv.value.copy(cur.ao.lv); AOU.uAoSplit.value = cur.ao.split; AOU.uAoMap2.value = cur.ao.tex2; AOU.uAoCf.value = cur.ao.cf;
     AOU.uAoK.value = QUALITY.ao ? 0.8 : 1.5;              // avec l'occlusion d'écran (qualités hautes), la carte ne fait plus que le voile large
     this.apt = apt; this.cur = cur; this.viewLevel = 0; this.mode = 'orbit'; this.lastRoom = null; this.hourBack = undefined;
     Object.assign(this.walk, { level: 0, path: null, look: null, climbing: null, riding: null, spin: null, onArrive: null, floorY: undefined });
@@ -637,6 +702,7 @@ class App {
     const n = this.night, M = this.M;
     M.lampShade.emissiveIntensity = n * 1.25; M.led.emissiveIntensity = 1.0 + n * 0.8;      // rubans LED et lustres allumés même de jour, comme sur les images
     M.glass.opacity = 0.1 + n * 0.08;
+    AOU.uAoDay.value = (1 - n) * clamp(this.env.dir.y * 3 + 0.35, 0.35, 1); AOU.uAoNight.value = n * 0.5;      // carte de lumière : jour des baies, lueur des lampes
     if (this.roomMats) for (const k of this.roomMats) M[k].envMapIntensity = M[k].userData.envK * (1 - n * 0.8);
     this.lightAt.set(1e9, 0, 0); this.dirty = true;
     const out = $('#v3d-time-out'); if (out) { const hh = Math.floor(h), mm = Math.round((h - hh) * 60); out.textContent = `${hh} h ${String(mm).padStart(2, '0')}`; }
