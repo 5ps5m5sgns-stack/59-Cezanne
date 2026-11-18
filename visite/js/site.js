@@ -102,6 +102,15 @@ export function buildSite(b, M, { o, skip }) {
   box('glassDark', W + 1.55, -1.25, 10.85, W + 1.58, EAVE - 0.3, 12.05); for (const z of [10.85, 12.05]) box('cadre', W + 1.55, -1.25, z - 0.03, W + 1.6, EAVE - 0.3, z + 0.03);
   for (const y of [-1.25, 1.05, FH + 0.1, EAVE - 0.3]) box('cadre', W + 1.55, y - 0.03, 10.85, W + 1.6, y + 0.03, 12.05);
   box('cadre', W + 1.55, 2.25, 10.4, W + 2.6, 2.35, 12.5);                                                 // auvent de l'entrée
+  for (const z of [10.6, 12.3]) { box('cadre', W + 1.55, 1.6, z - 0.06, W + 1.62, 1.85, z + 0.06); box('led', W + 1.62, 1.62, z - 0.045, W + 1.625, 1.83, z + 0.045); }   // appliques de part et d'autre de l'entrée
+  { // numéro « 59 » en chiffres découpés, sur la pierre de la tour : afficheur à sept segments, lisible de la rue
+    const SEG = { 5: 'afgcd', 9: 'abcdfg' }, x = W + 1.55, w = 0.16, h = 0.3, e = 0.026, seg = (z0, y0, k) => {
+      const r = { a: [0, h - e, w, h], b: [w - e, h / 2, w, h], c: [w - e, 0, w, h / 2], d: [0, 0, w, e], f: [0, h / 2, e, h], g: [0, h / 2 - e / 2, w, h / 2 + e / 2] }[k];
+      box('cadre', x, y0 + r[1], z0 - r[2], x + 0.012, y0 + r[3], z0 - r[0]);
+    };
+    for (const [i, dgt] of ['5', '9'].entries()) for (const k of SEG[dgt]) seg(13.0 - i * 0.22, 1.25, k);
+  }
+  for (const z of [19.45, 25.55]) b.rod(M.cadre, [W + 0.04, EAVE - 0.1, z], [W + 0.04, -0.3, z], 0.04, 8);   // descentes d'eau pluviale entre les logements, façade Est
 
   // ── Toiture : quatre pentes à 30 %, tuiles vieillies, débord formant chéneau, fenêtres de toit ──
   b.on('ext:top');
@@ -121,6 +130,7 @@ export function buildSite(b, M, { o, skip }) {
   box('earth', GW - 0.4, -3.4, -5.9, 0, FH - 0.32, 41.4);
   const garden = (z0, z1, seed, deco) => {
     box('socle', GW - 0.4, FH - 0.32, z0, 0, FH - 0.1, z1); box('grass', GW, FH - 0.1, z0, -3.2, FH - 0.02, z1); box('terrace', -3.2, FH - 0.1, z0, 0, FH - 0.015, z1);
+    box('cadre', -3.206, FH - 0.08, z0, -3.2, FH - 0.004, z1);                                              // bordure acier entre pelouse et terrasse
     V.hedge(b, M, GW - 0.35, z0, GW + 0.3, z1, { h: 1.7, y: FH - 0.05 }); V.hedge(b, M, GW, z1 - 0.3, -3.4, z1 + 0.3, { h: 1.3, y: FH - 0.05 });
     if (deco === 'table') { b.push(-1.7, FH - 0.015, (z0 + z1) / 2, 90 * Math.PI / 180); F.outdoorTable(b, M, { w: 1.8, n: 3 }); b.pop(); }
     if (deco === 'sofa') { b.push(-1.5, FH - 0.015, (z0 + z1) / 2, Math.PI / 2); F.outdoorSofa(b, M, { w: 2.1 }); b.pop(); b.push(-6.3, FH - 0.02, z0 + 2.2, -Math.PI / 2); F.lounger(b, M, {}); b.pop(); b.push(-5.2, FH - 0.02, z0 + 1.2, 0); F.parasol(b, M, { r: 1.4 }); b.pop(); }
@@ -176,8 +186,28 @@ export function buildSite(b, M, { o, skip }) {
       for (const [u, v] of [[-1, -1], [1, -1], [1, 1], [-1, -1], [1, 1], [-1, 1]]) { pos.push(x + u * cx - v * cz, y + (u + v) * 0.03, z + u * cz + v * cx); nor.push(0, 1, 0); uv.push((u + 1) / 2, (v + 1) / 2); } }
     g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3)); g.setAttribute('normal', new THREE.Float32BufferAttribute(nor, 3)); g.setAttribute('uv', new THREE.Float32BufferAttribute(uv, 2)); b.add(M.leafBroad, g); }
   car(b, M, 21.9, -3.3, -1.6, 0, 'carGrey'); car(b, M, 26.9, -3.3, -1.5, 0, 'white');      // l'allée vers le garage reste libre
+  for (const x of [20.65, 23.15, 25.65, 28.15]) box('white', x - 0.05, -3.3, -4.5, x + 0.05, -3.296, 0.4);   // marquage des places, peinture au sol
+  for (const x of [30.9, 31.7, 32.5]) {                                                                      // arceaux vélos devant le local, scellés dans l'enrobé
+    b.tube(M.steel, [[x, -3.3, 8.25], [x, -2.62, 8.25], [x, -2.48, 8.4], [x, -2.48, 8.75], [x, -2.62, 8.9], [x, -3.3, 8.9]], 0.024, 8);
+  }
+  // abords de la piscine : échelle inox, douche de plage, bornes d'éclairage basses
+  for (const z of [25.2, 25.7]) b.tube(M.steel, [[26.45, -1.3, z], [26.5, -0.72, z], [26.8, -0.56, z], [27.1, -0.75, z], [27.18, -1.3, z], [27.2, -1.7, z]], 0.021, 8);
+  for (const y of [-1.5, -1.75]) box('steel', 27.16, y - 0.015, 25.2, 27.25, y, 25.7);
+  b.rod(M.steel, [25.9, -1.2955, 14.4], [25.9, 0.95, 14.4], 0.04, 10); b.rod(M.steel, [25.9, 0.9, 14.4], [26.2, 0.95, 14.4], 0.02, 8); b.cyl(M.steel, 26.22, 0.87, 14.4, 0.09, 0.03, 14, 0.06);
+  b.rod(M.steel, [25.9, -0.1, 14.4], [26.05, -0.1, 14.4], 0.012, 6); box('cadre', 25.6, -1.299, 14.1, 26.2, -1.294, 14.7);   // robinet, caillebotis d'évacuation
+  for (const [x, z] of [[23.0, 11.0], [23.0, 17.0], [23.0, 23.0], [23.0, 29.0], [26.0, 10.6], [31.5, 10.6], [30.0, 29.0]]) {   // bornes basses : fût anthracite, diffuseur sous le chapeau
+    b.cyl(M.cadre, x, -1.3, z, 0.06, 0.48, 10); b.cyl(M.led, x, -0.86, z, 0.055, 0.04, 10); b.cyl(M.cadre, x, -0.82, z, 0.075, 0.03, 10);
+  }
   for (const z of [4.6, 8.9]) { box('stucco', 36.0, -3.4, z - 0.3, 36.7, -1.2, z + 0.3); box('stuccoDark', 35.9, -1.2, z - 0.4, 36.8, -1.05, z + 0.4); }      // piliers du portail
-  box('stone', 36.2, -3.6, -5.9, 36.6, -1.6, 4.3); V.hedge(b, M, 30.5, -5.4, 36.0, -4.6, { h: 1.6, y: -3.3 });
+  // mur de clôture coupé par un portillon piéton à côté du portail : pilier, vantail à barreaudage, boîtes aux lettres et visiophone côté rue
+  box('stone', 36.2, -3.6, -5.9, 36.6, -1.6, 2.7); box('stucco', 36.05, -3.4, 2.7, 36.65, -1.2, 3.3); box('stuccoDark', 35.95, -1.2, 2.6, 36.75, -1.05, 3.4);
+  box('cadre', 36.32, -3.3, 3.3, 36.48, -3.25, 4.3);                                                       // seuil du portillon
+  railing(b, M, 36.4, 3.34, 36.4, 4.27, -3.3, 1.75, 'cadre'); box('black', 36.36, -2.3, 4.12, 36.6, -2.18, 4.2);   // vantail, serrure
+  for (let i = 0; i < 4; i++) for (let j = 0; j < 2; j++) {                                               // boîtes aux lettres encastrées dans le pilier Nord du portail
+    const z = 4.36 + i * 0.13, y = -2.55 + j * 0.3; box('cadre', 36.7, y, z, 36.72, y + 0.28, z + 0.12); box('black', 36.72, y + 0.2, z + 0.015, 36.725, y + 0.215, z + 0.105);
+  }
+  box('cadre', 36.7, -1.75, 4.36, 36.73, -1.45, 4.5); box('screen', 36.73, -1.62, 4.38, 36.736, -1.52, 4.48);   // platine de rue du visiophone
+  V.hedge(b, M, 30.5, -5.4, 36.0, -4.6, { h: 1.6, y: -3.3 });
   V.oleander(b, M, 33.5, -2.6, { r: 1.0, y: -3.3, seed: 5 }); V.oleander(b, M, 33.8, 1.6, { r: 0.8, y: -3.3, seed: 6 }); V.cypress(b, M, 32.4, -3.6, { h: 6.5, y: -3.3 });
 
   // ── Avenue Paul-Cézanne : chaussée en pente douce vers le Nord, trottoirs ──
@@ -197,6 +227,19 @@ export function buildSite(b, M, { o, skip }) {
     [49, -8, 'pine', 10, -3.25], [50, 14, 'olive', 5, yAt(14)], [51, 22, 'cypress', 9, yAt(22)], [49, 40, 'pine', 11, yAt(40)], [64, 12, 'pine', 12, yAt(12)], [66, 44, 'oak', 8, yAt(44)], [62, -14, 'cypress', 10, -3.25]]) {
     if (k === 'cypress') V.cypress(b, M, x, z, { h, y }); else V.tree(b, M, x, z, { kind: k, h, r: h * (k === 'pine' ? 0.34 : 0.4), seed: Math.round(x * 7 + z * 13), y });
   }
+  // bordures de trottoir en granit (abaissées devant le portail : bateau), passage piéton, regards, candélabres
+  const kerb = (x0, x1, za, zb, top = 0.13) => {                // bordure de 14 cm, 1 cm au-dessus du trottoir ; suit la pente au-delà de z0
+    const fl = Math.min(zb, z0); if (fl > za) box('concrete', x0, -3.4, za, x1, -3.3 + top, fl);
+    const a = Math.max(za, z0); if (zb > a) { const zc = (a + zb) / 2; b.geo(M.concrete, new THREE.BoxGeometry(x1 - x0, 0.23, zb - a), (x0 + x1) / 2, yAt(zc) + top - 0.115, zc, -Math.atan(slope), 0, 0); }
+  };
+  kerb(37.86, 38.004, -80, 3.6); kerb(37.86, 38.004, 9.9, 50); kerb(44.596, 44.74, -80, 50);   // interrompue devant le portail (bateau)
+  for (let x = 38.35; x < 44.4; x += 1.0) box('white', x, -3.3, -18, x + 0.5, -3.296, -15);                    // passage piéton (bandes de 50 cm)
+  for (const z of [-34, -8, 24, 44]) { const yy = z > z0 ? yAt(z) : -3.3; b.geo(M.cadre, new THREE.CylinderGeometry(0.32, 0.32, 0.012, 16), 39.7, yy - 0.002, z, z > z0 ? -Math.atan(slope) : 0, 0, 0); }   // plaques d'égout
+  for (const z of [-30, -6, 18, 42]) {                                                                         // candélabres sur le trottoir d'en face : mât, crosse, lanterne
+    const yy = (z > z0 ? yAt(z) : -3.3) + 0.12; b.rod(M.cadre, [45.4, yy, z], [45.4, yy + 6.2, z], 0.07, 8, 0.05); b.rod(M.cadre, [45.4, yy + 6.1, z], [44.6, yy + 6.3, z], 0.035, 6);
+    b.box(M.cadre, 44.2, yy + 6.18, z - 0.16, 44.75, yy + 6.32, z + 0.16); b.box(M.led, 44.25, yy + 6.17, z - 0.12, 44.7, yy + 6.18, z + 0.12); b.cyl(M.cadre, 45.4, yy, z, 0.12, 0.35, 8);
+  }
+  { const yy = -3.18; b.rod(M.cadre, [37.6, yy, -2.4], [37.6, yy + 2.5, -2.4], 0.03, 8); b.box(M.white, 37.58, yy + 1.95, -2.75, 37.6, yy + 2.45, -2.05); b.box(M.cadre, 37.6, yy + 1.95, -2.75, 37.62, yy + 2.45, -2.05); }   // panneau de voie (impasse)
   V.hedge(b, M, 46.4, -40, 47.0, 5.5, { h: 1.8, y: -3.25 }); V.hedge(b, M, -10.5, -5.9, -9.9, 41.4, { h: 1.8, y: 2.55 });
   b.pop(); b.on('ext');
 }
@@ -286,7 +329,14 @@ export function makeArrival(M, o) {
   dark.rotation.y = Math.PI / 2; dark.position.set(17.39 + 0.027, (DOOR.y0 + DOOR.y1) / 2 - 0.01, (DOOR.z0 + DOOR.z1) / 2); group.add(dark);
   // porte de garage : se replie vers le haut (pivot sous le linteau)
   const door = new THREE.Group(); door.position.set(DOOR.x, DOOR.y1, (DOOR.z0 + DOOR.z1) / 2); group.add(door);
-  { const b = new Batch(); b.box(M.garage, -0.019, DOOR.y0 - DOOR.y1, -(DOOR.z1 - DOOR.z0) / 2, 0.019, 0, (DOOR.z1 - DOOR.z0) / 2); b.build(door); }
+  { const b = new Batch(); b.box(M.garage, -0.019, DOOR.y0 - DOOR.y1, -(DOOR.z1 - DOOR.z0) / 2, 0.019, 0, (DOOR.z1 - DOOR.z0) / 2);
+    b.box(M.cadre, 0.019, DOOR.y0 - DOOR.y1 + 0.02, -(DOOR.z1 - DOOR.z0) / 2 + 0.03, 0.024, DOOR.y0 - DOOR.y1 + 0.09, (DOOR.z1 - DOOR.z0) / 2 - 0.03);   // lisse basse
+    b.build(door); }
+  { const b = new Batch(), x0 = 17.39 + 0.004, x1 = 17.39 + 0.075;                        // dormant fixe autour de la baie du garage, coffre de l'enrouleur
+    b.box(M.cadre, x0, DOOR.y0 - 0.02, DOOR.z0 - 0.09, x1, DOOR.y1 + 0.09, DOOR.z0 - 0.005); b.box(M.cadre, x0, DOOR.y0 - 0.02, DOOR.z1 + 0.005, x1, DOOR.y1 + 0.09, DOOR.z1 + 0.09);
+    b.box(M.cadre, x0, DOOR.y1 + 0.005, DOOR.z0 - 0.005, x1, DOOR.y1 + 0.09, DOOR.z1 + 0.005);
+    b.box(M.led, x1 + 0.005, DOOR.y1 + 0.2, (DOOR.z0 + DOOR.z1) / 2 - 0.25, x1 + 0.03, DOOR.y1 + 0.235, (DOOR.z0 + DOOR.z1) / 2 + 0.25);   // feu de signalisation de manœuvre
+    b.build(group); }
   // portail : deux vantaux à barreaudage, pivotant sur les piliers vers l'intérieur de la cour
   const vanes = GATE_Z.map((zh, i) => {
     const p = new THREE.Group(); p.position.set(GATE_X, -3.3, zh); group.add(p);

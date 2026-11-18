@@ -33,6 +33,18 @@ function fixture(b, M, type, x, y, z, rot) {
   } else if (type === 'visio') {                                // visiophone : combiné, écran, deux touches
     b.box(M.skirt, -0.06, -0.1, 0, 0.06, 0.1, 0.018); b.box(M.screen, -0.044, 0.0, 0.018, 0.044, 0.08, 0.0205);
     for (const sx of [-1, 1]) b.box(M.black, sx * 0.03 - 0.012, -0.075, 0.018, sx * 0.03 + 0.012, -0.055, 0.02);
+  } else if (type === 'duo') {                                  // tête de lit : interrupteur et prise sur une platine double
+    b.box(M.skirt, -0.08, -0.04, 0, 0.08, 0.04, 0.009); b.box(M.white, -0.057, -0.024, 0.009, -0.023, 0.024, 0.0125); b.box(M.led, -0.0412, 0.016, 0.0125, -0.0388, 0.019, 0.0132);
+    b.geo(M.white, new THREE.CylinderGeometry(0.026, 0.026, 0.004, 12), 0.04, 0, 0.011, PI / 2, 0, 0);
+    for (const sx of [-1, 1]) b.box(M.black, 0.04 + sx * 0.0095 - 0.0016, -0.003, 0.013, 0.04 + sx * 0.0095 + 0.0016, 0.003, 0.0136);
+  } else if (type === 'panel') {                                // tableau électrique encastré : bâti et porte affleurante laqués blanc, joint creux, serrure
+    b.box(M.white, -0.29, 0, 0, 0.29, 0.92, 0.008); b.box(M.seam, -0.27, 0.02, 0.008, 0.27, 0.9, 0.0085);
+    b.box(M.white, -0.268, 0.022, 0.0085, 0.268, 0.898, 0.014); b.box(M.black, 0.235, 0.44, 0.014, 0.249, 0.48, 0.017);
+    b.box(M.seam, -0.2, 0.84, 0.014, 0.2, 0.846, 0.0145);        // fente d'aération en partie haute
+  } else if (type === 'towel') {                                // sèche-serviettes : deux collecteurs, barreaux groupés par trois, consoles et robinet
+    for (const sx of [-1, 1]) { b.rod(M.white, [sx * 0.24, 0, 0.075], [sx * 0.24, 1.18, 0.075], 0.016, 10); for (const y of [0.15, 1.05]) b.rod(M.white, [sx * 0.24, y, 0], [sx * 0.24, y, 0.07], 0.008, 6); }
+    for (let g = 0; g < 4; g++) for (let k = 0; k < 3; k++) { const y = 0.12 + g * 0.28 + k * 0.055; b.rod(M.white, [-0.24, y, 0.075], [0.24, y, 0.075], 0.0115, 8); }
+    b.cyl(M.steel, -0.24, -0.06, 0.075, 0.012, 0.06, 8); b.cyl(M.steel, 0.24, -0.06, 0.075, 0.012, 0.06, 8);
   }
   b.pop();
 }
@@ -69,12 +81,21 @@ function grip(b, M, x, y, zc, sd, half = 0.035) {
 function glazing(b, M, x0, x1, y0, y1, n = 1, z = 0, fr = 0.05) {
   b.box(M.frame, x0, y0, z - 0.035, x1, y0 + fr, z + 0.035); b.box(M.frame, x0, y1 - fr, z - 0.035, x1, y1, z + 0.035);
   for (let i = 0; i <= n; i++) { const x = x0 + ((x1 - x0) / n) * i, a = i === 0 ? 0 : i === n ? -fr : -fr / 2; b.box(M.frame, x + a, y0, z - 0.035, x + a + fr, y1, z + 0.035); }
-  b.box(M.glass, x0 + fr, y0 + fr, z - 0.008, x1 - fr, y1 - fr, z + 0.008);
   const cw = (x1 - x0) / n, q = Math.min(0.024, fr * 0.5);
   for (let i = 0; i < n; i++) {                                 // ouvrant : liseré noir qui encadre le verre, en retrait du dormant
     const a = x0 + cw * i + (i === 0 ? fr : fr / 2), c = x0 + cw * (i + 1) - (i === n - 1 ? fr : fr / 2);
     b.box(M.frame, a, y0 + fr, z - 0.026, c, y0 + fr + q, z + 0.026); b.box(M.frame, a, y1 - fr - q, z - 0.026, c, y1 - fr, z + 0.026);
     b.box(M.frame, a, y0 + fr + q, z - 0.026, a + q, y1 - fr - q, z + 0.026); b.box(M.frame, c - q, y0 + fr + q, z - 0.026, c, y1 - fr - q, z + 0.026);
+    // double vitrage 4/16/4 : deux verres distincts (le reflet se dédouble légèrement, comme sur une vraie baie) et l'intercalaire
+    // sombre qui dépasse de 6 mm de la parclose, le petit filet que l'on voit au bord de tout vitrage isolant
+    for (const zg of [-0.012, 0.008]) b.box(M.glass, a + q, y0 + fr + q, z + zg, c - q, y1 - fr - q, z + zg + 0.004);
+    const e = 0.006, ga = a + q, gc = c - q, gy0 = y0 + fr + q, gy1 = y1 - fr - q;
+    b.box(M.black, ga, gy0, z - 0.0075, gc, gy0 + e, z + 0.0075); b.box(M.black, ga, gy1 - e, z - 0.0075, gc, gy1, z + 0.0075);
+    b.box(M.black, ga, gy0 + e, z - 0.0075, ga + e, gy1 - e, z + 0.0075); b.box(M.black, gc - e, gy0 + e, z - 0.0075, gc, gy1 - e, z + 0.0075);
+    // parcloses côté intérieur : petit profil chanfreiné qui pince le verre
+    const pz = z - 0.026, pq = 0.012;
+    b.box(M.frame, ga, gy0, pz, gc, gy0 + pq, pz + 0.013); b.box(M.frame, ga, gy1 - pq, pz, gc, gy1, pz + 0.013);
+    b.box(M.frame, ga, gy0 + pq, pz, ga + pq, gy1 - pq, pz + 0.013); b.box(M.frame, gc - pq, gy0 + pq, pz, gc, gy1 - pq, pz + 0.013);
   }
 }
 
@@ -88,24 +109,37 @@ function casing(b, mat, w, H, t, sz) {
 const JOINERY = {
   door(b, M, L, w, t, o, lv) {
     const H = o.head, s = L.s, hx = (o.hinge === 'a1' ? 1 : -1) * s * (w / 2 - 0.045), sw = (o.swing || 1) * L.z, ang = THREE.MathUtils.degToRad(o.open === undefined ? 86 : o.open);
+    // huisserie bois sur toute l'épaisseur du mur, avec sa butée de feuillure (le vantail vient battre contre elle)
     b.box(M.door, -w / 2, 0, -t / 2 - 0.004, -w / 2 + 0.045, H, t / 2 + 0.004); b.box(M.door, w / 2 - 0.045, 0, -t / 2 - 0.004, w / 2, H, t / 2 + 0.004);
     b.box(M.door, -w / 2, H - 0.045, -t / 2 - 0.004, w / 2, H, t / 2 + 0.004);
+    { const z0 = Math.min(sw * (t / 2 - 0.044), sw * (t / 2 - 0.06)), z1 = Math.max(sw * (t / 2 - 0.044), sw * (t / 2 - 0.06));
+      b.box(M.door, -w / 2 + 0.045, 0, z0, -w / 2 + 0.058, H - 0.045, z1); b.box(M.door, w / 2 - 0.058, 0, z0, w / 2 - 0.045, H - 0.045, z1); b.box(M.door, -w / 2 + 0.058, H - 0.058, z0, w / 2 - 0.058, H - 0.045, z1); }
     b.box(M.steel, -w / 2 + 0.045, -0.03, -t / 2, w / 2 - 0.045, 0.007, t / 2);                 // barre de seuil
     for (const sz of [-1, 1]) {                                   // chambranles profilés des deux côtés
       casing(b, M.door, w, H, t, sz);
       const lx = (hx < 0 ? 1 : -1) * (w / 2 + 0.16);              // interrupteur côté béquille, à 1,10 m
       fixture(b, M, 'sw', lx, 1.1, sz * t / 2, sz > 0 ? 0 : PI);
     }
-    const dir = hx < 0 ? 1 : -1, lw = w - 0.1;
-    b.push(hx, 0, sw * (t / 2), dir * -ang * sw);
-    b.box(M.door, 0, 0.008, -0.02, dir * lw, H - 0.05, 0.02);
-    for (const sz of [-1, 1]) {                                   // béquille noire sur rosace, des deux côtés
-      b.geo(M.black, new THREE.CylinderGeometry(0.026, 0.026, 0.008, 16), dir * (lw - 0.07), 1.02, sz * 0.024, Math.PI / 2, 0, 0);
-      b.rod(M.black, [dir * (lw - 0.07), 1.02, sz * 0.024], [dir * (lw - 0.07), 1.02, sz * 0.06], 0.009, 8); b.rod(M.black, [dir * (lw - 0.07), 1.02, sz * 0.055], [dir * (lw - 0.2), 1.02, sz * 0.055], 0.009, 8);
-      b.box(M.black, dir * (lw - 0.07) - 0.011, 0.9, sz * 0.02 - 0.0015, dir * (lw - 0.07) + 0.011, 0.97, sz * 0.02 + 0.0015);   // plaque de la serrure sur la tranche
+    for (const hy of [0.22, 1.05, H - 0.28]) {                    // paumelles : nœud sur l'axe, fiches haute et basse, aile vissée sur l'huisserie
+      b.cyl(M.black, hx, hy, sw * (t / 2), 0.0085, 0.1, 8); b.cyl(M.black, hx, hy + 0.1, sw * (t / 2), 0.004, 0.008, 6); b.cyl(M.black, hx, hy - 0.008, sw * (t / 2), 0.004, 0.008, 6);
     }
-    for (const hy of [0.22, 1.05, H - 0.28]) b.cyl(M.black, 0, hy, 0, 0.009, 0.09, 8);   // paumelles
+    const dir = hx < 0 ? 1 : -1, lw = w - 0.096, hxl = dir * (lw - 0.065);
+    b.push(hx, 0, sw * (t / 2), dir * -ang * sw);
+    b.box(M.door, dir * 0.004, 0.008, -0.02, dir * lw, H - 0.048, 0.02);                // vantail de 40 mm, détalonné de 8 mm, jeu de 3 mm en rive
+    b.box(M.steel, dir * lw, 0.94, -0.011, dir * (lw + 0.0015), 1.16, 0.011);           // têtière de la serrure, sur le chant
+    b.box(M.black, dir * (lw + 0.0015), 1.005, -0.006, dir * (lw + 0.006), 1.025, 0.006);  // pêne demi-tour
+    for (const sz of [-1, 1]) {                                   // béquille noire sur rosace ronde, rosace de clé (ou de condamnation) sous elle
+      b.geo(M.black, new THREE.CylinderGeometry(0.025, 0.026, 0.009, 18), hxl, 1.02, sz * 0.0245, PI / 2, 0, 0);
+      b.rod(M.black, [hxl, 1.02, sz * 0.028], [hxl, 1.02, sz * 0.058], 0.0085, 8);
+      b.rod(M.black, [hxl + dir * 0.004, 1.02, sz * 0.056], [hxl - dir * 0.125, 1.017, sz * 0.059], 0.0085, 8, 0.0075);
+      b.geo(M.black, new THREE.CylinderGeometry(0.02, 0.021, 0.008, 16), hxl, 0.93, sz * 0.024, PI / 2, 0, 0);
+      b.box(M.seam, hxl - 0.0025, 0.92, sz * 0.028 - 0.0005, hxl + 0.0025, 0.94, sz * 0.028 + 0.0005);
+    }
     b.pop();
+    if (o.open === undefined || o.open >= 70) {                   // butée de porte au sol, là où le vantail ouvert vient s'arrêter
+      const a = dir * -ang * sw, lx = dir * (lw - 0.06), lz = Math.sign(sw) * 0.045;
+      b.cyl(M.steel, hx + lx * Math.cos(a) + lz * Math.sin(a), 0, sw * (t / 2) - lx * Math.sin(a) + lz * Math.cos(a), 0.016, 0.026, 12, 0.014);
+    }
   },
   entry(b, M, L, w, t, o) {
     const H = o.head;
@@ -141,6 +175,9 @@ const JOINERY = {
     glazing(b, M, -w / 2, w / 2, o.sill, o.head, w > 1 ? 2 : 1, t / 2 - 0.12);
     b.box(M.stucco, -w / 2 - 0.04, o.sill - 0.04, t / 2 - 0.1, w / 2 + 0.04, o.sill, t / 2 + 0.05);
     b.box(M.lacquer, -w / 2, o.sill - 0.02, -t / 2 - 0.02, w / 2, o.sill, t / 2 - 0.15);
+    // bavette aluminium sur l'appui extérieur, avec son nez goutte d'eau : l'eau ne coule pas sur l'enduit
+    b.box(M.frame, -w / 2 - 0.03, o.sill, t / 2 - 0.085, w / 2 + 0.03, o.sill + 0.006, t / 2 + 0.07);
+    b.box(M.frame, -w / 2 - 0.03, o.sill - 0.03, t / 2 + 0.064, w / 2 + 0.03, o.sill, t / 2 + 0.07);
     for (const sd of [-1, 1]) grip(b, M, w > 1 ? 0 : w / 2 - 0.08, o.sill + (o.head - o.sill) * 0.5, t / 2 - 0.12, sd);
   },
   glass(b, M, L, w, t, o) { glazing(b, M, -w / 2, w / 2, o.sill, o.head, Math.max(1, Math.round(w / 1.2)), 0, 0.03); },
@@ -153,7 +190,7 @@ const JOINERY = {
     b.box(M.screen, -0.14, H + 0.1, z - 0.012, 0.14, H + 0.2, z + 0.012);
   },
   /* Porte palière d'ascenseur, vantaux ouverts : on voit la cabine. */
-  liftdoor(b, M, L, w, t, o) {
+  liftdoor(b, M, L, w, t, o, lv) {
     const H = o.head;
     b.box(M.steel, -w / 2 - 0.07, 0, -t / 2 - 0.015, -w / 2, H + 0.07, t / 2 + 0.015); b.box(M.steel, w / 2, 0, -t / 2 - 0.015, w / 2 + 0.07, H + 0.07, t / 2 + 0.015); b.box(M.steel, -w / 2 - 0.07, H, -t / 2 - 0.015, w / 2 + 0.07, H + 0.07, t / 2 + 0.015);
     b.box(M.steel, -w / 2, 0, -0.012, -w / 2 + 0.1, H, 0.012); b.box(M.steel, w / 2 - 0.1, 0, -0.012, w / 2, H, 0.012);
@@ -164,6 +201,12 @@ const JOINERY = {
       b.box(M.steel, w / 2 + 0.12, 1.0, Math.min(z, z + sz * 0.012), w / 2 + 0.2, 1.2, Math.max(z, z + sz * 0.012));         // platine d'appel
       for (const by of [1.08, 1.13]) b.geo(M.led, new THREE.CylinderGeometry(0.0095, 0.0095, 0.006, 10), w / 2 + 0.16, by, z + sz * 0.014, PI / 2, 0, 0);
       b.box(M.screen, -0.14, H + 0.1, Math.min(z, z + sz * 0.012), 0.14, H + 0.19, Math.max(z, z + sz * 0.012));
+      // indicateur d'étage : chiffre du niveau en segments lumineux, flèche de sens à côté
+      const n = lv && /^L(\d)/.test(lv.layer) ? +lv.layer.slice(1) + 1 : 1, zf = z + sz * 0.012, zl = Math.min(zf, zf + sz * 0.002), zh = Math.max(zf, zf + sz * 0.002);
+      const SEG = { 1: 'bc', 2: 'abged', 3: 'abgcd' }[n] || 'bc', dw = 0.03, dh = 0.06, e = 0.007, x0 = -0.03 * sz, yb = H + 0.115;
+      for (const k of SEG) { const r = { a: [0, dh - e, dw, dh], b: [dw - e, dh / 2, dw, dh], c: [dw - e, 0, dw, dh / 2], d: [0, 0, dw, e], e: [0, 0, e, dh / 2], g: [0, dh / 2 - e / 2, dw, dh / 2 + e / 2] }[k];
+        b.box(M.led, x0 + sz * r[0], yb + r[1], zl, x0 + sz * r[2], yb + r[3], zh); }
+      b.box(M.led, 0.04 * sz - 0.004, yb + 0.015, zl, 0.04 * sz + 0.004, yb + 0.045, zh); b.box(M.led, 0.04 * sz - 0.012, yb + 0.037, zl, 0.04 * sz + 0.012, yb + 0.045, zh);
     }
   },
   /* Porte coulissante en applique, dessinée ouverte : le vantail est rangé devant le mur, du côté `to` ('a0' | 'a1') de la baie,
@@ -172,9 +215,16 @@ const JOINERY = {
     const H = o.head, dir = (o.to === 'a1' ? 1 : -1) * L.s, z = (o.side || 1) * L.z * (t / 2 + 0.024), xc = dir * (w - 0.04);
     b.box(M.door, -w / 2, 0, -t / 2 - 0.004, -w / 2 + 0.03, H, t / 2 + 0.004); b.box(M.door, w / 2 - 0.03, 0, -t / 2 - 0.004, w / 2, H, t / 2 + 0.004); b.box(M.door, -w / 2, H - 0.03, -t / 2 - 0.004, w / 2, H, t / 2 + 0.004);
     b.box(M.steel, -w / 2 + 0.03, -0.03, -t / 2, w / 2 - 0.03, 0.007, t / 2);                    // barre de seuil
-    b.box(M.door, xc - w / 2 - 0.03, 0.01, z - 0.02, xc + w / 2 + 0.03, H + 0.02, z + 0.02);
-    b.box(M.black, Math.min(-w / 2, xc - w / 2) - 0.05, H + 0.02, z - 0.025, Math.max(w / 2, xc + w / 2) + 0.05, H + 0.07, z + 0.025);
-    const hx = xc - dir * (w / 2 - 0.06); for (const s of [-1, 1]) b.box(M.black, hx - 0.012, 0.9, z + s * 0.02 - 0.003, hx + 0.012, 1.15, z + s * 0.02 + 0.003);
+    b.box(M.door, xc - w / 2 - 0.03, 0.01, z - 0.02, xc + w / 2 + 0.03, H + 0.005, z + 0.02);
+    // rail aluminium en applique : profil en U sur une lisse de fixation, embouts et butées aux deux extrémités de la course
+    const ra = Math.min(-w / 2, xc - w / 2) - 0.05, rb = Math.max(w / 2, xc + w / 2) + 0.05;
+    b.box(M.black, ra, H + 0.02, z - 0.025, rb, H + 0.07, z + 0.025);
+    for (const xe of [ra, rb]) b.box(M.frame, xe - 0.004, H + 0.018, z - 0.027, xe + 0.004, H + 0.072, z + 0.027);
+    for (const xs of [-dir * (w / 2 + 0.045), xc + dir * (w / 2 + 0.045)]) b.box(M.steel, xs - 0.01, H + 0.012, z - 0.014, xs + 0.01, H + 0.02, z + 0.014);
+    for (const xh of [xc - w / 2 + 0.12, xc + w / 2 - 0.12]) b.box(M.steel, xh - 0.02, H + 0.005, z - 0.004, xh + 0.02, H + 0.03, z + 0.004);   // pattes des chariots à galets
+    b.box(M.black, dir * (w / 2 + 0.06) - 0.012, 0, z - 0.03, dir * (w / 2 + 0.06) + 0.012, 0.012, z + 0.03);   // guide au sol, en bout de baie
+    const hx = xc - dir * (w / 2 - 0.06);                          // poignée cuvette encastrée sur les deux faces
+    for (const sd of [-1, 1]) { b.box(M.steel, hx - 0.016, 0.88, z + sd * 0.02, hx + 0.016, 1.18, z + sd * 0.0235); b.box(M.black, hx - 0.009, 0.895, z + sd * 0.0235, hx + 0.009, 1.165, z + sd * 0.028); }
   },
   pass() { },
 };
@@ -193,7 +243,9 @@ function buildWall(b, M, lv, w) {
     const seg = (lay, u0, u1) => {
       if (u1 - u0 < 1e-3) return;
       b.on(lay);
-      const put = (mat, c0, c1) => { if (w.k === 'h') b.box(mat, a0, y0 + u0, c0, a1, y0 + u1, c1); else b.box(mat, c0, y0 + u0, a0, c1, y0 + u1, a1); };
+      // pas de face interne au joint de coupe : elle affleurait la face du mur et l'ombre portée y dessinait un pointillé à 1,25 m
+      const sk = (u1 === cut && yb > cut ? 'top' : '') + (u0 === cut && ya < cut ? 'bottom' : '');
+      const put = (mat, c0, c1) => { if (w.k === 'h') b.box(mat, a0, y0 + u0, c0, a1, y0 + u1, c1, sk); else b.box(mat, c0, y0 + u0, a0, c1, y0 + u1, a1, sk); };
       if (w.ext) {
         const inner = w.c - zs * t / 2, outer = w.c + zs * t / 2, mid = outer - zs * Math.max(0.02, Math.min(0.12, t - 0.1));   // enduit de 12 cm côté rue : les tableaux et les appuis intérieurs sont en plâtre
         put(M[w.lining || 'plaster'], Math.min(inner, mid), Math.max(inner, mid)); put(M[w.skin || 'stucco'], Math.min(mid, outer), Math.max(mid, outer));
@@ -204,7 +256,7 @@ function buildWall(b, M, lv, w) {
     const faces = w.ext ? [[w.c - zs * t / 2, -zs]] : [[w.c - t / 2, -1], [w.c + t / 2, 1]];            // faces vues : [coordonnée, côté de la pièce]
     if (ya === 0 && !w.mat && !w.noSkirt && a1 - a0 > 0.06) {
       b.on(L);
-      for (const [c, d] of faces) { wallRun(b, M.skirt, SKIRT, w.k, a0, a1, c, d, y0); wallRun(b, M.seam, SKIRT_GAP, w.k, a0, a1, c, d, y0); lv.faces.push([w.k, c, d, a0, a1]); }
+      for (const [c, d] of faces) { wallRun(b, M.skirt, SKIRT, w.k, a0, a1, c, d, y0); wallRun(b, M.seam, SKIRT_GAP, w.k, a0, a1, c, d, y0); lv.faces.push([w.k, c, d, a0, a1, yb === H]); }
     }
     if (yb === H && H === lv.h && a1 - a0 > 0.02) {                                                  // joint creux en rive de plafond
       b.on(top);
@@ -300,10 +352,14 @@ export function buildStair(b, M, st, lv0) {
   posts.forEach((p, i) => {
     if (!p || i > 7) return;
     const h = y0 + (i + 1) * rise;
-    if (i % 2 === 0 || i === 7) b.rod(M.black, [p[0], h, p[1]], [p[0], h + 0.88, p[1]], 0.011, 6);
+    b.rod(M.black, [p[0], h, p[1]], [p[0], h + 0.88, p[1]], 0.011, 6);                     // un poteau par marche, sur platine
+    b.cyl(M.black, p[0], h, p[1], 0.022, 0.006, 10);
     run.push([p[0], h + 0.9, p[1]]);
+    // barreaudage entre deux poteaux : trois barreaux fins, chacun posé sur la marche qu'il surplombe (vide entre barreaux < 11 cm)
+    const q = posts[i + 1]; if (!q || i >= 7) return;
+    for (let k = 1; k <= 3; k++) { const f = k / 4, x = p[0] + (q[0] - p[0]) * f, z = p[1] + (q[1] - p[1]) * f, hb = f < 0.5 ? h : h + rise; b.rod(M.black, [x, hb, z], [x, h + 0.88 + rise * f, z], 0.006, 5); }
   });
-  if (run.length > 2) b.tube(M.black, run, 0.019, 8);
+  if (run.length > 2) { b.tube(M.black, run, 0.019, 8); b.tube(M.black, run.map(([x, y, z]) => [x, y - 0.74, z]), 0.008, 5); }   // main courante et lisse basse
   if (st.core) {                                                // mur d'échiffre entre les volées, prolongé en garde-corps plein à l'étage
     const k = st.core;
     b.on(lv0.layer); b.box(M.plaster, k[0], y0, k[1], k[2], y0 + st.H, k[3]);
@@ -320,8 +376,8 @@ export function buildLift(b, M, lift, levels) {
     const y = lv.y, hc = 2.2;
     b.on(lv.layer);
     b.box(M.marbleDark, x0, y + 0.004, y0, x1, y + 0.016, y1);
-    for (const [ax, az, bx, bz] of [[x0, y0, x0 + 0.02, y1], [x1 - 0.02, y0, x1, y1], [x0, y1 - 0.02, x1, y1]]) { b.box(M.steel, ax, y, az, bx, y + Math.min(hc, CUT), bz); b.on(lv.layer + ':top'); b.box(M.steel, ax, y + CUT, az, bx, y + hc, bz); b.on(lv.layer); }
-    b.box(M.mirror, x0 + 0.12, y + 0.95, y1 - 0.03, x1 - 0.12, y + CUT, y1 - 0.021);
+    for (const [ax, az, bx, bz] of [[x0, y0, x0 + 0.02, y1], [x1 - 0.02, y0, x1, y1], [x0, y1 - 0.02, x1, y1]]) { b.box(M.steel, ax, y, az, bx, y + Math.min(hc, CUT), bz, 'top'); b.on(lv.layer + ':top'); b.box(M.steel, ax, y + CUT, az, bx, y + hc, bz, 'bottom'); b.on(lv.layer); }
+    b.box(M.mirror, x0 + 0.12, y + 0.95, y1 - 0.03, x1 - 0.12, y + CUT, y1 - 0.021, 'top');   // sans faces internes au joint de coupe
     // main courante en laiton sur trois parois, à 5 cm des parois
     const hy = y + 0.9, rr = 0.016, of = 0.07, zb = y1 - of, xa = x0 + of, xb = x1 - of;
     b.rod(M.brass, [xa - rr, hy, zb], [xb + rr, hy, zb], rr, 10); b.rod(M.brass, [xa, hy, zb], [xa, hy, y0 + 0.5], rr, 10); b.rod(M.brass, [xb, hy, zb], [xb, hy, y0 + 0.5], rr, 10);
@@ -331,7 +387,7 @@ export function buildLift(b, M, lift, levels) {
     for (let i = 0; i < 6; i++) { const by = y + 1.18 - Math.floor(i / 2) * 0.12, bz = y0 + 0.12 + (i % 2) * 0.12; b.geo(M.steel, new THREE.CylinderGeometry(0.0105, 0.0105, 0.004, 10), x1 - 0.0285, by, bz, 0, 0, PI / 2); b.geo(M.led, new THREE.CylinderGeometry(0.0035, 0.0035, 0.004, 6), x1 - 0.0305, by, bz, 0, 0, PI / 2); }
     if (lift.door) b.box(M.steel, lift.door[0] - 0.45, y - 0.03, lift.door[1] + 0.1, lift.door[0] + 0.45, y + 0.006, y0);   // seuil entre la porte palière et la cabine
     b.on(lv.layer + ':top');
-    b.box(M.mirror, x0 + 0.12, y + CUT, y1 - 0.03, x1 - 0.12, y + 2.0, y1 - 0.021);
+    b.box(M.mirror, x0 + 0.12, y + CUT, y1 - 0.03, x1 - 0.12, y + 2.0, y1 - 0.021, 'bottom');
     b.box(M.steel, x0, y + hc, y0, x1, y + hc + 0.04, y1); b.box(M.liftLight, x0 + 0.2, y + hc - 0.012, y0 + 0.3, x1 - 0.2, y + hc, y1 - 0.3);
     b.on(lv.layer); b.light((x0 + x1) / 2, y + 1.9, (y0 + y1) / 2, 0.7);
     lv.dayLights.push({ pos: new THREE.Vector3((x0 + x1) / 2, y + 1.8, (y0 + y1) / 2), power: 1.5, layer: lv.layer });
@@ -349,38 +405,7 @@ export function buildLevel(b, M, lv, index) {
   for (const w of lv.walls) buildWall(b, M, lv, w);
   lv.nWall = lv.blocks.length;                                  // les premiers obstacles sont les murs (utile aux contrôles)
   b.on(lv.layer + ':top');
-  const spots = [];
-  for (const c of lv.ceilings || []) {
-    b.box(M.ceiling, c[0], y0 + lv.h, c[1], c[2], y0 + lv.h + 0.05, c[3]);
-    // spots encastrés : collerette à bord tombé, source en retrait de 3 mm
-    const nx = Math.max(1, Math.round((c[2] - c[0]) / 1.7)), nz = Math.max(1, Math.round((c[3] - c[1]) / 1.7));
-    for (let i = 0; i < nx; i++) for (let j = 0; j < nz; j++) {
-      const sx = c[0] + ((c[2] - c[0]) / nx) * (i + 0.5), sz = c[1] + ((c[3] - c[1]) / nz) * (j + 0.5); spots.push([sx, sz]);
-      b.lathe(M.skirt, sx, y0 + lv.h, sz, [[0.037, -0.004], [0.037, -0.007], [0.057, -0.007], [0.057, 0]], 12); b.geo(M.led, new THREE.CircleGeometry(0.037, 12), sx, y0 + lv.h - 0.004, sz, PI / 2, 0, 0);
-    }
-  }
-  // bouches de ventilation dans les pièces d'eau et la cuisine, détecteurs de fumée dans les dégagements : jamais sous un spot
-  const inCeil = (x, z) => (lv.ceilings || []).some((c) => x > c[0] + 0.25 && x < c[2] - 0.25 && z > c[1] + 0.25 && z < c[3] - 0.25);
-  for (const r of lv.rooms || []) {
-    if (!r.at) continue;
-    if (/^(couloir|buanderie|arriere|palier)$/.test(r.id)) {     // trappe de visite 40 × 40 : cadre en saillie de 3 mm, vantail en retrait de 4 mm de plus
-      for (const [dx, dz] of [[-0.7, 0.55], [0.7, -0.55], [-0.7, -0.55], [0.7, 0.55], [0, 0.7], [0, -0.7]]) {
-        const x = r.at[0] + dx, z = r.at[1] + dz;
-        if (!inCeil(x, z) || !r.rs.some((q) => x > q[0] + 0.35 && x < q[2] - 0.35 && z > q[1] + 0.35 && z < q[3] - 0.35) || spots.some(([a, c]) => Math.hypot(a - x, c - z) < 0.45)) continue;
-        b.box(M.concrete, x - 0.22, y0 + lv.h - 0.003, z - 0.22, x + 0.22, y0 + lv.h, z + 0.22); b.box(M.ceiling, x - 0.2, y0 + lv.h - 0.007, z - 0.2, x + 0.2, y0 + lv.h - 0.003, z + 0.2);
-        break;
-      }
-    }
-    const vent = /^(sdb|sde|wc|cuisine|arriere|buanderie|dressing)/.test(r.id), smoke = /^(couloir|entree|palier)$/.test(r.id);
-    if (!vent && !smoke) continue;
-    for (const [dx, dz] of [[0, 0], [0.5, 0], [-0.5, 0], [0, 0.5], [0, -0.5], [0.5, 0.5], [-0.5, -0.5], [0.5, -0.5], [-0.5, 0.5]]) {
-      const x = r.at[0] + dx, z = r.at[1] + dz;
-      if (!inCeil(x, z) || !r.rs.some((q) => x > q[0] + 0.3 && x < q[2] - 0.3 && z > q[1] + 0.3 && z < q[3] - 0.3) || spots.some(([a, c]) => Math.hypot(a - x, c - z) < 0.36)) continue;
-      if (vent) { b.lathe(M.skirt, x, y0 + lv.h, z, [[1e-4, -0.012], [0.07, -0.012], [0.07, 0]], 14); b.geo(M.concrete, new THREE.CircleGeometry(0.048, 14), x, y0 + lv.h - 0.017, z, PI / 2, 0, 0); b.cyl(M.concrete, x, y0 + lv.h - 0.017, z, 0.006, 0.005, 6); }
-      else { b.lathe(M.white, x, y0 + lv.h, z, [[1e-4, -0.03], [0.03, -0.028], [0.052, -0.012], [0.052, 0]], 14); b.cyl(M.led, x + 0.026, y0 + lv.h - 0.034, z, 0.0035, 0.004, 6); }
-      break;
-    }
-  }
+  for (const c of lv.ceilings || []) b.box(M.ceiling, c[0], y0 + lv.h, c[1], c[2], y0 + lv.h + 0.05, c[3]);
   for (const r of lv.rails || []) { b.on(r[5] ? lv.layer + ':top' : lv.layer); railing(b, M, r[0], r[1], r[2], r[3], y0 + (r[4] || 0)); lv.blocks.push([Math.min(r[0], r[2]) - 0.04, Math.min(r[1], r[3]) - 0.04, Math.max(r[0], r[2]) + 0.04, Math.max(r[1], r[3]) + 0.04]); }
   // mobilier : [type, x, y, rotation en degrés, options]
   const tall = [];                                              // meubles hauts (armoires, gaines, colonnes) : ils masquent un appareillage à 1,45 m
@@ -404,6 +429,46 @@ export function buildLevel(b, M, lv, index) {
     }
   }
   for (const r of lv.blockers || []) lv.blocks.push(r);
+  /* Spots encastrés : une trame régulière par pièce (et non plus une seule trame sur tout le plafond, qui tombait au hasard des
+     cloisons) : centrée dans chaque partie de pièce assez grande, à 25 cm au moins des murs, jamais au-dessus d'un meuble haut. */
+  b.on(lv.layer + ':top');
+  const inCeil = (x, z, m = 0.25) => (lv.ceilings || []).some((c) => x > c[0] + m && x < c[2] - m && z > c[1] + m && z < c[3] - m);
+  const walls = lv.blocks.slice(0, lv.nWall), near = (x, z, m, list) => list.some((q) => x > q[0] - m && x < q[2] + m && z > q[1] - m && z < q[3] + m);
+  const spots = [];
+  for (const r of lv.rooms || []) {
+    if (!r.at || /^(jardin|ascenseur|balcon|terrasse)/.test(r.id)) continue;
+    for (const q of r.rs) {
+      const W = q[2] - q[0], D = q[3] - q[1]; if (Math.min(W, D) < 0.75) continue;
+      const nx = Math.max(1, Math.round(W / 1.6)), nz = Math.max(1, Math.round(D / 1.6));
+      for (let i = 0; i < nx; i++) for (let j = 0; j < nz; j++) {
+        const sx = q[0] + (W / nx) * (i + 0.5), sz = q[1] + (D / nz) * (j + 0.5);
+        if (!inCeil(sx, sz, 0.12) || near(sx, sz, 0.25, walls) || near(sx, sz, 0.08, tall) || spots.some(([a, c]) => Math.hypot(a - sx, c - sz) < 0.6)) continue;
+        spots.push([sx, sz]);
+        b.lathe(M.skirt, sx, y0 + lv.h, sz, [[0.037, -0.004], [0.037, -0.007], [0.057, -0.007], [0.057, 0]], 12); b.geo(M.led, new THREE.CircleGeometry(0.037, 12), sx, y0 + lv.h - 0.004, sz, PI / 2, 0, 0);
+      }
+    }
+  }
+  // bouches de ventilation dans les pièces d'eau et la cuisine, détecteurs de fumée dans les dégagements : jamais sous un spot
+  for (const r of lv.rooms || []) {
+    if (!r.at) continue;
+    if (/^(couloir|buanderie|arriere|palier)$/.test(r.id)) {     // trappe de visite 40 × 40 : cadre en saillie de 3 mm, vantail en retrait de 4 mm de plus
+      for (const [dx, dz] of [[-0.7, 0.55], [0.7, -0.55], [-0.7, -0.55], [0.7, 0.55], [0, 0.7], [0, -0.7]]) {
+        const x = r.at[0] + dx, z = r.at[1] + dz;
+        if (!inCeil(x, z) || !r.rs.some((q) => x > q[0] + 0.35 && x < q[2] - 0.35 && z > q[1] + 0.35 && z < q[3] - 0.35) || spots.some(([a, c]) => Math.hypot(a - x, c - z) < 0.45)) continue;
+        b.box(M.concrete, x - 0.22, y0 + lv.h - 0.003, z - 0.22, x + 0.22, y0 + lv.h, z + 0.22); b.box(M.ceiling, x - 0.2, y0 + lv.h - 0.007, z - 0.2, x + 0.2, y0 + lv.h - 0.003, z + 0.2);
+        break;
+      }
+    }
+    const vent = /^(sdb|sde|wc|cuisine|arriere|buanderie|dressing)/.test(r.id), smoke = /^(couloir|entree|palier)$/.test(r.id);
+    if (!vent && !smoke) continue;
+    for (const [dx, dz] of [[0, 0], [0.5, 0], [-0.5, 0], [0, 0.5], [0, -0.5], [0.5, 0.5], [-0.5, -0.5], [0.5, -0.5], [-0.5, 0.5]]) {
+      const x = r.at[0] + dx, z = r.at[1] + dz;
+      if (!inCeil(x, z) || !r.rs.some((q) => x > q[0] + 0.3 && x < q[2] - 0.3 && z > q[1] + 0.3 && z < q[3] - 0.3) || spots.some(([a, c]) => Math.hypot(a - x, c - z) < 0.36)) continue;
+      if (vent) { b.lathe(M.skirt, x, y0 + lv.h, z, [[1e-4, -0.012], [0.07, -0.012], [0.07, 0]], 14); b.geo(M.concrete, new THREE.CircleGeometry(0.048, 14), x, y0 + lv.h - 0.017, z, PI / 2, 0, 0); b.cyl(M.concrete, x, y0 + lv.h - 0.017, z, 0.006, 0.005, 6); }
+      else { b.lathe(M.white, x, y0 + lv.h, z, [[1e-4, -0.03], [0.03, -0.028], [0.052, -0.012], [0.052, 0]], 14); b.cyl(M.led, x + 0.026, y0 + lv.h - 0.034, z, 0.0035, 0.004, 6); }
+      break;
+    }
+  }
   // prises à 30 cm, une par pan de mur dégagé (jamais derrière un meuble relevé sur plan), thermostat dans le séjour
   { const solid = lv.blocks.slice(lv.nWall), free = (x, z, m) => !solid.some((q) => x > q[0] - m && x < q[2] + m && z > q[1] - m && z < q[3] + m);
     let therm = false;
@@ -424,6 +489,48 @@ export function buildLevel(b, M, lv, index) {
       b.on(lv.layer); fixture(b, M, 'sock', k === 'h' ? a : c, y0 + 0.3, k === 'h' ? c : a, rot);
       if (!therm && L > 1.6 && clear(px, pz, 0.1) && (lv.rooms || []).some((r) => /^(sejour|salon)$/.test(r.id) && r.rs.some((q) => px > q[0] && px < q[2] && pz > q[1] && pz < q[3]))) { therm = true; fixture(b, M, 'thermo', k === 'h' ? a : c, y0 + 1.45, k === 'h' ? c : a, rot); }
     });
+  }
+  /* Équipements muraux qui dépendent des pièces : tableau électrique encastré dans l'entrée (à défaut la buanderie), sèche-serviettes
+     dans chaque salle de bains ou d'eau, interrupteur et prise de part et d'autre de chaque tête de lit. Toujours sur un pan de mur
+     plein, dégagé de tout meuble ; aucun ne change les obstacles de la navigation. */
+  { const solid = lv.blocks.slice(lv.nWall), hit = (x, z, m) => solid.some((q) => x > q[0] - m && x < q[2] + m && z > q[1] - m && z < q[3] + m);
+    const inRoom = (r, x, z) => r.rs.some((q) => x > q[0] && x < q[2] && z > q[1] && z < q[3]);
+    const faceRot = (k, d) => k === 'h' ? (d > 0 ? 0 : PI) : (d > 0 ? PI / 2 : -PI / 2);
+    /* Cherche, sur les pans pleins de la pièce, un emplacement de largeur `wd` dont la bande de profondeur `dp` est libre ; renvoie [x, z, rot]. */
+    const spot = (r, wd, dp) => {
+      for (const [k, c, d, a0, a1, full] of lv.faces) {
+        if (!full || a1 - a0 < wd + 0.3) continue;
+        for (const f of [0.5, 0.3, 0.7, 0.2, 0.8]) {
+          const a = a0 + (a1 - a0) * f; if (a - wd / 2 < a0 + 0.12 || a + wd / 2 > a1 - 0.12) continue;
+          const P = (u, e) => k === 'h' ? [a + u, c + d * e] : [c + d * e, a + u], [px, pz] = P(0, 0.08);
+          if (!inRoom(r, px, pz)) continue;
+          if ([-wd / 2, 0, wd / 2].some((u) => [0.05, dp].some((e) => { const [x, z] = P(u, e); return hit(x, z, 0.05) || !inRoom(r, x, z); }))) continue;
+          return k === 'h' ? [a, c, faceRot(k, d)] : [c, a, faceRot(k, d)];
+        }
+      }
+      return null;
+    };
+    b.on(lv.layer);
+    const rooms = lv.rooms || [];
+    const gtl = rooms.find((r) => r.id === 'entree' && spot(r, 0.6, 0.12)) || rooms.find((r) => r.id === 'buanderie' && spot(r, 0.6, 0.12));
+    if (gtl) { const [x, z, rot] = spot(gtl, 0.6, 0.12); fixture(b, M, 'panel', x, y0 + 1.0, z, rot); }
+    for (const r of rooms) {
+      if (!/^(sdb|sde)/.test(r.id) || (lv.items || []).some((it) => it[0] === 'towelRail' && inRoom(r, it[1], it[2]))) continue;   // pas de doublon avec un sèche-serviettes relevé sur plan
+      const q = spot(r, 0.56, 0.25); if (q) fixture(b, M, 'towel', q[0], y0 + 0.22, q[1], q[2]);
+    }
+    for (const it of lv.items || []) {
+      if (it[0] !== 'bed') continue;
+      const [, x, z, deg = 0, opt = {}] = it, rt = THREE.MathUtils.degToRad(deg), l = opt.l || 2.0, HW = (opt.w || 1.6) + (opt.hw ?? 0.5);
+      const hx = -Math.sin(rt), hz = -Math.cos(rt), ux = Math.cos(rt), uz = -Math.sin(rt);     // direction de la tête de lit, et travers du lit
+      const f = lv.faces.find(([k, c, d, a0, a1, full]) => full && (k === 'h' ? Math.abs(hz) > 0.9 && Math.sign(hz) === -d && Math.abs(z + hz * l / 2 - c) < 0.3 : Math.abs(hx) > 0.9 && Math.sign(hx) === -d && Math.abs(x + hx * l / 2 - c) < 0.3) && (k === 'h' ? x : z) > a0 && (k === 'h' ? x : z) < a1);
+      if (!f) continue;
+      const [k, c, d, a0, a1] = f;
+      for (const sd of [-1, 1]) {
+        const px = x + ux * sd * (HW / 2 + 0.2), pz = z + uz * sd * (HW / 2 + 0.2), a = k === 'h' ? px : pz;
+        if (a < a0 + 0.12 || a > a1 - 0.12) continue;
+        fixture(b, M, 'duo', k === 'h' ? a : c, y0 + 0.72, k === 'h' ? c : a, faceRot(k, d));
+      }
+    }
   }
   // éclairage d'appoint de chaque pièce (spots allumés, comme sur les images) : plus soutenu dans les pièces sans fenêtre
   for (const r of lv.rooms || []) {
