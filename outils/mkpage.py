@@ -10,6 +10,9 @@ src=open(R+'logements.html',encoding='utf-8').read()
 src=src.replace('<a href="/en/logements" hreflang="en" lang="en" class="lang-btn">EN</a>','<button type="button" class="lang-btn" lang="en" aria-pressed="false" onclick="setLang(\'en\')">EN</button>')
 nav=src[src.index('<a class="skip-link"'):src.index('<main id="contenu">')]
 nav=nav.replace(' class="active" aria-current="page"',' class="active"')
+# dans le menu, c'est l'entrée « Visite 3D » qui est la page courante
+nav=nav.replace(' class="active"','')
+nav=nav.replace('<a href="/visite-3d" ','<a href="/visite-3d" class="active" aria-current="page" ')
 foot=src[src.index('<!-- ─── Footer'):src.index('<script src="/animations.js')]
 def stamp(name):
     m=re.search(r'/%s\?v=([0-9a-f]+)'%re.escape(name),src); return m.group(1)
