@@ -203,6 +203,39 @@ function woodSet(base, seed, dark = 0.1, S = 1024) {
   return [C, pack(B, Q)];
 }
 
+/* Placage de chêne des meubles et des portes : fil droit et fin (débit sur quartier), quelques maillures claires, et des feuilles de
+   placage de 16 cm environ, chacune un rien plus claire ou plus chaude que sa voisine, comme sur une vraie façade plaquée.
+   Le fil suit x ; les feuilles s'empilent en y ; le motif se raccorde dans les deux sens. Renvoie [couleur, relief + rugosité]. */
+function veneerSet(base, seed, { S = 1024, leaves = 8, ray = 1, dark = 1 } = {}) {
+  const R = rng(seed), lh = S / leaves;
+  const B = canvas(S, (g) => { g.fillStyle = '#8a8a8a'; g.fillRect(0, 0, S, S); }), gb = B.getContext('2d');
+  const Q = flat(S >> 2, 120), gq = Q.getContext('2d');
+  const C = canvas(S, (g) => {
+    for (let l = 0; l < leaves; l++) {
+      const y0 = l * lh, k = 0.955 + R() * 0.09, w = (R() - 0.5) * 10, c = shade(base, k);
+      g.fillStyle = rgb(c[0] + w, c[1] + w * 0.35, c[2] - w * 0.4); g.fillRect(0, y0, S, lh);
+      gq.fillStyle = grey(110 + R() * 26); gq.fillRect(0, y0 / 4, S / 4, lh / 4);                     // chaque feuille a son lustre
+      // fil : lignes droites serrées, à peine inclinées, d'épaisseur et de teinte variables ; un léger « flammé » de teinte le long de la feuille
+      const tilt = (R() - 0.5) * 0.004, n = Math.round(lh * 0.9);
+      for (let i = 0; i < n; i++) {
+        const yy = y0 + R() * lh, dk = R() < 0.6, a = (0.035 + R() * 0.09) * dark, lw = 0.45 + R() * R() * 1.6;
+        g.strokeStyle = dk ? rgb(74, 40, 16, a) : rgb(255, 232, 192, a * 0.7); g.lineWidth = lw;
+        g.beginPath(); g.moveTo(0, yy); g.lineTo(S, yy + tilt * S); g.stroke();
+        if (a > 0.07) { gb.strokeStyle = dk ? grey(70, a * 1.2) : grey(190, a); gb.lineWidth = Math.max(0.6, lw); gb.beginPath(); gb.moveTo(0, yy); gb.lineTo(S, yy + tilt * S); gb.stroke(); }
+      }
+      const gd = g.createLinearGradient(0, y0, 0, y0 + lh); gd.addColorStop(0, rgb(60, 30, 10, 0.04)); gd.addColorStop(0.5, rgb(255, 230, 190, 0.035)); gd.addColorStop(1, rgb(60, 30, 10, 0.04));
+      g.fillStyle = gd; g.fillRect(0, y0, S, lh);
+      // maillures (rayons médullaires du chêne) : petites taches claires étirées dans le sens du fil
+      for (let i = 0; i < 40 * ray; i++) { g.fillStyle = rgb(255, 236, 200, 0.05 + R() * 0.07); g.beginPath(); g.ellipse(R() * S, y0 + R() * lh, 4 + R() * 16, 0.6 + R() * 1.2, 0, 0, 7); g.fill(); }
+      // pores : traits très courts dans le sens du fil
+      for (let i = 0; i < S * lh / 70; i++) { g.fillStyle = rgb(60, 30, 10, 0.05 + R() * 0.12); g.fillRect(R() * S, y0 + R() * lh, 1.2 + R() * 3, 0.6); }
+      g.fillStyle = rgb(70, 40, 18, 0.12); g.fillRect(0, y0, S, 0.7);                                  // raccord entre deux feuilles, à peine visible
+    }
+    lay(g, S, noiseCanvas(256, 2, 12, 3, seed + 3, 1.4), 0.12);                                   // nuances douces dans le sens du fil
+  });
+  return [C, pack(B, Q)];
+}
+
 /* ── Pierres, carrelages ────────────────────────────────────────────────────────────────────────────────────────── */
 
 /* Dalles de pierre ou de grès (travertin, calcaire…) : bandes étirées, petites cavités, légères différences de teinte d'une dalle à l'autre,
@@ -408,7 +441,7 @@ function weave(seed, kind) {
       const t = 4;
       for (let y = 0; y < S; y += t) { g.fillStyle = grey(206 + R() * 49); g.fillRect(0, y, S, t - 1); }
       for (let j = 0; j < S / t; j++) for (let i = 0; i < S / t; i++) if ((i + j) & 1) { g.fillStyle = grey(186 + R() * 69, 0.92); g.fillRect(i * t, j * t - 0.5, t - 1, t + 0.5); }
-      g.fillStyle = grey(70, 0.34); for (let y = 0; y < S; y += t) g.fillRect(0, y + t - 1, S, 1); for (let x = 0; x < S; x += t) g.fillRect(x + t - 1, 0, 1, S);
+      g.fillStyle = grey(90, 0.2); for (let y = 0; y < S; y += t) g.fillRect(0, y + t - 1, S, 1); for (let x = 0; x < S; x += t) g.fillRect(x + t - 1, 0, 1, S);      // interstices discrets : la trame se devine de près, elle ne raye pas le tissu de loin
       for (let i = 0; i < 260; i++) { g.fillStyle = grey(R() < 0.5 ? 150 : 255, 0.3); g.fillRect(R() * S, R() * S, 8 + R() * 50, 1.2); }
       for (let i = 0; i < 70; i++) { g.fillStyle = grey(R() < 0.5 ? 170 : 255, 0.35); g.fillRect(R() * S, R() * S, 1.5, 6 + R() * 30); }
     } else if (kind === 'boucle') {                                   // bouclette : petites boucles serrées, ombre sous chaque boucle
@@ -449,12 +482,13 @@ function houndstooth() {
   });
 }
 
-/* Métal brossé : fines stries dans le sens de u, qui font varier la rugosité (anisotropie simulée) et le relief. Renvoie la carte relief + rugosité. */
+/* Métal brossé : un satiné très fin et régulier, des milliers de rayures d'un pixel dans le sens de u, de faible contraste, sur un fond
+   à peine nuancé (pas de grandes stries : un inox de réfrigérateur paraît uni à un mètre). Renvoie la carte relief + rugosité. */
 function brushed(seed, lo, hi, S = 512) {
-  const R = rng(seed);
+  const R = rng(seed), F = field(S, 1, 96, 3, seed + 1, 0.6), m = (lo + hi) / 2, amp = (hi - lo) * 0.35;
   const Q = canvas(S, (g) => {
-    g.fillStyle = grey((lo + hi) * 127.5); g.fillRect(0, 0, S, S);
-    for (let i = 0; i < 2600; i++) { const v = (lo + R() * (hi - lo)) * 255, y = R() * S, x = R() * S, l = 30 + R() * 260; g.fillStyle = grey(v, 0.25 + R() * 0.4); g.fillRect(x, y, l, 0.8 + R() * 1.2); if (x + l > S) g.fillRect(x - S, y, l, 1); }
+    g.drawImage(paint(S, (i, d, p) => { d[p] = d[p + 1] = d[p + 2] = 255 * (m + (F[i] - 0.5) * amp); }), 0, 0);
+    for (let i = 0; i < 9000; i++) { const v = (lo + R() * (hi - lo)) * 255, y = R() * S, x = R() * S, l = 20 + R() * 120; g.fillStyle = grey(v, 0.08 + R() * 0.14); g.fillRect(x, y, l, 0.7); if (x + l > S) g.fillRect(x - S, y, l, 0.7); }
   });
   const B = canvas(S, (g) => { g.drawImage(Q, 0, 0); g.globalCompositeOperation = 'source-over'; });
   return pack(B, Q);
@@ -606,6 +640,23 @@ function magazine(seed) {
   });
 }
 
+/* Mipmaps d'une carte de feuillage qui gardent la même part de pixels au-dessus du seuil de découpe : sans cela, la moyenne des niveaux
+   réduits fait fondre l'opacité, les feuilles maigrissent avec la distance et clignotent au moindre mouvement (surtout sans post-traitement). */
+function coverageMips(t, c0, at) {
+  const cover = (d, k) => { let n = 0; for (let i = 3; i < d.length; i += 4) if (d[i] * k >= at * 255) n++; return n / (d.length / 4); };
+  const target = cover(c0.getContext('2d').getImageData(0, 0, c0.width, c0.height).data, 1), mips = [c0];
+  let prev = c0;
+  for (let s = c0.width >> 1; s >= 1; s >>= 1) {
+    const c = document.createElement('canvas'); c.width = c.height = s; const g = c.getContext('2d'); g.imageSmoothingQuality = 'high'; g.drawImage(prev, 0, 0, s, s);
+    const im = g.getImageData(0, 0, s, s), d = im.data; let lo = 0.5, hi = 8;
+    for (let k = 0; k < 18; k++) { const m = (lo + hi) / 2; if (cover(d, m) < target) lo = m; else hi = m; }
+    for (let i = 3; i < d.length; i += 4) d[i] = Math.min(255, d[i] * hi);
+    const o = document.createElement('canvas'); o.width = o.height = s; o.getContext('2d').putImageData(im, 0, 0); mips.push(o);
+    prev = c;                                                       // la réduction suivante part de l'image non retouchée
+  }
+  t.mipmaps = mips; t.generateMipmaps = false; t.minFilter = THREE.LinearMipmapLinearFilter;
+}
+
 function std(o) { const u = o.userData; delete o.userData; const m = new THREE.MeshStandardMaterial(o); if (u) m.userData = u; return m; }
 function phys(o) { const u = o.userData; delete o.userData; const m = new THREE.MeshPhysicalMaterial(o); if (u) m.userData = u; return m; }
 
@@ -666,15 +717,17 @@ export function makeMaterials(quality) {
   // ── Menuiseries et métaux
   M.frame = std({ color: 0x2c2d30, roughness: 0.55, metalness: 0.4 });   // aluminium anthracite
   const brs = L(brushed(81, 0.22, 0.6)), brb = L(brushed(82, 0.3, 0.46));
-  M.steel = std({ color: 0xb9b6b0, bumpMap: brs, roughnessMap: brs, bumpScale: 0.35, roughness: 1, metalness: 0.9, userData: { wuv: 0.5, wuvSwap: true } });   // inox brossé : stries dans le sens vertical
+  M.steel = std({ color: 0xb9b6b0, bumpMap: brs, roughnessMap: brs, bumpScale: 0.12, roughness: 1, metalness: 0.9, userData: { wuv: 0.5, wuvSwap: true } });   // inox brossé : stries dans le sens vertical
   M.brass = std({ color: 0xd2ab66, bumpMap: brb, roughnessMap: brb, bumpScale: 0.2, roughness: 0.85, metalness: 1, userData: { wuv: 0.35 } });      // laiton brossé (lustres, piètements)
   M.black = std({ color: 0x1b1a1a, roughness: 0.48, metalness: 0.35 });
-  M.glass = phys({ color: 0xcfe0e2, roughness: 0.42, specularIntensity: 0.3, metalness: 0, transparent: true, opacity: 0.07, envMapIntensity: 0.4, depthWrite: false, userData: { cast: false, receive: false, order: 5 } });
+  // vitrage : il ne voile pas ce qu'il y a derrière, il l'atténue un peu (1 - opacité) et y ajoute son reflet, faible de face, fort en
+  // incidence rasante (Fresnel), sans le multiplier par l'opacité ; la couleur propre du verre est un vert d'eau très sombre (teinte de la tranche)
+  M.glass = phys({ color: 0x0d1615, roughness: 0.03, specularIntensity: 1, metalness: 0, transparent: true, opacity: 0.1, depthWrite: false, blending: THREE.CustomBlending, blendSrc: THREE.OneFactor, blendDst: THREE.OneMinusSrcAlphaFactor, blendEquation: THREE.AddEquation, userData: { cast: false, receive: false, order: 5 } });
   M.glassFrost = phys({ color: 0xf2f6f6, roughness: 0.25, transparent: true, opacity: 0.28, depthWrite: false, userData: { cast: false, receive: false, order: 5 } });
   M.glassSmoke = phys({ color: 0x1a1b1e, roughness: 0.06, metalness: 0.2, envMapIntensity: 1.3, userData: { cast: true } });   // plateau en verre fumé
   M.crystal = phys({ color: 0xffffff, roughness: 0.3, specularIntensity: 0.4, transparent: true, opacity: 0.22, envMapIntensity: 1.6, depthWrite: false, userData: { cast: false, receive: false, order: 6 } });
   M.mirror = std({ color: 0xf4f6f6, roughness: 0.05, metalness: 1 });
-  const [okC, okP] = woodSet([204, 162, 112], 32, 0.12), [wnC, wnP] = woodSet([98, 66, 44], 33, 0.16), [slC, slP] = woodSet([150, 108, 70], 31, 0.18, 512);
+  const [okC, okP] = veneerSet([206, 164, 114], 32), [wnC, wnP] = veneerSet([100, 68, 46], 33, { ray: 0.3, dark: 1.3 }), [slC, slP] = woodSet([150, 108, 70], 31, 0.18, 512);
   const okPk = L(okP), wnPk = L(wnP);
   M.door = std({ map: T(okC), bumpMap: okPk, roughnessMap: okPk, bumpScale: 0.5, roughness: 0.95, userData: { wuv: 1.3, wuvSwap: true } });   // portes plaquées chêne
   M.slat = std({ map: T(slC), bumpMap: L(slP), bumpScale: 0.6, roughness: 0.7, userData: { wuv: 1.2, wuvSwap: true } });
@@ -739,7 +792,7 @@ export function makeMaterials(quality) {
   M.grass = std({ map: T(foliage([104, 140, 62], 51, { blades: true })), roughness: 1, userData: { wuv: 2.2, cast: false } });
   M.hedge = std({ map: T(foliage([62, 98, 50], 52, { gain: 0.8 })), roughness: 1, userData: { wuv: 1.3 } });
   const CS = FS > 1024 ? 512 : 256;
-  const card = (c, o) => std({ map: T(c), alphaTest: 0.42, alphaToCoverage: true, side: THREE.DoubleSide, roughness: 0.95, ...o });      // bords de feuilles lissés par l'anticrénelage
+  const card = (c, o) => { const t = T(c); coverageMips(t, c, 0.42); return std({ map: t, alphaTest: 0.42, alphaToCoverage: true, side: THREE.DoubleSide, roughness: 0.95, ...o }); };      // bords de feuilles lissés par l'anticrénelage
   M.leafOlive = card(leafCard([112, 138, 90], 53, { n: 70, len: 0.2, wid: 0.045, silver: 0.25, S: CS }));
   M.leafPine = card(leafCard([70, 110, 62], 54, { n: 40, len: 0.34, needles: true, S: CS }));
   M.leafBroad = card(leafCard([78, 122, 62], 55, { n: 30, len: 0.26, wid: 0.12, S: CS }));     // plantes d'intérieur, lauriers
