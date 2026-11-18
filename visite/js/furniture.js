@@ -13,7 +13,7 @@ import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.j
 import { rng } from 'v3d/geo';
 
 const PI = Math.PI, TAU = PI * 2;
-const Y = new THREE.Vector3(0, 1, 0), ONE = new THREE.Vector3(1, 1, 1), _q = new THREE.Quaternion(), _v = new THREE.Vector3(), _w = new THREE.Vector3();
+const Y = new THREE.Vector3(0, 1, 0), ONE = new THREE.Vector3(1, 1, 1), _q = new THREE.Quaternion(), _v = new THREE.Vector3(), _w = new THREE.Vector3(), _n = new THREE.Vector3();
 const cone = (r, h, seg = 10) => new THREE.ConeGeometry(r, h, seg);
 const rbox = (w, h, d, r, seg = 2) => new RoundedBoxGeometry(w, h, d, seg, Math.min(r, w / 2 - 1e-3, h / 2 - 1e-3, d / 2 - 1e-3));
 const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
@@ -55,11 +55,15 @@ function chamGeo(w, h, d, c) {
   }
   return g.clone();
 }
-/* Boîte chanfreinée centrée en (cx, cz), posée à la hauteur y0 (comme Batch.cbox), pivotée de rot autour de la verticale. */
+/* Boîte chanfreinée centrée en (cx, cz), posée à la hauteur y0 (comme Batch.cbox), pivotée de rot autour de la verticale.
+   Sans face de coupe (solid = false) : sciée à 1,25 m par la maquette, la boîte recevait une face horizontale cachée dans son
+   épaisseur ; le décalage de profondeur du matériau (main.js), proportionnel à la pente vue de biais, la faisait passer devant
+   la façade : c'était la ligne claire qui traversait placards, colonnes et réfrigérateurs à hauteur de coupe. Les meubles
+   étant faits de panneaux, la vue en maquette n'y perd presque rien (on voit leur intérieur, comme sur une coupe d'architecte). */
 const cb = (b, mat, cx, y0, cz, w, h, d, c = 0.003, rot = 0) => {
   if (c * 2.2 > Math.min(w, h, d)) c = Math.min(w, h, d) / 2.4;
   const M = new THREE.Matrix4().compose(_v.set(cx, y0 + h / 2, cz), _q.setFromAxisAngle(Y, rot), ONE);
-  return b.add(mat, c > 0.0005 ? chamGeo(w, h, d, c) : new THREE.BoxGeometry(w, h, d), M, true);
+  return b.add(mat, c > 0.0005 ? chamGeo(w, h, d, c) : new THREE.BoxGeometry(w, h, d), M, false);
 };
 /* Idem par coins opposés (comme Batch.box). */
 const bb = (b, mat, x0, y0, z0, x1, y1, z1, c = 0.003) => {
@@ -222,6 +226,69 @@ const candle = (b, M, x, y, z, s = 1) => { b.lathe(M.ceramic, x, y, z, [[0.032 *
 /* Tasse (lathe + anse). */
 const cup = (b, m, x, y, z, s = 1, rot = 0) => { b.lathe(m, x, y, z, [[0.025 * s, 0], [0.034 * s, 0.003], [0.04 * s, 0.045 * s], [0.042 * s, 0.062 * s], [0.039 * s, 0.062 * s], [0.034 * s, 0.05 * s], [0.001, 0.008]], 14); b.tube(m, [[x + Math.cos(rot) * 0.04 * s, y + 0.05 * s, z - Math.sin(rot) * 0.04 * s], [x + Math.cos(rot) * 0.062 * s, y + 0.04 * s, z - Math.sin(rot) * 0.062 * s], [x + Math.cos(rot) * 0.04 * s, y + 0.015 * s, z - Math.sin(rot) * 0.04 * s]], 0.004 * s, 4); };
 
+/* ── Rangements : petits volumes économes (vêtements, chaussures, linge, boîtes) ────────────────────────────────────────
+   Prisme droit sur un profil convexe pts = [[z, y], …], épaisseur t selon x. Un vêtement sur cintre ou une chaussure ne coûte
+   ainsi qu'une vingtaine de triangles ; le profil est mis en cache et copié. */
+const prCache = new Map();
+function prismGeo(key, pts, t) {
+  let g = prCache.get(key);
+  if (!g) {
+    const pos = [], nor = [], uv = [], n = pts.length, cz = pts.reduce((s, p) => s + p[0], 0) / n, cy = pts.reduce((s, p) => s + p[1], 0) / n;
+    const tri = (A, B, C, nn) => {
+      _v.set(B[0] - A[0], B[1] - A[1], B[2] - A[2]); _w.set(C[0] - A[0], C[1] - A[1], C[2] - A[2]);
+      if (_v.cross(_w).dot(_n.set(nn[0], nn[1], nn[2])) < 0) { const s = B; B = C; C = s; }
+      for (const p of [A, B, C]) { pos.push(p[0], p[1], p[2]); nor.push(nn[0], nn[1], nn[2]); uv.push(p[2] * 2 + p[0] * 2, p[1] * 2); }
+    };
+    for (const s of [1, -1]) for (let i = 1; i < n - 1; i++) tri([s * t / 2, pts[0][1], pts[0][0]], [s * t / 2, pts[i][1], pts[i][0]], [s * t / 2, pts[i + 1][1], pts[i + 1][0]], [s, 0, 0]);
+    for (let i = 0; i < n; i++) {
+      const a = pts[i], c = pts[(i + 1) % n], dz = c[0] - a[0], dy = c[1] - a[1], l = Math.hypot(dz, dy) || 1;
+      let nz = dy / l, ny = -dz / l; if (nz * ((a[0] + c[0]) / 2 - cz) + ny * ((a[1] + c[1]) / 2 - cy) < 0) { nz = -nz; ny = -ny; }
+      const A = [-t / 2, a[1], a[0]], B = [t / 2, a[1], a[0]], C = [t / 2, c[1], c[0]], D = [-t / 2, c[1], c[0]];
+      tri(A, B, C, [0, ny, nz]); tri(A, C, D, [0, ny, nz]);
+    }
+    g = new THREE.BufferGeometry();
+    g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3)); g.setAttribute('normal', new THREE.Float32BufferAttribute(nor, 3)); g.setAttribute('uv', new THREE.Float32BufferAttribute(uv, 2));
+    prCache.set(key, g);
+  }
+  return g.clone();
+}
+/* Profils de vêtements suspendus (z = largeur d'épaules, y = 0 au crochet du cintre, vers le bas) : chemise, veste, robe, manteau. */
+const GARMENT = {
+  shirt: [[-0.02, -0.03], [0.02, -0.03], [0.2, -0.075], [0.215, -0.13], [0.2, -1], [-0.2, -1], [-0.215, -0.13], [-0.2, -0.075]],
+  coat: [[-0.025, -0.03], [0.025, -0.03], [0.215, -0.08], [0.23, -0.14], [0.235, -1], [-0.235, -1], [-0.23, -0.14], [-0.215, -0.08]],
+  dress: [[-0.02, -0.035], [0.02, -0.035], [0.16, -0.08], [0.17, -0.13], [0.24, -1], [-0.24, -1], [-0.17, -0.13], [-0.16, -0.08]],
+  pants: [[-0.17, -0.06], [0.17, -0.06], [0.17, -1], [-0.17, -1]],
+};
+/* Vêtement sur cintre, accroché à la tringle (x, yr, z) : crochet métallique, barre du cintre, puis le tombé. L = longueur, t = épaisseur. */
+function garment(b, M, mat, kind, x, yr, z, L, t, tilt = 0) {
+  const pts = GARMENT[kind].map(([u, v]) => [u, v < -0.5 ? -L : v]);
+  b.geo(mat, prismGeo(kind + L.toFixed(2) + '/' + t.toFixed(3), pts, t), x, yr, z, 0, 0, tilt);
+  b.box(M.steel, x - 0.002, yr - 0.032, z - 0.002, x + 0.002, yr + 0.012, z + 0.002);                       // crochet
+  if (kind !== 'pants') b.box(M.oak, x - 0.006, yr - 0.05, z - 0.19, x + 0.006, yr - 0.032, z + 0.19);      // épaules du cintre
+  else b.box(M.oak, x - 0.005, yr - 0.07, z - 0.19, x + 0.005, yr - 0.058, z + 0.19);
+}
+/* Chaussure : profil de côté (pointe vers +z), largeur 9 cm. */
+const SHOE = [[0.13, 0], [0.135, 0.028], [0.09, 0.05], [-0.04, 0.085], [-0.13, 0.085], [-0.135, 0.02], [-0.13, 0]];
+const BOOT = [[0.13, 0], [0.12, 0.05], [0.02, 0.26], [-0.12, 0.26], [-0.13, 0.02], [-0.12, 0]];
+function shoes(b, M, x0, x1, y, z, R, n = 9) {
+  const mats = ['black', 'cognac', 'white', 'charcoal', 'cognac', 'navy', 'sand'];
+  for (let x = x0 + 0.06; x < x1 - 0.1 && n-- > 0; x += 0.22 + R() * 0.04) {
+    const m = M[mats[(R() * mats.length) | 0]], boot = R() < 0.18, g = boot ? BOOT : SHOE, k = boot ? 'boot' : 'shoe';
+    for (const dx of [-0.05, 0.05]) b.geo(m, prismGeo(k, g, 0.085), x + dx + 0.06, y, z + (R() - 0.5) * 0.03, 0, (R() - 0.5) * 0.12, 0);
+  }
+}
+/* Pile de linge plié (serviettes, pulls, draps) : plis légèrement décalés, couleurs d'un même camaïeu. */
+function linenPile(b, M, x, y, z, w, d, n, R, pal) {
+  let yy = y;
+  for (let k = 0; k < n; k++) { const th = 0.035 + R() * 0.03; cb(b, M[pal[(R() * pal.length) | 0]], x + (R() - 0.5) * 0.02, yy, z + (R() - 0.5) * 0.02, w - R() * 0.03, th, d - R() * 0.03, 0.01, (R() - 0.5) * 0.06); yy += th; }
+  return yy;
+}
+/* Boîte de rangement (carton toilé, osier ou tissu) posée sur une étagère, avec sa découpe de préhension. */
+function storeBox(b, M, mat, x, y, z, w, h, d) {
+  cb(b, M[mat], x, y, z, w, h, d, 0.004);
+  b.box(M.seam, x - 0.04, y + h - 0.05, z + d / 2, x + 0.04, y + h - 0.03, z + d / 2 + 0.002);
+}
+
 export const F = {
 
   /* ── Séjour ─────────────────────────────────────────────────────────── */
@@ -310,13 +377,13 @@ export const F = {
   /* Mur TV : fond en marbre veiné rétro-éclairé, étagères lumineuses, meubles laqués gris, console suspendue. */
   tvWall(b, M, { w = 4.6, h = 2.45, tv = 1.45 }) {
     const sw = Math.min(1.0, w * 0.26), cx = sw / 2, cw = w - sw, th = tv * 0.5625, ty = 1.02;
-    b.box(M.greyLacquer, -w / 2, 0, 0, w / 2, h, 0.03);
-    b.box(M.marble, -w / 2 + sw, 0.62, 0.03, w / 2 - 0.04, 2.0, 0.045);                // panneau de marbre derrière l'écran
+    bb(b, M.greyLacquer, -w / 2, 0, 0, w / 2, h, 0.03, 0);
+    bb(b, M.marble, -w / 2 + sw, 0.62, 0.03, w / 2 - 0.04, 2.0, 0.045, 0);                // panneau de marbre derrière l'écran
     b.box(M.led, -w / 2 + sw, 1.995, 0.03, w / 2 - 0.04, 2.005, 0.06); b.box(M.glow, -w / 2 + sw, 1.35, 0.046, w / 2 - 0.04, 2.0, 0.048); b.light(cx, 1.9, 0.3, 0.45, 'led');
     bb(b, M.greyLacquer, -w / 2, 2.02, 0.03, w / 2, h, 0.36, 0.003);                   // meubles hauts
     const nu = Math.max(2, Math.round(w / 0.62)); for (let i = 1; i < nu; i++) b.box(M.seam, -w / 2 + (w / nu) * i - 0.0015, 2.03, 0.36, -w / 2 + (w / nu) * i + 0.0015, h, 0.362);
     b.box(M.seam, -w / 2 + 0.01, 2.03, 0.36, w / 2 - 0.01, 2.035, 0.362);              // gorge de préhension
-    b.box(M.marble, -w / 2 + 0.03, 0.62, 0.03, -w / 2 + sw - 0.03, 2.0, 0.04);         // niche des étagères
+    bb(b, M.marble, -w / 2 + 0.03, 0.62, 0.03, -w / 2 + sw - 0.03, 2.0, 0.04, 0);         // niche des étagères
     for (let i = 0; i < 3; i++) {
       const y = 0.95 + i * 0.36; bb(b, M.greyLacquer, -w / 2 + 0.03, y, 0.04, -w / 2 + sw - 0.03, y + 0.025, 0.3, 0.002); b.box(M.led, -w / 2 + 0.05, y - 0.006, 0.05, -w / 2 + sw - 0.05, y, 0.07);
       const ox = -w / 2 + sw * 0.3;
@@ -376,7 +443,7 @@ export const F = {
     const f = 0.022, X = w / 2 + 0.015, Z = h / 2 + 0.015;
     bb(b, M[frame], -X, y - Z, 0, X, y - Z + f, 0.032, 0.003); bb(b, M[frame], -X, y + Z - f, 0, X, y + Z, 0.032, 0.003);
     bb(b, M[frame], -X, y - Z + f, 0, -X + f, y + Z - f, 0.032, 0.003); bb(b, M[frame], X - f, y - Z + f, 0, X, y + Z - f, 0.032, 0.003);
-    b.box(M.white, -w / 2, y - h / 2, 0.004, w / 2, y + h / 2, 0.026);
+    bb(b, M.white, -w / 2, y - h / 2, 0.004, w / 2, y + h / 2, 0.026, 0);
     b.box(M.white, -w / 2 + 0.004, y - h / 2 + 0.004, 0.026, w / 2 - 0.004, y + h / 2 - 0.004, 0.0275);
     b.box(M[mat], -w / 2 + 0.035, y - h / 2 + 0.035, 0.0275, w / 2 - 0.035, y + h / 2 - 0.035, 0.0295);
     return null;
@@ -385,14 +452,14 @@ export const F = {
     const f = 0.018, X = w / 2 + 0.012, Z = h / 2 + 0.012;
     bb(b, M.brass, -X, y - Z, 0, X, y - Z + f, 0.024, 0.003); bb(b, M.brass, -X, y + Z - f, 0, X, y + Z, 0.024, 0.003);
     bb(b, M.brass, -X, y - Z + f, 0, -X + f, y + Z - f, 0.024, 0.003); bb(b, M.brass, X - f, y - Z + f, 0, X, y + Z - f, 0.024, 0.003);
-    b.box(M.seam, -w / 2, y - h / 2, 0.003, w / 2, y + h / 2, 0.018);                                 // fond du cadre
+    bb(b, M.seam, -w / 2, y - h / 2, 0.003, w / 2, y + h / 2, 0.018, 0);                                 // fond du cadre
     cb(b, M.mirror, 0, y - h / 2 + 0.0005, 0.0225, w - 0.002, h - 0.001, 0.007, 0.0045);                 // glace biseautée
     return null;
   },
   /* Panneau mural mince (carrelage, crédence, tête de lit lattée…) : centré, plaqué contre le mur côté -z. */
   panel(b, M, { w = 2, h = 2.2, y = 0, t = 0.02, mat = 'wallTile', slats = false }) {
-    if (!slats) { b.box(M[mat], -w / 2, y, 0, w / 2, y + h, t); return null; }
-    b.box(M.walnut, -w / 2, y, 0, w / 2, y + h, 0.012);
+    if (!slats) { bb(b, M[mat], -w / 2, y, 0, w / 2, y + h, t, 0); return null; }
+    bb(b, M.walnut, -w / 2, y, 0, w / 2, y + h, 0.012, 0);
     for (let x = -w / 2 + 0.02; x < w / 2 - 0.02; x += 0.055) bb(b, M[mat], x, y, 0.012, x + 0.032, y + h, 0.04, 0.003);
     return null;
   },
@@ -470,20 +537,35 @@ export const F = {
      sink / hob = abscisse du centre ; upper = meubles hauts en chêne avec ruban LED ; splash = crédence. */
   kitchenRun(b, M, { w = 3, d = 0.63, front = 'anthracite', top = 'marbleDark', sink = null, hob = null, upper = false, splash = false, upperMat = 'oakV', splashMat = 'oak', deco = true }) {
     const wt = 0.87, y = wt + 0.04, fz = d / 2 - 0.019;
-    b.box(M.black, -w / 2 + 0.02, 0, -d / 2 + 0.03, w / 2 - 0.02, 0.1, d / 2 - 0.07);                           // socle en retrait
-    b.box(M.black, -w / 2 + 0.004, 0.1, -d / 2, w / 2 - 0.004, wt, fz);                                            // caisson (sombre : il fait les joints)
-    const n = Math.max(1, Math.round(w / 0.6)), mw = w / n;
+    b.box(M[front], -w / 2 + 0.02, 0, -d / 2 + 0.03, w / 2 - 0.02, 0.1, d / 2 - 0.07);                         // socle en retrait, de la teinte des façades
+    b.box(M.black, -w / 2 + 0.004, 0.1, -d / 2, w / 2 - 0.004, wt, fz);                                            // caisson (sombre : il fait les joints et la gorge)
+    const n = Math.max(1, Math.round(w / 0.6)), mw = w / n, mod = (x) => (x === null ? -9 : Math.floor((x + w / 2) / mw));
+    const si = mod(sink), dwi = sink === null ? -9 : (si + 1 < n && si + 1 !== mod(hob) ? si + 1 : si - 1 !== mod(hob) ? si - 1 : -9);   // lave-vaisselle à côté de l'évier
     for (let i = 0; i < n; i++) {
       const x0 = -w / 2 + mw * i, cx = x0 + mw / 2, fw = mw - 0.003;
       const hasHob = hob !== null && Math.abs(hob - cx) < mw * 0.55, hasSink = sink !== null && Math.abs(sink - cx) < mw * 0.55;
+      if (i === dwi) {                                                                                             // lave-vaisselle semi-intégré : bandeau de commande en verre noir
+        cb(b, M[front], cx, 0.105, fz + 0.0095, fw, 0.6, 0.019, 0.0018); cb(b, M.screen, cx, 0.708, fz + 0.0095, fw, 0.097, 0.019, 0.0018);
+        b.box(M.led, cx + fw * 0.18, 0.75, fz + 0.019, cx + fw * 0.3, 0.765, fz + 0.0195); for (let k = 0; k < 4; k++) b.box(M.steel, cx - fw * 0.3 + k * 0.04 - 0.006, 0.752, fz + 0.019, cx - fw * 0.3 + k * 0.04 + 0.006, 0.762, fz + 0.0198);
+        continue;
+      }
       const rows = hasHob ? [[0.105, 0.38], [0.383, 0.805]] : (!hasSink && i % 3 === 1) ? [[0.105, 0.3], [0.303, 0.55], [0.553, 0.805]] : [[0.105, 0.805]];
       for (const [ya, yb] of rows) cb(b, M[front], cx, ya, fz + 0.0095, fw, yb - ya - (rows.length > 1 || hasHob ? 0.003 : 0), 0.019, 0.0018);
     }
+    const gx = dwi >= 0 ? -w / 2 + mw * (dwi + 0.5) : 0;                                                          // grille de ventilation du socle
+    b.box(M.cadre, gx - 0.2, 0.025, d / 2 - 0.07, gx + 0.2, 0.075, d / 2 - 0.068); for (let k = 0; k < 4; k++) b.box(M.black, gx - 0.19, 0.032 + k * 0.011, d / 2 - 0.068, gx + 0.19, 0.037 + k * 0.011, d / 2 - 0.0675);
     for (const sx of [-1, 1]) cb(b, M[front], sx * (w / 2 - 0.0095), 0.1, -0.01, 0.019, wt - 0.1, d - 0.02, 0.0015);   // joues d'extrémité
     cb(b, M[top], 0, wt, 0.0075, w + 0.01, 0.04, d + 0.015, 0.003);                                              // plan de travail, chant de 4 cm
     if (sink !== null) F._sink(b, M, sink, y, 0.02, -d / 2 + 0.07);
     if (hob !== null) F._hob(b, M, hob, y, 0.01);
-    if (splash) b.box(M[splashMat], -w / 2, y, -d / 2, w / 2, 1.45, -d / 2 + 0.015);
+    if (splash) {
+      bb(b, M[splashMat], -w / 2, y, -d / 2, w / 2, 1.45, -d / 2 + 0.015, 0);
+      for (const x of [-w / 2 + 0.45, w / 2 - 0.45, ...(w > 3 ? [0] : [])]) {                                       // prises doubles sur la crédence, loin de la plaque et de l'évier
+        if ((hob !== null && Math.abs(x - hob) < 0.5) || (sink !== null && Math.abs(x - sink) < 0.45) || Math.abs(x) > w / 2 - 0.2) continue;
+        cb(b, M.white, x, y + 0.2, -d / 2 + 0.015 + 0.005, 0.16, 0.085, 0.01, 0.002);
+        for (const dx of [-0.038, 0.038]) { b.geo(M.ceramic, new THREE.CylinderGeometry(0.026, 0.026, 0.003, 12), x + dx, y + 0.2425, -d / 2 + 0.0265, PI / 2, 0, 0); for (const ex of [-0.0095, 0.0095]) b.box(M.black, x + dx + ex - 0.002, y + 0.24, -d / 2 + 0.027, x + dx + ex + 0.002, y + 0.244, -d / 2 + 0.0275); }
+      }
+    }
     if (upper) {
       const uz = -d / 2 + 0.35, nu = Math.max(1, Math.round(w / 0.6)), uw = w / nu;
       b.box(M.black, -w / 2 + 0.004, 1.452, -d / 2, w / 2 - 0.004, 2.248, uz - 0.019);                          // caissons hauts
@@ -512,6 +594,11 @@ export const F = {
         for (let i = 0; i < 5; i++) b.rod(i % 2 ? M.steel : M.oak, [x + 0.24, y + 0.1, z], [x + 0.24 + (i - 2) * 0.022, y + 0.28 + (i % 3) * 0.02, z + (i % 2 - 0.5) * 0.03], 0.0055, 5);
         b.lathe(M.walnut, x - 0.2, y, z + 0.08, [[0.04, 0], [0.04, 0.2], [0.001, 0.2]], 8);
       }
+      const jx = free.slice(2).flatMap((f) => [f + 0.3, f - 0.52]).find((x) => Math.abs(x) < w / 2 - 0.12 && Math.abs(x + 0.1) < w / 2 - 0.12 && (sink === null || Math.abs(x + 0.1 - sink) > 0.62) && (hob === null || Math.abs(x + 0.1 - hob) > 0.6));
+      if (jx !== undefined) {                                                                                     // bocaux en verre à couvercle de chêne, contre la crédence
+        const x = jx;
+        for (let k = 0; k < 3; k++) { const hh = 0.13 + k * 0.05, xx = x + k * 0.1; b.cyl(M.crystal, xx, y, z - 0.07, 0.045, hh, 12); b.cyl([M.cream, M.ochre, M.bark][k], xx, y + 0.004, z - 0.07, 0.04, hh * 0.65, 10); b.cyl(M.oak, xx, y + hh, z - 0.07, 0.047, 0.022, 12); }
+      }
       if (free.length > 2) { const x = free[2]; bowl(b, M.ceramic, x, y, z + 0.1, 0.15); for (const [dx, dz] of [[-0.04, 0], [0.05, 0.03], [0, -0.05], [0.0, 0.05]]) b.sph(M.ochre, x + dx, y + 0.085, z + 0.1 + dz, 0.038, 1, 1, 1, 8); b.sph(M.sage, x + 0.01, y + 0.1, z + 0.1, 0.03, 1, 1.1, 1, 8); }
     }
     return [w, d];
@@ -532,48 +619,78 @@ export const F = {
     for (let i = 0; i < 5; i++) b.box(M.steel, x - 0.12 + i * 0.06, y + 0.006, z + 0.235, x - 0.1 + i * 0.06, y + 0.0075, z + 0.24);
     b.box(M.led, x - 0.015, y + 0.006, z + 0.2, x + 0.015, y + 0.0072, z + 0.205);
   },
-  /* Colonnes hautes : réfrigérateur intégré et fours en verre noir. */
+  /* Colonnes hautes, comme une cuisine équipée : à gauche le réfrigérateur-congélateur intégré (deux façades, grille au socle),
+     à droite la colonne de cuisson à hauteur d'usage (tiroirs, four de 60 cm à 75 cm du sol, micro-ondes au-dessus, porte haute),
+     entre les deux des armoires à provisions à deux portes. */
   kitchenTall(b, M, { w = 1.8, d = 0.63, h = 2.25, front = 'anthracite' }) {
-    const fz = d / 2 - 0.019;
-    b.box(M.black, -w / 2 + 0.02, 0, -d / 2 + 0.03, w / 2 - 0.02, 0.1, d / 2 - 0.07);
-    b.box(M[front], -w / 2 + 0.004, 0.1, -d / 2, w / 2 - 0.004, h - 0.004, fz - 0.004);         // corps : visible en coupe et de côté
-    b.box(M.black, -w / 2 + 0.006, 0.1, fz - 0.004, w / 2 - 0.006, h - 0.006, fz);             // fond sombre des joints
-    const n = Math.max(1, Math.round(w / 0.6));
+    const fz = d / 2 - 0.019, F0 = M[front];
+    b.box(F0, -w / 2 + 0.02, 0, -d / 2 + 0.03, w / 2 - 0.02, 0.1, d / 2 - 0.07);                // socle en retrait, de la teinte des façades
+    bb(b, F0, -w / 2 + 0.004, 0.1, -d / 2, w / 2 - 0.004, h - 0.004, fz - 0.004, 0);          // corps : visible de côté
+    bb(b, M.black, -w / 2 + 0.006, 0.1, fz - 0.004, w / 2 - 0.006, h - 0.006, fz, 0);          // fond sombre des joints
+    const n = Math.max(1, Math.round(w / 0.6)), door = (cx, fw, ya, yb) => cb(b, F0, cx, ya, fz + 0.0095, fw, yb - ya, 0.019, 0.0018);
+    const grip = (x0, x1, left, ya, yb) => b.box(M.black, left ? x0 + 0.004 : x1 - 0.022, ya, d / 2 + 0.0005, left ? x0 + 0.022 : x1 - 0.004, yb, d / 2 + 0.0015);   // gorge verticale
     for (let i = 0; i < n; i++) {
       const x0 = -w / 2 + (w / n) * i + 0.0015, x1 = -w / 2 + (w / n) * (i + 1) - 0.0015, cx = (x0 + x1) / 2, fw = x1 - x0;
-      if (i === n - 1) {                                                               // colonne fours
-        cb(b, M[front], cx, 0.105, fz + 0.0095, fw, 0.495, 0.019, 0.0018); cb(b, M[front], cx, 1.83, fz + 0.0095, fw, h - 1.83 - 0.004, 0.019, 0.0018);
-        for (const [ya, yb] of [[0.62, 1.2], [1.22, 1.81]]) {
-          cb(b, M.screen, cx, ya, fz + 0.0095, fw, yb - ya, 0.019, 0.002);
-          b.box(M.black, x0 + 0.035, ya + 0.06, fz + 0.0195, x1 - 0.035, yb - 0.1, fz + 0.0205);                  // vitre du four, cadre intérieur
-          bb(b, M.steel, x0 + 0.04, yb - 0.075, d / 2 + 0.02, x1 - 0.04, yb - 0.06, d / 2 + 0.035, 0.003);
-          for (const hx of [x0 + 0.06, x1 - 0.06]) b.box(M.steel, hx - 0.006, yb - 0.075, d / 2 + 0.002, hx + 0.006, yb - 0.06, d / 2 + 0.02);
-          b.box(M.led, cx - 0.1, yb - 0.035, d / 2 + 0.0005, cx + 0.1, yb - 0.02, d / 2 + 0.0015);                   // afficheur
-        }
+      if (i === n - 1 && n > 1) {                                                      // colonne de cuisson
+        door(cx, fw, 0.105, 0.415); door(cx, fw, 0.418, 0.728);
+        for (const yb of [0.415, 0.728]) b.box(M.black, cx - fw * 0.35, yb - 0.03, d / 2 + 0.0005, cx + fw * 0.35, yb - 0.018, d / 2 + 0.0015);
+        // four : bandeau de commande, porte vitrée sombre, poignée inox sur entretoises
+        const oy = 0.731, oh = 0.595;
+        cb(b, M.screen, cx, oy, fz + 0.0095, fw, oh, 0.019, 0.002);
+        b.box(M.black, x0 + 0.04, oy + 0.05, fz + 0.0192, x1 - 0.04, oy + oh - 0.13, fz + 0.0198);
+        b.box(M.led, cx - 0.035, oy + oh - 0.055, fz + 0.019, cx + 0.035, oy + oh - 0.04, fz + 0.0196);
+        for (const kx of [x0 + 0.08, x1 - 0.08]) b.geo(M.steel, new THREE.CylinderGeometry(0.019, 0.019, 0.022, 14), kx, oy + oh - 0.048, d / 2 + 0.011, PI / 2, 0, 0);
+        bb(b, M.steel, x0 + 0.05, oy + oh - 0.115, d / 2 + 0.022, x1 - 0.05, oy + oh - 0.1, d / 2 + 0.036, 0.003);
+        for (const hx of [x0 + 0.07, x1 - 0.07]) b.box(M.steel, hx - 0.006, oy + oh - 0.115, d / 2, hx + 0.006, oy + oh - 0.1, d / 2 + 0.022);
+        // micro-ondes encastré : hublot à gauche, afficheur et touches à droite
+        const my = oy + oh + 0.003, mh = 0.445;
+        cb(b, M.screen, cx, my, fz + 0.0095, fw, mh, 0.019, 0.002);
+        b.box(M.black, x0 + 0.03, my + 0.08, fz + 0.0192, x1 - 0.16, my + mh - 0.08, fz + 0.0198);
+        b.box(M.led, x1 - 0.12, my + mh - 0.1, fz + 0.019, x1 - 0.05, my + mh - 0.085, fz + 0.0196);
+        for (let k = 0; k < 3; k++) b.box(M.steel, x1 - 0.1, my + 0.2 - k * 0.04, fz + 0.019, x1 - 0.07, my + 0.215 - k * 0.04, fz + 0.0196);
+        door(cx, fw, my + mh + 0.003, h - 0.004); grip(x0, x1, false, my + mh + 0.05, h - 0.1);
+      } else if (i === 0) {                                                            // réfrigérateur-congélateur intégré
+        door(cx, fw, 0.105, 0.86); door(cx, fw, 0.863, h - 0.004);
+        grip(x0, x1, true, 0.6, 0.84); grip(x0, x1, true, 0.9, 1.6);
+        b.box(M.cadre, x0 + 0.08, 0.025, d / 2 - 0.07, x1 - 0.08, 0.075, d / 2 - 0.068); for (let k = 0; k < 4; k++) b.box(M.black, x0 + 0.09, 0.032 + k * 0.011, d / 2 - 0.068, x1 - 0.09, 0.037 + k * 0.011, d / 2 - 0.0675);
       } else {
-        cb(b, M[front], cx, 0.105, fz + 0.0095, fw, 0.895, 0.019, 0.0018); cb(b, M[front], cx, 1.003, fz + 0.0095, fw, h - 1.003 - 0.004, 0.019, 0.0018);
-        b.box(M.black, i % 2 ? x0 + 0.004 : x1 - 0.022, 0.2, d / 2 + 0.0005, i % 2 ? x0 + 0.022 : x1 - 0.004, h - 0.1, d / 2 + 0.0015);   // gorge verticale de préhension
+        door(cx, fw, 0.105, 1.0); door(cx, fw, 1.003, h - 0.004);
+        grip(x0, x1, !!(i % 2), 0.2, h - 0.1);
       }
     }
     return [w, d];
   },
-  /* Réfrigérateur à deux portes en inox, tel que repéré « R » sur les plans. */
+  /* Réfrigérateur posé, tel que repéré « R » sur les plans, en inox noir mat (l'inox brossé clair, strié à grande échelle,
+     faisait tôle) : américain à deux portes et distributeur d'eau au-delà de 80 cm, combiné (congélateur en bas) en deçà. */
   fridge(b, M, { w = 0.85, d = 0.72, h = 1.92 }) {
+    const body = M.frame, zf = d / 2 - 0.035;
     b.box(M.black, -w / 2 + 0.02, 0, -d / 2 + 0.03, w / 2 - 0.02, 0.08, d / 2 - 0.06);
-    b.box(M.steel, -w / 2 + 0.003, 0.08, -d / 2, w / 2 - 0.003, h - 0.004, d / 2 - 0.037);       // carrosserie : visible en coupe et de côté
-    b.box(M.seam, -w / 2 + 0.005, 0.08, d / 2 - 0.037, w / 2 - 0.005, h - 0.006, d / 2 - 0.03);
-    for (const sx of [-1, 1]) {
-      const x0 = sx > 0 ? 0.0015 : -w / 2, x1 = sx > 0 ? w / 2 : -0.0015, cx = (x0 + x1) / 2;
-      cb(b, M.steel, cx, 0.085, d / 2 - 0.0195, x1 - x0, h - 0.09, 0.03, 0.004);
-      bb(b, M.steel, sx * 0.045 - 0.008, 0.75, d / 2 + 0.012, sx * 0.045 + 0.008, 1.45, d / 2 + 0.028, 0.004);        // poignée barre
-      for (const yy of [0.78, 1.42]) b.box(M.black, sx * 0.045 - 0.006, yy - 0.006, d / 2 + 0.0105, sx * 0.045 + 0.006, yy + 0.006, d / 2 + 0.0125);
+    cb(b, body, 0, 0.08, -0.0175, w - 0.006, h - 0.084, d - 0.035, 0.008);                    // carrosserie aux angles adoucis
+    const pdoor = (x0, x1, y0, y1) => cb(b, body, (x0 + x1) / 2, y0, zf + 0.0155, x1 - x0, y1 - y0, 0.031, 0.006);
+    const bar = (x, ya, yb) => { bb(b, M.steel, x - 0.009, ya, d / 2 + 0.014, x + 0.009, yb, d / 2 + 0.032, 0.006); for (const yy of [ya + 0.03, yb - 0.03]) b.box(M.steel, x - 0.006, yy - 0.008, d / 2 - 0.004, x + 0.006, yy + 0.008, d / 2 + 0.014); };
+    if (w >= 0.8) {
+      pdoor(-w / 2 + 0.003, -0.002, 0.085, h - 0.005); pdoor(0.002, w / 2 - 0.003, 0.085, h - 0.005);
+      for (const sx of [-1, 1]) bar(sx * 0.04, 0.8, 1.5);
+      cb(b, M.screen, -w / 4 - 0.01, 1.05, d / 2 - 0.004, 0.2, 0.32, 0.006, 0.003);                                  // distributeur d'eau et de glaçons
+      b.box(M.black, -w / 4 - 0.07, 1.08, d / 2, -w / 4 + 0.05, 1.26, d / 2 + 0.003); b.box(M.led, -w / 4 - 0.05, 1.31, d / 2 + 0.002, -w / 4 + 0.03, 1.33, d / 2 + 0.0028);
+    } else {
+      pdoor(-w / 2 + 0.003, w / 2 - 0.003, 0.085, 0.8); pdoor(-w / 2 + 0.003, w / 2 - 0.003, 0.804, h - 0.005);
+      bar(w / 2 - 0.06, 0.55, 0.76); bar(w / 2 - 0.06, 0.86, 1.25);
+      b.box(M.led, -w / 2 + 0.08, 1.62, d / 2 + 0.0005, -w / 2 + 0.16, 1.64, d / 2 + 0.0012);
     }
-    b.box(M.led, 0.02, 1.62, d / 2 + 0.0105, 0.07, 1.64, d / 2 + 0.0115);                                              // afficheur
-    for (let k = 0; k < 4; k++) b.box(M.black, -w / 2 + 0.03, 0.1 + k * 0.012, d / 2 + 0.0105, -0.03, 0.102 + k * 0.012, d / 2 + 0.0112);   // grille de ventilation du bas
+    b.box(M.black, -w / 2 + 0.05, 0.02, d / 2 - 0.06, w / 2 - 0.05, 0.07, d / 2 - 0.058);                          // grille de ventilation du socle
     return [w, d];
   },
   /* Gaine technique maçonnée, toute hauteur (les rectangles barrés d'une croix sur les plans). */
-  duct(b, M, { w = 0.6, d = 0.4, ceil = 2.6, h = ceil }) { b.box(M.plaster, -w / 2, 0, -d / 2, w / 2, h, d / 2); return [w, d]; },
+  duct(b, M, { w = 0.6, d = 0.4, ceil = 2.6, h = ceil }) {
+    b.box(M.plaster, -w / 2, 0, -d / 2, w / 2, h, d / 2);
+    if (w >= 0.38) {                                                                   // trappe de visite au pied de la gaine : panneau peint affleurant, joint creux, serrure carrée
+      const tw = Math.min(0.4, w - 0.12), ty = 0.18, th = 0.4;
+      b.box(M.seam, -tw / 2 - 0.004, ty - 0.004, d / 2, tw / 2 + 0.004, ty + th + 0.004, d / 2 + 0.001);
+      cb(b, M.skirt, 0, ty, d / 2 + 0.003, tw, th, 0.006, 0.0015); b.box(M.cadre, tw / 2 - 0.05, ty + th / 2 - 0.01, d / 2 + 0.006, tw / 2 - 0.03, ty + th / 2 + 0.01, d / 2 + 0.008);
+    }
+    return [w, d];
+  },
   /* Îlot : plan épais débordant côté tabourets (+z), retombées en pierre aux deux bouts, niche éclairée. */
   island(b, M, { w = 3.0, d = 1.1, front = 'oakV', top = 'marble', hob = null, sink = null, stools = 0, stoolMat = 'greige', over = 0.28, deco = true }) {
     const dz = -over / 2, wt = 0.87, zf = d / 2 - over;
@@ -590,7 +707,10 @@ export const F = {
     if (stools) { cb(b, M.walnut, 0, 0.42, zf + 0.0, w - 0.08, 0.3, 0.012, 0.002); b.box(M.led, -w / 2 + 0.06, 0.715, zf - 0.002, w / 2 - 0.06, 0.722, zf + 0.012); }
     if (stools) for (const sx of [-1, 0, 1]) if (sx !== 0 || w > 2) b.box(M.steel, sx * (w * 0.32) - 0.015, wt - 0.012, zf - 0.04, sx * (w * 0.32) + 0.015, wt, d / 2 - 0.02);    // équerres sous le porte-à-faux
     const y = wt + 0.04;
-    if (hob !== null) F._hob(b, M, hob, y, dz);
+    if (hob !== null) {                                                                // plaque à hotte intégrée (aspiration centrale) : pas de hotte suspendue au-dessus de l'îlot
+      F._hob(b, M, hob, y, dz); b.box(M.black, hob - 0.045, y + 0.006, dz - 0.21, hob + 0.045, y + 0.0068, dz + 0.21);
+      for (let k = 0; k < 9; k++) b.box(M.cadre, hob - 0.04, y + 0.0068, dz - 0.2 + k * 0.05, hob + 0.04, y + 0.0074, dz - 0.185 + k * 0.05);
+    }
     if (sink !== null) F._sink(b, M, sink, y, dz + 0.03, dz - 0.2);
     for (let i = 0; i < stools; i++) { b.push(-w / 2 + (w / stools) * (i + 0.5), 0, d / 2 + 0.06, PI); F.stool(b, M, { mat: stoolMat }); b.pop(); }
     if (deco) {
@@ -650,21 +770,123 @@ export const F = {
     }
     return [w + 0.1, l + 0.16];
   },
-  /* Placard toute hauteur : portes plaquées de 19 mm séparées de 3 mm, fine gorge verticale, plinthe en retrait. */
-  wardrobe(b, M, { w = 2.2, d = 0.6, h = 2.35, mat = 'oak' }) {
-    const m = M[mat === 'oak' ? 'oakV' : mat], fz = d / 2 - 0.019;
-    b.box(M.black, -w / 2 + 0.02, 0, -d / 2 + 0.02, w / 2 - 0.02, 0.07, d / 2 - 0.05);
-    // corps dans le bois des portes : la coupe de la maquette et les flancs le montrent ; seul un mince fond sombre
-    // derrière les portes dessine les joints de 3 mm
-    b.box(m, -w / 2, 0.07, -d / 2, w / 2, h, fz - 0.004);
-    b.box(M.black, -w / 2 + 0.003, 0.07, fz - 0.004, w / 2 - 0.003, h - 0.003, fz);
-    const n = Math.max(2, Math.round(w / 0.5)), dw = w / n;
-    for (let i = 0; i < n; i++) {
-      const x0 = -w / 2 + dw * i + 0.0015, x1 = -w / 2 + dw * (i + 1) - 0.0015, cx = (x0 + x1) / 2;
-      cb(b, m, cx, 0.075, fz + 0.0095, x1 - x0, h - 0.079, 0.019, 0.002);
-      const hx = i % 2 ? x0 + 0.035 : x1 - 0.035;
-      bb(b, M.black, hx - 0.006, 0.9, d / 2 + 0.0005, hx + 0.006, 1.3, d / 2 + 0.014, 0.002);                           // poignée verticale
+  /* Placard toute hauteur, construit comme un placard sur mesure : joues finies de 19 mm du sol au fileur, fileur jusqu'au plafond,
+     socle en retrait de 4 cm, façades au module de 45 à 60 cm séparées de 3 mm, caisson clair (fond, dessus, séparations).
+     L'usage se lit dans les cotes des plans : chêne = chambre ou dressing (penderie, lingère, tiroirs, chaussures) ; laqué = entrée
+     et couloir (manteaux, boîtes), 70 cm de fond = buanderie (aspirateur, planche à repasser, produits), plus de 80 cm = arrière-cuisine
+     (provisions), moins de 50 cm = placard technique (tableau électrique, box) et rangement. Une porte entrouverte, une paire de
+     portes pliantes à demi repliée ou un panneau coulissant poussé laissent voir l'intérieur ; derrière les portes fermées, seul
+     ce qui reste visible dans la maquette coupée (sous 1,30 m) est garni. Tout est tiré d'une graine : même placard à chaque chargement. */
+  wardrobe(b, M, { w = 2.2, d = 0.6, h = 2.35, mat = 'oak', ceil = 2.6 }) {
+    const oak = mat === 'oak', m = M[oak ? 'oakV' : mat], inn = M.lacquer, t = 0.019, pl = 0.08, gap = 0.003, R = rng(Math.round(w * 1000 + d * 77));
+    const use = oak ? 'bed' : d < 0.35 ? 'tech' : d < 0.5 ? 'store' : d >= 0.8 ? 'pantry' : d >= 0.68 ? 'utility' : 'coats';
+    const xi0 = -w / 2 + t, xi1 = w / 2 - t, wi = xi1 - xi0, slide = oak && w >= 2.6, fold = !oak && (use === 'coats' || use === 'utility' || use === 'pantry') && w >= 1.3;
+    const zF = d / 2 - 0.001, zb = -d / 2 + 0.008, zf = slide ? d / 2 - 2 * t - 0.016 : d / 2 - t - 0.005, di = zf - zb, zc = (zb + zf) / 2, deck = pl + t;
+    const hm = oak || slide ? M.black : M.brass;
+    // caisson
+    for (const sx of [-1, 1]) cb(b, m, sx * (w / 2 - t / 2), 0, 0, t, h, d, 0.0015);                         // joues finies, du sol au fileur
+    cb(b, m, 0, 0, d / 2 - 0.04 - t / 2, wi, pl, t, 0.001);                                                    // socle en retrait
+    bb(b, inn, xi0, pl, -d / 2, xi1, deck, zf, 0); bb(b, inn, xi0, h - t, -d / 2, xi1, h, zf, 0); bb(b, inn, xi0, deck, -d / 2, xi1, h - t, zb, 0);
+    if (ceil - h > 0.01 && ceil - h < 0.7) cb(b, m, 0, h, d / 2 - 0.006 - t / 2, w, ceil - h - 0.003, t, 0.0015);   // fileur jusqu'au plafond, 5 mm en retrait des portes
+
+    // façades : battantes (ou pliantes) au module, coulissantes au-delà de 2,60 m de chêne
+    const n = slide ? 0 : Math.max(1, Math.round(wi / 0.52)), dw = n ? (wi - (n + 1) * gap) / n : 0;
+    const handle = (lx) => { bb(b, hm, lx - 0.006, 0.9, 0.018, lx + 0.006, 1.22, 0.03, 0.002); for (const yy of [0.93, 1.19]) b.box(hm, lx - 0.004, yy - 0.006, 0, lx + 0.004, yy + 0.006, 0.018); };
+    const leaf = (px, pz, rot, dir, hdl = true) => { b.push(px, 0, pz, rot); cb(b, m, dir * dw / 2, pl + gap, -t / 2, dw, h - pl - 2 * gap, t, 0.002); if (hdl) handle(dir * (dw - 0.04)); b.pop(); };
+    let cols, oc, open;                                                                                         // colonnes intérieures, colonne ouverte, partie ouverte (x0, x1)
+    if (slide) {
+      const np = wi > 3 ? 3 : 2, ov = 0.03, pw = (wi + ov * (np - 1)) / np, zk = zF - t - 0.008, y0 = pl + 0.012, y1 = h - t - 0.032;
+      for (let i = 0; i < np; i++) {
+        const last = i === np - 1, x0 = last ? xi0 + (np - 2) * (pw - ov) + (i % 2 ? 0 : ov) : xi0 + i * (pw - ov), z = i % 2 ? zk : zF;   // le dernier panneau est poussé sur son voisin
+        cb(b, m, x0 + pw / 2, y0, z - t / 2, pw, y1 - y0, t, 0.002);
+        for (const ex of [x0 + 0.03, x0 + pw - 0.03]) b.box(M.black, ex - 0.007, 0.85, z, ex + 0.007, 1.25, z + 0.003);                     // tirettes encastrées
+      }
+      bb(b, M.cadre, xi0, y1 + 0.002, zk - t - 0.004, xi1, h, zF, 0.002); b.box(M.cadre, xi0, pl, zk - t - 0.004, xi1, deck + 0.008, zF - 0.002);   // rails haut et bas
+      const nc = Math.max(2, Math.round(wi / 0.95)); cols = Array.from({ length: nc }, (_, i) => [xi0 + (wi * i) / nc, xi0 + (wi * (i + 1)) / nc]);
+      open = np === 3 ? [xi0 + 2 * pw, xi1] : [xi0 + pw, xi1]; oc = nc - 1;
+    } else {
+      const x0 = (i) => xi0 + gap + i * (dw + gap);
+      const ko = use === 'tech' || use === 'store' ? 0 : n >= 2 ? 1 : 0, ang = oak ? 1.15 : use === 'tech' ? 0.7 : 0.5;     // porte ouverte et son angle
+      for (let i = 0; i < n; i++) {
+        const single = n % 2 && i === n - 1, dir = !single && i % 2 === 0 ? 1 : -1, px = dir > 0 ? x0(i) : x0(i) + dw;
+        if (fold && i === 0 && n >= 2) {                                                                       // paire pliante à demi repliée : V tourné vers la pièce
+          const a = 0.87, L = dw + gap;
+          leaf(px, zF, -a, 1, true); leaf(px + L * Math.cos(a) * 1, zF + L * Math.sin(a), a, 1, false); i++; continue;
+        }
+        leaf(px, zF, i === ko && !fold ? (dir > 0 ? -ang : ang) : 0, dir);
+      }
+      cols = []; for (let i = 0; i < n; i += 2) cols.push([x0(i) - gap, x0(Math.min(n, i + 2)) - gap]);
+      cols[0][0] = xi0; cols[cols.length - 1][1] = xi1;
+      oc = fold ? 0 : Math.floor(ko / 2); open = fold ? [xi0, x0(2) - gap] : [x0(ko), x0(ko) + dw];
     }
+    for (let i = 1; i < cols.length; i++) cb(b, inn, cols[i][0], deck, zc, t, h - t - deck, di, 0.001);          // séparations
+
+    // intérieur, colonne par colonne
+    const ys = h - t - 0.3, bedPal = ['cream', 'white', 'navy', 'charcoal', 'sage', 'greige', 'linen', 'terra', 'sand', 'taupe', 'ochre', 'throw'];
+    const coatPal = ['charcoal', 'navy', 'taupe', 'greige', 'cognac', 'sand', 'charcoal', 'throw'], linPal = ['white', 'cream', 'linen', 'sand', 'greige', 'sage'];
+    const shelf = (xa, xb, y) => b.box(inn, xa, y, zb, xb, y + t, zf - 0.01);
+    const rail = (xa, xb, y) => { b.rod(M.steel, [xa, y, zc], [xb, y, zc], 0.011, 6); for (const x of [xa, xb]) b.box(M.steel, x - (x === xa ? 0 : 0.006), y - 0.015, zc - 0.012, x + (x === xa ? 0.006 : 0), y + 0.015, zc + 0.012); };
+    const hang = (xa, xb, yr, pal, kinds, L0, L1, thick) => {
+      for (let x = xa + 0.035; x < xb - 0.03;) { const tt = thick * (0.6 + R() * 0.8), k = kinds[(R() * kinds.length) | 0], L = (k === 'pants' ? 0.55 : L0 + R() * (L1 - L0)); x += tt / 2; if (x > xb - 0.03) break; garment(b, M, M[pal[(R() * pal.length) | 0]], k, x, yr, zc, Math.min(L, yr - deck - 0.05), tt, (R() - 0.5) * 0.05); x += tt / 2 + 0.008 + R() * 0.025; }
+    };
+    const top = (xa, xb, full, pal) => {                                                                          // étagère haute : boîtes et linge
+      shelf(xa, xb, ys); if (!full) return;
+      for (let x = xa + 0.02; x < xb - 0.2;) { const bw = 0.26 + R() * 0.12; if (x + bw > xb - 0.02) break; if (R() < 0.5) storeBox(b, M, ['linen', 'rattan', 'charcoal', 'sand'][(R() * 4) | 0], x + bw / 2, ys + t, zc + 0.02, bw, 0.18 + R() * 0.08, di - 0.08); else linenPile(b, M, x + bw / 2, ys + t, zc, bw, di * 0.7, 3 + ((R() * 3) | 0), R, pal); x += bw + 0.02 + R() * 0.05; }
+    };
+    const shelvesAt = (y0, y1, step) => { const out = []; for (let y = y0; y < y1 - 0.15; y += step) out.push(y); return out; };
+    const bottles = (xa, xb, y, full) => { if (!full && y > 1.3) return; for (let x = xa + 0.05; x < xb - 0.05; x += 0.07 + R() * 0.05) { const r = 0.028 + R() * 0.02, hh = 0.14 + R() * 0.16, mm = [M.white, M.ceramic, M.sage, M.navy, M.terra, M.ochre][(R() * 6) | 0]; b.cyl(mm, x, y, zc + (R() - 0.3) * di * 0.4, r, hh, 8); b.cyl(M.white, x, y + hh, zc + 0, r * 0.45, 0.03, 6); } };
+    const fill = (type, xa, xb, full) => {
+      const cw = xb - xa, cx = (xa + xb) / 2;
+      if (type === 'hang' || type === 'coats') {
+        top(xa, xb, full, type === 'hang' ? linPal : coatPal); rail(xa, xb, ys - 0.05);
+        if (type === 'hang') hang(xa, xb, ys - 0.05, bedPal, ['shirt', 'shirt', 'dress', 'coat'], 0.78, 1.15, 0.04);
+        else hang(xa, xb, ys - 0.05, coatPal, ['coat', 'coat', 'shirt'], 0.9, 1.12, 0.07);
+        shoes(b, M, xa, xb, deck, zc + di * 0.12, R, Math.round(cw / 0.26));
+      } else if (type === 'double') {
+        top(xa, xb, full, linPal); rail(xa, xb, ys - 0.05); rail(xa, xb, ys - 1.0);
+        hang(xa, xb, ys - 0.05, bedPal, ['shirt'], 0.72, 0.8, 0.03); hang(xa, xb, ys - 1.0, ['navy', 'charcoal', 'sand', 'greige', 'linen', 'taupe'], ['pants'], 0.55, 0.55, 0.035);
+        shoes(b, M, xa, xb, deck, zc + di * 0.12, R, Math.round(cw / 0.26));
+      } else if (type === 'shelves') {                                                                                // lingère : tiroirs à l'anglaise en bas, piles de linge
+        const nd = 3, dh = (0.76 - deck) / nd;
+        for (let k = 0; k < nd; k++) { const y = deck + k * dh + 0.003; cb(b, inn, cx, y, zf - 0.01, cw - 0.008, dh - 0.006, 0.018, 0.002); b.box(M.seam, cx - cw * 0.3, y + dh - 0.03, zf - 0.0005, cx + cw * 0.3, y + dh - 0.018, zf + 0.0005); }
+        for (const y of [0.78, ...shelvesAt(1.12, ys, 0.32)]) { shelf(xa, xb, y); if (!full && y > 1.3) continue; const np = Math.max(1, Math.floor(cw / 0.3)); for (let k = 0; k < np; k++) linenPile(b, M, xa + (cw / np) * (k + 0.5), y + t, zc, Math.min(0.3, cw / np - 0.03), di * 0.75, 2 + ((R() * 4) | 0), R, k % 2 ? linPal : bedPal); }
+        top(xa, xb, full, linPal);
+      } else if (type === 'boxes' || type === 'products' || type === 'pantry') {
+        const step = type === 'pantry' ? 0.34 : 0.4;
+        for (const y of [deck, ...shelvesAt(deck + step, ys, step)]) {
+          if (y > deck) shelf(xa, xb, y);
+          const y1 = y + (y > deck ? t : 0); if (!full && y1 > 1.3) continue;
+          if (type === 'boxes') { for (let x = xa + 0.02; x < xb - 0.2;) { const bw = 0.24 + R() * 0.14; if (x + bw > xb - 0.02) break; storeBox(b, M, ['linen', 'rattan', 'charcoal', 'sand', 'cream'][(R() * 5) | 0], x + bw / 2, y1, zc + 0.02, bw, 0.16 + R() * 0.12, Math.min(0.4, di - 0.06)); x += bw + 0.02 + R() * 0.06; } }
+          else if (type === 'pantry' && R() < 0.5) { for (let x = xa + 0.04; x < xb - 0.12; x += 0.13 + R() * 0.04) { const hh = 0.2 + R() * 0.1; cb(b, M[R() < 0.4 ? 'paper' : ['ochre', 'terra', 'cream', 'sage'][(R() * 4) | 0]], x + 0.05, y1, zc - di * 0.1, 0.1, hh, 0.07 + R() * 0.03, 0.002); } }
+          else if (type === 'pantry') { for (let x = xa + 0.06; x < xb - 0.06; x += 0.12 + R() * 0.04) { const hh = 0.12 + R() * 0.08; b.cyl(R() < 0.5 ? M.ceramic : M.pot, x, y1, zc, 0.045, hh, 8); b.cyl(M.oak, x, y1 + hh, zc, 0.047, 0.02, 8); } }   // pots à couvercle de chêne
+          else bottles(xa, xb, y1, full);
+        }
+        if (type === 'pantry') { b.lathe(M.rattan, cx, deck, zc, [[0.15, 0], [0.18, 0.2], [0.172, 0.2], [0.144, 0.01], [0.001, 0.01]], 14); for (const [ax, az, c] of [[-0.05, 0, 'ochre'], [0.05, 0.03, 'terra'], [0, -0.06, 'sage'], [0.02, 0.06, 'ochre']]) b.sph(M[c], cx + ax, deck + 0.05, zc + az, 0.04, 1, 1, 1, 8); }
+      } else if (type === 'utility') {                                                                                // aspirateur balai, planche à repasser, balai, panier
+        top(xa, xb, full, linPal); if (full) bottles(xa, xb, ys + t, true);
+        cb(b, M.white, xa + 0.06, deck, zc - di * 0.15, 0.028, 1.32, 0.38, 0.01, 0); b.rod(M.steel, [xa + 0.06, 0.3, zc + di * 0.1], [xa + 0.06, 1.45, zc + di * 0.12], 0.008, 6);   // planche repliée contre la joue
+        const vx = xa + 0.25; b.rod(M.charcoal, [vx, deck + 0.03, zc + 0.05], [vx, 1.12, zc], 0.014, 8); cb(b, M.charcoal, vx, deck, zc + 0.08, 0.26, 0.05, 0.08, 0.01); b.cyl(M.terra, vx, 0.62, zc + 0.02, 0.05, 0.25, 12); b.cyl(M.charcoal, vx, 1.12, zc, 0.02, 0.12, 8);
+        b.rod(M.oak, [xb - 0.1, deck + 0.1, zc - 0.05], [xb - 0.12, 1.5, zc - 0.12], 0.012, 6); cb(b, M.charcoal, xb - 0.1, deck, zc - 0.03, 0.08, 0.1, 0.3, 0.006);
+        b.lathe(M.rattan, cx + 0.06, deck, zc + di * 0.18, [[0.15, 0], [0.18, 0.3], [0.172, 0.3], [0.144, 0.01], [0.001, 0.01]], 14); linenPile(b, M, cx + 0.06, deck + 0.24, zc + di * 0.18, 0.26, 0.24, 2, R, linPal);
+      } else if (type === 'tech') {                                                                                   // gaine technique du logement : tableau électrique, coffret de communication, box
+        const px = cx, pw = Math.min(0.46, cw - 0.06), zz = zb;
+        cb(b, M.white, px, 1.0, zz + 0.05, pw, 0.62, 0.1, 0.004);                                                    // tableau, trois rangées de modules
+        for (let r = 0; r < 3; r++) {
+          const y = 1.08 + r * 0.17; b.box(M.greyLacquer, px - pw / 2 + 0.03, y, zz + 0.1, px + pw / 2 - 0.03, y + 0.09, zz + 0.112);
+          for (let k = 0; k < 12; k++) { const x = px - pw / 2 + 0.045 + k * ((pw - 0.09) / 11); b.box(k % 4 === 0 ? M.navy : M.black, x - 0.006, y + 0.038, zz + 0.112, x + 0.006, y + 0.056, zz + 0.122); }
+        }
+        b.box(M.seam, px - pw / 2 + 0.02, 1.0 + 0.6 - 0.02, zz + 0.1, px + pw / 2 - 0.02, 1.0 + 0.6, zz + 0.101);
+        cb(b, M.white, px, 0.55, zz + 0.045, pw, 0.36, 0.09, 0.004); b.box(M.greyLacquer, px - pw / 2 + 0.03, 0.6, zz + 0.09, px + pw / 2 - 0.03, 0.86, zz + 0.091);   // coffret de communication
+        const sy = 0.42; shelf(xa, xb, sy); cb(b, M.white, px - 0.06, sy + t, zc, 0.2, 0.04, 0.15, 0.008); for (let k = 0; k < 4; k++) b.box(M.led, px - 0.12 + k * 0.025, sy + t + 0.02, zc + 0.075, px - 0.115 + k * 0.025, sy + t + 0.025, zc + 0.0755);   // box internet et ses voyants
+        for (const dx of [-0.12, -0.04, 0.04, 0.12]) b.rod(M.charcoal, [px + dx, 1.0, zz + 0.03], [px + dx * 0.6, deck, zz + 0.03], 0.006, 4);   // gaines électriques
+      }
+    };
+    const kinds = { bed: ['hang', 'shelves', 'double'], coats: ['coats', 'boxes'], utility: ['utility', 'products'], pantry: ['pantry'], tech: ['tech'], store: ['tech', 'boxes'] }[use];
+    cols.forEach(([xa, xb], i) => {
+      const type = use === 'store' || use === 'tech' ? kinds[Math.min(i, kinds.length - 1)] : kinds[(((i - oc) % kinds.length) + kinds.length) % kinds.length];
+      const vis = open[1] > xa + 0.05 && open[0] < xb - 0.05;
+      fill(type, xa + (i ? t / 2 : 0), xb - (i < cols.length - 1 ? t / 2 : 0), vis);
+    });
     return [w, d];
   },
   dresser(b, M, { w = 1.9, d = 0.45, h = 0.72, mat = 'oak', tv = true }) {
@@ -685,10 +907,16 @@ export const F = {
   desk(b, M, { w = 1.6, d = 0.65, top = 'walnut', leg = 'black', chair = 'greige', lamp = true }) {
     cb(b, M[top], 0, 0.68, 0, w, 0.035, d, 0.005);
     for (const sx of [-1, 1]) { const x = sx * (w / 2 - 0.06); cb(b, M[leg], x, 0, 0, 0.03, 0.03, d - 0.1, 0.002); for (const sz of [-1, 1]) cb(b, M[leg], x, 0.03, sz * (d / 2 - 0.065), 0.03, 0.65, 0.03, 0.002); cb(b, M[leg], x, 0.665, 0, 0.03, 0.015, d - 0.1, 0.002); }
-    cb(b, M.steel, 0, 0.715, 0.04, 0.34, 0.01, 0.23, 0.003); b.box(M.black, -0.14, 0.7252, 0.0, 0.14, 0.7262, 0.07); b.geo(M.screen, new THREE.BoxGeometry(0.34, 0.22, 0.008), 0, 0.84, -0.075, -0.25, 0, 0);    // ordinateur portable
+    // écran de 27 pouces sur pied, clavier et souris ; ordinateur portable refermé à côté
+    const ex = w > 1.2 ? -0.08 : 0, ez = -d / 2 + 0.17;
+    cb(b, M.black, ex, 0.715, ez, 0.22, 0.008, 0.17, 0.003); b.box(M.black, ex - 0.02, 0.723, ez - 0.06, ex + 0.02, 1.0, ez - 0.035);
+    cb(b, M.black, ex, 0.86, ez - 0.03, 0.62, 0.37, 0.022, 0.004); b.box(M.screen, ex - 0.3, 0.875, ez - 0.0185, ex + 0.3, 1.218, ez - 0.0175);
+    cb(b, M.white, ex, 0.715, ez + 0.27, 0.42, 0.012, 0.13, 0.004); for (let r = 0; r < 4; r++) b.box(M.greyLacquer, ex - 0.195, 0.727, ez + 0.218 + r * 0.027, ex + 0.195, 0.729, ez + 0.237 + r * 0.027);
+    b.sph(M.white, ex + 0.3, 0.722, ez + 0.28, 0.03, 0.9, 0.35, 1.5, 10);
+    if (w > 1.2) { cb(b, M.steel, ex + 0.55, 0.715, ez + 0.12, 0.31, 0.016, 0.22, 0.004, -0.15); }
     if (lamp) { const x = w * 0.36, z = -d * 0.2; b.lathe(M.black, x, 0.715, z, [[0.001, 0], [0.07, 0], [0.072, 0.012], [0.001, 0.012]], 18); b.tube(M.black, [[x, 0.726, z], [x, 0.99, z], [x - 0.04, 1.09, z + 0.03], [x - 0.14, 1.13, z + 0.1]], 0.008, 6); b.lathe(M.black, x - 0.17, 1.07, z + 0.12, [[0.075, 0], [0.03, 0.07], [0.02, 0.07], [0.068, 0]], 14); b.light(x - 0.17, 1.05, z + 0.12, 0.5); }
     const tb = books(b, M, -w * 0.34, 0.715, -d * 0.1, 3); cup(b, M.ceramic, -w * 0.34 + 0.05, tb, -d * 0.1, 0.8);
-    cb(b, M.cream, -w * 0.15, 0.715, 0.12, 0.2, 0.012, 0.28, 0.002, 0.15); b.lathe(M.potDark, w * 0.2, 0.715, 0.12, [[0.03, 0], [0.034, 0.1], [0.03, 0.1], [0.001, 0.004]], 12);
+    if (w <= 1.2) cb(b, M.cream, -w * 0.15, 0.715, 0.12, 0.2, 0.012, 0.28, 0.002, 0.15); b.lathe(M.potDark, w * 0.2, 0.715, 0.12, [[0.03, 0], [0.034, 0.1], [0.03, 0.1], [0.001, 0.004]], 12);
     if (chair) { b.push(0, 0, d / 2 + 0.2, PI); F.officeChair(b, M, { mat: chair }); b.pop(); }
     return [w, d + (chair ? 0.3 : 0)];
   },
@@ -756,7 +984,7 @@ export const F = {
       b.lathe(M.ceramic, x, 0.85, 0.03, [[0.09, 0], [0.14, 0.015], [0.185, 0.07], [0.2, 0.125], [0.19, 0.13], [0.176, 0.075], [0.13, 0.04], [0.03, 0.03], [0.001, 0.03]], 28);
       b.lathe(M.black, x, 0.85, -d / 2 + 0.07, [[0.026, 0], [0.026, 0.008], [0.02, 0.014], [0.018, 0.03]], 12); b.tube(M.black, [[x, 0.86, -d / 2 + 0.07], [x, 1.1, -d / 2 + 0.07], [x, 1.13, -d / 2 + 0.1], [x, 1.12, -d / 2 + 0.2]], 0.01, 8); b.rod(M.black, [x + 0.018, 0.93, -d / 2 + 0.07], [x + 0.07, 0.95, -d / 2 + 0.07], 0.005, 6);
     }
-    b.box(M.led, -w / 2 + 0.02, 1.1, -d / 2 + 0.006, w / 2 - 0.02, 1.14 + mirrorH, -d / 2 + 0.02);        // halo derrière le miroir
+    bb(b, M.led, -w / 2 + 0.02, 1.1, -d / 2 + 0.006, w / 2 - 0.02, 1.14 + mirrorH, -d / 2 + 0.02, 0);        // halo derrière le miroir
     cb(b, M.mirror, 0, 1.13, -d / 2 + 0.0235, w - 0.1, mirrorH - 0.02, 0.007, 0.004);
     const sx = w / 2 - 0.12;
     b.lathe(M.potDark, sx, 0.85, -0.1, [[0.028, 0], [0.028, 0.14], [0.001, 0.14]], 12); b.cyl(M.steel, sx, 0.99, -0.1, 0.008, 0.035, 6); b.rod(M.steel, [sx, 1.02, -0.1], [sx + 0.02, 1.03, -0.085], 0.004, 4);        // distributeur de savon
@@ -776,6 +1004,10 @@ export const F = {
     cb(b, M.ceramic, 0, 0.2, -0.235, 0.3, 0.22, 0.03, 0.01);
     b.geo(M.white, new THREE.LatheGeometry([[0.19, 0], [0.19, 0.012], [0.184, 0.02], [0.15, 0.022], [0.001, 0.022]].map(([r, y]) => new THREE.Vector2(r, y)), 30), 0, 0.42, 0.021, 0, 0, 0, 0.985, 1, 1.43);
     for (const sx of [-1, 1]) b.cyl(M.steel, sx * 0.11, 0.436, -0.23, 0.012, 0.012, 8);
+    // dérouleur noir et son rouleau sur le coffrage, balayette dans son pot au pied
+    b.box(M.black, 0.33, 0.7, -0.25, 0.345, 0.73, -0.2); b.rod(M.black, [0.345, 0.715, -0.21], [0.24, 0.715, -0.21], 0.005, 6);
+    b.geo(M.white, new THREE.CylinderGeometry(0.055, 0.055, 0.1, 16), 0.29, 0.715, -0.2, 0, 0, PI / 2); b.geo(M.cream, new THREE.CylinderGeometry(0.02, 0.02, 0.101, 10), 0.29, 0.715, -0.2, 0, 0, PI / 2);
+    b.lathe(M.black, -0.33, 0, -0.17, [[0.001, 0], [0.045, 0], [0.048, 0.01], [0.046, 0.3], [0.04, 0.3], [0.04, 0.02], [0.001, 0.02]], 14); b.rod(M.black, [-0.33, 0.28, -0.17], [-0.33, 0.42, -0.17], 0.006, 6);
     return [0.5, 0.62];
   },
   /* Lave-mains : vasque murale, mitigeur noir, miroir rond. */
@@ -791,7 +1023,7 @@ export const F = {
   /* Douche à l'italienne : receveur carrelé de plain-pied, paroi(s) vitrée(s) à profilés noirs, colonne avec ciel de pluie. glass = côtés fermés. */
   shower(b, M, { w = 1.2, d = 0.95, glass = ['front'] }) {
     b.box(M.wallTile, -w / 2, 0.0, -d / 2, w / 2, 0.012, d / 2); b.box(M.steel, -0.3, 0.012, -d / 2 + 0.08, 0.3, 0.014, -d / 2 + 0.14); b.box(M.potDark, -0.28, 0.014, -d / 2 + 0.1, 0.28, 0.0165, -d / 2 + 0.12);      // caniveau
-    b.box(M.wallTile, -w / 2, 0, -d / 2, w / 2, 2.2, -d / 2 + 0.015);
+    bb(b, M.wallTile, -w / 2, 0, -d / 2, w / 2, 2.2, -d / 2 + 0.015, 0);
     const pane = (x0, z0, x1, z1) => { b.box(M.glass, x0, 0.012, z0, x1, 2.05, z1); bb(b, M.black, x0 - 0.004, 2.05, z0 - 0.004, x1 + 0.004, 2.07, z1 + 0.004, 0.0015); bb(b, M.black, x0 - 0.004, 0.0, z0 - 0.004, x1 + 0.004, 0.018, z1 + 0.004, 0.0015); };
     for (const g of glass) {
       if (g === 'front') { pane(-w / 2, d / 2 - 0.01, w / 2 - 0.55, d / 2); bb(b, M.black, w / 2 - 0.555, 0, d / 2 - 0.012, w / 2 - 0.545, 2.07, d / 2 + 0.002, 0.0015); bb(b, M.black, -w / 2 - 0.004, 0, d / 2 - 0.014, -w / 2 + 0.008, 2.07, d / 2 + 0.004, 0.0015); b.rod(M.steel, [w / 2 - 0.62, 1.0, d / 2 + 0.02], [w / 2 - 0.62, 1.1, d / 2 + 0.02], 0.007, 6); }
