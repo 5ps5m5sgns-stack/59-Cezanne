@@ -58,6 +58,26 @@ const root = $('#v3d');
 const canvas = $('#v3d-canvas');
 const ui = { lots: $('#v3d-lots'), spots: $('#v3d-spots'), loader: $('#v3d-loader'), loaderText: $('#v3d-loader-text'), labels: $('#v3d-labels'), hud: $('#v3d-hud'), hint: $('#v3d-hint'), map: $('#v3d-map'), fade: $('#v3d-fade') };
 
+/* Priorité entre surfaces confondues. Quand deux faces de matériaux différents tombent dans le même plan (un mur de pierre et le
+   talus qu'il retient, une couvertine et le mur, une plinthe et la cloison, un joint creux et l'enduit…), la carte graphique
+   choisit l'une ou l'autre pixel par pixel, différemment à chaque mouvement : la surface « grouille ». Chaque matériau reçoit
+   un rang, et un léger décalage de profondeur (sans effet ailleurs, aucun nouveau programme de rendu) fait toujours gagner le
+   plus haut : masses et terrain (0) < revêtements (1) < menuiseries, finitions, mobilier (2) < joints et sources lumineuses (3). */
+const DEPTH_RANK = {
+  earth: 0, grass: 0, socle: 0, massing: 0, stucco: 0, plaster: 0, concrete: 1, road: 0, paving: 0, terrace: 0, glassDark: 0, wallCut: 0,
+  floor: 1, tile: 1, wallTile: 1, stone: 1, stuccoDark: 1, roof: 1, hexPaving: 1,
+  ceiling: 0.5, skirt: 1.5,                                   // la plinthe passe derrière les meubles et les huisseries qui la touchent
+  black: 2.5, steel: 2.5, cadre: 2.5,                         // poignées, profils et cadres devant les façades et les lames
+  seam: 3, led: 3, liftLight: 3,
+};
+function depthPriority(M) {
+  for (const [k, m] of Object.entries(M)) {
+    if (!m || !m.isMaterial || m.transparent || m.polygonOffset) continue;      // tapis et carrelages ont déjà leur propre décalage (materials.js)
+    const r = DEPTH_RANK[k] ?? 2; if (!r) continue;
+    m.polygonOffset = true; m.polygonOffsetFactor = -0.4 * r; m.polygonOffsetUnits = -2 * r;
+  }
+}
+
 class App {
   constructor() {
     this.renderer = new THREE.WebGLRenderer({ canvas, antialias: true, powerPreference: 'high-performance' });
@@ -184,6 +204,7 @@ class App {
     await new Promise((r) => requestAnimationFrame(() => setTimeout(r, 30)));
     if (!this.M) {
       this.M = makeMaterials(QUALITY);
+      depthPriority(this.M);
       // miroirs et métaux reflètent un intérieur neutre plutôt que le ciel
       const room = this.env.pmrem.fromScene(new RoomEnvironment(), 0.03).texture;
       this.roomMats = ['mirror', 'steel', 'brass', 'floor', 'tile', 'wallTile', 'marble', 'marbleDark', 'marbleGrey', 'ceramic', 'tubIn', 'glassSmoke', 'screen', 'lacquer', 'greyLacquer', 'anthracite', 'black', 'potDark', 'crystal', 'oak', 'oakV', 'walnut', 'door', 'frame', 'skirt', 'cognac'];
