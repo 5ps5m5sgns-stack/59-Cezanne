@@ -151,6 +151,9 @@
 #v3d-loader p { margin: 0; font-size: 0.85rem; letter-spacing: 0.08em; text-transform: uppercase; }
 .v3d-spin { width: 46px; height: 46px; border-radius: 50%; border: 2px solid rgba(184, 98, 72, 0.25); border-top-color: #b86248; animation: v3d-spin 0.9s linear infinite; }
 @keyframes v3d-spin { to { transform: rotate(360deg); } }
+/* avancement du chargement : les précalculs rendent la main au navigateur entre deux étapes, la barre avance */
+.v3d-bar { width: min(220px, 60vw); height: 3px; border-radius: 3px; background: rgba(184, 98, 72, 0.18); overflow: hidden; }
+.v3d-bar i { display: block; height: 100%; width: 100%; background: #b86248; transform: scaleX(0); transform-origin: left; transition: transform 0.35s ease-out; }
 #v3d-fallback img { width: min(100%, 720px); height: auto; border-radius: 4rem 4rem 12px 12px; box-shadow: var(--shadow); }
 #v3d-fallback p { max-width: 34rem; margin: 0; }
 @media (prefers-reduced-motion: reduce) { .v3d-spin { animation-duration: 3s; } #v3d-canvas, .v3d-ui, #v3d-fade { transition: none; } .v3d-spot:not([hidden]) { animation: none; } }
