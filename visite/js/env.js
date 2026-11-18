@@ -144,24 +144,39 @@ function cloudTexture(S = 256) {
   return t;
 }
 
-/* Sol lointain : mosaïque de forêts sombres, de prés et de champs ocre, en vue d'oiseau (le sol des collines n'est jamais vu de près). */
-function groundTexture(S = 128) {
-  const R = rng(909), data = new Uint8Array(S * S * 4), pts = [];
-  const pal = [[74, 98, 60], [64, 88, 52], [88, 112, 66], [98, 120, 70], [120, 128, 78], [148, 138, 88], [58, 80, 50], [70, 94, 56]];
-  for (let i = 0; i < 40; i++) pts.push([R() * S, R() * S, pal[(R() * pal.length) | 0], 0.8 + R() * 0.4]);
+/* Sol lointain vu des baies : la campagne aixoise en parcelles. Pinèdes sombres en massifs, garrigue gris-vert, prés, chaumes et
+   terres labourées ocre, oliveraies d'un vert poudré ; les parcelles cultivées sont des quadrilatères (cellules de Voronoï sur une
+   grille déformée, plus régulières que des taches), avec leurs sillons et une lisière plus sombre (haies, fossés). */
+function groundTexture(S = 256) {
+  const R = rng(909), data = new Uint8Array(S * S * 4), pts = [], G = 9, cs = S / G;
+  const kinds = [
+    [[52, 72, 44], 0.26, 0], [[60, 80, 48], 0.12, 0],          // pinèdes, chênaies
+    [[104, 112, 82], 0.14, 0],                                     // garrigue
+    [[112, 128, 72], 0.12, 1], [[150, 140, 92], 0.12, 1],          // prés, chaumes
+    [[142, 116, 84], 0.08, 1],                                     // terre labourée
+    [[118, 126, 90], 0.1, 2], [[96, 116, 64], 0.06, 1],            // oliveraies (rangs), vignes
+  ];
+  const pick = () => { let u = R(); for (const k of kinds) { u -= k[1]; if (u <= 0) return k; } return kinds[0]; };
+  for (let j = 0; j < G; j++) for (let i = 0; i < G; i++) { const k = pick(); pts.push([(i + 0.2 + R() * 0.6) * cs, (j + 0.2 + R() * 0.6) * cs, k[0], 0.9 + R() * 0.2, k[2], R() * 3.14]); }
   for (let y = 0; y < S; y++) for (let x = 0; x < S; x++) {
-    let best = 1e9, c = pal[0], k = 1;
-    for (const [px, py, col, s] of pts) { let dx = Math.abs(x - px), dy = Math.abs(y - py); dx = Math.min(dx, S - dx); dy = Math.min(dy, S - dy); const d = dx * dx + dy * dy; if (d < best) { best = d; c = col; k = s; } }
-    const n = 0.88 + 0.24 * ((Math.sin(x * 0.9) * Math.sin(y * 1.3) + Math.sin(x * 0.37 + y * 0.21) + 2) / 4 + R() * 0.3), i = (y * S + x) * 4;
-    data[i] = c[0] * k * n; data[i + 1] = c[1] * k * n; data[i + 2] = c[2] * k * n; data[i + 3] = 255;
+    let best = 1e9, second = 1e9, c = pts[0];
+    for (const p of pts) { let dx = Math.abs(x - p[0]), dy = Math.abs(y - p[1]); dx = Math.min(dx, S - dx); dy = Math.min(dy, S - dy); const d = Math.max(dx, dy) * 0.6 + Math.hypot(dx, dy) * 0.4; if (d < best) { second = best; best = d; c = p; } else if (d < second) second = d; }
+    const [, , col, k, kind, ang] = c, edge = second - best < 1.4 ? 0.82 : 1;
+    let n = 0.92 + 0.16 * R();
+    if (kind === 1) n *= 0.95 + 0.05 * Math.sin((x * Math.cos(ang) + y * Math.sin(ang)) * 1.7);                 // sillons
+    if (kind === 2) n *= ((x * 3 + y * 5) % 4 === 0) ? 0.82 : 1;                                                // rangs d'oliviers
+    if (kind === 0) n *= 0.85 + 0.3 * R();                                                                      // houppiers
+    const i = (y * S + x) * 4;
+    data[i] = col[0] * k * n * edge; data[i + 1] = col[1] * k * n * edge; data[i + 2] = col[2] * k * n * edge; data[i + 3] = 255;
   }
   const t = new THREE.DataTexture(data, S, S, THREE.RGBAFormat); t.wrapS = t.wrapT = THREE.RepeatWrapping; t.colorSpace = THREE.SRGBColorSpace; t.magFilter = THREE.LinearFilter; t.minFilter = THREE.LinearMipmapLinearFilter; t.generateMipmaps = true; t.anisotropy = 4; t.needsUpdate = true;
   return t;
 }
 
 /* ── Relief lointain ─────────────────────────────────────────────────────────────────────────── */
-/* Profil de la Sainte-Victoire vue depuis Aix (de l'Ouest) : longue échine, sommet, falaise côté Sud. */
-const SV = [[-1, 0.03], [-0.82, 0.07], [-0.66, 0.13], [-0.52, 0.2], [-0.4, 0.3], [-0.3, 0.44], [-0.22, 0.6], [-0.15, 0.76], [-0.09, 0.9], [-0.04, 0.975], [0, 1], [0.045, 0.95], [0.09, 0.93], [0.15, 0.86], [0.22, 0.8], [0.3, 0.7], [0.38, 0.6], [0.47, 0.52], [0.57, 0.43], [0.68, 0.33], [0.8, 0.22], [0.9, 0.12], [1, 0.04]];
+/* Profil de la Sainte-Victoire vue depuis Aix (de l'Ouest), comme sur les toiles de Cézanne peintes des Lauves : flanc Nord raide jusqu'au
+   pic, puis la longue échine calcaire presque horizontale (Croix de Provence, Pic des Mouches) qui retombe lentement vers le Sud. */
+const SV = [[-1, 0.02], [-0.86, 0.05], [-0.74, 0.1], [-0.62, 0.17], [-0.5, 0.27], [-0.42, 0.38], [-0.35, 0.52], [-0.29, 0.68], [-0.24, 0.82], [-0.2, 0.92], [-0.16, 0.985], [-0.13, 1], [-0.1, 0.97], [-0.06, 0.95], [-0.01, 0.955], [0.05, 0.93], [0.11, 0.9], [0.17, 0.885], [0.24, 0.86], [0.3, 0.8], [0.36, 0.76], [0.42, 0.72], [0.5, 0.64], [0.58, 0.52], [0.66, 0.45], [0.74, 0.36], [0.83, 0.24], [0.92, 0.12], [1, 0.04]];
 
 const RIDGE_VERT = `attribute float aTop; varying float vTop; varying vec3 vP; uniform float uFogScale;
 #include <fog_pars_vertex>
@@ -270,12 +285,16 @@ export class Environment {
     const add = (m, n) => { this.land.add(m); this.ridges.push(m); m.userData.n = n || new THREE.Vector3(-1, 0, 0); return m; };
     // de l'arrière-plan vers l'avant : massif, puis collines boisées de plus en plus proches
     add(ridge(SV, this.cloudTex, { dist: 1150, width: 700, height: 92, base: gy + 12, color: 0xb8b4cc, seed: 3, rough: 0.16, center: -40, cell: 46, rock: 1, fogScale: 0.62 })).userData.k = 1;
-    add(ridge(hills(11, 22, 0.16), this.cloudTex, { dist: 1000, width: 2600, height: 46, base: gy + 4, color: 0x8fa294, seed: 5, cell: 60 }));
-    add(ridge(hills(12, 30, 0.2), this.cloudTex, { dist: 640, width: 2000, height: 30, base: gy + 2, color: 0x6c8560, seed: 6, cell: 30 }));
-    add(ridge(hills(13, 36, 0.24), this.cloudTex, { dist: 330, width: 1300, height: 17, base: gy + 1, color: 0x52713b, seed: 7, cell: 12 }));
+    // couleurs de la perspective aérienne : vert de pin sourd au premier plan, gris-vert puis bleu-gris en s'éloignant ; reliefs bas et
+    // allongés (le bassin d'Aix est une campagne de collines douces, pas de mamelons)
+    add(ridge(hills(11, 18, 0.1), this.cloudTex, { dist: 1000, width: 2600, height: 38, base: gy + 4, color: 0x9aa6a4, seed: 5, cell: 60 }));
+    add(ridge(hills(12, 26, 0.12), this.cloudTex, { dist: 640, width: 2000, height: 24, base: gy + 2, color: 0x7b8a70, seed: 6, cell: 30 }));
+    add(ridge(hills(13, 30, 0.14), this.cloudTex, { dist: 330, width: 1300, height: 13, base: gy + 1, color: 0x5f6f4a, seed: 7, cell: 12 }));
     for (const [rot, s] of [[Math.PI / 2, 21], [Math.PI, 22], [-Math.PI / 2, 23]]) {       // horizon boisé sur les trois autres côtés
-      const m = ridge(hills(s, 30, 0.22), this.cloudTex, { dist: 420, width: 1700, height: 26, base: gy + 1, color: 0x5a7544, seed: s, cell: 16 });
+      const m = ridge(hills(s, 26, 0.13), this.cloudTex, { dist: 420, width: 1700, height: 20, base: gy + 1, color: 0x63724d, seed: s, cell: 16 });
       m.rotation.y = rot; add(m, new THREE.Vector3(-Math.cos(rot), 0, Math.sin(rot)));
+      const f = ridge(hills(s + 40, 18, 0.1), this.cloudTex, { dist: 900, width: 2400, height: 30, base: gy + 3, color: 0x939f9c, seed: s + 40, cell: 50 });   // lointain bleuté derrière
+      f.rotation.y = rot; add(f, new THREE.Vector3(-Math.cos(rot), 0, Math.sin(rot)));
     }
     // arbres et toits du voisinage
     const b = new Batch(); b.on('land');
@@ -297,10 +316,17 @@ export class Environment {
     // la « mer d'arbres » du pays d'Aix : houppiers instanciés jusqu'aux premières collines. Les plus proches ont plus de facettes,
     // les lointains 80 triangles ; les pins parasols ont un tronc (sans lui, le houppier flotterait)
     const N = this.quality.forest, items = [];
-    const pal = [0x8fae7c, 0x7a9c6c, 0xa3b88a, 0x6f8f62, 0xb4bf98, 0x86a674];      // teintes claires : elles multiplient la texture de feuillage
+    const pal = [0x8fae7c, 0x7a9c6c, 0x9fb08a, 0x6f8f62, 0xa8b496, 0x86a674, 0x8c9c80];      // teintes claires : elles multiplient la texture de feuillage
+    // les arbres poussent en bosquets et en pinèdes (et le long des haies), pas semés un à un : un peu plus de la moitié autour de
+    // centres de massifs, le reste épars ; dans un massif, une seule essence domine
+    const stands = Array.from({ length: 26 }, () => { const a = R() * 6.283, d = 110 + Math.pow(R(), 0.7) * 480; return [center.x + Math.cos(a) * d, center.z + Math.sin(a) * d, 12 + R() * 30, R() < 0.7]; });
     for (let i = 0; i < N; i++) {
-      const a = R() * 6.283, d = 98 + Math.pow(R(), 0.62) * 540, s = 2.4 + R() * 3.4, pine = R() < 0.6, rot = R() * 6.283, c = pal[(R() * pal.length) | 0], k = 0.8 + R() * 0.45;
-      items.push({ d, x: center.x + Math.cos(a) * d, z: center.z + Math.sin(a) * d, s, pine, rot, c, k });
+      let x, z, pine = R() < 0.55;
+      if (R() < 0.6) { const st = stands[(R() * stands.length) | 0], a = R() * 6.283, rr = st[2] * Math.sqrt(R()); x = st[0] + Math.cos(a) * rr; z = st[1] + Math.sin(a) * rr; pine = R() < (st[3] ? 0.9 : 0.15); }
+      else { const a = R() * 6.283, d = 98 + Math.pow(R(), 0.62) * 540; x = center.x + Math.cos(a) * d; z = center.z + Math.sin(a) * d; }
+      const d = Math.hypot(x - center.x, z - center.z); if (d < 92) { i--; continue; }
+      const s = 2.2 + R() * 3.2, rot = R() * 6.283, c = pal[(R() * pal.length) | 0], k = 0.72 + R() * 0.45;
+      items.push({ d, x, z, s, pine, rot, c, k, f: 0.85 + R() * 0.3 });
     }
     items.sort((p, q) => p.d - q.d);
     const m4 = new THREE.Matrix4(), q = new THREE.Quaternion(), col = new THREE.Color(), up = new THREE.Vector3(0, 1, 0), pos = new THREE.Vector3(), sc = new THREE.Vector3();
@@ -308,7 +334,7 @@ export class Environment {
     const mk = (list, detail) => {
       const mesh = new THREE.InstancedMesh(lumpyBlob(detail), leaf, list.length);
       list.forEach((t, i) => {
-        q.setFromAxisAngle(up, t.rot); pos.set(t.x, gy + t.s * (t.pine ? 1.5 : 0.8), t.z); sc.set(t.s * (t.pine ? 1.35 : 1), t.s * (t.pine ? 0.6 : 0.95), t.s * (t.pine ? 1.35 : 1));
+        q.setFromAxisAngle(up, t.rot); pos.set(t.x, gy + t.s * (t.pine ? 1.75 : 0.8), t.z); sc.set(t.s * (t.pine ? 1.4 : 1) * t.f, t.s * (t.pine ? 0.42 : 0.95), t.s * (t.pine ? 1.4 : 1) / t.f);      // pins parasols : ombrelle plate, haut fût
         mesh.setMatrixAt(i, m4.compose(pos, q, sc)); mesh.setColorAt(i, col.setHex(t.c).multiplyScalar(t.k));
       });
       mesh.instanceMatrix.needsUpdate = true; mesh.instanceColor.needsUpdate = true; mesh.castShadow = false; mesh.receiveShadow = false; mesh.frustumCulled = false;
@@ -318,7 +344,7 @@ export class Environment {
     const fl = [mk(items.slice(0, cut), 2), mk(items.slice(cut), 1)]; this.near.add(...fl);
     const pines = items.filter((t) => t.pine);
     const trunks = new THREE.InstancedMesh(new THREE.CylinderGeometry(0.1, 0.16, 1, 5, 1, true), new THREE.MeshStandardMaterial({ color: 0x5b4a3a, roughness: 1 }), pines.length);
-    pines.forEach((t, i) => { pos.set(t.x, gy + t.s * 0.75, t.z); sc.set(t.s * 0.5, t.s * 1.5, t.s * 0.5); trunks.setMatrixAt(i, m4.compose(pos, q.identity(), sc)); });
+    pines.forEach((t, i) => { pos.set(t.x, gy + t.s * 0.85, t.z); sc.set(t.s * 0.5, t.s * 1.7, t.s * 0.5); trunks.setMatrixAt(i, m4.compose(pos, q.identity(), sc)); });
     trunks.instanceMatrix.needsUpdate = true; trunks.frustumCulled = false; this.near.add(trunks);
     this.far = [...this.ridges, ground, trunks, ...fl];      // décor lointain : écarté de la passe d'occlusion ambiante (il y deviendrait un voile sombre)
   }

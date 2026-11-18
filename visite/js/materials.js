@@ -6,6 +6,7 @@
    une seule image à envoyer au processeur graphique au lieu de deux, et des joints qui restent alignés avec la couleur. */
 import * as THREE from 'three';
 import { rng } from 'v3d/geo';
+import { IMG } from 'v3d/flora';
 
 function canvas(size, draw, alpha = false) {
   const c = document.createElement('canvas'); c.width = c.height = size;
@@ -657,6 +658,101 @@ function coverageMips(t, c0, at) {
   t.mipmaps = mips; t.generateMipmaps = false; t.minFilter = THREE.LinearMipmapLinearFilter;
 }
 
+/* ── Matières extérieures d'après photographies (domaine public, chargées par flora.js) ──────────────────────────── */
+
+/* Copie d'une photographie dans un canvas (la texture se raccorde d'elle-même) ; null si elle n'a pas pu être chargée. */
+function photo(name, S = 512) {
+  const im = IMG[name]; if (!im) return null;
+  return canvas(S, (g) => { g.imageSmoothingQuality = 'high'; g.drawImage(im, 0, 0, S, S); });
+}
+
+/* Travertin en dalles de 60 × 40 cm posées à joints décalés, sur un carreau de 2,4 m (4 × 6 dalles) : chaque dalle est découpée à un
+   endroit différent de la photographie (retournée une fois sur deux, teinte légèrement propre), les bandes du travertin suivent
+   la longueur de la dalle ; joints clairs à peine creux, arête vive éclairée, quelques cavités. Sans photographie : dalles procédurales. */
+function travertineSet(seed, { S = 1024, nx = 4, ny = 6, shift = 0.5, base = [224, 210, 186], joint = 3, warm = 1 } = {}) {
+  const pr = slabSet(base, seed, nx, { ny, joint, veins: 0.9, shift, rs: 0.62, pit: 1.1, bump: 1.1, jointCol: [196, 186, 166] });
+  const im = IMG.travertin; if (!im) return pr;
+  const R = rng(seed + 1), tw = S / nx, th = S / ny, k = im.width / S;           // même échelle que la photo (512 px pour 1,2 m)
+  const C = canvas(S, (g) => {
+    g.fillStyle = rgb(196, 186, 166); g.fillRect(0, 0, S, S);
+    for (let j = 0; j < ny; j++) for (let i = -1; i <= nx; i++) {
+      const ox = i * tw + (j % 2 ? shift * tw : 0), oy = j * th, sx = R() * (im.width - tw * k), sy = R() * (im.height - th * k), fl = R() < 0.5, t = R();
+      g.save(); g.beginPath(); g.rect(ox + 1.5, oy + 1.5, tw - 3, th - 3); g.clip();
+      if (fl) { g.translate(ox * 2 + tw, 0); g.scale(-1, 1); }
+      g.drawImage(im, sx, sy, tw * k, th * k, ox, oy, tw, th); g.restore();
+      g.fillStyle = t < 0.5 ? rgb(255, 250, 238, 0.03 + t * 0.1) : rgb(120, 100, 70, (t - 0.5) * 0.12); g.fillRect(ox, oy, tw, th);   // chaque dalle a sa teinte
+      if (warm !== 1) { g.fillStyle = rgb(176, 134, 84, Math.abs(warm - 1)); g.globalCompositeOperation = 'multiply'; g.fillRect(ox, oy, tw, th); g.globalCompositeOperation = 'source-over'; }
+      g.fillStyle = rgb(255, 255, 250, 0.22); g.fillRect(ox + 1.5, oy + 1.5, tw - 3, 1.2); g.fillRect(ox + 1.5, oy + 1.5, 1.2, th - 3);
+      g.fillStyle = rgb(0, 0, 0, 0.08); g.fillRect(ox + 1.5, oy + th - 2.7, tw - 3, 1.2); g.fillRect(ox + tw - 2.7, oy + 1.5, 1.2, th - 3);
+    }
+    for (let i = 0; i < 900; i++) { g.fillStyle = rgb(120, 100, 72, 0.18 + R() * 0.2); g.beginPath(); g.ellipse(R() * S, R() * S, 1 + R() * R() * 5, 0.6 + R(), 0, 0, 7); g.fill(); }
+  });
+  return { map: C, pk: pr.pk };
+}
+
+/* Gravillons de repli : petits cailloux clairs serrés, ombre portée de chacun. Renvoie [couleur, relief + rugosité]. */
+function gravelSet(seed, S = 512) {
+  const R = rng(seed), B = canvas(S, (g) => { g.fillStyle = grey(60); g.fillRect(0, 0, S, S); }), gb = B.getContext('2d');
+  const C = canvas(S, (g) => {
+    g.fillStyle = rgb(150, 142, 128); g.fillRect(0, 0, S, S);
+    for (let i = 0; i < 9000; i++) {
+      const x = R() * S, y = R() * S, r = 1.5 + R() * 3.5, a = R() * 3.14, c = shade([222, 214, 198], 0.75 + R() * 0.35);
+      g.fillStyle = rgb(60, 52, 42, 0.3); g.beginPath(); g.ellipse(x + 1, y + 1.2, r, r * 0.7, a, 0, 7); g.fill();
+      g.fillStyle = rgb(...c); g.beginPath(); g.ellipse(x, y, r, r * 0.7, a, 0, 7); g.fill();
+      gb.fillStyle = grey(150 + R() * 100); gb.beginPath(); gb.ellipse(x, y, r, r * 0.7, a, 0, 7); gb.fill();
+    }
+  });
+  return [C, pack(B, flat(S >> 2, 230))];
+}
+
+/* Paillage d'écorces : copeaux bruns et ocre, allongés, sur terre sombre. Renvoie [couleur, relief]. */
+function mulchSet(seed, S = 512) {
+  const R = rng(seed), B = canvas(S, (g) => { g.fillStyle = grey(50); g.fillRect(0, 0, S, S); }), gb = B.getContext('2d');
+  const C = canvas(S, (g) => {
+    g.fillStyle = rgb(58, 42, 30); g.fillRect(0, 0, S, S);
+    for (let i = 0; i < 5200; i++) {
+      const x = R() * S, y = R() * S, l = 4 + R() * 12, w = 1.5 + R() * 3, a = R() * 6.28, c = shade(R() < 0.3 ? [150, 104, 64] : [112, 78, 52], 0.65 + R() * 0.6);
+      for (const [dx, dy] of [[0, 0], [S, 0], [-S, 0], [0, S], [0, -S]]) {
+        if (Math.abs(x + dx - S / 2) > S / 2 + 16 || Math.abs(y + dy - S / 2) > S / 2 + 16) continue;
+        g.fillStyle = rgb(20, 14, 8, 0.4); g.beginPath(); g.ellipse(x + dx + 1, y + dy + 1.5, l, w, a, 0, 7); g.fill();
+        g.fillStyle = rgb(...c); g.beginPath(); g.ellipse(x + dx, y + dy, l, w, a, 0, 7); g.fill();
+        gb.fillStyle = grey(110 + R() * 140); gb.beginPath(); gb.ellipse(x + dx, y + dy, l, w, a, 0, 7); gb.fill();
+      }
+    }
+    speckle(g, S, R, 3000, 0.08, 1.5);
+  });
+  return [C, B];
+}
+
+/* Variation à grande échelle : la couleur est modulée par la même texture lue neuf fois plus grande et tournée, ce qui casse la
+   répétition du motif (pelouse, terre, pierre) sans image de plus. main.js pose ensuite son propre onBeforeCompile : on l'enchaîne
+   au lieu de le perdre, et la clé de programme distingue ces matériaux des autres. */
+function meanOf(c) {
+  const S = 16, t = canvas(S, (g) => g.drawImage(c, 0, 0, S, S)), d = t.getContext('2d').getImageData(0, 0, S, S).data; let n = 0;
+  for (let i = 0; i < d.length; i += 4) for (let k = 0; k < 3; k++) n += Math.pow(d[i + k] / 255, 2.2);      // la texture est lue en lumière linéaire
+  return n / (S * S * 3);
+}
+function macro(m, src, amp = 0.35, scale = 0.111) {
+  let inner = null; const avg = Math.max(0.05, meanOf(src));
+  const patch = function (sh, r) {
+    if (inner) inner.call(this, sh, r);
+    sh.uniforms.uMacro = { value: new THREE.Vector3(amp, scale, avg) };
+    sh.fragmentShader = sh.fragmentShader.replace('#include <common>', '#include <common>\nuniform vec3 uMacro;')
+      .replace('#include <map_fragment>', `#include <map_fragment>
+	#ifdef USE_MAP
+	{ vec2 mu = mat2( 0.8, 0.6, -0.6, 0.8 ) * vMapUv * uMacro.y + vec2( 0.37, 0.71 );
+	  vec3 mc = texture2D( map, mu ).rgb, md = texture2D( map, mu * 0.37 + 0.2 ).rgb;
+	  float l = dot( mc + md, vec3( 1.0 / 6.0 ) ) / uMacro.z;
+	  diffuseColor.rgb *= clamp( mix( 1.0, l, uMacro.x ), 0.6, 1.35 ); }
+	#endif`);
+  };
+  Object.defineProperty(m, 'onBeforeCompile', { configurable: true, get: () => patch, set: (f) => { inner = f; } });
+  m.customProgramCacheKey = () => 'macro|' + (inner ? inner.name : '');
+  return m;
+}
+/* Rang de profondeur fixé ici pour les nouveaux matériaux (même formule que main.js, qui ne les connaît pas : il saute ceux déjà réglés). */
+const rank = (m, r) => Object.assign(m, { polygonOffset: true, polygonOffsetFactor: -0.4 * r, polygonOffsetUnits: -2 * r });
+
 function std(o) { const u = o.userData; delete o.userData; const m = new THREE.MeshStandardMaterial(o); if (u) m.userData = u; return m; }
 function phys(o) { const u = o.userData; delete o.userData; const m = new THREE.MeshPhysicalMaterial(o); if (u) m.userData = u; return m; }
 
@@ -680,7 +776,8 @@ export function makeMaterials(quality) {
   M.floor = std({ ...M.floorDef('floorOak'), metalness: 0, envMapIntensity: 1.15, userData: { wuv: TILE, cast: false } });   // matériau courant des pièces de vie
   const tileSet = slabSet([214, 208, 198], 15, 2, { ny: 4, veins: 0.6, cloud: 0.04, joint: 2.5, jointCol: [172, 166, 158], shift: 0.5, rs: 0.3, pit: 0.1 }), tilePk = L(tileSet.pk);
   M.tile = std({ map: T(tileSet.map), bumpMap: tilePk, roughnessMap: tilePk, roughness: 1, bumpScale: 0.5, userData: { wuv: 2.4, cast: false } });   // grès 60 × 120
-  const terr = slabSet([224, 208, 178], 16, 4, { veins: 0.8, joint: 4, rs: 0.8, pit: 0.9, bump: 1.4 }), terrPk = L(terr.pk);
+  // dallage des terrasses : pierre claire en dalles de 60 × 60 (photographie de travertin découpée dalle par dalle si elle est là)
+  const terr = IMG.travertin ? travertineSet(16, { nx: 4, ny: 4, shift: 0, joint: 4, warm: 1.08 }) : slabSet([224, 208, 178], 16, 4, { veins: 0.8, joint: 4, rs: 0.8, pit: 0.9, bump: 1.4 }), terrPk = L(terr.pk);
   M.terrace = std({ map: T(terr.map), bumpMap: terrPk, roughnessMap: terrPk, roughness: 1, bumpScale: 0.8, userData: { wuv: 2.4 } });
   const hexs = hexTiles([230, 209, 188], 41), hexPk = L(hexs.pk);
   M.hexPaving = std({ map: T(hexs.map), bumpMap: hexPk, roughnessMap: hexPk, roughness: 1, bumpScale: 0.8, userData: { wuv: 1.2 } });
@@ -700,10 +797,16 @@ export function makeMaterials(quality) {
   M.massing = std({ color: 0xe2d8c6, roughness: 0.95 });            // volumes de contexte, traités en maquette claire
   const wt = slabSet([234, 228, 216], 23, 2, { ny: 1, veins: 0.7, cloud: 0.03, joint: 2, jointCol: [200, 194, 184], rs: 0.28, pit: 0 }), wtPk = L(wt.pk);
   M.wallTile = std({ map: T(wt.map), bumpMap: wtPk, roughnessMap: wtPk, roughness: 1, bumpScale: 0.4, userData: { wuv: 2.4 } });
-  const [dsC, dsB] = dryStoneSet(24);
-  M.stone = std({ map: T(dsC), bumpMap: L(dsB), bumpScale: 3.5, roughness: 0.95, userData: { wuv: 2.2 } });
-  const [rfC, rfB] = roofSet(25, GS);
-  M.roof = std({ map: T(rfC), bumpMap: L(rfB), bumpScale: 2, roughness: 0.82, userData: { wuv: 1.6 } });
+  // pierre sèche calcaire (murs et murets) : photographie retouchée si elle est là, sinon le dessin procédural ; « drystone » est le même matériau
+  const dsP = photo('pierre-seche'), dsR = photo('pierre-seche-r');
+  if (dsP && dsR) { const pk = L(dsR); M.stone = std({ map: T(dsP), bumpMap: pk, roughnessMap: pk, bumpScale: 3, roughness: 1, userData: { wuv: 2.6 } }); macro(M.stone, dsP, 0.14); }
+  else { const [dsC, dsB] = dryStoneSet(24); M.stone = std({ map: T(dsC), bumpMap: L(dsB), bumpScale: 3.5, roughness: 0.95, userData: { wuv: 2.2 } }); }
+  Object.defineProperty(M, 'drystone', { value: M.stone, enumerable: false });   // non énumérable : main.js et les bancs voient un seul matériau, sous son nom d'origine
+  // tuiles romanes ton panaché vieilli (toit de l'immeuble et des maisons voisines) ; « roofTile » est le même matériau
+  const rfP = photo('tuiles'), rfR = photo('tuiles-r');
+  if (rfP && rfR) { const pk = L(rfR); M.roof = std({ map: T(rfP), bumpMap: pk, roughnessMap: pk, bumpScale: 2.5, roughness: 1, userData: { wuv: 4 } }); }
+  else { const [rfC, rfB] = roofSet(25, GS); M.roof = std({ map: T(rfC), bumpMap: L(rfB), bumpScale: 2, roughness: 0.82, userData: { wuv: 1.6 } }); }
+  Object.defineProperty(M, 'roofTile', { value: M.roof, enumerable: false });
   const ash = slabSet([226, 212, 186], 26, 2, { ny: 3, veins: 0.5, joint: 2, jointCol: [186, 172, 148], shift: 0.5, rs: 0.8, pit: 0.8 }), ashPk = L(ash.pk);
   M.ashlar = std({ map: T(ash.map), bumpMap: ashPk, roughnessMap: ashPk, roughness: 1, bumpScale: 0.9, userData: { wuv: 2.0 } });   // pierre de taille de la tour (70 × 100)
   M.cadre = std({ color: 0x6a665f, roughness: 0.6, metalness: 0.3 });   // cadres, garde-corps et menuiseries RAL 7039
@@ -789,7 +892,8 @@ export function makeMaterials(quality) {
   M.glow.userData = { cast: false, receive: false, order: 3 };
 
   // ── Extérieur
-  M.grass = std({ map: T(foliage([104, 140, 62], 51, { blades: true })), roughness: 1, userData: { wuv: 2.2, cast: false } });
+  const grC = foliage([104, 140, 62], 51, { blades: true });
+  M.grass = macro(std({ map: T(grC), roughness: 1, userData: { wuv: 2.2, cast: false } }), grC, 0.55, 0.083);      // pelouse : plages plus vertes ou plus sèches sur plusieurs mètres
   M.hedge = std({ map: T(foliage([62, 98, 50], 52, { gain: 0.8 })), roughness: 1, userData: { wuv: 1.3 } });
   const CS = FS > 1024 ? 512 : 256;
   const card = (c, o) => { const t = T(c); coverageMips(t, c, 0.42); return std({ map: t, alphaTest: 0.42, alphaToCoverage: true, side: THREE.DoubleSide, roughness: 0.95, ...o }); };      // bords de feuilles lissés par l'anticrénelage
@@ -800,13 +904,30 @@ export function makeMaterials(quality) {
   M.lavender = std({ color: 0x8a7bc0, roughness: 1 });
   M.oleander = std({ color: 0xe07a94, roughness: 1 });
   M.pampas = std({ color: 0xe6d6b8, roughness: 1 });
-  const [bkC, bkB] = barkSet(59);
-  M.bark = std({ map: T(bkC), bumpMap: L(bkB), bumpScale: 2, color: 0xf0e4d8, roughness: 1, userData: { wuv: 0.6 } });
-  M.earth = std({ map: T(foliage([120, 128, 84], 57, { S: 512, soft: true, gain: 1.18 })), roughness: 1, userData: { wuv: 6, cast: false } });
+  const bkP = photo('ecorce'), bkR = photo('ecorce-r');
+  if (bkP && bkR) { const pk = L(bkR); M.bark = std({ map: T(bkP), color: 0xc8bcae, bumpMap: pk, roughnessMap: pk, bumpScale: 3, roughness: 1, userData: { wuv: 0.9, wuvSwap: true } }); }
+  else { const [bkC, bkB] = barkSet(59); M.bark = std({ map: T(bkC), bumpMap: L(bkB), bumpScale: 2, color: 0xf0e4d8, roughness: 1, userData: { wuv: 0.6 } }); }
+  const eaC = foliage([120, 128, 84], 57, { S: 512, soft: true, gain: 1.18 });
+  M.earth = macro(std({ map: T(eaC), roughness: 1, userData: { wuv: 6, cast: false } }), eaC, 0.45, 0.09);
   const [wC, wB] = waterSet(58);
   M.water = phys({ map: T(wC), bumpMap: L(wB), bumpScale: 0.6, roughness: 0.06, metalness: 0, transparent: true, opacity: 0.9, envMapIntensity: 1.4, userData: { wuv: 3, cast: false } });
   const [rdC, rdB] = grainSet([119, 115, 110], 29, GS >> 1, { tone: 0.05, grain: 0.1, rel: 30, cx: 4, fine: 200 });
   M.road = std({ map: T(rdC), bumpMap: L(rdB), bumpScale: 1.2, roughness: 0.95, userData: { wuv: 3, cast: false } });
+  // matières des abords d'après le plan de masse (les rangs de profondeur sont posés ici : main.js ne connaît pas ces noms)
+  const tv = travertineSet(17), tvPk = L(tv.pk);
+  M.travertine = rank(std({ map: T(tv.map), bumpMap: tvPk, roughnessMap: tvPk, roughness: 1, bumpScale: 0.8, userData: { wuv: 2.4 } }), 1);   // margelles et plage de la piscine
+  const gvP = photo('gravillons'), gvR = photo('gravillons-r'), [gvC, gvB] = gvP && gvR ? [gvP, gvR] : gravelSet(18);
+  const gvPk = L(gvB);
+  M.gravel = rank(macro(std({ map: T(gvC), bumpMap: gvPk, roughnessMap: gvPk, roughness: 1, bumpScale: 2, userData: { wuv: 1.1, cast: false } }), gvC, 0.3), 1);
+  const asP = photo('enrobe'), asR = photo('enrobe-r');
+  if (asP && asR) { const pk = L(asR); M.asphaltLight = std({ map: T(asP), bumpMap: pk, roughnessMap: pk, roughness: 1, bumpScale: 1.2, userData: { wuv: 3, cast: false } }); macro(M.asphaltLight, asP, 0.3); }
+  else { const [aC, aB] = grainSet([170, 164, 152], 19, GS >> 1, { tone: 0.05, grain: 0.1, rel: 30, cx: 4, fine: 200 }); M.asphaltLight = std({ map: T(aC), bumpMap: L(aB), bumpScale: 1.2, roughness: 0.92, userData: { wuv: 3, cast: false } }); }
+  rank(M.asphaltLight, 0);
+  M.rendering = rank(std({ map: M.stucco.map, bumpMap: M.stucco.bumpMap, bumpScale: 1.3, color: 0xe9dcc6, roughness: 0.96, userData: { wuv: 2.5 } }), 0);   // enduit ton pierre des murs d'entrée (grain du taloché de façade, teinte plus chaude)
+  const [mlC, mlB] = mulchSet(20);
+  M.mulch = rank(std({ map: T(mlC), bumpMap: L(mlB), bumpScale: 2.5, roughness: 1, userData: { wuv: 1.2, cast: false } }), 1);
+  M.leafAlmond = card(leafCard([118, 150, 72], 60, { n: 64, len: 0.24, wid: 0.04, S: CS }));       // amandier : feuilles étroites vert clair
+  Object.defineProperty(M, 'floraLod', { value: quality.ao || quality.bloom ? 1 : 0.7 });      // nombre de cartes de feuillage (téléphones : moins), lu par le catalogue des végétaux
   noiseCache.clear(); devCache.clear(); RANDOM.S = 0; RANDOM.c = null; MF = null;       // les bruits de travail ne servent plus : on libère la mémoire
   return M;
 }
