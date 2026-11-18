@@ -270,7 +270,7 @@ function garment(b, M, mat, kind, x, yr, z, L, t, tilt = 0) {
 const SHOE = [[0.13, 0], [0.135, 0.028], [0.09, 0.05], [-0.04, 0.085], [-0.13, 0.085], [-0.135, 0.02], [-0.13, 0]];
 const BOOT = [[0.13, 0], [0.12, 0.05], [0.02, 0.26], [-0.12, 0.26], [-0.13, 0.02], [-0.12, 0]];
 function shoes(b, M, x0, x1, y, z, R, n = 9) {
-  const mats = ['black', 'cognac', 'white', 'charcoal', 'cognac', 'navy', 'sand'];
+  const mats = ['black', 'terra', 'white', 'seam', 'black'];   // peu de matières : chacune coûte un appel de dessin par calque
   for (let x = x0 + 0.06; x < x1 - 0.1 && n-- > 0; x += 0.22 + R() * 0.04) {
     const m = M[mats[(R() * mats.length) | 0]], boot = R() < 0.18, g = boot ? BOOT : SHOE, k = boot ? 'boot' : 'shoe';
     for (const dx of [-0.05, 0.05]) b.geo(m, prismGeo(k, g, 0.085), x + dx + 0.06, y, z + (R() - 0.5) * 0.03, 0, (R() - 0.5) * 0.12, 0);
@@ -552,7 +552,7 @@ export const F = {
       for (const [ya, yb] of rows) cb(b, M[front], cx, ya, fz + 0.0095, fw, yb - ya - (rows.length > 1 || hasHob ? 0.003 : 0), 0.019, 0.0018);
     }
     const gx = dwi >= 0 ? -w / 2 + mw * (dwi + 0.5) : 0;                                                          // grille de ventilation du socle
-    b.box(M.cadre, gx - 0.2, 0.025, d / 2 - 0.07, gx + 0.2, 0.075, d / 2 - 0.068); for (let k = 0; k < 4; k++) b.box(M.black, gx - 0.19, 0.032 + k * 0.011, d / 2 - 0.068, gx + 0.19, 0.037 + k * 0.011, d / 2 - 0.0675);
+    b.box(M.black, gx - 0.2, 0.025, d / 2 - 0.07, gx + 0.2, 0.075, d / 2 - 0.068); for (let k = 0; k < 4; k++) b.box(M.seam, gx - 0.19, 0.032 + k * 0.011, d / 2 - 0.068, gx + 0.19, 0.037 + k * 0.011, d / 2 - 0.0675);
     for (const sx of [-1, 1]) cb(b, M[front], sx * (w / 2 - 0.0095), 0.1, -0.01, 0.019, wt - 0.1, d - 0.02, 0.0015);   // joues d'extrémité
     cb(b, M[top], 0, wt, 0.0075, w + 0.01, 0.04, d + 0.015, 0.003);                                              // plan de travail, chant de 4 cm
     if (sink !== null) F._sink(b, M, sink, y, 0.02, -d / 2 + 0.07);
@@ -596,7 +596,7 @@ export const F = {
       const jx = free.slice(2).flatMap((f) => [f + 0.3, f - 0.52]).find((x) => Math.abs(x) < w / 2 - 0.12 && Math.abs(x + 0.1) < w / 2 - 0.12 && (sink === null || Math.abs(x + 0.1 - sink) > 0.62) && (hob === null || Math.abs(x + 0.1 - hob) > 0.6));
       if (jx !== undefined) {                                                                                     // bocaux en verre à couvercle de chêne, contre la crédence
         const x = jx;
-        for (let k = 0; k < 3; k++) { const hh = 0.13 + k * 0.05, xx = x + k * 0.1; b.cyl(M.crystal, xx, y, z - 0.07, 0.045, hh, 12); b.cyl([M.cream, M.ochre, M.bark][k], xx, y + 0.004, z - 0.07, 0.04, hh * 0.65, 10); b.cyl(M.oak, xx, y + hh, z - 0.07, 0.047, 0.022, 12); }
+        for (let k = 0; k < 3; k++) { const hh = 0.13 + k * 0.05, xx = x + k * 0.1; b.cyl(M.crystal, xx, y, z - 0.07, 0.045, hh, 12); b.cyl([M.cream, M.terra, M.pot][k], xx, y + 0.004, z - 0.07, 0.04, hh * 0.65, 10); b.cyl(M.oak, xx, y + hh, z - 0.07, 0.047, 0.022, 12); }
       }
       if (free.length > 2) { const x = free[2]; bowl(b, M.ceramic, x, y, z + 0.1, 0.15); for (const [dx, dz] of [[-0.04, 0], [0.05, 0.03], [0, -0.05], [0.0, 0.05]]) b.sph(M.ochre, x + dx, y + 0.085, z + 0.1 + dz, 0.038, 1, 1, 1, 8); b.sph(M.sage, x + 0.01, y + 0.1, z + 0.1, 0.03, 1, 1.1, 1, 8); }
     }
@@ -651,7 +651,7 @@ export const F = {
       } else if (i === 0) {                                                            // réfrigérateur-congélateur intégré
         door(cx, fw, 0.105, 0.86); door(cx, fw, 0.863, h - 0.004);
         grip(x0, x1, true, 0.6, 0.84); grip(x0, x1, true, 0.9, 1.6);
-        b.box(M.cadre, x0 + 0.08, 0.025, d / 2 - 0.07, x1 - 0.08, 0.075, d / 2 - 0.068); for (let k = 0; k < 4; k++) b.box(M.black, x0 + 0.09, 0.032 + k * 0.011, d / 2 - 0.068, x1 - 0.09, 0.037 + k * 0.011, d / 2 - 0.0675);
+        b.box(M.black, x0 + 0.08, 0.025, d / 2 - 0.07, x1 - 0.08, 0.075, d / 2 - 0.068); for (let k = 0; k < 4; k++) b.box(M.seam, x0 + 0.09, 0.032 + k * 0.011, d / 2 - 0.068, x1 - 0.09, 0.037 + k * 0.011, d / 2 - 0.0675);
       } else {
         door(cx, fw, 0.105, 1.0); door(cx, fw, 1.003, h - 0.004);
         grip(x0, x1, !!(i % 2), 0.2, h - 0.1);
@@ -659,10 +659,10 @@ export const F = {
     }
     return [w, d];
   },
-  /* Réfrigérateur posé, tel que repéré « R » sur les plans, en inox noir mat (l'inox brossé clair, strié à grande échelle,
-     faisait tôle) : américain à deux portes et distributeur d'eau au-delà de 80 cm, combiné (congélateur en bas) en deçà. */
+  /* Réfrigérateur posé, tel que repéré « R » sur les plans, (l'inox brossé clair, strié à grande échelle,
+     faisait tôle), en laque anthracite mate comme les façades de cuisine : américain à deux portes et distributeur d'eau au-delà de 80 cm, combiné (congélateur en bas) en deçà. */
   fridge(b, M, { w = 0.85, d = 0.72, h = 1.92 }) {
-    const body = M.frame, zf = d / 2 - 0.035;
+    const body = M.anthracite, zf = d / 2 - 0.035;
     b.box(M.black, -w / 2 + 0.02, 0, -d / 2 + 0.03, w / 2 - 0.02, 0.08, d / 2 - 0.06);
     cb(b, body, 0, 0.08, -0.0175, w - 0.006, h - 0.084, d - 0.035, 0.008);                    // carrosserie aux angles adoucis
     const pdoor = (x0, x1, y0, y1) => cb(b, body, (x0 + x1) / 2, y0, zf + 0.0155, x1 - x0, y1 - y0, 0.031, 0.006);
@@ -670,8 +670,8 @@ export const F = {
     if (w >= 0.8) {
       pdoor(-w / 2 + 0.003, -0.002, 0.085, h - 0.005); pdoor(0.002, w / 2 - 0.003, 0.085, h - 0.005);
       for (const sx of [-1, 1]) bar(sx * 0.04, 0.8, 1.5);
-      cb(b, M.screen, -w / 4 - 0.01, 1.05, d / 2 - 0.004, 0.2, 0.32, 0.006, 0.003);                                  // distributeur d'eau et de glaçons
-      b.box(M.black, -w / 4 - 0.07, 1.08, d / 2, -w / 4 + 0.05, 1.26, d / 2 + 0.003); b.box(M.led, -w / 4 - 0.05, 1.31, d / 2 + 0.002, -w / 4 + 0.03, 1.33, d / 2 + 0.0028);
+      cb(b, M.screen, -w / 4 - 0.01, 1.05, d / 2 - 0.002, 0.2, 0.32, 0.006, 0.003);                                  // distributeur d'eau et de glaçons
+      b.box(M.black, -w / 4 - 0.07, 1.08, d / 2 + 0.001, -w / 4 + 0.05, 1.26, d / 2 + 0.004); b.box(M.led, -w / 4 - 0.05, 1.31, d / 2 + 0.001, -w / 4 + 0.03, 1.33, d / 2 + 0.0018);
     } else {
       pdoor(-w / 2 + 0.003, w / 2 - 0.003, 0.085, 0.8); pdoor(-w / 2 + 0.003, w / 2 - 0.003, 0.804, h - 0.005);
       bar(w / 2 - 0.06, 0.55, 0.76); bar(w / 2 - 0.06, 0.86, 1.25);
@@ -686,7 +686,7 @@ export const F = {
     if (w >= 0.38) {                                                                   // trappe de visite au pied de la gaine : panneau peint affleurant, joint creux, serrure carrée
       const tw = Math.min(0.4, w - 0.12), ty = 0.18, th = 0.4;
       b.box(M.seam, -tw / 2 - 0.004, ty - 0.004, d / 2, tw / 2 + 0.004, ty + th + 0.004, d / 2 + 0.001);
-      cb(b, M.skirt, 0, ty, d / 2 + 0.003, tw, th, 0.006, 0.0015); b.box(M.cadre, tw / 2 - 0.05, ty + th / 2 - 0.01, d / 2 + 0.006, tw / 2 - 0.03, ty + th / 2 + 0.01, d / 2 + 0.008);
+      cb(b, M.white, 0, ty, d / 2 + 0.003, tw, th, 0.006, 0.0015); b.box(M.black, tw / 2 - 0.05, ty + th / 2 - 0.01, d / 2 + 0.006, tw / 2 - 0.03, ty + th / 2 + 0.01, d / 2 + 0.008);
     }
     return [w, d];
   },
@@ -708,7 +708,7 @@ export const F = {
     const y = wt + 0.04;
     if (hob !== null) {                                                                // plaque à hotte intégrée (aspiration centrale) : pas de hotte suspendue au-dessus de l'îlot
       F._hob(b, M, hob, y, dz); b.box(M.black, hob - 0.045, y + 0.006, dz - 0.21, hob + 0.045, y + 0.0068, dz + 0.21);
-      for (let k = 0; k < 9; k++) b.box(M.cadre, hob - 0.04, y + 0.0068, dz - 0.2 + k * 0.05, hob + 0.04, y + 0.0074, dz - 0.185 + k * 0.05);
+      for (let k = 0; k < 9; k++) b.box(M.steel, hob - 0.04, y + 0.0068, dz - 0.2 + k * 0.05, hob + 0.04, y + 0.0074, dz - 0.185 + k * 0.05);
     }
     if (sink !== null) F._sink(b, M, sink, y, dz + 0.03, dz - 0.2);
     for (let i = 0; i < stools; i++) { b.push(-w / 2 + (w / stools) * (i + 0.5), 0, d / 2 + 0.06, PI); F.stool(b, M, { mat: stoolMat }); b.pop(); }
@@ -777,9 +777,10 @@ export const F = {
      portes pliantes à demi repliée ou un panneau coulissant poussé laissent voir l'intérieur ; derrière les portes fermées, seul
      ce qui reste visible dans la maquette coupée (sous 1,30 m) est garni. Tout est tiré d'une graine : même placard à chaque chargement. */
   wardrobe(b, M, { w = 2.2, d = 0.6, h = 2.35, mat = 'oak', ceil = 2.6 }) {
-    // caisson intérieur en mélaminé clair, d'un matériau sans décalage de profondeur (rang 0 de main.js) : vues de biais à hauteur
-    // d'œil, des étagères d'un matériau décalé passaient devant les portes fermées et y dessinaient des lignes claires
-    const oak = mat === 'oak', m = M[oak ? 'oakV' : mat], inn = M.socle, t = 0.019, pl = 0.08, gap = 0.003, R = rng(Math.round(w * 1000 + d * 77));
+    // caisson intérieur peint en blanc (l'enduit des murs, déjà dessiné dans chaque calque), matériau sans décalage de profondeur
+    // (rang 0 de main.js) : vues de biais à hauteur d'œil, des étagères d'un matériau décalé passaient devant les portes fermées
+    // et y dessinaient des lignes claires
+    const oak = mat === 'oak', m = M[oak ? 'oakV' : mat], inn = M.plaster, t = 0.019, pl = 0.08, gap = 0.003, R = rng(Math.round(w * 1000 + d * 77));
     const use = oak ? 'bed' : d < 0.35 ? 'tech' : d < 0.5 ? 'store' : d >= 0.8 ? 'pantry' : d >= 0.68 ? 'utility' : 'coats';
     const xi0 = -w / 2 + t, xi1 = w / 2 - t, wi = xi1 - xi0, slide = oak && w >= 2.6, fold = !oak && (use === 'coats' || use === 'utility' || use === 'pantry') && w >= 1.3;
     const zF = d / 2 - 0.001, zb = -d / 2 + 0.008, zf = slide ? d / 2 - 2 * t - 0.016 : d / 2 - t - 0.005, di = zf - zb, zc = (zb + zf) / 2, deck = pl + t;
@@ -802,7 +803,7 @@ export const F = {
         cb(b, m, x0 + pw / 2, y0, z - t / 2, pw, y1 - y0, t, 0.002);
         for (const ex of [x0 + 0.03, x0 + pw - 0.03]) b.box(M.black, ex - 0.007, 0.85, z, ex + 0.007, 1.25, z + 0.003);                     // tirettes encastrées
       }
-      bb(b, M.cadre, xi0, y1 + 0.002, zk - t - 0.004, xi1, h, zF, 0.002); b.box(M.cadre, xi0, pl, zk - t - 0.004, xi1, deck + 0.008, zF - 0.002);   // rails haut et bas
+      bb(b, M.black, xi0, y1 + 0.002, zk - t - 0.004, xi1, h, zF, 0.002); b.box(M.black, xi0, pl, zk - t - 0.004, xi1, deck + 0.008, zF - 0.002);   // rails haut et bas
       const nc = Math.max(2, Math.round(wi / 0.95)); cols = Array.from({ length: nc }, (_, i) => [xi0 + (wi * i) / nc, xi0 + (wi * (i + 1)) / nc]);
       open = np === 3 ? [xi0 + 2 * pw, xi1] : [xi0 + pw, xi1]; oc = nc - 1;
     } else {
@@ -823,8 +824,9 @@ export const F = {
     for (let i = 1; i < cols.length; i++) cb(b, inn, cols[i][0], deck, zc, t, h - t - deck, di, 0.001);          // séparations
 
     // intérieur, colonne par colonne
-    const ys = h - t - 0.3, bedPal = ['cream', 'white', 'navy', 'charcoal', 'sage', 'greige', 'linen', 'terra', 'sand', 'taupe', 'ochre', 'throw'];
-    const coatPal = ['charcoal', 'navy', 'taupe', 'greige', 'cognac', 'sand', 'charcoal', 'throw'], linPal = ['white', 'cream', 'linen', 'sand', 'greige', 'sage'];
+    // palettes courtes, prises dans les tissus déjà présents dans le logement : chaque matière nouvelle coûterait un appel de dessin par calque
+    const ys = h - t - 0.3, bedPal = ['cream', 'seam', 'taupe', 'terra', 'linen', 'seam', 'white'];
+    const coatPal = ['seam', 'taupe', 'linen', 'seam'], linPal = ['white', 'cream', 'linen'];
     const shelf = (xa, xb, y) => b.box(inn, xa, y, zb, xb, y + t, zf - 0.01);
     const rail = (xa, xb, y) => { b.rod(M.steel, [xa, y, zc], [xb, y, zc], 0.011, 6); for (const x of [xa, xb]) b.box(M.steel, x - (x === xa ? 0 : 0.006), y - 0.015, zc - 0.012, x + (x === xa ? 0.006 : 0), y + 0.015, zc + 0.012); };
     const hang = (xa, xb, yr, pal, kinds, L0, L1, thick) => {
@@ -832,10 +834,10 @@ export const F = {
     };
     const top = (xa, xb, full, pal) => {                                                                          // étagère haute : boîtes et linge
       shelf(xa, xb, ys); if (!full) return;
-      for (let x = xa + 0.02; x < xb - 0.2;) { const bw = 0.26 + R() * 0.12; if (x + bw > xb - 0.02) break; if (R() < 0.5) storeBox(b, M, ['linen', 'rattan', 'charcoal', 'sand'][(R() * 4) | 0], x + bw / 2, ys + t, zc + 0.02, bw, 0.18 + R() * 0.08, di - 0.08); else linenPile(b, M, x + bw / 2, ys + t, zc, bw, di * 0.7, 3 + ((R() * 3) | 0), R, pal); x += bw + 0.02 + R() * 0.05; }
+      for (let x = xa + 0.02; x < xb - 0.2;) { const bw = 0.26 + R() * 0.12; if (x + bw > xb - 0.02) break; if (R() < 0.5) storeBox(b, M, ['linen', 'taupe'][(R() * 2) | 0], x + bw / 2, ys + t, zc + 0.02, bw, 0.18 + R() * 0.08, di - 0.08); else linenPile(b, M, x + bw / 2, ys + t, zc, bw, di * 0.7, 3 + ((R() * 3) | 0), R, pal); x += bw + 0.02 + R() * 0.05; }
     };
     const shelvesAt = (y0, y1, step) => { const out = []; for (let y = y0; y < y1 - 0.15; y += step) out.push(y); return out; };
-    const bottles = (xa, xb, y, full) => { if (!full && y > 1.3) return; for (let x = xa + 0.05; x < xb - 0.05; x += 0.07 + R() * 0.05) { const r = 0.028 + R() * 0.02, hh = 0.14 + R() * 0.16, mm = [M.white, M.ceramic, M.sage, M.navy, M.terra, M.ochre][(R() * 6) | 0]; b.cyl(mm, x, y, zc + (R() - 0.3) * di * 0.4, r, hh, 8); b.cyl(M.white, x, y + hh, zc + 0, r * 0.45, 0.03, 6); } };
+    const bottles = (xa, xb, y, full) => { if (!full && y > 1.3) return; for (let x = xa + 0.05; x < xb - 0.05; x += 0.07 + R() * 0.05) { const r = 0.028 + R() * 0.02, hh = 0.14 + R() * 0.16, mm = [M.white, M.ceramic, M.terra][(R() * 3) | 0]; b.cyl(mm, x, y, zc + (R() - 0.3) * di * 0.4, r, hh, 8); b.cyl(M.white, x, y + hh, zc + 0, r * 0.45, 0.03, 6); } };
     const fill = (type, xa, xb, full) => {
       const cw = xb - xa, cx = (xa + xb) / 2;
       if (type === 'hang' || type === 'coats') {
@@ -845,7 +847,7 @@ export const F = {
         shoes(b, M, xa, xb, deck, zc + di * 0.12, R, Math.round(cw / 0.26));
       } else if (type === 'double') {
         top(xa, xb, full, linPal); rail(xa, xb, ys - 0.05); rail(xa, xb, ys - 1.0);
-        hang(xa, xb, ys - 0.05, bedPal, ['shirt'], 0.72, 0.8, 0.03); hang(xa, xb, ys - 1.0, ['navy', 'charcoal', 'sand', 'greige', 'linen', 'taupe'], ['pants'], 0.55, 0.55, 0.035);
+        hang(xa, xb, ys - 0.05, bedPal, ['shirt'], 0.72, 0.8, 0.03); hang(xa, xb, ys - 1.0, ['seam', 'taupe', 'linen'], ['pants'], 0.55, 0.55, 0.035);
         shoes(b, M, xa, xb, deck, zc + di * 0.12, R, Math.round(cw / 0.26));
       } else if (type === 'shelves') {                                                                                // lingère : tiroirs à l'anglaise en bas, piles de linge
         const nd = 3, dh = (0.76 - deck) / nd;
@@ -857,27 +859,27 @@ export const F = {
         for (const y of [deck, ...shelvesAt(deck + step, ys, step)]) {
           if (y > deck) shelf(xa, xb, y);
           const y1 = y + (y > deck ? t : 0); if (!full && y1 > 1.3) continue;
-          if (type === 'boxes') { for (let x = xa + 0.02; x < xb - 0.2;) { const bw = 0.24 + R() * 0.14; if (x + bw > xb - 0.02) break; storeBox(b, M, ['linen', 'rattan', 'charcoal', 'sand', 'cream'][(R() * 5) | 0], x + bw / 2, y1, zc + 0.02, bw, 0.16 + R() * 0.12, Math.min(0.4, di - 0.06)); x += bw + 0.02 + R() * 0.06; } }
-          else if (type === 'pantry' && R() < 0.5) { for (let x = xa + 0.04; x < xb - 0.12; x += 0.13 + R() * 0.04) { const hh = 0.2 + R() * 0.1; cb(b, M[R() < 0.4 ? 'paper' : ['ochre', 'terra', 'cream', 'sage'][(R() * 4) | 0]], x + 0.05, y1, zc - di * 0.1, 0.1, hh, 0.07 + R() * 0.03, 0.002); } }
+          if (type === 'boxes') { for (let x = xa + 0.02; x < xb - 0.2;) { const bw = 0.24 + R() * 0.14; if (x + bw > xb - 0.02) break; storeBox(b, M, ['linen', 'taupe', 'cream'][(R() * 3) | 0], x + bw / 2, y1, zc + 0.02, bw, 0.16 + R() * 0.12, Math.min(0.4, di - 0.06)); x += bw + 0.02 + R() * 0.06; } }
+          else if (type === 'pantry' && R() < 0.5) { for (let x = xa + 0.04; x < xb - 0.12; x += 0.13 + R() * 0.04) { const hh = 0.2 + R() * 0.1; cb(b, M[['terra', 'cream', 'linen'][(R() * 3) | 0]], x + 0.05, y1, zc - di * 0.1, 0.1, hh, 0.07 + R() * 0.03, 0.002); } }
           else if (type === 'pantry') { for (let x = xa + 0.06; x < xb - 0.06; x += 0.12 + R() * 0.04) { const hh = 0.12 + R() * 0.08; b.cyl(R() < 0.5 ? M.ceramic : M.pot, x, y1, zc, 0.045, hh, 8); b.cyl(M.oak, x, y1 + hh, zc, 0.047, 0.02, 8); } }   // pots à couvercle de chêne
           else bottles(xa, xb, y1, full);
         }
-        if (type === 'pantry') { b.lathe(M.rattan, cx, deck, zc, [[0.15, 0], [0.18, 0.2], [0.172, 0.2], [0.144, 0.01], [0.001, 0.01]], 14); for (const [ax, az, c] of [[-0.05, 0, 'ochre'], [0.05, 0.03, 'terra'], [0, -0.06, 'sage'], [0.02, 0.06, 'ochre']]) b.sph(M[c], cx + ax, deck + 0.05, zc + az, 0.04, 1, 1, 1, 8); }
+        if (type === 'pantry') { b.lathe(M.rattan, cx, deck, zc, [[0.15, 0], [0.18, 0.2], [0.172, 0.2], [0.144, 0.01], [0.001, 0.01]], 14); for (const [ax, az] of [[-0.05, 0], [0.05, 0.03], [0, -0.06], [0.02, 0.06]]) b.sph(M.terra, cx + ax, deck + 0.05, zc + az, 0.04, 1, 1, 1, 8); }
       } else if (type === 'utility') {                                                                                // aspirateur balai, planche à repasser, balai, panier
-        top(xa, xb, full, linPal); if (full) bottles(xa, xb, ys + t, true);
+        top(xa, xb, full, linPal);
         cb(b, M.white, xa + 0.06, deck, zc - di * 0.15, 0.028, 1.32, 0.38, 0.01, 0); b.rod(M.steel, [xa + 0.06, 0.3, zc + di * 0.1], [xa + 0.06, 1.45, zc + di * 0.12], 0.008, 6);   // planche repliée contre la joue
-        const vx = xa + 0.25; b.rod(M.charcoal, [vx, deck + 0.03, zc + 0.05], [vx, 1.12, zc], 0.014, 8); cb(b, M.charcoal, vx, deck, zc + 0.08, 0.26, 0.05, 0.08, 0.01); b.cyl(M.terra, vx, 0.62, zc + 0.02, 0.05, 0.25, 12); b.cyl(M.charcoal, vx, 1.12, zc, 0.02, 0.12, 8);
+        const vx = xa + 0.25; b.rod(M.charcoal, [vx, deck + 0.03, zc + 0.05], [vx, 1.12, zc], 0.014, 8); cb(b, M.charcoal, vx, deck, zc + 0.08, 0.26, 0.05, 0.08, 0.01); b.cyl(M.charcoal, vx, 0.62, zc + 0.02, 0.05, 0.25, 12); b.cyl(M.charcoal, vx, 1.12, zc, 0.02, 0.12, 8);
         b.rod(M.oak, [xb - 0.1, deck + 0.1, zc - 0.05], [xb - 0.12, 1.5, zc - 0.12], 0.012, 6); cb(b, M.charcoal, xb - 0.1, deck, zc - 0.03, 0.08, 0.1, 0.3, 0.006);
         b.lathe(M.rattan, cx + 0.06, deck, zc + di * 0.18, [[0.15, 0], [0.18, 0.3], [0.172, 0.3], [0.144, 0.01], [0.001, 0.01]], 14); linenPile(b, M, cx + 0.06, deck + 0.24, zc + di * 0.18, 0.26, 0.24, 2, R, linPal);
       } else if (type === 'tech') {                                                                                   // gaine technique du logement : tableau électrique, coffret de communication, box
         const px = cx, pw = Math.min(0.46, cw - 0.06), zz = zb;
         cb(b, M.white, px, 1.0, zz + 0.05, pw, 0.62, 0.1, 0.004);                                                    // tableau, trois rangées de modules
         for (let r = 0; r < 3; r++) {
-          const y = 1.08 + r * 0.17; b.box(M.greyLacquer, px - pw / 2 + 0.03, y, zz + 0.1, px + pw / 2 - 0.03, y + 0.09, zz + 0.112);
-          for (let k = 0; k < 12; k++) { const x = px - pw / 2 + 0.045 + k * ((pw - 0.09) / 11); b.box(k % 4 === 0 ? M.navy : M.black, x - 0.006, y + 0.038, zz + 0.112, x + 0.006, y + 0.056, zz + 0.122); }
+          const y = 1.08 + r * 0.17; b.box(M.plaster, px - pw / 2 + 0.03, y, zz + 0.1, px + pw / 2 - 0.03, y + 0.09, zz + 0.112);
+          for (let k = 0; k < 12; k++) { const x = px - pw / 2 + 0.045 + k * ((pw - 0.09) / 11); b.box(k % 4 === 0 ? M.terra : M.black, x - 0.006, y + 0.038, zz + 0.112, x + 0.006, y + 0.056, zz + 0.122); }
         }
         b.box(M.seam, px - pw / 2 + 0.02, 1.0 + 0.6 - 0.02, zz + 0.1, px + pw / 2 - 0.02, 1.0 + 0.6, zz + 0.101);
-        cb(b, M.white, px, 0.55, zz + 0.045, pw, 0.36, 0.09, 0.004); b.box(M.greyLacquer, px - pw / 2 + 0.03, 0.6, zz + 0.09, px + pw / 2 - 0.03, 0.86, zz + 0.091);   // coffret de communication
+        cb(b, M.white, px, 0.55, zz + 0.045, pw, 0.36, 0.09, 0.004); b.box(M.plaster, px - pw / 2 + 0.03, 0.6, zz + 0.09, px + pw / 2 - 0.03, 0.86, zz + 0.091);   // coffret de communication
         const sy = 0.42; shelf(xa, xb, sy); cb(b, M.white, px - 0.06, sy + t, zc, 0.2, 0.04, 0.15, 0.008); for (let k = 0; k < 4; k++) b.box(M.led, px - 0.12 + k * 0.025, sy + t + 0.02, zc + 0.075, px - 0.115 + k * 0.025, sy + t + 0.025, zc + 0.0755);   // box internet et ses voyants
         for (const dx of [-0.12, -0.04, 0.04, 0.12]) b.rod(M.charcoal, [px + dx, 1.0, zz + 0.03], [px + dx * 0.6, deck, zz + 0.03], 0.006, 4);   // gaines électriques
       }
@@ -912,7 +914,7 @@ export const F = {
     const ex = w > 1.2 ? -0.08 : 0, ez = -d / 2 + 0.17;
     cb(b, M.black, ex, 0.715, ez, 0.22, 0.008, 0.17, 0.003); b.box(M.black, ex - 0.02, 0.723, ez - 0.06, ex + 0.02, 1.0, ez - 0.035);
     cb(b, M.black, ex, 0.86, ez - 0.03, 0.62, 0.37, 0.022, 0.004); b.box(M.screen, ex - 0.3, 0.875, ez - 0.0185, ex + 0.3, 1.218, ez - 0.0175);
-    cb(b, M.white, ex, 0.715, ez + 0.27, 0.42, 0.012, 0.13, 0.004); for (let r = 0; r < 4; r++) b.box(M.greyLacquer, ex - 0.195, 0.727, ez + 0.218 + r * 0.027, ex + 0.195, 0.729, ez + 0.237 + r * 0.027);
+    cb(b, M.white, ex, 0.715, ez + 0.27, 0.42, 0.012, 0.13, 0.004); for (let r = 0; r < 4; r++) b.box(M.black, ex - 0.195, 0.727, ez + 0.218 + r * 0.027, ex + 0.195, 0.729, ez + 0.237 + r * 0.027);
     b.sph(M.white, ex + 0.3, 0.722, ez + 0.28, 0.03, 0.9, 0.35, 1.5, 10);
     if (w > 1.2) { cb(b, M.steel, ex + 0.55, 0.715, ez + 0.12, 0.31, 0.016, 0.22, 0.004, -0.15); }
     if (lamp) { const x = w * 0.36, z = -d * 0.2; b.lathe(M.black, x, 0.715, z, [[0.001, 0], [0.07, 0], [0.072, 0.012], [0.001, 0.012]], 18); b.tube(M.black, [[x, 0.726, z], [x, 0.99, z], [x - 0.04, 1.09, z + 0.03], [x - 0.14, 1.13, z + 0.1]], 0.008, 6); b.lathe(M.black, x - 0.17, 1.07, z + 0.12, [[0.075, 0], [0.03, 0.07], [0.02, 0.07], [0.068, 0]], 14); b.light(x - 0.17, 1.05, z + 0.12, 0.5); }
