@@ -7,6 +7,7 @@
 import * as THREE from 'three';
 import { rng } from 'v3d/geo';
 import { IMG } from 'v3d/flora';
+import { poolWater } from 'v3d/pool';
 
 function canvas(size, draw, alpha = false) {
   const c = document.createElement('canvas'); c.width = c.height = size;
@@ -579,22 +580,6 @@ function barkSet(seed) {
   return [C, B];
 }
 
-/* ── Eau ────────────────────────────────────────────────────────────────────────────────────────────────────────── */
-
-/* Eau du bassin : turquoise plus profond au centre des nuages, réseau de caustiques (arêtes de sinusoïdes déformées), petites rides. Renvoie [couleur, relief]. */
-function waterSet(seed) {
-  const S = 512, R = rng(seed), F = field(S, 3, 3, 3, seed + 1), K = field(S, 2, 2, 2, seed + 2), ph = Array.from({ length: 6 }, () => R() * 6.28), T = 6.2832 / S;
-  const waves = [[9, 6], [-6, 12], [15, -9], [-12, -15], [18, 3], [3, 18]];
-  const Cm = paint(S, (i, d, p) => {
-    const x = i & (S - 1), y = i >> 9, wx = (K[i] - 0.5) * 36, wy = (K[(i + 91) % (S * S)] - 0.5) * 36; let s = 0;
-    for (let k = 0; k < 6; k++) s += Math.sin(T * (waves[k][0] * (x + wx) + waves[k][1] * (y + wy)) + ph[k]);
-    const c = Math.pow(clamp(1 - Math.abs(s / 6) * 2.2), 7), t = clamp(c, 0, 1), dp = 0.9 + (F[i] - 0.5) * 0.3;
-    d[p] = (38 * dp) + (200 - 38 * dp) * t * 0.42; d[p + 1] = (152 * dp) + (246 - 152 * dp) * t * 0.42; d[p + 2] = (176 * dp) + (250 - 176 * dp) * t * 0.38;
-  });
-  const Bm = paint(S, (i, d, p) => { const x = i & (S - 1), y = i >> 9; d[p] = d[p + 1] = d[p + 2] = 128 + 40 * (Math.sin(T * (21 * x + 9 * y) + ph[0]) + Math.sin(T * (-15 * x + 24 * y) + ph[1])) * (0.5 + F[i]); });
-  return [Cm, Bm];
-}
-
 /* Toiles abstraites dans l'esprit des tableaux des images du graphiste : ors, ocres, terracotta, formes minérales. */
 function painting(seed, kind) {
   return canvas(512, (g, S) => {
@@ -909,8 +894,7 @@ export function makeMaterials(quality) {
   else { const [bkC, bkB] = barkSet(59); M.bark = std({ map: T(bkC), bumpMap: L(bkB), bumpScale: 2, color: 0xf0e4d8, roughness: 1, userData: { wuv: 0.6 } }); }
   const eaC = foliage([120, 128, 84], 57, { S: 512, soft: true, gain: 1.18 });
   M.earth = macro(std({ map: T(eaC), roughness: 1, userData: { wuv: 6, cast: false } }), eaC, 0.45, 0.09);
-  const [wC, wB] = waterSet(58);
-  M.water = phys({ map: T(wC), bumpMap: L(wB), bumpScale: 0.6, roughness: 0.06, metalness: 0, transparent: true, opacity: 0.9, envMapIntensity: 1.4, userData: { wuv: 3, cast: false } });
+  M.water = poolWater(quality, M);                                    // eau des bassins : cuve vue par réfraction, reflets, caustiques (pool.js)
   const [rdC, rdB] = grainSet([119, 115, 110], 29, GS >> 1, { tone: 0.05, grain: 0.1, rel: 30, cx: 4, fine: 200 });
   M.road = std({ map: T(rdC), bumpMap: L(rdB), bumpScale: 1.2, roughness: 0.95, userData: { wuv: 3, cast: false } });
   // matières des abords d'après le plan de masse (les rangs de profondeur sont posés ici : main.js ne connaît pas ces noms)
