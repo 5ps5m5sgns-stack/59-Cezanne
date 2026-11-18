@@ -122,7 +122,7 @@ const villa = {
       // 6 — bureau : plan de travail de 2,05 m contre la chambre 2, deux assises ; gaine dans l'angle
       ['desk', 2.255, 3.795, 0, { w: 2.05, d: 0.55, top: 'oak', chair: 'greige' }], ['stool', 1.55, 4.3, 0, { mat: 'greige', h: 0.46 }], ['duct', 0.145, 5.395, 0, { w: 0.29, d: 0.65 }],
       // 5 — couloir : deux placards
-      ['wardrobe', 4.055, CS + 0.3, 180, { w: 1.39, d: 0.6, mat: 'lacquer' }], ['wardrobe', 6.595, CS + 0.3, 180, { w: 1.47, d: 0.6, mat: 'lacquer' }], ['duct', 7.62, 5.62, 0, { w: 0.58, d: 1.02 }],
+      ['wardrobe', 4.055, CS + 0.3, 180, { w: 1.39, d: 0.6, mat: 'lacquer', open: false }], ['wardrobe', 6.595, CS + 0.3, 180, { w: 1.47, d: 0.6, mat: 'lacquer', open: false }], ['duct', 7.62, 5.62, 0, { w: 0.58, d: 1.02 }],
       // 7 — chambre 1 : lit de 140 tête au Nord
       ['bed', 1.62, 6.5, 0, { w: 1.4, l: 2.0, hw: 0.4 }],
       // 8 — dressing : coiffeuse au Nord, penderie de 2,40 m au Sud
@@ -276,7 +276,7 @@ const duplex = {
     blockers: [[SX, SZ, 6.25, 4.2], [SX, 4.2, 5.33, NH]],
     items: [
       // 1 — entrée : placard à portes pliantes
-      ['wardrobe', 1.11, 7.775, 180, { w: 2.22, d: 0.63, mat: 'lacquer' }],
+      ['wardrobe', 1.11, 7.775, 180, { w: 2.22, d: 0.63, mat: 'lacquer', open: false }],
       // 2 — séjours : coin salon au Nord-Ouest (table ronde, trois fauteuils), canapé d'angle au Nord-Est face au mur TV
       ['rug', 2.175, 2.61, 0, { w: 3.21, d: 4.04, mat: 'rug' }], ['coffeeRound', 2.2, 2.5, 0, { r: 0.59, h: 0.42 }],
       ['armchair', 1.33, 1.48, 40, { mat: 'walnut' }], ['armchair', 3.03, 1.48, 321, { mat: 'walnut' }], ['armchair', 2.17, 3.91, 180, { mat: 'walnut' }],
@@ -291,7 +291,7 @@ const duplex = {
       ['diningTable', 9.63, 8.79, 90, { w: 2.8, d: 1.19, n: 4, ends: 'b' }], ['pendant', 9.63, 8.79, 90, { kind: 'rail', n: 5, span: 0.45, drop: 1.0 }],
       ['curtain', DW - 0.1, 6.8, 270, { w: 0.5 }], ['curtain', DW - 0.1, 11.35, 270, { w: 0.5 }],
       // 4 — arrière-cuisine : placards à portes pliantes et réfrigérateur contre la gaine, plan de travail le long du mur Sud
-      ['wardrobe', 5.03, 9.9, 0, { w: 2.72, d: 0.88, mat: 'lacquer' }], ['fridge', 6.815, 9.9, 0, { w: 0.85, d: 0.88 }],
+      ['wardrobe', 5.03, 9.9, 0, { w: 2.72, d: 0.88, mat: 'lacquer', open: false }], ['fridge', 6.815, 9.9, 0, { w: 0.85, d: 0.88 }],
       ['kitchenRun', 4.32, 11.705, 180, { w: 4.0, d: 0.65, upper: true, splash: true }], ['kitchenRun', 6.78, 11.705, 180, { w: 0.92, d: 0.65, deco: false }], ['duct', 6.78, 11.845, 0, { w: 0.92, d: 0.37 }],
       // 5 — buanderie : placards le long du mur Ouest, de part et d'autre d'une gaine
       ['wardrobe', 0.26, 9.09, 90, { w: 1.78, d: 0.7, mat: 'lacquer' }], ['duct', 0.26, 10.265, 90, { w: 0.57, d: 0.7 }], ['wardrobe', 0.26, 11.29, 90, { w: 1.48, d: 0.7, mat: 'lacquer' }],

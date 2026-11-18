@@ -776,13 +776,13 @@ export const F = {
      (provisions), moins de 50 cm = placard technique (tableau électrique, box) et rangement. Une porte entrouverte, une paire de
      portes pliantes à demi repliée ou un panneau coulissant poussé laissent voir l'intérieur ; derrière les portes fermées, seul
      ce qui reste visible dans la maquette coupée (sous 1,30 m) est garni. Tout est tiré d'une graine : même placard à chaque chargement. */
-  wardrobe(b, M, { w = 2.2, d = 0.6, h = 2.35, mat = 'oak', ceil = 2.6 }) {
+  wardrobe(b, M, { w = 2.2, d = 0.6, h = 2.35, mat = 'oak', ceil = 2.6, open: opened = true }) {
     // caisson intérieur peint en blanc (l'enduit des murs, déjà dessiné dans chaque calque), matériau sans décalage de profondeur
     // (rang 0 de main.js) : vues de biais à hauteur d'œil, des étagères d'un matériau décalé passaient devant les portes fermées
     // et y dessinaient des lignes claires
     const oak = mat === 'oak', m = M[oak ? 'oakV' : mat], inn = M.plaster, t = 0.019, pl = 0.08, gap = 0.003, R = rng(Math.round(w * 1000 + d * 77));
     const use = oak ? 'bed' : d < 0.35 ? 'tech' : d < 0.5 ? 'store' : d >= 0.8 ? 'pantry' : d >= 0.68 ? 'utility' : 'coats';
-    const xi0 = -w / 2 + t, xi1 = w / 2 - t, wi = xi1 - xi0, slide = oak && w >= 2.6, fold = !oak && (use === 'coats' || use === 'utility' || use === 'pantry') && w >= 1.3;
+    const xi0 = -w / 2 + t, xi1 = w / 2 - t, wi = xi1 - xi0, slide = oak && w >= 2.6, fold = opened && !oak && (use === 'coats' || use === 'utility' || use === 'pantry') && w >= 1.3;
     const zF = d / 2 - 0.001, zb = -d / 2 + 0.008, zf = slide ? d / 2 - 2 * t - 0.016 : d / 2 - t - 0.005, di = zf - zb, zc = (zb + zf) / 2, deck = pl + t;
     const hm = oak || slide ? M.black : M.brass;
     // caisson
@@ -808,7 +808,7 @@ export const F = {
       open = np === 3 ? [xi0 + 2 * pw, xi1] : [xi0 + pw, xi1]; oc = nc - 1;
     } else {
       const x0 = (i) => xi0 + gap + i * (dw + gap);
-      const ko = use === 'tech' || use === 'store' ? 0 : n >= 2 ? 1 : 0, ang = oak ? 1.15 : use === 'tech' ? 0.7 : 0.5;     // porte ouverte et son angle
+      const ko = !opened ? -1 : use === 'tech' || use === 'store' ? 0 : n >= 2 ? 1 : 0, ang = oak ? 1.15 : use === 'tech' ? 0.7 : 0.5;     // porte ouverte et son angle
       for (let i = 0; i < n; i++) {
         const single = n % 2 && i === n - 1, dir = !single && i % 2 === 0 ? 1 : -1, px = dir > 0 ? x0(i) : x0(i) + dw;
         if (fold && i === 0 && n >= 2) {                                                                       // paire pliante à demi repliée : V tourné vers la pièce

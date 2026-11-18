@@ -181,10 +181,19 @@ function patchClamp(shader) {
   shader.uniforms.uZClamp = ZU.uZClamp;
   shader.fragmentShader = shader.fragmentShader.replace('#include <common>', '#include <common>\nuniform float uZClamp;').replace('#include <opaque_fragment>', '#include <opaque_fragment>\ngl_FragColor.rgb = min( gl_FragColor.rgb, vec3( uZClamp ) );');
 }
+/* Vitrage : ni les lampes d'appoint posées près des baies ni le soleil ne doivent s'y refléter en disque blanc (le reflet
+   s'ajoutait à chaque épaisseur : double vitrage, vantaux superposés). On retire donc l'éclat direct des lumières et on plafonne
+   le reflet du ciel, qui contient le soleil ; le voile du ciel en vue rasante reste. */
+function patchGlass(shader) {
+  patchClamp.call(this, shader);
+  shader.fragmentShader = shader.fragmentShader
+    .replace('#include <lights_fragment_end>', '#include <lights_fragment_end>\nreflectedLight.directSpecular = vec3( 0.0 );')
+    .replace('#include <opaque_fragment>', '#include <opaque_fragment>\ngl_FragColor.rgb = min( gl_FragColor.rgb, vec3( 0.07 ) );');
+}
 function aoPatchMaterials(M) {
   for (const [k, m] of Object.entries(M)) {
     if (!m || !m.isMeshStandardMaterial) continue;
-    if (m.transparent || m.alphaTest > 0) { m.onBeforeCompile = patchClamp; continue; }
+    if (m.transparent || m.alphaTest > 0) { m.onBeforeCompile = k === 'glass' ? patchGlass : patchClamp; continue; }
     m.userData.aoMode = FLOOR_MATS.includes(k) ? AO_MODE.floor : WALL_MATS.includes(k) ? AO_MODE.wall : k === 'ceiling' ? AO_MODE.ceiling : 0;
     m.onBeforeCompile = patchAO;
   }
