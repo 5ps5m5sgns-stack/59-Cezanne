@@ -53,6 +53,30 @@ function pool(b, M, x0, z0, x1, z1, y) {
   }
 }
 
+/* ── Jardins privatifs : petits outils ─────────────────────────────────────────────────────── */
+/* Mur ou bande rectiligne le long du segment (ax, az) → (bx, bz), d'épaisseur |t| portée à droite du segment vu de dessus
+   (vers +x pour un segment orienté vers +z), à gauche si t < 0 : murets en biais, bordures. */
+function seg(b, mat, ax, az, bx, bz, t, y0, y1) {
+  const dx = bx - ax, dz = bz - az, L = Math.hypot(dx, dz), nx = dz / L, nz = -dx / L;
+  b.geo(mat, new THREE.BoxGeometry(L, y1 - y0, Math.abs(t)), (ax + bx) / 2 + (nx * t) / 2, (y0 + y1) / 2, (az + bz) / 2 + (nz * t) / 2, 0, Math.atan2(-dz, dx), 0);
+}
+/* Bordure acier de 6 mm entre dallage et pelouse ou massif : 3 mm au-dessus du dallage, jamais dans son plan. */
+const edge = (b, M, x0, z0, x1, z1) => b.box(M.frame, x0, -0.08, z0, x1, -0.012, z1);
+/* Bande au pied d'une façade, entre xa et xb, de z0 à z1 : caniveau à grille devant chaque baie (seuils sans ressaut : l'eau de la
+   terrasse ne doit pas atteindre les menuiseries), dallage ailleurs. bays = [[z0, z1], …] des baies. */
+function facadeStrip(b, M, dal, xa, xb, z0, z1, bays) {
+  const x0 = Math.min(xa, xb), x1 = Math.max(xa, xb); let z = z0;
+  for (const [a0, a1] of bays) {
+    const c0 = Math.max(z, a0 - 0.1), c1 = Math.min(z1, a1 + 0.1);
+    if (c0 > z) b.box(dal, x0, -0.07, z, x1, -0.015, c0);
+    b.box(M.frame, x0, -0.07, c0, x1, -0.045, c1);                                   // fond du caniveau, dans l'ombre des barreaux
+    for (let k = c0 + 0.02; k < c1 - 0.02; k += 0.04) b.box(M.frame, x0 + 0.012, -0.045, k, x1 - 0.012, -0.017, k + 0.012);
+    b.box(M.frame, x0, -0.045, c0, x0 + 0.012, -0.016, c1); b.box(M.frame, x1 - 0.012, -0.045, c0, x1, -0.016, c1);
+    z = c1;
+  }
+  if (z1 > z) b.box(dal, x0, -0.07, z, x1, -0.015, z1);
+}
+
 /* ════════════════════════════════════════════════════════════════════════════════════════════
    1. APPARTEMENT-VILLA — plan « Logement 08, niveau 1 », indice C du 29/04/2024 : T4, 3 chambres, 2 salles de bains,
       137,9 m², jardin 82,1 m².
@@ -187,23 +211,66 @@ const villa = {
   }],
   start: { room: 'sejour' },
   orbit: { target: [4.6, 0, 4.3], dist: 35 },
-  garden: [['parasol', -6.8, 2.7, 0, { r: 1.5 }], ['lounger', -4.75, 3.15, 160, {}], ['lounger', -5.6, 3.6, 160, {}],
-    // terrasse : table de jardin devant le bureau, oliviers en pot et lanternes contre la façade, arrosoir, barbecue dans l'angle
+  /* Jardin n° 8 (plan de masse indice E et plan du niveau 2) : mobilier hors plan, à l'échelle, tourné vers la maison.
+     Table de quatre sur la terrasse entre chambre 2 et bureau, bains de soleil et parasol sur la pelouse au Sud, à l'ombre de l'olivier ;
+     bornes basses le long de la terrasse, robinet de puisage et unité extérieure de la PAC en façade (façade Ouest, à la limite 8/7). */
+  garden: [['parasol', -6.3, 7.75, 0, { r: 1.5 }], ['lounger', -5.85, 6.1, 160, {}], ['lounger', -6.75, 6.35, 160, {}],
     ['outdoorTable', -2.5, 3.0, 90, { w: 1.8, d: 0.9, n: 2 }], ['plant', -0.75, 5.65, 0, { kind: 'olive', h: 1.5, pot: 0.26 }],
-    ['lantern', -0.6, 2.75, 0, { h: 0.55 }], ['lantern', -0.62, 3.2, 0, { h: 0.4 }], ['wateringCan', -4.5, 0.55, 30, {}], ['bbq', -3.6, 8.0, 0, {}]],
+    ['lantern', -0.6, 2.75, 0, { h: 0.55 }], ['lantern', -0.62, 3.2, 0, { h: 0.4 }], ['wateringCan', -4.45, 0.75, 30, {}], ['bbq', -3.6, 7.75, 0, {}],
+    ['acUnit', -0.56, 7.98, 270, { w: 0.7 }], ['gardenTap', -E, 0.55, 270, {}],
+    ['gardenLight', -4.3, 1.15, 0, {}], ['gardenLight', -4.3, 4.6, 0, {}], ['gardenLight', -4.3, 7.95, 0, {}]],
+  /* Relevé (plan du niveau 2 redressé à l'échelle, repère du site = repère du logement + 0,35 m en x et en z) :
+     - limite Nord : muret de soutènement en pierre sèche calcaire au droit de la façade Nord (8,7 m de long), surmonté d'une grille
+       métallique à barreaudage de 1,05 m, piliers enduits à 3,6 et 8,5 m de la façade (façade Nord : grille sur mur de pierre) ;
+     - limite Ouest : muret en biais, nu intérieur à 8,8 m de la façade au Nord et 10,75 m au Sud (cote 7,6 de la limite de propriété) ;
+     - limite Sud avec le jardin n° 7 : clôture doublée d'une haie vive, dans l'axe du mur mitoyen (façade Ouest : jardin de 9,0 m) ;
+     - terrasse dallée de 3,7 × 7,4 m devant les trois portes-fenêtres, pelouse au-delà ;
+     - amandier et olivier « à planter », deux massifs fleuris à l'angle Nord-Ouest (plan de masse). */
   exterior(b, M, lv) {
-    const gz0 = -E, gz1 = VD + E, gN = -8.92, gS = -10.86;       // limite Ouest du jardin, en biais : 8,9 m au Nord, 10,9 m au Sud
+    const dal = M.travertine || M.terrace, mur = M.drystone || M.stone, grav = M.gravel || M.paving, paillis = M.mulch || M.earth, shrub = V.shrub || V.oleander;
+    const wX = (z) => -8.83 - 0.217 * z;                         // nu intérieur du muret Ouest
+    const OW = -E, zN = 0, zF = VD + E / 2, zH = zF - 0.5, TX = -4.05, TZ0 = 0.78, TZ1 = 8.18, BED = 0.9;
     b.on('ext');
-    // jardin de plain-pied : terrasse dallée sur 3,85 m devant les chambres et le bureau, puis pelouse
-    b.box(M.terrace, -4.2, -0.06, gz0, -E, -0.015, gz1); b.box(M.grass, -10.25, -0.1, gz0, -4.2, -0.02, gz1); b.box(M.socle, -10.25, -0.3, gz0 - 0.4, -E, -0.1, gz1 + 0.05);
-    lv.blocks.push(V.hedge(b, M, gN, gz0 - 0.4, -E - 0.05, gz0 + 0.3, { h: 1.6 })); lv.blocks.push(V.hedge(b, M, gS, gz1 - 0.55, -E - 0.05, gz1 + 0.05, { h: 1.2 }));
-    for (let i = 0; i < 7; i++) { const z0 = gz0 + ((gz1 - gz0) / 7) * i, z1 = z0 + (gz1 - gz0) / 7, x = gN + (gS - gN) * ((i + 0.5) / 7); lv.blocks.push(V.hedge(b, M, x - 0.3, z0 - 0.05, x + 0.3, z1 + 0.05, { h: 1.6 })); }
-    lv.blocks.push(V.tree(b, M, -7.6, 0.9, { kind: 'olive', h: 4.2, r: 1.7, seed: 4 })); lv.blocks.push(V.tree(b, M, -9.0, 7.2, { kind: 'pine', h: 6.0, r: 2.4, seed: 9 }));
-    lv.blocks.push(V.oleander(b, M, -8.6, 4.4, { r: 0.8, seed: 3 })); lv.blocks.push(V.oleander(b, M, -6.3, 7.95, { r: 0.7 })); V.lavender(b, M, -5.2, 0.35, -7.0, 0.35, { seed: 2 });
+    b.prism(M.socle, [[wX(-E), -E], [OW, -E], [OW, zF], [wX(zF), zF]], -0.32, -0.1);
+    // terrasse : dallage hexagonal (plan du logement 08), bande de graviers côté pelouse (« Pelouse / Graviers » du plan du niveau 2),
+    // caniveau à grille continu au pied de la façade (seuils des portes-fenêtres à 1,5 cm), bordures acier
+    b.box(M.hexPaving, TX + 0.4, -0.07, TZ0, -0.5, -0.015, TZ1); b.box(grav, TX, -0.08, TZ0, TX + 0.4, -0.03, TZ1);
+    facadeStrip(b, M, M.hexPaving, -0.5, OW, TZ0, TZ1, [[TZ0 + 0.1, TZ1 - 0.1]]);
+    edge(b, M, TX - 0.006, TZ0 - 0.006, TX, TZ1 + 0.006); edge(b, M, TX + 0.4, TZ0, TX + 0.406, TZ1);
+    edge(b, M, TX, TZ0 - 0.006, -0.65, TZ0); edge(b, M, TX, TZ1, -0.65, TZ1 + 0.006);
+    // bande de gravier au pied de la façade hors terrasse (rejaillissement), pelouse, massifs paillés le long des murets
+    b.box(grav, -0.65, -0.08, zN, OW, -0.03, TZ0); b.box(grav, -0.65, -0.08, TZ1, OW, -0.03, zH);
+    b.prism(M.grass, [[wX(0.5) + BED, 0.5], [TX, 0.5], [TX, zH], [wX(zH) + BED, zH]], -0.1, -0.02);
+    b.box(M.grass, TX, -0.1, zN, -0.65, -0.02, TZ0); b.box(M.grass, TX, -0.1, TZ1, -0.65, -0.02, zH);
+    b.prism(paillis, [[wX(zN), zN], [wX(zN) + BED, zN], [wX(zH) + BED, zH], [wX(zH), zH]], -0.1, -0.035);
+    b.prism(paillis, [[wX(zN) + BED, zN], [TX, zN], [TX, 0.5], [wX(0.5) + BED, 0.5]], -0.1, -0.035);
+    b.prism(paillis, [[wX(zH), zH], [OW, zH], [OW, zF], [wX(zF), zF]], -0.1, -0.035);
+    seg(b, M.frame, wX(0.5) + BED, 0.5, wX(zH) + BED, zH, 0.006, -0.08, -0.012); edge(b, M, wX(0.5) + BED, 0.5 - 0.006, TX, 0.5);
+    // limite Nord : muret de soutènement (le pied est au niveau du jardin n° 1, 2,9 m plus bas), couvertine, grille et piliers
+    b.box(mur, wX(-E), -0.32, -E, OW, 0, zN); b.box(dal, wX(-E) - 0.02, 0, -E - 0.03, OW, 0.05, zN + 0.03);
+    railing(b, M, wX(-E / 2) + 0.3, -E / 2, OW, -E / 2, 0.05, 1.05);
+    for (const x of [wX(-E / 2) + 0.15, -3.95]) b.box(M.stucco, x - 0.15, 0.05, -E / 2 - 0.15, x + 0.15, 1.2, -E / 2 + 0.15);
+    lv.blocks.push([wX(-E), -E - 0.03, OW, zN + 0.03]);
+    // limite Ouest : muret bas en pierre sèche (le terrain voisin est plus haut), couvertine
+    seg(b, mur, wX(-E), -E, wX(zF), zF, -0.3, -0.32, 0.4); seg(b, dal, wX(-E) + 0.02, -E, wX(zF) + 0.02, zF, -0.34, 0.4, 0.45);
+    // limite Sud : grillage souple gris de 1,50 m dans l'axe du mur mitoyen, doublé d'une haie vive (la haie côté n° 7 est dessinée avec le site)
+    lv.blocks.push(V.hedge(b, M, wX(zH) + 0.25, zH, OW - 0.03, zF - 0.06, { h: 1.5 }));
+    { const x0 = wX(zF) + 0.05, n = Math.ceil((OW - x0) / 2.5);
+      for (let i = 0; i <= n; i++) { const x = x0 + ((OW - 0.05 - x0) / n) * i; b.box(M.frame, x - 0.02, -0.035, zF - 0.02, x + 0.02, 1.5, zF + 0.02); }
+      for (const y of [0.1, 0.8, 1.48]) b.rod(M.frame, [x0, y, zF], [OW - 0.05, y, zF], 0.003, 4); }
+    b.on('ctx'); b.box(mur, wX(-E), -2.9, -E, OW, -0.32, zN); b.on('ext');
+    // plantations « à planter » du plan de masse : amandier au Nord, olivier au milieu de la limite Ouest, massifs fleuris à l'angle
+    lv.blocks.push(V.tree(b, M, -6.45, 1.95, { kind: 'almond', h: 4.6, r: 1.9, seed: 12 }));
+    lv.blocks.push(V.tree(b, M, -8.35, 5.65, { kind: 'olive', h: 4.4, r: 1.8, seed: 4 }));
+    lv.blocks.push(V.oleander(b, M, -8.15, 0.5, { r: 0.65, seed: 3 })); lv.blocks.push(V.oleander(b, M, -7.85, 2.45, { r: 0.6, seed: 9 }));
+    for (const [z, kind, r, s] of [[3.5, 'rosemary', 0.45, 2], [4.4, 'pittosporum', 0.55, 5], [7.1, 'rosemary', 0.45, 7], [7.85, 'pittosporum', 0.5, 8]]) lv.blocks.push(shrub(b, M, wX(z) + 0.45, z, { kind, r, h: kind === 'rosemary' ? 0.8 : 1.4, seed: s }));
+    V.lavender(b, M, -7.5, 0.25, -4.45, 0.25, { seed: 2 });
+    if (V.groundcover) for (let z = zN; z < zH - 0.3; z += 1) { const z1 = Math.min(zH, z + 1); V.groundcover(b, M, wX(z) + 0.05, z, wX(z1) + BED - 0.05, z1, { y: -0.035, seed: 6 + z }); }
+    if (V.climber) V.climber(b, M, -3.75, 0.05, -E / 2 + 0.03, -0.55, 1.05, -E / 2 + 0.03, { seed: 3, density: 0.5 });
     // balcon filant : façade Est côté Sainte-Victoire, retour le long de la façade Nord jusqu'à la chambre 3
     const bx = VW + E, bz = -E;
-    b.box(M.terrace, bx, -0.04, bz - 0.5, bx + 0.5, 0, 7.33); b.box(M.stucco, bx, -0.3, bz - 0.5, bx + 0.5, -0.04, 7.33);
-    b.box(M.terrace, 4.57, -0.04, bz - 0.5, bx, 0, bz); b.box(M.stucco, 4.57, -0.3, bz - 0.5, bx, -0.04, bz);
+    b.box(dal, bx, -0.04, bz - 0.5, bx + 0.5, 0, 7.33); b.box(M.stucco, bx, -0.3, bz - 0.5, bx + 0.5, -0.04, 7.33);
+    b.box(dal, 4.57, -0.04, bz - 0.5, bx, 0, bz); b.box(M.stucco, 4.57, -0.3, bz - 0.5, bx, -0.04, bz);
     // le reste de l'immeuble et ses abords (site.js)
     buildSite(b, M, { o: villa.site.o, skip: ['villa'] });
     b.on('ext:top');
@@ -318,7 +385,7 @@ const duplex = {
       { id: 'buanderie', fr: 'Buanderie', en: 'Laundry', rs: [[-0.09, 8.2, 2.22, DD]], at: [1.3, 10.0], cam: { p: [1.45, 11.3], t: [0.3, 8.8], pitch: -0.2 }, minor: true },
       { id: 'wc', fr: 'WC', en: 'WC', rs: [[3.65, 7.56, 4.95, 9.36]], at: [4.25, 8.6], cam: { p: [4.0, 9.0], t: [4.6, 7.6], pitch: -0.3 }, minor: true },
       { id: 'ascenseur', fr: 'Ascenseur privatif', en: 'Private lift', rs: [[LIFT.x0, SHAFT[1], LIFT.x1, LIFT.y1], [5.84, 6.2, 6.74, SHAFT[1]]], at: [6.29, 8.45], cam: { p: [6.29, 6.55], t: [6.29, 8.6] } },
-      { id: 'jardin', fr: 'Terrasse et jardin', en: 'Terrace and garden', rs: [[DW + E, -0.2, 16.65, DD + 0.2]], at: [14.2, 3.2], cam: { p: [13.0, 3.2], t: [22, 3.6] } },
+      { id: 'jardin', fr: 'Terrasse et jardin', en: 'Terrace and garden', rs: [[DW + E, -0.2, 16.65, DD + 0.2]], at: [14.0, 4.3], cam: { p: [12.75, 3.9], t: [22, 3.0] } },
     ],
     tour: ['entree', 'sejour', 'jardin', 'cuisine', 'arriere', 'ascenseur'],
   }, {
@@ -394,31 +461,64 @@ const duplex = {
   }],
   start: { room: 'sejour' },
   orbit: { target: [8.3, 0, 6.0], dist: 30 },
+  /* Jardins n° 2 et n° 3 : chaque plan de logement dessine sa table (n° 2 : table ronde et six chaises ; n° 3 : table de huit,
+     dans l'axe Nord-Sud). Unités extérieures des PAC contre le mur Nord et en façade au Sud, olivier en pot et lanterne près des baies,
+     barbecue et arrosoir côté n° 3, bornes basses dans les massifs, robinet de puisage entre les deux baies. */
   garden: [
-    ['outdoorTable', 14.085, 6.11, 90, { w: 2.2, d: 0.97, n: 3, ends: true }], ['lounger', 13.57, 9.98, 132, {}], ['lounger', 14.31, 10.72, 132, {}],
-    ['acUnit', 12.86, 0.03, 0, {}], ['acUnit', 12.2, 11.56, 90, { w: 0.74 }],
-    // coin salon au Nord, face à la maison ; olivier en pot entre les baies, lanterne, barbecue et arrosoir au Sud
-    ['outdoorSofa', 15.45, 3.0, 270, { w: 2.1, d: 0.85 }], ['sideTable', 14.5, 3.0, 0, { r: 0.3, h: 0.4, mat: 'teak' }],
-    ['plant', 12.3, 6.0, 0, { kind: 'olive', h: 1.6, pot: 0.26 }], ['lantern', 12.2, 0.6, 0, { h: 0.6 }], ['bbq', 15.5, 8.55, 0, {}], ['wateringCan', 15.8, 11.4, 200, {}],
+    ['outdoorRound', 14.4, 2.05, 0, { r: 0.6, n: 6 }], ['outdoorTable', 13.95, 9.25, 90, { w: 2.2, d: 0.97, n: 3, ends: true }],
+    ['acUnit', 12.86, 0.03, 0, {}], ['acUnit', 12.2, 11.82, 90, { w: 0.7 }],
+    ['plant', 12.3, 0.5, 0, { kind: 'olive', h: 1.6, pot: 0.26 }], ['lantern', 12.25, 5.3, 0, { h: 0.6 }], ['bbq', 15.0, 7.4, 0, {}], ['wateringCan', 15.25, 11.35, 200, {}],
+    ['gardenLight', 16.05, 3.6, 0, {}], ['gardenLight', 15.8, 8.35, 0, {}], ['gardenTap', DW + E, 5.45, 90, {}],
   ],
+  /* Relevé (plans des niveaux 1 et 2 à l'échelle, plans des logements 02 et 03, façade Est) ; repère du site = logement + (5,41 ; 13,5) :
+     - profondeur 4,8 m de la façade au nu intérieur du muret Est (cote du plan de masse) ;
+     - jardin n° 2 de la façade Nord du duplex à l'axe du mur mitoyen 02/03 (6,0 m), jardin n° 3 de cet axe au mur Sud (6,2 m) ;
+     - limite Est : muret de soutènement de 1,30 m (terrasse de la piscine à −1,30) en pierre calcaire, grille à barreaudage de 1,04 m,
+       piliers aux deux extrémités et à la limite 02/03 (façade Est) ;
+     - n° 2 : dallage hexagonal, bande plantée de 0,95 m le long du muret, bande de gravillons au Nord (plan de masse) ;
+     - n° 3 : dallage en pierre, bande plantée de 1,3 m le long du muret, arbuste à l'angle Sud-Est ;
+     - entre les deux : haie sur une bande plantée de 1,15 m ; au Sud : clôture doublée d'une haie vive. */
   exterior(b, M, lv) {
-    const gx0 = DW + E, gx1 = 16.65, gz0 = -0.15, gz1 = DD + 0.15;
+    const dal = M.travertine || M.terrace, mur = M.drystone || M.stone, grav = M.gravel || M.paving, paillis = M.mulch || M.earth, shrub = V.shrub || V.oleander;
+    const FX = DW + E, EX = FX + 4.8, ZN = -0.15, ZS = DD + 0.17, Z23 = NH + PW / 2, H0 = Z23 - 0.6, H1 = Z23 + 0.45, B2 = EX - 0.95, B3 = EX - 1.3, PX = 13.1, GN = 13.1, ZB = 11.45;
     b.on('ext');
-    // jardin : dallage sur presque toute la surface, massif planté le long de la limite Est et au Sud
-    b.box(M.socle, gx0, -0.3, -E, 17.3, -0.1, DD + E);
-    b.box(M.hexPaving, gx0, -0.06, gz0, 16.05, -0.015, gz1); b.box(M.grass, 16.05, -0.1, gz0, gx1, -0.02, gz1);
-    b.box(M.stucco, gx0, -0.3, -E, 17.3, 1.8, gz0); b.box(M.stucco, gx0, -0.3, gz1, 17.3, 1.8, DD + E); lv.blocks.push([gx0, -E - 0.2, 17.3, gz0], [gx0, gz1, 17.3, DD + E + 0.2]);
-    b.box(M.stone, gx1, -0.3, gz0, gx1 + 0.27, 0.45, gz1); railing(b, M, gx1 + 0.135, gz0, gx1 + 0.135, gz1, 0.45, 0.6, 'cadre');
-    b.box(M.stone, gx1 + 0.27, -0.3, gz0, 17.3, 0.3, gz1); lv.blocks.push(V.hedge(b, M, gx1 + 0.3, gz0 + 0.05, 17.28, gz1 - 0.05, { h: 0.55, y: 0.3 })); lv.blocks.push([gx1, gz0, 17.3, gz1]);
-    b.on('ctx'); b.box(M.stone, gx1, -1.3, -E, 17.3, -0.3, DD + E); b.on('ext');
-    lv.blocks.push(V.tree(b, M, 15.3, 0.75, { kind: 'olive', h: 3.6, r: 1.5, seed: 4 })); lv.blocks.push(V.oleander(b, M, 13.9, 0.55, { r: 0.6, seed: 8 }));
-    lv.blocks.push(V.oleander(b, M, 16.3, 3.0, { r: 0.55, seed: 3 })); lv.blocks.push(V.oleander(b, M, 16.3, 5.6, { r: 0.5, seed: 5 })); lv.blocks.push(V.oleander(b, M, 16.3, 8.1, { r: 0.55, seed: 6 }));
-    lv.blocks.push(V.oleander(b, M, 16.25, 10.7, { r: 0.6, seed: 7 })); lv.blocks.push(V.oleander(b, M, 15.2, 11.75, { r: 0.45, seed: 2 }));
-    V.lavender(b, M, 16.3, 1.6, 16.3, 2.4, { seed: 5 }); V.lavender(b, M, 16.3, 3.9, 16.3, 4.9, { seed: 6 }); V.lavender(b, M, 16.3, 6.5, 16.3, 7.4, { seed: 7 }); V.lavender(b, M, 16.3, 9.0, 16.3, 9.9, { seed: 8 });
+    b.box(M.socle, FX, -0.32, -E, EX + 0.35, -0.1, ZS + 0.04);
+    // n° 2 : dallage hexagonal ; caniveau devant la baie du séjour ; gravillons au Nord ; bande plantée à l'Est
+    facadeStrip(b, M, M.hexPaving, FX, FX + 0.15, ZN, H0, [[1.02, 4.94]]);
+    b.box(M.hexPaving, FX + 0.15, -0.07, ZN, GN, -0.015, H0); b.box(M.hexPaving, GN, -0.07, 0.7, B2, -0.015, H0);
+    b.box(grav, GN, -0.08, ZN, B2, -0.03, 0.7); b.box(paillis, B2, -0.1, ZN, EX, -0.035, H0);
+    edge(b, M, GN, 0.7, B2, 0.706); edge(b, M, B2 - 0.006, 0.7, B2, H0);
+    // passage entre les deux jardins le long de la façade (les deux logements sont réunis), bande plantée et haie mitoyenne
+    facadeStrip(b, M, dal, FX, FX + 0.15, H0, H1, []); b.box(dal, FX + 0.15, -0.07, H0, PX, -0.015, H1);
+    b.box(paillis, PX, -0.1, H0, EX, -0.035, H1); edge(b, M, PX - 0.006, H0, PX, H1);
+    lv.blocks.push(V.hedge(b, M, PX + 0.25, Z23 - 0.5, EX - 0.1, Z23 + 0.32, { h: 1.25 }));
+    // n° 3 : dallage de pierre ; caniveau devant la baie de la cuisine ; bande plantée à l'Est et au Sud
+    facadeStrip(b, M, dal, FX, FX + 0.15, H1, ZB, [[7.11, 11.02]]);
+    b.box(dal, FX + 0.15, -0.07, H1, B3, -0.015, ZB); b.box(paillis, B3, -0.1, H1, EX, -0.035, ZB); b.box(paillis, FX, -0.1, ZB, EX, -0.035, ZS + 0.04);
+    edge(b, M, B3 - 0.006, H1, B3, ZB); edge(b, M, FX + 0.15, ZB, B3, ZB + 0.006);
+    // limite Nord : mur enduit entre le jardin et l'accès aux espaces communs
+    b.box(M.stucco, FX, -0.32, -E, EX + 0.35, 1.8, ZN); lv.blocks.push([FX, -E - 0.2, EX + 0.35, ZN]);
+    // limite Sud : clôture à barreaudage doublée d'une haie vive
+    railing(b, M, FX + 0.05, ZS + 0.02, EX, ZS + 0.02, -0.035, 1.2, 'cadre'); lv.blocks.push(V.hedge(b, M, FX + 0.6, ZB + 0.1, EX - 0.05, ZS - 0.03, { h: 1.6 }));
+    lv.blocks.push([FX, ZS - 0.05, EX + 0.35, ZS + 0.1]);
+    // limite Est : muret de soutènement en pierre calcaire (pied sur la terrasse de la piscine), couvertine, grille et piliers
+    b.box(mur, EX, -0.32, ZN, EX + 0.35, 0, ZS + 0.05); b.box(dal, EX - 0.03, 0, ZN, EX + 0.38, 0.05, ZS + 0.05);
+    railing(b, M, EX + 0.175, ZN, EX + 0.175, ZS, 0.05, 1.04, 'cadre');
+    for (const z of [ZN + 0.15, Z23, ZS - 0.1]) b.box(M.stucco, EX + 0.025, 0.05, z - 0.15, EX + 0.325, 1.12, z + 0.15);
+    lv.blocks.push([EX - 0.03, -E, EX + 0.38, ZS + 0.05]);
+    b.on('ctx'); b.box(mur, EX, -1.3, -E, EX + 0.35, -0.32, ZS + 0.05); b.on('ext');
+    // plantations relevées sur les plans des logements : petits oliviers aux angles Est, arbustes, graminées, lavandes
+    lv.blocks.push(V.tree(b, M, 16.1, 0.55, { kind: 'olive', h: 3.0, r: 1.1, seed: 4 })); lv.blocks.push(V.tree(b, M, 16.05, 10.6, { kind: 'olive', h: 3.2, r: 1.2, seed: 6 }));
+    lv.blocks.push(V.oleander(b, M, 14.99, 0.38, { r: 0.5, seed: 8 }));
+    for (const [x, z, kind, r, s] of [[13.8, 0.35, 'grass', 0.32, 1], [16.3, 2.6, 'rosemary', 0.42, 3], [16.2, 4.45, 'grass', 0.35, 5], [16.2, 5.1, 'pittosporum', 0.4, 7],
+      [16.15, 7.5, 'rosemary', 0.45, 9], [16.1, 9.3, 'pittosporum', 0.5, 11]]) lv.blocks.push(shrub(b, M, x, z, { kind, r, h: kind === 'pittosporum' ? 1.4 : 0.8, seed: s }));
+    V.lavender(b, M, 16.3, 1.3, 16.3, 2.0, { seed: 5 }); V.lavender(b, M, 16.3, 3.2, 16.3, 3.9, { seed: 6 }); V.lavender(b, M, 16.1, 8.0, 16.1, 8.7, { seed: 7 });
+    if (V.groundcover) { V.groundcover(b, M, B2 + 0.05, 0.05, EX - 0.05, H0 - 0.05, { y: -0.035, seed: 3 }); V.groundcover(b, M, B3 + 0.05, H1 + 0.05, EX - 0.05, ZB - 0.05, { y: -0.035, seed: 4 }); }
+    if (V.climber) V.climber(b, M, FX + 0.4, 0.1, ZN - 0.01, GN - 0.1, 1.75, ZN - 0.01, { seed: 5, density: 0.6 });
     // le reste de l'immeuble et ses abords (site.js)
     buildSite(b, M, { o: duplex.site.o, skip: ['duplex'] });
     // balcons filants de l'étage au-dessus des deux baies
-    b.on('L1');
+    b.on('L1'); const gx0 = FX;
     for (const [z0, z1] of [[0.87, 4.97], [6.98, 11.14]]) {
       b.box(M.stucco, gx0, FH - 0.2, z0, gx0 + 0.5, FH - 0.02, z1); b.box(M.terrace, gx0, FH - 0.02, z0, gx0 + 0.5, FH - 0.004, z1);
       railing(b, M, gx0 + 0.47, z0 + 0.03, gx0 + 0.47, z1 - 0.03, FH - 0.004); railing(b, M, gx0, z0 + 0.03, gx0 + 0.47, z0 + 0.03, FH - 0.004); railing(b, M, gx0, z1 - 0.03, gx0 + 0.47, z1 - 0.03, FH - 0.004);
