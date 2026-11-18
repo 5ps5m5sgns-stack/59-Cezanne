@@ -78,6 +78,214 @@ function depthPriority(M) {
   }
 }
 
+/* ── Ombres de contact précalculées ──────────────────────────────────────────
+   Sans occlusion ambiante à l'écran (téléphones), les meubles semblaient flotter et les angles étaient plats. Au chargement, chaque
+   niveau est rendu une fois vu de dessus (caméra orthographique coupée à 1 m du sol) : ce qui couvre le sol y est noté, meubles d'un
+   côté, murs de l'autre, puis flouté. La carte obtenue assombrit la lumière indirecte au pied des meubles et des murs, dans les angles
+   mur-sol et mur-plafond, et au bas des meubles eux-mêmes. Elle est fixe : aucun bruit, rien ne bouge quand la vue bouge, coût nul ensuite.
+   Un seul programme par matériau (les modes passent par des uniformes) ; tout est compilé au préchauffage. */
+const AO_MODE = { floor: 1, wall: 2, ceiling: 3 };        // les autres matériaux : objets (0)
+const FLOOR_MATS = ['floor', 'tile', 'terrace', 'hexPaving', 'paving', 'grass', 'earth', 'rug', 'rugDark', 'road'];
+const WALL_MATS = ['plaster', 'wallTile', 'stucco', 'stone', 'skirt', 'ashlar', 'stuccoDark'];
+const AOU = {                                              // uniformes partagés par tous les matériaux
+  uAoMap: { value: null }, uAoK: { value: 0 }, uAoSplit: { value: 1e9 },
+  uAoT0: { value: new THREE.Vector4() }, uAoT1: { value: new THREE.Vector4() }, uAoA: { value: new THREE.Vector4(1, 0, 1, 0) },     // emprise de chaque niveau, place dans l'atlas
+  uAoLv: { value: new THREE.Vector4(0, 2.6, 0, 2.6) },    // cote et hauteur sous plafond des deux niveaux
+};
+const AO_VERT = `#include <worldpos_vertex>
+	vAoW = ( modelMatrix * vec4( transformed, 1.0 ) ).xyz; vAoN = normalize( mat3( modelMatrix ) * objectNormal );`;
+const AO_PARS = `varying vec3 vAoW; varying vec3 vAoN;
+uniform sampler2D uAoMap; uniform vec4 uAoT0, uAoT1, uAoA, uAoLv; uniform float uAoK, uAoSplit, uAoMode;
+float aoContact() {
+	if ( uAoK <= 0.0 ) return 1.0;
+	bool up = vAoW.y > uAoSplit; vec4 T = up ? uAoT1 : uAoT0; float fy = up ? uAoLv.z : uAoLv.x, fh = up ? uAoLv.w : uAoLv.y, h = vAoW.y - fy;
+	if ( h < -0.25 || h > fh + 0.3 ) return 1.0;
+	vec3 n = normalize( vAoN );
+	vec2 q = ( vAoW.xz + ( uAoMode == 1.0 || uAoMode == 3.0 ? vec2( 0.0 ) : n.xz * 0.05 ) - T.xy ) * T.zw;      // les faces verticales lisent la carte juste devant elles
+	if ( q.x < 0.0 || q.y < 0.0 || q.x > 1.0 || q.y > 1.0 ) return 1.0;
+	vec4 s = texture2D( uAoMap, vec2( q.x, ( up ? uAoA.w : uAoA.y ) + q.y * ( up ? uAoA.z : uAoA.x ) ) );     // r : meubles (large), g : murs (large), b : contact serré
+	float occ;
+	if ( uAoMode == 1.0 ) occ = 0.5 * s.r + 0.45 * s.g + 0.5 * s.b;
+	else if ( uAoMode == 3.0 ) occ = 0.34 * s.g * smoothstep( fh - 0.5, fh - 0.02, h );
+	else if ( uAoMode == 2.0 ) occ = ( 0.4 * s.r + 0.25 * s.b ) * exp( -max( h, 0.0 ) / 0.3 ) + 0.16 * exp( -max( h, 0.0 ) / 0.07 ) + 0.13 * exp( -max( fh - h, 0.0 ) / 0.1 );
+	else occ = ( 0.32 * s.r + 0.22 * s.g + 0.3 * s.b ) * ( 1.0 - smoothstep( 0.0, 0.32, h ) ) * ( 0.55 + 0.45 * max( -n.y, 0.0 ) + 0.45 * ( 1.0 - abs( n.y ) ) );
+	return clamp( 1.0 - uAoK * occ, 0.35, 1.0 );
+}`;
+/* ── Reflets des pièces ──────────────────────────────────────────────────────
+   Au chargement, quelques pièces (séjour, cuisine, salles de bains) sont photographiées une fois dans les six directions depuis leur
+   centre ; chaque prise est filtrée (PMREM) et rangée dans un atlas. Miroirs, inox, marbres, sols vernis et laques y lisent la pièce
+   où ils se trouvent, corrigée par la boîte de la pièce (le reflet se place sur les vrais murs au lieu d'être à l'infini). Ailleurs, ils
+   gardent l'intérieur neutre d'avant. Image fixe : aucun rendu supplémentaire pendant la visite. */
+const NZ = 4;
+const ZU = {
+  uZAtlas: { value: null }, uZn: { value: 0 }, uZK: { value: 1 },
+  uZClamp: { value: 6e4 },                                // plafond de luminance, abaissé pendant les prises : un reflet de soleil sur un chrome dépasse ce que tient un demi-flottant et noircirait le flou
+  uZg: { value: new THREE.Vector4(2, 2, 1 / 384, 1 / 512) }, uZmip: { value: 7 },      // colonnes, rangées, 1 / taille d'une case, niveau de détail maximal
+  uZb: { value: Array.from({ length: NZ }, () => new THREE.Vector4()) }, uZy: { value: Array.from({ length: NZ }, () => new THREE.Vector4()) }, uZc: { value: Array.from({ length: NZ }, () => new THREE.Vector4()) },
+};
+const ZONE_PARS = `uniform sampler2D uZAtlas; uniform vec4 uZg, uZb[ ${NZ} ], uZy[ ${NZ} ], uZc[ ${NZ} ]; uniform float uZn, uZK, uZmip, uZon;
+vec3 zBilinear( vec3 direction, float mipInt, vec2 cell ) {
+	float face = getFace( direction );
+	float filterInt = max( cubeUV_minMipLevel - mipInt, 0.0 );
+	mipInt = max( mipInt, cubeUV_minMipLevel );
+	float faceSize = exp2( mipInt );
+	highp vec2 uv = getUV( direction, face ) * ( faceSize - 2.0 ) + 1.0;
+	if ( face > 2.0 ) { uv.y += faceSize; face -= 3.0; }
+	uv.x += face * faceSize; uv.x += filterInt * 3.0 * cubeUV_minTileSize; uv.y += 4.0 * ( exp2( uZmip ) - faceSize );
+	uv *= uZg.zw;
+	return textureLod( uZAtlas, ( uv + cell ) / uZg.xy, 0.0 ).rgb;      // niveau explicite : l'échantillonnage a lieu dans une boucle, sans dérivées fiables
+}
+vec4 zoneCubeUV( vec3 dir, float roughness, bool proj ) {
+	if ( uZon > 0.5 ) for ( int i = 0; i < ${NZ}; i ++ ) {
+		if ( float( i ) >= uZn ) break;
+		vec4 b = uZb[ i ], yy = uZy[ i ];
+		if ( vAoW.x < b.x || vAoW.x > b.z || vAoW.z < b.y || vAoW.z > b.w || vAoW.y < yy.x - 0.05 || vAoW.y > yy.y + 0.05 ) continue;
+		vec3 d = dir;
+		if ( proj ) {                                    // projection sur la boîte de la pièce
+			vec3 bmin = vec3( b.x, yy.x, b.y ), bmax = vec3( b.z, yy.y, b.w ), P = clamp( vAoW, bmin + 0.02, bmax - 0.02 );
+			vec3 tf = max( ( bmax - P ) / d, ( bmin - P ) / d ); d = P + d * min( min( tf.x, tf.y ), tf.z ) - uZc[ i ].xyz;
+		}
+		float mip = clamp( roughnessToMip( roughness ), cubeUV_m0, uZmip ), mipF = fract( mip ), mipInt = floor( mip );
+		vec2 cell = vec2( mod( float( i ), uZg.x ), floor( float( i ) / uZg.x ) );
+		vec3 c0 = zBilinear( d, mipInt, cell );
+		if ( mipF > 0.0 ) c0 = mix( c0, zBilinear( d, mipInt + 1.0, cell ), mipF );
+		return vec4( c0 * uZK, 1.0 );
+	}
+	return textureCubeUV( envMap, dir, roughness );
+}`;
+const ENV_PARS = THREE.ShaderChunk.envmap_physical_pars_fragment
+  .replace('vec4 envMapColor = textureCubeUV( envMap, envMapRotation * reflectVec, roughness );', 'vec4 envMapColor = zoneCubeUV( envMapRotation * reflectVec, roughness, true );')
+  .replace('#ifdef USE_ENVMAP', '#ifdef USE_ENVMAP\n#ifdef ENVMAP_TYPE_CUBE_UV\n' + ZONE_PARS + '\n#endif');
+
+function patchAO(shader) {
+  Object.assign(shader.uniforms, AOU, ZU, { uAoMode: { value: this.userData.aoMode || 0 }, uZon: { value: this.userData.zone ? 1 : 0 } });
+  shader.fragmentShader = shader.fragmentShader.replace('#include <envmap_physical_pars_fragment>', ENV_PARS);
+  shader.vertexShader = shader.vertexShader.replace('#include <common>', '#include <common>\nvarying vec3 vAoW; varying vec3 vAoN;').replace('#include <worldpos_vertex>', AO_VERT);
+  shader.fragmentShader = shader.fragmentShader.replace('#include <common>', '#include <common>\n' + AO_PARS)
+    .replace('#include <lights_fragment_begin>', 'float aoC = aoContact();\n' + THREE.ShaderChunk.lights_fragment_begin.replace('getPointLightInfo( pointLight, geometryPosition, directLight );', 'getPointLightInfo( pointLight, geometryPosition, directLight ); directLight.color *= aoC;'))   // les lampes d'appoint figurent un rebond : occultées comme lui
+    .replace('#include <aomap_fragment>', '#include <aomap_fragment>\nreflectedLight.indirectDiffuse *= aoC; reflectedLight.indirectSpecular *= mix( 1.0, aoC, 0.7 ); reflectedLight.directDiffuse *= mix( 1.0, aoC, 0.4 );');
+  patchClamp.call(this, shader);
+}
+function patchClamp(shader) {
+  shader.uniforms.uZClamp = ZU.uZClamp;
+  shader.fragmentShader = shader.fragmentShader.replace('#include <common>', '#include <common>\nuniform float uZClamp;').replace('#include <opaque_fragment>', '#include <opaque_fragment>\ngl_FragColor.rgb = min( gl_FragColor.rgb, vec3( uZClamp ) );');
+}
+function aoPatchMaterials(M) {
+  for (const [k, m] of Object.entries(M)) {
+    if (!m || !m.isMeshStandardMaterial) continue;
+    if (m.transparent || m.alphaTest > 0) { m.onBeforeCompile = patchClamp; continue; }
+    m.userData.aoMode = FLOOR_MATS.includes(k) ? AO_MODE.floor : WALL_MATS.includes(k) ? AO_MODE.wall : k === 'ceiling' ? AO_MODE.ceiling : 0;
+    m.onBeforeCompile = patchAO;
+  }
+}
+/* Flou par boîtes (trois passes ≈ gaussienne), séparable, sur un canal W×H. */
+function boxBlur(a, W, H, r, passes = 3) {
+  const t = new Float32Array(a.length);
+  for (let p = 0; p < passes; p++) {
+    for (let y = 0; y < H; y++) { const o = y * W; let s = 0; for (let x = -r; x <= r; x++) s += a[o + Math.min(W - 1, Math.max(0, x))]; for (let x = 0; x < W; x++) { t[o + x] = s / (2 * r + 1); s += a[o + Math.min(W - 1, x + r + 1)] - a[o + Math.max(0, x - r)]; } }
+    for (let x = 0; x < W; x++) { let s = 0; for (let y = -r; y <= r; y++) s += t[Math.min(H - 1, Math.max(0, y)) * W + x]; for (let y = 0; y < H; y++) { a[y * W + x] = s / (2 * r + 1); s += t[Math.min(H - 1, y + r + 1) * W + x] - t[Math.max(0, y - r) * W + x]; } }
+  }
+  return a;
+}
+/* Rend la carte d'ombres de contact d'un logement (tous ses niveaux dans un atlas). Renvoie { tex, t0, t1, a, lv, split }. */
+function bakeContact(renderer, scene, group, apt, M, maxTex) {
+  const lvs = apt.levels.slice(0, 2), pad = 0.6;
+  const ext = lvs.map((lv) => { const b = lv.bounds; return [b[0] - pad, b[1] - pad, b[2] + pad, b[3] + pad]; });
+  let px = 0.025; const fit = () => ({ W: Math.max(...ext.map((e) => Math.ceil((e[2] - e[0]) / px))), H: ext.map((e) => Math.ceil((e[3] - e[1]) / px)) });
+  let sz = fit(); while (sz.W > maxTex || sz.H.reduce((s, h) => s + h, 0) > maxTex) { px *= 1.1; sz = fit(); }
+  const W = sz.W, HT = sz.H.reduce((s, h) => s + h, 0);
+  const vs = 'varying float vY; void main() { vec4 w = modelMatrix * vec4( position, 1.0 ); vY = w.y; gl_Position = projectionMatrix * viewMatrix * w; }';
+  const fs = 'uniform float uY, uWall; varying float vY; void main() { float h = clamp( vY - uY, 0.0, 1.0 ); gl_FragColor = uWall > 0.5 ? vec4( 0.0, 1.0, 0.0, 1.0 ) : vec4( 1.0 - 0.45 * h, 0.0, 0.0, 1.0 ); }';
+  const uY = { value: 0 }, mk = (wall) => new THREE.ShaderMaterial({ uniforms: { uY, uWall: { value: wall } }, vertexShader: vs, fragmentShader: fs, side: THREE.DoubleSide });
+  const ovObj = mk(0), ovWall = mk(1), wallSet = new Set(WALL_MATS.map((k) => M[k])), skip = new Set([...FLOOR_MATS, 'ceiling'].map((k) => M[k]));
+  // seuls les maillages du logement comptent ; ciel, paysage et brouillard sont écartés le temps du rendu
+  const saved = [], hidden = [];
+  for (const o of scene.children) if (o !== group && o.visible && !o.isLight) { hidden.push(o); o.visible = false; }
+  group.traverse((o) => {
+    if (o.isGroup && /:cap$/.test(o.name) && o.visible) { hidden.push(o); o.visible = false; }
+    if (o.isGroup && !o.visible && !/:cap$/.test(o.name) && o.parent === group) { saved.push([o, 'visible', false]); o.visible = true; }
+    if (!o.isMesh && !o.isPoints && !o.isLine) return;
+    const m = o.material;
+    if (!o.isMesh || Array.isArray(m) || !m.isMeshStandardMaterial || m.transparent || m.alphaTest > 0 || skip.has(m)) { if (o.visible) { hidden.push(o); o.visible = false; } return; }
+    saved.push([o, 'material', m]); o.material = wallSet.has(m) ? ovWall : ovObj;
+  });
+  const fog = scene.fog, bg = scene.background; scene.fog = null; scene.background = null;
+  const sh = renderer.shadowMap.needsUpdate; renderer.shadowMap.needsUpdate = false;
+  const prevRT = renderer.getRenderTarget(), cc = renderer.getClearColor(new THREE.Color()), ca = renderer.getClearAlpha();
+  const R = new Float32Array(W * HT), G = new Float32Array(W * HT);
+  const out = { t0: new THREE.Vector4(), t1: new THREE.Vector4(), a: new THREE.Vector4(1, 0, 1, 0), lv: new THREE.Vector4(lvs[0].y, lvs[0].h, (lvs[1] || lvs[0]).y, (lvs[1] || lvs[0]).h), split: lvs[1] ? lvs[1].y - 0.12 : 1e9 };
+  let row0 = 0;
+  lvs.forEach((lv, li) => {
+    const e = ext[li], H = sz.H[li], w = W * px, hgt = H * px;
+    const rt = new THREE.WebGLRenderTarget(W, H, { depthBuffer: true });
+    const cam = new THREE.OrthographicCamera(-w / 2, w / 2, hgt / 2, -hgt / 2, 0.0, 1.0 - 0.025);
+    cam.position.set(e[0] + w / 2, lv.y + 1.0, e[1] + hgt / 2); cam.up.set(0, 0, -1); cam.lookAt(e[0] + w / 2, lv.y - 5, e[1] + hgt / 2); cam.updateMatrixWorld(); cam.updateProjectionMatrix();
+    uY.value = lv.y;
+    renderer.setRenderTarget(rt); renderer.setClearColor(0x000000, 1); renderer.clear(); renderer.render(scene, cam);
+    const buf = new Uint8Array(W * H * 4); renderer.readRenderTargetPixels(rt, 0, 0, W, H, buf); rt.dispose();
+    // ligne 0 lue = bas de l'image = z le plus grand : on remet les lignes dans l'ordre des z croissants
+    for (let y = 0; y < H; y++) { const src = (H - 1 - y) * W * 4, dst = (row0 + y) * W; for (let x = 0; x < W; x++) { R[dst + x] = buf[src + x * 4] / 255; G[dst + x] = buf[src + x * 4 + 1] / 255; } }
+    const T = li ? out.t1 : out.t0; T.set(e[0], e[1], 1 / w, 1 / hgt);
+    if (li) out.a.z = H / HT, out.a.w = row0 / HT; else out.a.x = H / HT, out.a.y = 0;
+    if (!lvs[1]) out.t1.copy(out.t0);
+    row0 += H;
+  });
+  // deux échelles : un contact serré (4 cm) et un voile large (meubles 22 cm, murs 30 cm)
+  const r = (m) => Math.max(1, Math.round(m / px / 2.2));
+  const C = new Float32Array(W * HT); for (let i = 0; i < C.length; i++) C[i] = Math.max(R[i], G[i]);
+  boxBlur(C, W, HT, r(0.05)); boxBlur(R, W, HT, r(0.24)); boxBlur(G, W, HT, r(0.32));
+  const data = new Uint8Array(W * HT * 4);
+  for (let i = 0; i < W * HT; i++) { data[i * 4] = Math.min(255, R[i] * 255 * 1.15); data[i * 4 + 1] = Math.min(255, G[i] * 255); data[i * 4 + 2] = Math.min(255, C[i] * 255); data[i * 4 + 3] = 255; }
+  const tex = new THREE.DataTexture(data, W, HT, THREE.RGBAFormat); tex.magFilter = tex.minFilter = THREE.LinearFilter; tex.generateMipmaps = false; tex.needsUpdate = true;
+  for (const [o, k, v] of saved) o[k] = v; for (const o of hidden) o.visible = true;
+  scene.fog = fog; scene.background = bg; renderer.shadowMap.needsUpdate = sh; renderer.setRenderTarget(prevRT); renderer.setClearColor(cc, ca);
+  ovObj.dispose(); ovWall.dispose();
+  out.tex = tex; renderer.initTexture(tex);
+  return out;
+}
+
+/* Pièces photographiées pour les reflets : séjour, cuisine, salles de bains d'abord. */
+const ZONE_RANK = (id) => (/^sejour|^salon/.test(id) ? 6 : /^cuisine/.test(id) ? 5 : /^sdb1|^sdbs/.test(id) ? 4 : /^sdb|^sde/.test(id) ? 3 : /^suite|^ch1/.test(id) ? 1 : 0);
+function captureZones(app, apt, size) {
+  const { renderer, scene } = app, list = [];
+  apt.levels.forEach((lv, li) => lv.rooms.forEach((r) => { if (r.cam && ZONE_RANK(r.id) > 0) list.push({ r, lv, li, k: ZONE_RANK(r.id) }); }));
+  list.sort((a, b) => b.k - a.k); const zones = list.slice(0, NZ);
+  // les petites pièces d'abord : une salle de bains comprise dans la boîte d'un grand séjour en L garde sa propre prise
+  const area = (z) => { const b = box(z.r); return (b[2] - b[0]) * (b[3] - b[1]); }, box = (r) => r.rs.reduce((q, s) => [Math.min(q[0], s[0]), Math.min(q[1], s[1]), Math.max(q[2], s[2]), Math.max(q[3], s[3])], [1e9, 1e9, -1e9, -1e9]);
+  zones.sort((a, b) => area(a) - area(b));
+  const nc = 2, nr = Math.ceil(zones.length / nc), cw = 3 * Math.max(size, 112), ch = 4 * size;
+  const atlas = new THREE.WebGLRenderTarget(cw * nc, ch * nr, { type: THREE.HalfFloatType, depthBuffer: false, generateMipmaps: false, magFilter: THREE.LinearFilter, minFilter: THREE.LinearFilter, colorSpace: THREE.LinearSRGBColorSpace });
+  const cube = new THREE.WebGLCubeRenderTarget(size, { type: THREE.HalfFloatType, generateMipmaps: false });
+  const cc = new THREE.CubeCamera(0.05, 1500, cube);
+  const uOff = { value: new THREE.Vector2() }, uSrc = { value: null };
+  const blit = new THREE.Mesh(new THREE.PlaneGeometry(2, 2), new THREE.ShaderMaterial({
+    uniforms: { uSrc, uOff, uCell: { value: new THREE.Vector2(cw, ch) }, uAtlas: { value: new THREE.Vector2(cw * nc, ch * nr) } }, depthTest: false, depthWrite: false,
+    vertexShader: 'uniform vec2 uOff, uCell, uAtlas; void main() { vec2 p = ( position.xy * 0.5 + 0.5 ) * uCell + uOff; gl_Position = vec4( p / uAtlas * 2.0 - 1.0, 0.0, 1.0 ); }',
+    fragmentShader: 'uniform sampler2D uSrc; uniform vec2 uOff; void main() { gl_FragColor = texelFetch( uSrc, ivec2( gl_FragCoord.xy - uOff ), 0 ); }',
+  }));
+  blit.frustumCulled = false; const bs = new THREE.Scene(); bs.add(blit); const bc = new THREE.Camera();
+  const vis = [app.cur.pucks, app.reticle, app.hl].map((o) => [o, o.visible]); for (const [o] of vis) o.visible = false;
+  const mode = app.mode, wl = app.walk.level, prevRT = renderer.getRenderTarget(), ac = renderer.autoClear, ccol = renderer.getClearColor(new THREE.Color()), calpha = renderer.getClearAlpha();
+  renderer.setRenderTarget(atlas); renderer.setClearColor(0x000000, 1); renderer.clear(); renderer.setRenderTarget(prevRT);
+  ZU.uZClamp.value = 24;
+  const out = { atlas, n: zones.length, nc, cw, ch, mip: Math.log2(size), b: [], y: [], c: [] };
+  zones.forEach((z, i) => {
+    const b = box(z.r), p = new THREE.Vector3(z.r.at[0], z.lv.y + 1.45, z.r.at[1]);
+    // lampes d'appoint réglées comme si l'on se tenait au centre de la pièce
+    app.mode = 'walk'; app.walk.level = z.li; app.camera.position.copy(p); app.lightAt.set(1e9, 0, 0); for (let k = 0; k < 4; k++) app.updateLights(10);
+    cc.position.copy(p); cc.updateMatrixWorld(); cc.update(renderer, scene);
+    const pm = app.env.pmrem.fromCubemap(cube.texture);
+    uSrc.value = pm.texture; uOff.value.set((i % nc) * cw, Math.floor(i / nc) * ch);
+    renderer.autoClear = false; renderer.setRenderTarget(atlas); renderer.render(bs, bc); renderer.autoClear = ac; renderer.setRenderTarget(prevRT);
+    pm.dispose();
+    out.b.push(new THREE.Vector4(b[0], b[1], b[2], b[3])); out.y.push(new THREE.Vector4(z.lv.y, z.lv.y + z.lv.h, 0, 0)); out.c.push(new THREE.Vector4(p.x, p.y, p.z, 0));
+  });
+  ZU.uZClamp.value = 6e4;
+  app.mode = mode; app.walk.level = wl; app.lightAt.set(1e9, 0, 0); renderer.setClearColor(ccol, calpha); for (const [o, v] of vis) o.visible = v;
+  cube.dispose(); blit.geometry.dispose(); blit.material.dispose();
+  return out;
+}
+
 class App {
   constructor() {
     this.renderer = new THREE.WebGLRenderer({ canvas, antialias: true, powerPreference: 'high-performance' });
@@ -204,17 +412,21 @@ class App {
     await new Promise((r) => requestAnimationFrame(() => setTimeout(r, 30)));
     if (!this.M) {
       this.M = makeMaterials(QUALITY);
-      depthPriority(this.M);
+      depthPriority(this.M); aoPatchMaterials(this.M);
       // miroirs et métaux reflètent un intérieur neutre plutôt que le ciel
       const room = this.env.pmrem.fromScene(new RoomEnvironment(), 0.03).texture;
       this.roomMats = ['mirror', 'steel', 'brass', 'floor', 'tile', 'wallTile', 'marble', 'marbleDark', 'marbleGrey', 'ceramic', 'tubIn', 'glassSmoke', 'screen', 'lacquer', 'greyLacquer', 'anthracite', 'black', 'potDark', 'crystal', 'oak', 'oakV', 'walnut', 'door', 'frame', 'skirt', 'cognac'];
-      for (const k of this.roomMats) { const m = this.M[k]; m.envMap = room; m.userData.envK = k === 'mirror' ? 1.5 : k === 'floor' ? 0.75 : k === 'steel' || k === 'brass' ? 1 : (m.envMapIntensity || 1) * 0.6; m.envMapIntensity = m.userData.envK; }
+      for (const k of this.roomMats) { const m = this.M[k]; m.envMap = room; m.userData.zone = true; m.userData.envK = k === 'mirror' ? 1.5 : k === 'floor' ? 0.75 : k === 'steel' || k === 'brass' ? 1 : (m.envMapIntensity || 1) * 0.6; m.envMapIntensity = m.userData.envK; }
       ui.loaderText.textContent = tr('loadGeo'); await new Promise((r) => setTimeout(r, 30));
     }
     const prev = this.apt && this.built.get(this.apt.id);
     const cur = this.build(apt);
     if (prev) this.scene.remove(prev.group);
     this.scene.add(cur.group); cur.group.add(this.camera, this.reticle, this.hl);
+    // ombres de contact : calculées une fois par logement, au premier chargement
+    if (!cur.ao) { cur.group.updateMatrixWorld(true); cur.ao = bakeContact(this.renderer, this.scene, cur.group, apt, this.M, QUALITY.tex); }
+    AOU.uAoMap.value = cur.ao.tex; AOU.uAoT0.value.copy(cur.ao.t0); AOU.uAoT1.value.copy(cur.ao.t1); AOU.uAoA.value.copy(cur.ao.a); AOU.uAoLv.value.copy(cur.ao.lv); AOU.uAoSplit.value = cur.ao.split;
+    AOU.uAoK.value = QUALITY.ao ? 0.8 : 1.5;              // avec l'occlusion d'écran (qualités hautes), la carte ne fait plus que le voile large
     this.apt = apt; this.cur = cur; this.viewLevel = 0; this.mode = 'orbit'; this.lastRoom = null; this.hourBack = undefined;
     Object.assign(this.walk, { level: 0, path: null, look: null, climbing: null, riding: null, spin: null, onArrive: null, floorY: undefined });
     // lumières d'appoint : un petit nombre de sources, réattribuées aux lampes ou aux baies les plus proches
@@ -229,6 +441,14 @@ class App {
     this.setHour(Number(params.get('h')) || apt.hour || 11, true);      // l'heure où le soleil entre dans le séjour
     this.fillUI();
     ui.loaderText.textContent = tr('loadEnv'); await new Promise((r) => setTimeout(r, 30));
+    if (!cur.zones) {                                         // reflets des pièces : photographiées de jour, une fois par logement
+      const h0 = this.hour, dark = this.night > 0.3;
+      this.applyView(false);
+      if (dark) { this.setHour(12, true); this.env.updateEnvMap(this.env.envK); }
+      cur.zones = captureZones(this, apt, QUALITY.tex > 1024 ? 256 : 128);
+      if (dark) { this.setHour(h0, true); this.env.updateEnvMap(this.env.envK); }
+    }
+    this.useZones(cur.zones);
     this.warmUp();
     const room = opts.room && this.findRoom(opts.room);
     if (opts.mode === 'walk' || room) { const r = room || this.findRoom(apt.start.room); this.enterWalk(r.room, r.level, true); }
@@ -257,6 +477,11 @@ class App {
     for (const o of culled) o.frustumCulled = true;
     layers.forEach((g, i) => { g.visible = was[i]; }); c.catcher.visible = cw; c.pucks.visible = pw;
     this.renderer.shadowMap.needsUpdate = true; this.dirty = true;
+  }
+
+  useZones(z) {
+    ZU.uZAtlas.value = z.atlas.texture; ZU.uZn.value = z.n; ZU.uZg.value.set(z.nc, Math.ceil(z.n / z.nc), 1 / z.cw, 1 / z.ch); ZU.uZmip.value = z.mip;
+    for (let i = 0; i < NZ; i++) { ZU.uZb.value[i].copy(z.b[i] || ZU.uZb.value[i]); ZU.uZy.value[i].copy(z.y[i] || ZU.uZy.value[i]); ZU.uZc.value[i].copy(z.c[i] || ZU.uZc.value[i]); }
   }
 
   findRoom(id) { for (let i = 0; i < this.apt.levels.length; i++) { const room = this.apt.levels[i].rooms.find((r) => r.id === id); if (room) return { room, level: i }; } return null; }
@@ -411,7 +636,7 @@ class App {
     this.night = this.env.setHour(h);
     const n = this.night, M = this.M;
     M.lampShade.emissiveIntensity = n * 1.25; M.led.emissiveIntensity = 1.0 + n * 0.8;      // rubans LED et lustres allumés même de jour, comme sur les images
-    M.glass.opacity = 0.07 + n * 0.1;
+    M.glass.opacity = 0.1 + n * 0.08;
     if (this.roomMats) for (const k of this.roomMats) M[k].envMapIntensity = M[k].userData.envK * (1 - n * 0.8);
     this.lightAt.set(1e9, 0, 0); this.dirty = true;
     const out = $('#v3d-time-out'); if (out) { const hh = Math.floor(h), mm = Math.round((h - hh) * 60); out.textContent = `${hh} h ${String(mm).padStart(2, '0')}`; }
@@ -817,6 +1042,7 @@ class App {
       if (!this.M) return;
       const room = this.env.pmrem.fromScene(new RoomEnvironment(), 0.03).texture;
       for (const k of this.roomMats) this.M[k].envMap = room;
+      ZU.uZn.value = 0;                                       // les prises des pièces sont perdues avec le contexte : reflets neutres d'avant
       this.env.envRT = null; this.env.envDirty = true; this.env.flushEnv();
       this.renderer.shadowMap.needsUpdate = true; this.resize(); this.dirty = true;
     }, 60));
