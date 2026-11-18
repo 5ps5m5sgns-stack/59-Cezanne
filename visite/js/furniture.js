@@ -263,8 +263,8 @@ function garment(b, M, mat, kind, x, yr, z, L, t, tilt = 0) {
   const pts = GARMENT[kind].map(([u, v]) => [u, v < -0.5 ? -L : v]);
   b.geo(mat, prismGeo(kind + L.toFixed(2) + '/' + t.toFixed(3), pts, t), x, yr, z, 0, 0, tilt);
   b.box(M.steel, x - 0.002, yr - 0.032, z - 0.002, x + 0.002, yr + 0.012, z + 0.002);                       // crochet
-  if (kind !== 'pants') b.box(M.oak, x - 0.006, yr - 0.05, z - 0.19, x + 0.006, yr - 0.032, z + 0.19);      // épaules du cintre
-  else b.box(M.oak, x - 0.005, yr - 0.07, z - 0.19, x + 0.005, yr - 0.058, z + 0.19);
+  if (kind !== 'pants') b.box(M.oak, x - 0.004, yr - 0.05, z - 0.19, x + 0.004, yr - 0.032, z + 0.19);      // épaules du cintre
+  else b.box(M.oak, x - 0.004, yr - 0.07, z - 0.19, x + 0.004, yr - 0.058, z + 0.19);
 }
 /* Chaussure : profil de côté (pointe vers +z), largeur 9 cm. */
 const SHOE = [[0.13, 0], [0.135, 0.028], [0.09, 0.05], [-0.04, 0.085], [-0.13, 0.085], [-0.135, 0.02], [-0.13, 0]];
@@ -830,7 +830,7 @@ export const F = {
     const shelf = (xa, xb, y) => b.box(inn, xa, y, zb, xb, y + t, zf - 0.01);
     const rail = (xa, xb, y) => { b.rod(M.steel, [xa, y, zc], [xb, y, zc], 0.011, 6); for (const x of [xa, xb]) b.box(M.steel, x - (x === xa ? 0 : 0.006), y - 0.015, zc - 0.012, x + (x === xa ? 0.006 : 0), y + 0.015, zc + 0.012); };
     const hang = (xa, xb, yr, pal, kinds, L0, L1, thick) => {
-      for (let x = xa + 0.035; x < xb - 0.03;) { const tt = thick * (0.6 + R() * 0.8), k = kinds[(R() * kinds.length) | 0], L = (k === 'pants' ? 0.55 : L0 + R() * (L1 - L0)); x += tt / 2; if (x > xb - 0.03) break; garment(b, M, M[pal[(R() * pal.length) | 0]], k, x, yr, zc, Math.min(L, yr - deck - 0.05), tt, (R() - 0.5) * 0.05); x += tt / 2 + 0.008 + R() * 0.025; }
+      for (let x = xa + 0.035; x < xb - 0.03;) { const tt = thick * (0.6 + R() * 0.8), k = kinds[(R() * kinds.length) | 0], L = (k === 'pants' ? 0.55 : L0 + R() * (L1 - L0)); x += tt / 2; if (x > xb - 0.03) break; garment(b, M, M[pal[(R() * pal.length) | 0]], k, x, yr, zc, Math.min(L, yr - deck - 0.05), tt, (R() - 0.5) * 0.012); x += tt / 2 + 0.014 + R() * 0.022; }   // jamais deux vêtements à moins d'un centimètre : pas de faces confondues
     };
     const top = (xa, xb, full, pal) => {                                                                          // étagère haute : boîtes et linge
       shelf(xa, xb, ys); if (!full) return;
