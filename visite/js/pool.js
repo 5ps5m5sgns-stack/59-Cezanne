@@ -25,7 +25,7 @@ function rand(seed) { let s = seed >>> 0; return () => { s = (s + 0x6D2B79F5) | 
 function tileCanvas(S) {
   const c = document.createElement('canvas'); c.width = c.height = S; const g = c.getContext('2d'), r = rand(71), n = 20, p = S / n, j = Math.max(1, S / 320);
   g.fillStyle = 'rgb(205,212,212)'; g.fillRect(0, 0, S, S);
-  const tones = [[214, 232, 236], [196, 222, 231], [224, 238, 240], [182, 214, 228], [206, 228, 238]];
+  const tones = [[200, 224, 232], [184, 214, 228], [212, 232, 238], [168, 204, 222], [194, 220, 234]];
   for (let y = 0; y < n; y++) for (let x = 0; x < n; x++) {
     const t = tones[Math.floor(r() * r() * tones.length * 1.6) % tones.length], k = 0.95 + r() * 0.08;
     const grd = g.createLinearGradient(x * p, y * p, (x + 1) * p, (y + 1) * p);
@@ -62,7 +62,7 @@ uniform sampler2D uPoolTile, uPoolCaus;
 uniform vec4 uPoolBox, uPoolDim, uStepZ, uStepD;
 uniform vec2 uLampZ;
 uniform float uPoolT, uPoolNight;
-const vec3 PSIG = vec3( 0.40, 0.072, 0.048 );                // absorption de l'eau (1/m) : le rouge s'éteint le premier
+const vec3 PSIG = vec3( 0.50, 0.095, 0.06 );                // absorption de l'eau (1/m) : le rouge s'éteint le premier
 const vec3 PLAMP = vec3( 0.78, 0.92, 1.0 );                  // projecteurs à diodes, blanc froid
 float pwFres( float c ) { float f = 1.0 - clamp( c, 0.0, 1.0 ); return 0.02 + 0.98 * f * f * f * f * f; }
 float pwHash( float x ) { return fract( sin( x * 12.9898 ) * 43758.545 ); }
@@ -258,7 +258,7 @@ vec3 pwShade( vec3 Ed, vec3 Ei ) {
 	vec3 R = reflect( V, n ); R.y = max( R.y, 0.015 ); R = normalize( R );
 	vec3 refl = pwRefl( P, R, L, sunR, Ei );
 	vec3 H = normalize( L - V ); float nh = max( dot( n, H ), 0.0 );
-	vec3 glint = sunC * vis * max( dot( n, L ), 0.0 ) * pwFres( max( dot( L, H ), 0.0 ) ) * ( 9.0 * pow( nh, 900.0 ) + 0.5 * pow( nh, 90.0 ) );
+	vec3 glint = sunC * vis * max( dot( n, L ), 0.0 ) * pwFres( max( dot( L, H ), 0.0 ) ) * ( 9.0 * pow( nh, 900.0 ) + 0.22 * pow( nh, 90.0 ) );
 	glint = min( glint, vec3( 5.0 ) );                                           // reflets du soleil adoucis : pas de point brûlé
 	vec3 inside = mainPool ? pwTank( P, V, n, L, sunR, vis, Ei ) : pwFlat( V, n, L, sunR, vis, Ei );
 	return mix( inside, refl, F ) + glint;
