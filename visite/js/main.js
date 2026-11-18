@@ -560,6 +560,7 @@ class App {
      n'a pas à le chercher. Le coût suit à peu près le nombre de pixels ; sans occlusion d'écran, environ deux tiers. */
   dynProbe() {
     const d = this.dyn; if (!d.auto) return;
+    if (GPU.kind === 'soft') { d.step = d.floor; return; }        // rendu logiciel : le palier le plus léger d'emblée, sans payer la mesure
     // mesurée en demi-résolution (un quart des pixels) pour ne pas allonger le chargement d'une machine lente ; ×3 pour la pleine
     this.applyPR(this.dprBase * 0.5);
     const gl = this.renderer.getContext(), px = new Uint8Array(4), t = performance.now();
