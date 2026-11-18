@@ -253,7 +253,7 @@ export function buildSite(b, M, { o, skip }) {
     for (const z of [16.3, 22.5]) { b.push(19.0, -0.015, z, 0); F.outdoorTable(b, M, { w: 1.5, d: 1.5, n: 2, ends: true }); b.pop(); }
   }
   // jardin du logement 04 (n°4) : terrasse au pied de la façade Sud, pelouse jusqu'à la clôture Sud ; muret de 1,3 m surmonté d'une grille côté piscine
-  box('socle', W, -0.3, 25.74, 22.55, -0.1, L + 0.02); box('terrace', W, -0.1, 25.74, 22.2, -0.015, L);
+  box('socle', W, -0.31, 25.74, 22.55, -0.1, L + 0.02); box('terrace', W, -0.1, 25.74, 22.2, -0.015, L);
   box('stone', 22.2, -1.3, 25.74, 22.55, 0.0, zS(22.4)); railing(b, M, 22.375, 25.8, 22.375, zS(22.4) - 0.1, 0.0, 1.04, 'cadre');
   S('socle', [[0, L], [22.2, L], [22.2, zS(22.2)], [0, zS(0)]], -0.1, 3.2);
   S('grass', [[0, L + 3.2], [22.2, L + 3.2], [22.2, zS(22.2) - 0.05], [0, zS(0) - 0.05]], -0.02, 0.05);
