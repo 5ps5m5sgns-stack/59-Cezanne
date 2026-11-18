@@ -56,14 +56,13 @@ function chamGeo(w, h, d, c) {
   return g.clone();
 }
 /* Boîte chanfreinée centrée en (cx, cz), posée à la hauteur y0 (comme Batch.cbox), pivotée de rot autour de la verticale.
-   Sans face de coupe (solid = false) : sciée à 1,25 m par la maquette, la boîte recevait une face horizontale cachée dans son
-   épaisseur ; le décalage de profondeur du matériau (main.js), proportionnel à la pente vue de biais, la faisait passer devant
-   la façade : c'était la ligne claire qui traversait placards, colonnes et réfrigérateurs à hauteur de coupe. Les meubles
-   étant faits de panneaux, la vue en maquette n'y perd presque rien (on voit leur intérieur, comme sur une coupe d'architecte). */
+   Un panneau mince (moins de 3 cm) n'a pas de face de coupe : sciée à 1,25 m par la maquette, cette face horizontale cachée
+   dans l'épaisseur, vue de biais, recevait du décalage de profondeur de son matériau (main.js, proportionnel à la pente) de quoi
+   passer devant la façade : c'était une partie de la ligne claire à hauteur de coupe. */
 const cb = (b, mat, cx, y0, cz, w, h, d, c = 0.003, rot = 0) => {
   if (c * 2.2 > Math.min(w, h, d)) c = Math.min(w, h, d) / 2.4;
   const M = new THREE.Matrix4().compose(_v.set(cx, y0 + h / 2, cz), _q.setFromAxisAngle(Y, rot), ONE);
-  return b.add(mat, c > 0.0005 ? chamGeo(w, h, d, c) : new THREE.BoxGeometry(w, h, d), M, false);
+  return b.add(mat, c > 0.0005 ? chamGeo(w, h, d, c) : new THREE.BoxGeometry(w, h, d), M, Math.min(w, d) > 0.03);
 };
 /* Idem par coins opposés (comme Batch.box). */
 const bb = (b, mat, x0, y0, z0, x1, y1, z1, c = 0.003) => {
@@ -778,7 +777,9 @@ export const F = {
      portes pliantes à demi repliée ou un panneau coulissant poussé laissent voir l'intérieur ; derrière les portes fermées, seul
      ce qui reste visible dans la maquette coupée (sous 1,30 m) est garni. Tout est tiré d'une graine : même placard à chaque chargement. */
   wardrobe(b, M, { w = 2.2, d = 0.6, h = 2.35, mat = 'oak', ceil = 2.6 }) {
-    const oak = mat === 'oak', m = M[oak ? 'oakV' : mat], inn = M.lacquer, t = 0.019, pl = 0.08, gap = 0.003, R = rng(Math.round(w * 1000 + d * 77));
+    // caisson intérieur en mélaminé clair, d'un matériau sans décalage de profondeur (rang 0 de main.js) : vues de biais à hauteur
+    // d'œil, des étagères d'un matériau décalé passaient devant les portes fermées et y dessinaient des lignes claires
+    const oak = mat === 'oak', m = M[oak ? 'oakV' : mat], inn = M.socle, t = 0.019, pl = 0.08, gap = 0.003, R = rng(Math.round(w * 1000 + d * 77));
     const use = oak ? 'bed' : d < 0.35 ? 'tech' : d < 0.5 ? 'store' : d >= 0.8 ? 'pantry' : d >= 0.68 ? 'utility' : 'coats';
     const xi0 = -w / 2 + t, xi1 = w / 2 - t, wi = xi1 - xi0, slide = oak && w >= 2.6, fold = !oak && (use === 'coats' || use === 'utility' || use === 'pantry') && w >= 1.3;
     const zF = d / 2 - 0.001, zb = -d / 2 + 0.008, zf = slide ? d / 2 - 2 * t - 0.016 : d / 2 - t - 0.005, di = zf - zb, zc = (zb + zf) / 2, deck = pl + t;
