@@ -200,6 +200,7 @@ html=f'''<!DOCTYPE html>
       <p class="script">59 Cézanne</p>
       <div class="v3d-spin" aria-hidden="true"></div>
       <p id="v3d-loader-text" role="status">Préparation de la visite…</p>
+      <div class="v3d-bar" aria-hidden="true"><i id="v3d-loader-bar"></i></div>
     </div>
     <div id="v3d-fallback" hidden>
       <img src="/visite/img/maquette-appartement-villa-138m2.webp" srcset="/visite/img/maquette-appartement-villa-138m2-800w.webp 800w, /visite/img/maquette-appartement-villa-138m2.webp 1200w" sizes="(max-width: 900px) 100vw, 1200px" width="1200" height="756" alt="Maquette 3D de l'appartement de 138 m² : séjour tourné vers la Sainte-Victoire, trois chambres, jardin" data-alt-fr="Maquette 3D de l'appartement de 138 m² : séjour tourné vers la Sainte-Victoire, trois chambres, jardin" data-alt-en="3D model of the 138 m² apartment: living room facing the Sainte-Victoire, three bedrooms, garden" loading="lazy" decoding="async" />
