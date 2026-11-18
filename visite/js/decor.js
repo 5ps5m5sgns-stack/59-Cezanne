@@ -71,7 +71,7 @@ function branches(b, M, x, y, z, h, R) {
 const SMALL = {           // (b, M, mat) : mat = matériau principal facultatif
   /* machine à expresso : corps noir, façade inox, groupe, bac, deux tasses */
   coffee(b, M) {
-    b.box(M.black, -0.13, E, -0.17, 0.13, 0.34, 0.12); b.box(M.steel, -0.125, 0.04, 0.12, 0.125, 0.33, 0.125);
+    b.box(M.black, -0.13, E, -0.17, 0.13, 0.34, 0.115); b.box(M.steel, -0.125, 0.04, 0.119, 0.125, 0.33, 0.124);
     b.box(M.steel, -0.12, E, 0.1, 0.12, 0.03, 0.2); b.cyl(M.steel, 0, 0.21, 0.16, 0.035, 0.035, 10); b.rod(M.black, [0, 0.225, 0.19], [0, 0.23, 0.29], 0.008, 5);
     for (const sx of [-0.05, 0.05]) b.lathe(M.ceramic, sx, 0.032, 0.16, [[0.022, 0], [0.03, 0.006], [0.032, 0.05], [0.029, 0.05], [0.001, 0.008]], 10);
     b.cyl(M.steel, -0.07, 0.34, -0.05, 0.045, 0.015, 10);
@@ -132,9 +132,17 @@ const SMALL = {           // (b, M, mat) : mat = matériau principal facultatif
 
 Object.assign(F, {
   /* ── Murs ───────────────────────────────────────────────────────────── */
-  /* Accrochage de cadres : set = [[x, y, l, h, toile, baguette], …] (centres sur le mur, en mètres). */
+  /* Accrochage de cadres : set = [[x, y, l, h, toile, baguette], …] (centres sur le mur, en mètres). Baguette de 2 cm, marie-louise
+     blanche, toile en avant de 4 mm : jamais deux faces de matériaux différents à moins de 3 mm. */
   frames(b, M, { set = [[0, 1.5, 0.6, 0.8, 'art1', 'black']] }) {
-    for (const [x, y, w, h, art = 'art1', frame = 'black'] of set) { b.push(x, 0, 0.002, 0); F.picture(b, M, { w, h, y, mat: art, frame }); b.pop(); }
+    for (const [x, y, w, h, art = 'art1', frame = 'black'] of set) {
+      const f = 0.02, X = w / 2 + f, Z = h / 2 + f, z0 = 0.002, z1 = 0.034;
+      b.box(M[frame], x - X, y - Z, z0, x + X, y - Z + f, z1); b.box(M[frame], x - X, y + Z - f, z0, x + X, y + Z, z1);
+      b.box(M[frame], x - X, y - Z + f, z0, x - X + f, y + Z - f, z1); b.box(M[frame], x + X - f, y - Z + f, z0, x + X, y + Z - f, z1);
+      b.box(M.white, x - w / 2, y - h / 2, 0.006, x + w / 2, y + h / 2, 0.024);
+      const m = Math.min(0.05, w * 0.1);
+      b.box(M[art], x - w / 2 + m, y - h / 2 + m, 0.028, x + w / 2 - m, y + h / 2 - m, 0.03);
+    }
     return null;
   },
   /* Étagères murales flottantes en chêne : rangées de livres, vases, cadre posé ; kind = 'books' | 'laundry'. */
@@ -162,8 +170,8 @@ Object.assign(F, {
     const R = rng(41);
     for (let i = 0; i < 7; i++) {
       const pw = 0.08 + R() * 0.1, ph = 0.06 + R() * 0.1, px = (R() - 0.5) * (w - pw - 0.05), py = y + (R() - 0.5) * (h - ph - 0.05), m = [M.white, M[art], M.white, M.taupe, M.white][i % 5];
-      b.geo(m, new THREE.BoxGeometry(pw, ph, 0.001), px, py, 0.0275 + i * 0.0006, 0, 0, (R() - 0.5) * 0.15);
-      b.sph(M.brass, px, py + ph / 2 - 0.012, 0.031 + i * 0.0006, 0.006, 1, 1, 1, 5);
+      b.geo(m, new THREE.BoxGeometry(pw, ph, 0.001), px, py, 0.03 + (i % 2) * 0.0035, 0, 0, (R() - 0.5) * 0.15);
+      b.sph(M.brass, px, py + ph / 2 - 0.012, 0.033 + (i % 2) * 0.0035, 0.006, 1, 1, 1, 5);
     }
     return null;
   },
