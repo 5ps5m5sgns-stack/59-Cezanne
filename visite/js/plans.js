@@ -214,7 +214,7 @@ const villa = {
   /* Jardin n° 8 (plan de masse indice E et plan du niveau 2) : mobilier hors plan, à l'échelle, tourné vers la maison.
      Table de quatre sur la terrasse entre chambre 2 et bureau, bains de soleil et parasol sur la pelouse au Sud, à l'ombre de l'olivier ;
      bornes basses le long de la terrasse, robinet de puisage et unité extérieure de la PAC en façade (façade Ouest, à la limite 8/7). */
-  garden: [['parasol', -6.3, 7.75, 0, { r: 1.5 }], ['lounger', -5.85, 6.1, 160, {}], ['lounger', -6.75, 6.35, 160, {}],
+  garden: [['parasol', -6.4, 7.45, 0, { r: 1.3 }], ['lounger', -5.85, 6.1, 160, {}], ['lounger', -6.75, 6.35, 160, {}],
     ['outdoorTable', -2.5, 3.0, 90, { w: 1.8, d: 0.9, n: 2 }], ['plant', -0.75, 5.65, 0, { kind: 'olive', h: 1.5, pot: 0.26 }],
     ['lantern', -0.6, 2.75, 0, { h: 0.55 }], ['lantern', -0.62, 3.2, 0, { h: 0.4 }], ['wateringCan', -4.45, 0.75, 30, {}], ['bbq', -3.6, 7.75, 0, {}],
     ['acUnit', -0.56, 7.98, 270, { w: 0.7 }], ['gardenTap', -E, 0.55, 270, {}],
@@ -482,7 +482,7 @@ const duplex = {
     const dal = M.travertine || M.terrace, mur = M.drystone || M.stone, grav = M.gravel || M.paving, paillis = M.mulch || M.earth, shrub = V.shrub || V.oleander;
     const FX = DW + E, EX = FX + 4.8, ZN = -0.15, ZS = DD + 0.17, Z23 = NH + PW / 2, H0 = Z23 - 0.6, H1 = Z23 + 0.45, B2 = EX - 0.95, B3 = EX - 1.3, PX = 13.1, GN = 13.1, ZB = 11.45;
     b.on('ext');
-    b.box(M.socle, FX, -0.32, -E, EX + 0.35, -0.1, ZS + 0.04);
+    b.box(M.socle, FX, -0.32, ZN, EX + 0.35, -0.1, ZS + 0.04);                     // sous le dallage, jamais sous le mur Nord (faces confondues)
     // n° 2 : dallage hexagonal ; caniveau devant la baie du séjour ; gravillons au Nord ; bande plantée à l'Est
     facadeStrip(b, M, M.hexPaving, FX, FX + 0.15, ZN, H0, [[1.02, 4.94]]);
     b.box(M.hexPaving, FX + 0.15, -0.07, ZN, GN, -0.015, H0); b.box(M.hexPaving, GN, -0.07, 0.7, B2, -0.015, H0);
