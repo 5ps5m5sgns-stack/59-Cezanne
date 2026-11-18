@@ -117,12 +117,14 @@ vec3 pwRefl( vec3 P, vec3 R, vec3 L, vec3 sun, vec3 Ei ) {
 	if ( R.x > 0.05 ) {                                                    // vers l'Est : oliviers et pittosporums du talus
 		float td = ( 36.4 - P.x ) / R.x; vec3 q = P + R * td;
 		float zc = 12.9 + 3.75 * floor( ( q.z - 12.9 ) / 3.75 + 0.5 ), u = ( q.z - zc ) / 1.95;
-		float top = max( -0.25 + 3.3 * sqrt( max( 0.0, 1.0 - u * u ) ) * ( 0.88 + 0.24 * pwHash( zc ) ), 0.2 );
+		float top = max( -0.25 + 3.3 * sqrt( max( 0.0, 1.0 - u * u ) ) * ( 0.88 + 0.24 * pwHash( zc ) ), 0.3 );
 		if ( q.y < top && q.z > 9.5 && q.z < 33.0 ) return pwLeaf( R, L, sun, Ei, pwHash( floor( q.y * 3.0 ) + floor( q.z * 3.0 ) * 7.0 ) );
+		if ( te < 0.09 ) return mix( pwLeaf( R, L, sun, Ei, 0.6 ), sky, 0.45 );     // entre les houppiers : la clôture, l'avenue et les collines, voilées
 	}
 	if ( R.z > 0.05 ) {                                                    // vers le Sud : pins parasols, haie de la clôture
 		float td = ( 33.6 - P.z ) / R.z; vec3 q = P + R * td;
 		if ( q.y < 0.4 ) return pwLeaf( R, L, sun, Ei, 0.4 );
+		if ( te < 0.06 ) return mix( pwLeaf( R, L, sun, Ei, 0.6 ), sky, 0.45 );
 		for ( int i = 0; i < 3; i ++ ) {
 			vec3 c = i == 0 ? vec3( 34.6, 6.0, 32.6 ) : i == 1 ? vec3( 29.75, 5.6, 33.6 ) : vec3( 19.6, 6.4, 36.1 );
 			float tc = ( c.z - P.z ) / R.z; vec3 w = P + R * tc;
@@ -134,6 +136,7 @@ vec3 pwRefl( vec3 P, vec3 R, vec3 L, vec3 sun, vec3 Ei ) {
 		float td = ( 10.65 - P.z ) / R.z; vec3 q = P + R * td;
 		if ( q.x > 19.3 && q.x < 32.2 ) { if ( q.y < -0.8 ) return vec3( 0.32, 0.31, 0.29 ) * ( sun * 0.4 + Ei * 0.8 ); if ( q.y < -0.2 + 0.25 * pwHash( floor( q.x * 1.6 ) ) ) return pwLeaf( R, L, sun, Ei, pwHash( floor( q.x * 3.0 ) ) ); }
 	}
+	if ( te < 0.05 ) return mix( pwLeaf( R, L, sun, Ei, 0.6 ), sky, 0.5 );          // au ras de l'horizon : jardins, toits et collines voilés
 	return sky;
 }
 
