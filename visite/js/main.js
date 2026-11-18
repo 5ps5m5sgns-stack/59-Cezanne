@@ -326,7 +326,8 @@ async function bakeContact(renderer, scene, group, apt, M, maxTex, lights = []) 
   const R = new Float32Array(W * HT), G = new Float32Array(W * HT);
   const out = { t0: new THREE.Vector4(), t1: new THREE.Vector4(), a: new THREE.Vector4(1, 0, 1, 0), lv: new THREE.Vector4(lvs[0].y, lvs[0].h, (lvs[1] || lvs[0]).y, (lvs[1] || lvs[0]).h), split: lvs[1] ? lvs[1].y - 0.12 : 1e9 };
   let row0 = 0;
-  lvs.forEach((lv, li) => {
+  for (const [li, lv] of lvs.entries()) {
+    if (li) await slice(true);                              // un niveau par tâche (premier envoi de toute la géométrie, lecture bloquante)
     const e = ext[li], H = sz.H[li], w = W * px, hgt = H * px;
     const rt = new THREE.WebGLRenderTarget(W, H, { depthBuffer: true });
     const cam = new THREE.OrthographicCamera(-w / 2, w / 2, hgt / 2, -hgt / 2, 0.0, 1.0 - 0.025);
@@ -340,7 +341,7 @@ async function bakeContact(renderer, scene, group, apt, M, maxTex, lights = []) 
     if (li) out.a.z = H / HT, out.a.w = row0 / HT; else out.a.x = H / HT, out.a.y = 0;
     if (!lvs[1]) out.t1.copy(out.t0);
     row0 += H;
-  });
+  }
   // deux échelles : un contact serré (4 cm) et un voile large (meubles 22 cm, murs 30 cm)
   const r = (m) => Math.max(1, Math.round(m / px / 2.2));
   const C = new Float32Array(W * HT); for (let i = 0; i < C.length; i++) C[i] = Math.max(R[i], G[i]);
@@ -497,7 +498,7 @@ class App {
   /* ── Résolution dynamique ──────────────────────────────────────────────────
      L'œil juge la fluidité sur le mouvement et la qualité sur l'image arrêtée. Pendant un déplacement, si les images dépassent
      la cible (36 ms, soit moins de 28 images par seconde), la résolution baisse par paliers, et sur une machine lente l'occlusion
-     d'écran s'efface ; elle remonte dès que c'est fluide. Un quart de seconde après l'arrêt de la vue, une image pleine qualité
+     d'écran s'efface ; elle remonte dès que c'est fluide. Trois dixièmes de seconde après l'arrêt de la vue, une image pleine qualité
      est rendue (pleine résolution, occlusion, halo). Seuls des réglages qui ne créent aucun programme de rendu sont employés :
      taille de l'image et activation d'une passe compilée au préchauffage. ?palier=N impose un palier, ?dyn=0 désactive. */
   initDyn() {
@@ -528,7 +529,7 @@ class App {
     if (moving) { d.run++; d.lastMove = now; } else d.run = 0;
     let mode = d.mode;
     if (moving && d.run >= 2) mode = 'move';                              // un seul pas isolé (survol, clic) reste en pleine qualité
-    else if (!moving && mode === 'move' && now - d.lastMove > 250) mode = 'still';
+    else if (!moving && mode === 'move' && now - d.lastMove > 300) mode = 'still';
     if (mode !== d.mode) { d.mode = mode; d.prev = false; d.samples.length = 0; d.n = 0; this.dirty = true; }
     const [s, ao] = mode === 'move' ? d.steps[d.step] : [1, 1];
     if (this.aoDrop !== !ao) { this.aoDrop = !ao; this.dirty = true; }
