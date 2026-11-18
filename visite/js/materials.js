@@ -922,10 +922,10 @@ export function makeMaterials(quality) {
   const asP = photo('enrobe'), asR = photo('enrobe-r');
   if (asP && asR) { const pk = L(asR); M.asphaltLight = std({ map: T(asP), bumpMap: pk, roughnessMap: pk, roughness: 1, bumpScale: 1.2, userData: { wuv: 3, cast: false } }); macro(M.asphaltLight, asP, 0.3); }
   else { const [aC, aB] = grainSet([170, 164, 152], 19, GS >> 1, { tone: 0.05, grain: 0.1, rel: 30, cx: 4, fine: 200 }); M.asphaltLight = std({ map: T(aC), bumpMap: L(aB), bumpScale: 1.2, roughness: 0.92, userData: { wuv: 3, cast: false } }); }
-  rank(M.asphaltLight, 0);
+  rank(M.asphaltLight, 1);
   M.rendering = rank(std({ map: M.stucco.map, bumpMap: M.stucco.bumpMap, bumpScale: 1.3, color: 0xe9dcc6, roughness: 0.96, userData: { wuv: 2.5 } }), 0);   // enduit ton pierre des murs d'entrée (grain du taloché de façade, teinte plus chaude)
   const [mlC, mlB] = mulchSet(20);
-  M.mulch = rank(std({ map: T(mlC), bumpMap: L(mlB), bumpScale: 2.5, roughness: 1, userData: { wuv: 1.2, cast: false } }), 1);
+  M.mulch = rank(std({ map: T(mlC), bumpMap: L(mlB), bumpScale: 2.5, roughness: 1, userData: { wuv: 1.2, cast: false } }), 1.5);
   M.leafAlmond = card(leafCard([118, 150, 72], 60, { n: 64, len: 0.24, wid: 0.04, S: CS }));       // amandier : feuilles étroites vert clair
   Object.defineProperty(M, 'floraLod', { value: quality.ao || quality.bloom ? 1 : 0.7 });      // nombre de cartes de feuillage (téléphones : moins), lu par le catalogue des végétaux
   noiseCache.clear(); devCache.clear(); RANDOM.S = 0; RANDOM.c = null; MF = null;       // les bruits de travail ne servent plus : on libère la mémoire

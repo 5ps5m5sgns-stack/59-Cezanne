@@ -33,10 +33,30 @@ function hip(b, mat, x0, z0, x1, z1, y, rise) {
 }
 
 /* Voiture stationnée : caisse arrondie, pavillon vitré, quatre roues. */
+/* Profil (z, y) extrudé selon x et centré, arêtes adoucies : carrosseries des voitures. */
+function extrudeProfile(pts, depth, bevel) {
+  const sh = new THREE.Shape(pts.map(([z, y]) => new THREE.Vector2(-z, y)));
+  const g = new THREE.ExtrudeGeometry(sh, { depth: depth - 2 * bevel, bevelEnabled: true, bevelThickness: bevel, bevelSize: bevel * 0.8, bevelSegments: 2, curveSegments: 6 });
+  g.rotateY(Math.PI / 2); g.translate(-(depth - 2 * bevel) / 2, 0, 0); return g;
+}
+const wheelArch = (zc, r, y0) => { const p = []; for (let k = 0; k <= 10; k++) { const a = Math.PI - (Math.PI * k) / 10; p.push([zc + r * Math.cos(a), y0 + r * Math.sin(a)]); } return p; };
+
+/* Voiture en stationnement : berline compacte sans marque (caisse profilée, pavillon vitré, passages de roue, jantes). */
 function car(b, M, x, y, z, rot, paint) {
   b.push(x, y, z, rot);
-  b.cbox(M[paint], 0, 0.3, 0, 1.82, 0.62, 4.5, 0.2, 0, 3); b.cbox(M.glassDark, 0, 0.86, -0.15, 1.6, 0.52, 2.5, 0.22, 0, 3);
-  for (const sx of [-1, 1]) for (const sz of [-1.4, 1.4]) b.geo(M.black, new THREE.CylinderGeometry(0.33, 0.33, 0.24, 18), sx * 0.82, 0.33, sz, 0, 0, Math.PI / 2);
+  const body = [[-2.12, 0.27], ...wheelArch(-1.32, 0.39, 0.27), ...wheelArch(1.32, 0.39, 0.27), [2.1, 0.27], [2.2, 0.4], [2.21, 0.6], [2.12, 0.74], [1.0, 0.88], [-1.86, 0.9], [-2.1, 0.85], [-2.19, 0.7], [-2.19, 0.44]];
+  const cabin = [[0.98, 0.84], [0.16, 1.35], [-1.2, 1.37], [-1.84, 0.93], [-1.86, 0.84]];
+  const top = [[0.1, 1.335], [-1.22, 1.355], [-1.18, 1.41], [0.05, 1.39]];
+  b.geo(M[paint], extrudeProfile(body, 1.8, 0.06)); b.geo(M.glassDark, extrudeProfile(cabin, 1.54, 0.04)); b.geo(M[paint], extrudeProfile(top, 1.4, 0.03));
+  for (const sx of [-1, 1]) {
+    for (const sz of [-1.32, 1.32]) {
+      b.geo(M.black, new THREE.CylinderGeometry(0.33, 0.33, 0.24, 20), sx * 0.79, 0.33, sz, 0, 0, Math.PI / 2);
+      b.geo(M.steel, new THREE.CylinderGeometry(0.21, 0.21, 0.02, 16), sx * 0.915, 0.33, sz, 0, 0, Math.PI / 2);
+    }
+    b.box(M.black, sx * 0.905 - 0.005, 0.86, -0.66, sx * 0.905 + 0.005, 1.33, -0.56);            // montant central
+    b.box(M.black, sx * 0.93 - 0.06, 0.86, 0.72, sx * 0.93 + 0.06, 0.96, 0.84);                  // rétroviseur
+  }
+  b.box(M.black, -0.6, 0.36, 2.2, 0.6, 0.56, 2.225); b.box(M.black, -0.8, 0.27, -2.21, 0.8, 0.4, -2.17);   // calandre, bouclier arrière
   b.pop();
 }
 
