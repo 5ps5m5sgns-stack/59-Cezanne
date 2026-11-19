@@ -210,9 +210,9 @@ vec3 pwTank( vec3 P, vec3 V, vec3 n, vec3 L, vec3 sunR, float vis, vec3 Ei ) {
 	#ifndef POOL_LOW
 		vec2 dr = vec2( 0.031, 0.017 ) * uPoolT;
 		float c1 = texture( uPoolCaus, S.xz * 1.05 + dr, sl * 0.9 ).r, c2 = texture( uPoolCaus, mat2( 0.8, 0.6, -0.6, 0.8 ) * S.xz * 1.37 - dr * 1.4, sl * 0.9 ).r;
-		caus = mix( 1.0, c1 * c2 / PW_CM, clamp( 0.85 - 0.25 * sl, 0.25, 0.85 ) );
+		caus = min( mix( 1.0, c1 * c2 / PW_CM, clamp( 0.85 - 0.25 * sl, 0.25, 0.85 ) ), 2.2 );   // pointes bornées : en vue rasante, un filet étiré ne doit pas virer au blanc
 	#else
-		caus = mix( 1.0, texture( uPoolCaus, S.xz * 1.05, sl * 0.9 ).r / PW_CL, 0.6 );
+		caus = min( mix( 1.0, texture( uPoolCaus, S.xz * 1.05, sl * 0.9 ).r / PW_CL, 0.6 ), 2.2 );
 	#endif
 	vec3 direct = sunR * vis * max( dot( nh, Lw ), 0.0 ) * wallSh * caus * exp( -PSIG * sl ) * ( 1.0 - pwFres( max( L.y, 0.0 ) ) );
 	vec3 amb = Ei * occ * exp( -PSIG * depth * 1.2 ) * ( nh.y > 0.5 ? 1.0 : 0.8 );
