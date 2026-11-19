@@ -31,6 +31,43 @@ function worldUV(geo, scale, swap) {
   uv.needsUpdate = true;
 }
 
+/* Réindexation après fusion : les primitives arrivent dé-indexées (trois sommets par triangle, pour pouvoir les couper et les
+   fusionner librement) ; ici, les sommets strictement identiques (position, normale et coordonnées de texture au bit près) sont
+   mis en commun. Mêmes triangles, dans le même ordre, mêmes valeurs : l'image ne change pas, mais la carte graphique transforme
+   deux à trois fois moins de sommets et la mémoire des géométries diminue d'autant. Table de hachage ouverte sur les bits des
+   huit flottants : quelques dizaines de millisecondes pour un logement entier, là où une clé texte par sommet en coûterait des centaines. */
+export function weld(geo) {
+  const P = geo.attributes.position.array, N = geo.attributes.normal.array, U = geo.attributes.uv.array, n = P.length / 3;
+  if (n < 6 || !(P instanceof Float32Array && N instanceof Float32Array && U instanceof Float32Array)) return geo;
+  const pb = new Uint32Array(P.buffer, P.byteOffset, n * 3), nb = new Uint32Array(N.buffer, N.byteOffset, n * 3), ub = new Uint32Array(U.buffer, U.byteOffset, n * 2);
+  let cap = 1024; while (cap < n * 2) cap *= 2;
+  const mask = cap - 1, table = new Int32Array(cap).fill(-1), first = new Uint32Array(n), index = new Uint32Array(n);
+  let m = 0;
+  for (let i = 0; i < n; i++) {
+    const a = i * 3, c = i * 2;
+    let h = 0x811c9dc5;
+    h = Math.imul(h ^ pb[a], 0x01000193); h = Math.imul(h ^ pb[a + 1], 0x01000193); h = Math.imul(h ^ pb[a + 2], 0x01000193);
+    h = Math.imul(h ^ nb[a], 0x01000193); h = Math.imul(h ^ nb[a + 1], 0x01000193); h = Math.imul(h ^ nb[a + 2], 0x01000193);
+    h = Math.imul(h ^ ub[c], 0x01000193); h = Math.imul(h ^ ub[c + 1], 0x01000193);
+    h ^= h >>> 15; h = Math.imul(h, 0x2c1b3c6d); h ^= h >>> 12;
+    let s = h & mask, j;
+    for (;;) {
+      j = table[s];
+      if (j < 0) { table[s] = m; first[m] = i; index[i] = m++; break; }
+      const f = first[j], fa = f * 3, fc = f * 2;
+      if (pb[fa] === pb[a] && pb[fa + 1] === pb[a + 1] && pb[fa + 2] === pb[a + 2] && nb[fa] === nb[a] && nb[fa + 1] === nb[a + 1] && nb[fa + 2] === nb[a + 2] && ub[fc] === ub[c] && ub[fc + 1] === ub[c + 1]) { index[i] = j; break; }
+      s = (s + 1) & mask;
+    }
+  }
+  if (m > n * 0.9) return geo;                                    // presque rien à mettre en commun : on garde la forme simple
+  const p2 = new Float32Array(m * 3), n2 = new Float32Array(m * 3), u2 = new Float32Array(m * 2);
+  for (let k = 0; k < m; k++) { const f = first[k]; p2.set(P.subarray(f * 3, f * 3 + 3), k * 3); n2.set(N.subarray(f * 3, f * 3 + 3), k * 3); u2.set(U.subarray(f * 2, f * 2 + 2), k * 2); }
+  const g = new THREE.BufferGeometry();
+  g.setAttribute('position', new THREE.BufferAttribute(p2, 3)); g.setAttribute('normal', new THREE.BufferAttribute(n2, 3)); g.setAttribute('uv', new THREE.BufferAttribute(u2, 2));
+  g.setIndex(new THREE.BufferAttribute(m > 65535 ? index : Uint16Array.from(index), 1));
+  return g;
+}
+
 /* Coupe horizontale d'une géométrie à la cote y : renvoie [dessous, dessus, face de coupe]. Les triangles traversés sont recoupés ;
    un solide convexe (boîte, cylindre, coussin…) reçoit une face de coupe pleine, comme une maquette sciée net. */
 function splitY(g, y, solid) {
@@ -196,10 +233,11 @@ export class Batch {
   build(parent) {
     const layers = {};
     for (const it of this.items.values()) {
-      const geo = mergeGeometries(it.geos, false);
+      let geo = mergeGeometries(it.geos, false);
       it.geos.length = 0;
       const ud = it.mat.userData || {};
       if (ud.wuv) worldUV(geo, ud.wuv, ud.wuvSwap);
+      geo = weld(geo);
       geo.computeBoundingSphere(); geo.computeBoundingBox();
       const mesh = new THREE.Mesh(geo, it.mat);
       mesh.castShadow = ud.cast !== false;
