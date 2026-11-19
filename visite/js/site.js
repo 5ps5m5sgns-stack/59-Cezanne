@@ -537,10 +537,8 @@ export function buildSite(b, M, { o, skip }) {
   // clôture et haie le long de l'avenue au Nord de l'accès (massif conservé)
   fence(b, M, [[39.62, 1.4], [LIM_E - 0.05, -40]], (x, z) => yAv(z) + 0.12, 1.5);
 
-  // ── Voisinage : maisons et jardins des parcelles alentour, arbres de haute tige ──
-  house(b, M, 55, yAv(2) + 0.14, 2, 13, 9, 0.12, 5.6); house(b, M, 57, yAv(30) + 0.1, 30, 11, 10, -0.1, 3.2, 'massing'); house(b, M, 55, yAv(-24) + 0.14, -24, 12, 9, 0.2, 5.6, 'massing');
-  house(b, M, 9, -0.7, 58, 14, 9, 0.08, 5.6); box('wallTile', 20.5, -0.75, 53.5, 26.5, -0.7, 57.5); box('water', 20.8, -0.8, 53.8, 26.2, -0.68, 57.2);
-  house(b, M, 6, 0.2, -24, 12, 9, -0.06, 5.6, 'massing'); house(b, M, -30, 2.6, 6, 10, 13, 0.1, 5.6); house(b, M, -34, 2.6, 34, 10, 12, -0.05, 3.2, 'massing');
+  // ── Voisinage : terrains des parcelles alentour et arbres de haute tige ──
+  // (maisons voisines volontairement non représentées : pas de vis-à-vis dans la vue de la résidence)
   S('earth', [[-70, -60], [-14.5, -60], [-14.5, 7.1], [-13.0, 7.1], [xP(80), 80], [-70, 80]], 2.55, 8.85);   // parcelle voisine, plus haute, derrière le soutènement existant
   S('earth', [[-14.5, zS(-14.5)], [30, zS(30)], [30, 80], [-14.5, 80]], -0.7, 5.6);                           // parcelles au Sud
   S('earth', [[30, zS(30)], [LIM_E, zS(LIM_E)], [LIM_E, 80], [30, 80]], (x) => -0.7 - (x - 30) * 0.1, 5.6);

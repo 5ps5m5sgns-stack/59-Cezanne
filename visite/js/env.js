@@ -296,7 +296,7 @@ export class Environment {
       const f = ridge(hills(s + 40, 18, 0.1), this.cloudTex, { dist: 900, width: 2400, height: 30, base: gy + 3, color: 0x939f9c, seed: s + 40, cell: 50 });   // lointain bleuté derrière
       f.rotation.y = rot; add(f, new THREE.Vector3(-Math.cos(rot), 0, Math.sin(rot)));
     }
-    // arbres et toits du voisinage
+    // arbres du voisinage (sans maisons : pas de vis-à-vis)
     const b = new Batch(); b.on('land');
     const R = rng(apt.id.length * 97 + 5);
     const place = (x, z, kind, h) => {
@@ -306,10 +306,6 @@ export class Environment {
     for (let i = 0; i < this.quality.trees; i++) {
       const a = R() * 6.283, d = 86 + R() * 120, x = center.x + Math.cos(a) * d, z = center.z + Math.sin(a) * d, k = R();
       place(x, z, k < 0.55 ? 'pine' : k < 0.8 ? 'cypress' : 'olive', 6 + R() * 6);
-    }
-    for (let i = 0; i < 42; i++) {                                                          // maisons du quartier, toits de tuiles
-      const a = R() * 6.283, d = 96 + Math.pow(R(), 0.8) * 330, x = center.x + Math.cos(a) * d, z = center.z + Math.sin(a) * d, w = 9 + R() * 7, dd = 7 + R() * 5, rot = R() * 3;
-      b.push(x, gy, z, rot); b.box(M.massing, -w / 2, 0, -dd / 2, w / 2, 5.5, dd / 2); b.geo(M.roof, new THREE.ConeGeometry(Math.max(w, dd) * 0.78, 2, 4), 0, 6.5, 0, 0, Math.PI / 4, 0, 1, 1, dd / w); b.pop();
     }
     const L = b.build(this.near);
     if (L.land) L.land.traverse(o => { if (o.isMesh) { o.castShadow = false; o.receiveShadow = false; } });
