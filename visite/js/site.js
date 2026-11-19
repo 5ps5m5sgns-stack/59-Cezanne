@@ -8,6 +8,7 @@ import * as THREE from 'three';
 import { F, V } from 'v3d/furniture';
 import { railing } from 'v3d/build';
 import { Batch } from 'v3d/geo';
+import { buildPool } from 'v3d/pool';
 
 export const SITE = {
   W: 17.39, L: 32.2, FH: 2.9, EAVE: 5.70, RISE: 2.95,             // EAVE : dessus du chéneau (égout 295,30) ; RISE : des tuiles d'égout au faîtage
@@ -403,15 +404,8 @@ export function buildSite(b, M, { o, skip }) {
   for (const [x0, z0, x1, z1] of [[18.94, 10.65, 31.1, 12.95], [18.94, 12.95, 22.55, 13.15], [22.55, 12.95, 26.34, 25.6], [32.34, 10.4, 33.3, 25.6], [26.34, 25.25, 32.34, 25.6], [32.2, 10.65, 32.34, 12.95]])
     box('travertine', x0, TERR - 0.04, z0, x1, TERR, z1);
   box('earth', 18.94, COUR - 0.1, 13.3, 33.3, TERR - 0.04, 25.6); box('drystone', 32.2, -4.1, 10.4, 33.3, TERR - 0.04, 13.3);
-  // bassin enterré de 6 × 12,3 m, margelles en travertin
-  const PX0 = 26.34, PX1 = 32.34, PZ0 = 12.95, PZ1 = 25.25;
-  box('wallTile', PX0 + 0.3, TERR - 0.07, PZ0 + 0.3, PX1 - 0.3, TERR - 0.045, PZ1 - 0.3); box('water', PX0 + 0.3, TERR - 0.075, PZ0 + 0.3, PX1 - 0.3, TERR - 0.012, PZ1 - 0.3);
-  for (const [x0, z0, x1, z1] of [[PX0, PZ0, PX1, PZ0 + 0.3], [PX0, PZ1 - 0.3, PX1, PZ1], [PX0, PZ0 + 0.3, PX0 + 0.3, PZ1 - 0.3], [PX1 - 0.3, PZ0 + 0.3, PX1, PZ1 - 0.3]])
-    box('travertine', x0, TERR - 0.04, z0, x1, TERR + 0.035, z1);                                          // margelle de 30 cm, 3,5 cm au-dessus du dallage
-  for (let i = 0; i < 5; i++) { b.push(24.6, TERR, 14.6 + i * 2.15, Math.PI / 2); F.lounger(b, M, {}); b.pop(); if (i % 2 === 0) { b.push(23.35, TERR, 15.65 + i * 2.15, 0); F.parasol(b, M, { r: 1.5, h: 2.4 }); b.pop(); } }
-  for (const z of [23.75, 24.25]) b.tube(M.steel, [[PX0 + 0.1, TERR, z], [PX0 + 0.15, TERR + 0.58, z], [PX0 + 0.45, TERR + 0.74, z], [PX0 + 0.75, TERR + 0.55, z], [PX0 + 0.82, TERR, z], [PX0 + 0.84, TERR - 0.4, z]], 0.021, 8);   // échelle inox
-  { const x = 23.2, z = 13.7; b.rod(M.steel, [x, TERR + 0.007, z], [x, TERR + 2.25, z], 0.04, 10); b.rod(M.steel, [x, TERR + 2.2, z], [x + 0.3, TERR + 2.25, z], 0.02, 8); b.cyl(M.steel, x + 0.32, TERR + 2.17, z, 0.09, 0.03, 14, 0.06);   // douche de plage
-    b.rod(M.steel, [x, TERR + 1.2, z], [x + 0.15, TERR + 1.2, z], 0.012, 6); box('cadre', x - 0.3, TERR + 0.001, z - 0.3, x + 0.3, TERR + 0.006, z + 0.3); }
+  // bassin enterré de 6 × 12,3 m, margelles en travertin, plage immergée, échelle, transats et douche (pool.js)
+  buildPool(b, M, { PX0: 26.34, PX1: 32.34, PZ0: 12.95, PZ1: 25.25, y: TERR });
   // jardinière béton surélevée en rive de la terrasse, au-dessus des locaux : retour le long du local déchets
   for (const [x0, z0, x1, z1] of [[19.3, 9.95, 31.1, 10.65], [31.1, 9.95, 32.2, 12.95]]) {
     box('concrete', x0, TERR - 0.04, z0, x1, TERR + 0.5, z1); box('mulch', x0 + 0.1, TERR + 0.5, z0 + 0.1, x1 - 0.1, TERR + 0.52, z1 - 0.1);
