@@ -31,11 +31,11 @@
 
   <link rel="stylesheet" href="/style.css?v=d968c7ca" />
   <!-- Visite 3D : après toute modification d'un fichier de /visite, changer l'empreinte ?v= ci-dessous (feuille de style et carte d'import). -->
-  <link rel="stylesheet" href="/visite/visite.css?v=a9b8d14e" />
+  <link rel="stylesheet" href="/visite/visite.css?v=5108f069" />
   <link rel="preload" as="font" type="font/woff2" crossorigin href="/fonts/gilda-display-latin.woff2" />
   <link rel="preload" as="font" type="font/woff2" crossorigin href="/fonts/jost-latin.woff2" />
   <link rel="preload" as="font" type="font/woff2" crossorigin href="/fonts/whisper-400-latin.woff2" />
-  <script type="importmap">{"imports":{"three":"/vendor/three/three.module.min.js?v=r170","three/addons/":"/vendor/three/addons/","v3d/geo":"/visite/js/geo.js?v=a9b8d14e","v3d/flora":"/visite/js/flora.js?v=a9b8d14e","v3d/materials":"/visite/js/materials.js?v=a9b8d14e","v3d/furniture":"/visite/js/furniture.js?v=a9b8d14e","v3d/build":"/visite/js/build.js?v=a9b8d14e","v3d/site":"/visite/js/site.js?v=a9b8d14e","v3d/decor":"/visite/js/decor.js?v=a9b8d14e","v3d/plans":"/visite/js/plans.js?v=a9b8d14e","v3d/env":"/visite/js/env.js?v=a9b8d14e","v3d/nav":"/visite/js/nav.js?v=a9b8d14e","v3d/main":"/visite/js/main.js?v=a9b8d14e"}}</script>
+  <script type="importmap">{"imports":{"three":"/vendor/three/three.module.min.js?v=r170","three/addons/":"/vendor/three/addons/","v3d/geo":"/visite/js/geo.js?v=5108f069","v3d/flora":"/visite/js/flora.js?v=5108f069","v3d/materials":"/visite/js/materials.js?v=5108f069","v3d/furniture":"/visite/js/furniture.js?v=5108f069","v3d/build":"/visite/js/build.js?v=5108f069","v3d/pool":"/visite/js/pool.js?v=5108f069","v3d/site":"/visite/js/site.js?v=5108f069","v3d/decor":"/visite/js/decor.js?v=5108f069","v3d/plans":"/visite/js/plans.js?v=5108f069","v3d/env":"/visite/js/env.js?v=5108f069","v3d/nav":"/visite/js/nav.js?v=5108f069","v3d/main":"/visite/js/main.js?v=5108f069"}}</script>
   <link rel="modulepreload" href="/vendor/three/three.module.min.js?v=r170" />
 
   <script type="application/ld+json">
@@ -49,7 +49,7 @@
       "name": "Visite 3D des appartements neufs à Aix | 59 Cézanne",
       "description": "Visitez en 3D la résidence 59 Cézanne à Aix-en-Provence et ses deux derniers logements : l'appartement-villa de 138 m² et le duplex de 206 m².",
       "inLanguage": "fr-FR",
-      "dateModified": "2026-11-18",
+      "dateModified": "2026-11-19",
       "isPartOf": { "@id": "https://59-cezanne.com/#website" },
       "publisher": { "@id": "https://59-cezanne.com/#organization" },
       "primaryImageOfPage": { "@type": "ImageObject", "url": "https://59-cezanne.com/og/og-visite-3d.jpg", "width": 1200, "height": 630 },
@@ -196,6 +196,7 @@
       <p class="script">59 Cézanne</p>
       <div class="v3d-spin" aria-hidden="true"></div>
       <p id="v3d-loader-text" role="status">Préparation de la visite…</p>
+      <div class="v3d-bar" aria-hidden="true"><i id="v3d-loader-bar"></i></div>
     </div>
     <div id="v3d-fallback" hidden>
       <img src="/visite/img/maquette-appartement-villa-138m2.webp" srcset="/visite/img/maquette-appartement-villa-138m2-800w.webp 800w, /visite/img/maquette-appartement-villa-138m2.webp 1200w" sizes="(max-width: 900px) 100vw, 1200px" width="1200" height="756" alt="Maquette 3D de l'appartement de 138 m² : séjour tourné vers la Sainte-Victoire, trois chambres, jardin" data-alt-fr="Maquette 3D de l'appartement de 138 m² : séjour tourné vers la Sainte-Victoire, trois chambres, jardin" data-alt-en="3D model of the 138 m² apartment: living room facing the Sainte-Victoire, three bedrooms, garden" loading="lazy" decoding="async" />

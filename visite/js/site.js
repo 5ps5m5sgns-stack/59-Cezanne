@@ -1,6 +1,6 @@
 /* 59 Cézanne — visite 3D : la résidence et ses abords, d'après le dossier de plans (plan de masse, niveaux 0 à 2, quatre façades).
    Repère de l'immeuble : x de la façade Ouest (0) à la façade Est (17,39 m), z de la façade Nord (0) à la façade Sud (32,2 m),
-   y = 0 au plancher du rez-de-jardin (289,6 NGF). Étage à +2,9 m, égout de toiture à +5,8 m, terrasse de la piscine à −1,3 m,
+   y = 0 au plancher du rez-de-jardin (289,6 NGF). Étage à +2,9 m, égout de toiture à +5,70 m (295,30), faîtage à +8,80 m, terrasse de la piscine à −1,3 m,
    cour d'accès et garage à −3,3 m. L'avenue Paul-Cézanne longe la parcelle à l'Est, la Sainte-Victoire est dans cet axe.
    Seuls les deux logements à vendre sont détaillés (plans.js) ; le reste de l'immeuble est traité en volumes fidèles aux façades :
    enduit grège, cadres métalliques gris, volets coulissants taupe, garde-corps à barreaudage, tour de circulation en pierre, tuiles. */
@@ -8,9 +8,10 @@ import * as THREE from 'three';
 import { F, V } from 'v3d/furniture';
 import { railing } from 'v3d/build';
 import { Batch } from 'v3d/geo';
+import { buildPool } from 'v3d/pool';
 
 export const SITE = {
-  W: 17.39, L: 32.2, FH: 2.9, EAVE: 5.82, RISE: 2.75,
+  W: 17.39, L: 32.2, FH: 2.9, EAVE: 5.70, RISE: 2.95,             // EAVE : dessus du chéneau (égout 295,30) ; RISE : des tuiles d'égout au faîtage
   center: [9.5, 1.6, 15.5],
   /* Emprise des deux logements à vendre, pour les repérer sur la vue d'ensemble : [x0, y0, z0, x1, y1, z1]. */
   lots: {
@@ -32,7 +33,16 @@ function hip(b, mat, x0, z0, x1, z1, y, rise) {
   for (const [p, q] of [[A, R1], [B, R1], [C, R2], [D, R2]]) b.rod(mat, p, q, 0.07, 6);
 }
 
-/* Voiture stationnée : caisse arrondie, pavillon vitré, quatre roues. */
+/* Tuiles des pans de l'immeuble : le matériau des tuiles sans projection « monde » (Batch.build la ferait selon x et z pour tous les pans),
+   pour que les canaux suivent la ligne de plus grande pente de chaque pan, croupes comprises. Mêmes textures, même programme (même
+   onBeforeCompile) : seul l'objet matériau diffère, créé une fois et réutilisé à chaque construction. */
+const _panMat = new WeakMap();
+function panMat(m) {
+  let c = _panMat.get(m);
+  if (!c) { c = m.clone(); c.onBeforeCompile = m.onBeforeCompile; c.userData = { ...m.userData, wuv: 0 }; _panMat.set(m, c); }
+  return c;
+}
+
 /* Profil (z, y) extrudé selon x et centré, arêtes adoucies : carrosseries des voitures. */
 function extrudeProfile(pts, depth, bevel) {
   const sh = new THREE.Shape(pts.map(([z, y]) => new THREE.Vector2(-z, y)));
@@ -93,6 +103,10 @@ const yPed = (x) => (x <= PED_X ? COUR : PED0 + (LIM_E - Math.min(LIM_E, x)) * (
 const zS = (x) => 38.7 - (x - 16) * 0.1366;
 /* Limite Ouest (murets de soutènement existants) : s'écarte de la façade vers le Sud. */
 const xW = (z) => (z < 9.2 ? -8.40 - 0.217 * z : -10.40 - 0.17 * (z - 9.2));        // nu du muret Ouest du jardin n°8 (raccord avec plans.js), puis la limite
+/* Jardins n° 7 à 5 : axe du muret de soutènement surmonté d'une grille (trait tireté du plan de masse : 9,47 à z 9,2 ; 14,2 à z 31,6). */
+const Lz = (z) => -11.12 - 0.212 * (z - 17);
+/* Limite de propriété à l'Ouest au-delà du jardin n° 8 : soutènement existant d'environ 1 m, à conserver (plan de masse). */
+const xP = (z) => -13.0 - 0.23 * (z - 7.1);
 
 /* Dalle polygonale [[x, z], …] dont le dessus suit y = yf(x, z) (linéaire sur le polygone : rampes, trottoirs, chaussée), épaisse de t. */
 function surf(b, mat, pts, yf, t = 0.3) {
@@ -166,37 +180,70 @@ export function buildSite(b, M, { o, skip }) {
   box('stucco', 0, y1, 25.88 + G, W, EAVE, L);                                                              // logement 05
   box('socle', -0.02, -3.3, -0.02, W + 0.02, y0, L + 0.02);                                                 // soubassement (garage, caves)
 
-  // ── Façades : un « cadre » métallique par logement, vitrage sombre, volets coulissants, garde-corps ──
+  // ── Façades relevées sur les élévations (1:150) : cadres métalliques formant casquette, baies, volets coulissants, garde-corps ──
+  // Les élévations placent l'étage à 292,70 (3,10 m au-dessus du rez-de-jardin) ; le modèle le garde à 2,90 (planchers des logements
+  // détaillés). Les baies sont donc posées par rapport à leur plancher, comme sur les élévations : 2,40 m au rez-de-jardin, 2,20 m à
+  // l'étage, dormant de 5 cm, 24 cm d'enduit sous le débord (bas du chéneau à 5,40, dessus à 5,70 : égout 295,30).
   const P = { E: (a, d) => [W + d, a], W: (a, d) => [-d, a], N: (a, d) => [a, -d], S: (a, d) => [a, L + d] };
-  const unit = (face, a0, a1, y, { depth = 0.55, rail = false, shut = 0.3, h = 2.42 } = {}) => {
-    const fb = (m, s0, s1, d0, d1, ya, yb) => { const p = P[face](s0, d0), q = P[face](s1, d1); box(m, Math.min(p[0], q[0]), ya, Math.min(p[1], q[1]), Math.max(p[0], q[0]), yb, Math.max(p[1], q[1])); };
-    fb('glassDark', a0 + 0.1, a1 - 0.1, -0.01, 0.03, y + 0.04, y + h);
-    const n = Math.max(2, Math.round((a1 - a0) / 1.35));
-    for (let i = 0; i <= n; i++) { const a = a0 + 0.1 + ((a1 - a0 - 0.2) / n) * i; fb('cadre', a - 0.03, a + 0.03, 0.03, 0.07, y + 0.04, y + h); }
-    fb('cadre', a0 + 0.1, a1 - 0.1, 0.03, 0.07, y + h - 0.06, y + h); fb('cadre', a0 + 0.1, a1 - 0.1, 0.03, 0.07, y + 0.04, y + 0.1);
-    for (let i = 0; i < n; i++) if ((i + Math.round(a0)) % 3 === 0 || shut > 0.5) { const a = a0 + 0.1 + ((a1 - a0 - 0.2) / n) * i; fb('shutter', a + 0.02, a + (a1 - a0 - 0.2) / n * Math.min(1, shut * 2.4), 0.1, 0.14, y + 0.06, y + h - 0.02); }
-    fb('cadre', a0 - 0.12, a1 + 0.12, 0, depth, y + h + 0.06, y + h + 0.18); fb('cadre', a0 - 0.12, a1 + 0.12, 0, depth, y - 0.12, y);
-    fb('cadre', a0 - 0.12, a0, 0, depth, y - 0.12, y + h + 0.18); fb('cadre', a1, a1 + 0.12, 0, depth, y - 0.12, y + h + 0.18);
-    if (rail) { const p = P[face](a0, depth - 0.06), q = P[face](a1, depth - 0.06); railing(b, M, p[0], p[1], q[0], q[1], y, 1.02, 'cadre'); }
+  const fbox = (face, m, s0, s1, d0, d1, ya, yb) => { const p = P[face](s0, d0), q = P[face](s1, d1); box(m, Math.min(p[0], q[0]), ya, Math.min(p[1], q[1]), Math.max(p[0], q[0]), yb, Math.max(p[1], q[1])); };
+  /* Chaque façade : un cadre (montants et casquette de 12 cm, saillie `depth`) autour d'une suite de baies et de volets,
+     abscisses relevées une à une. Baie ['w', a0, a1, vantaux, garde-corps] : dormant, vantaux, vitrage ; volet ['s', a0, a1, décalage] :
+     panneau à lames verticales garé sur le trumeau, ou tiré d'autant sur la baie voisine ; rail haut et guide bas filants. */
+  const bay = (face, y, a0, a1, parts, { depth = 0.35, h = 2.2, top = true, bot = true, yb = y, yt = y + h + 0.05, front = false } = {}) => {
+    const f = (m, s0, s1, d0, d1, ya, yz) => fbox(face, m, s0, s1, d0, d1, ya, yz), cw = 0.12, s0 = bot ? yb - cw : yb, s1 = top ? yt + cw : yt;
+    if (top) f('cadre', a0 - cw, a1 + cw, 0, depth, yt, yt + cw);
+    if (bot) f('cadre', a0 - cw, a1 + cw, 0, depth, yb - cw, yb);
+    f('cadre', a0 - cw, a0, 0, depth, s0, s1); f('cadre', a1, a1 + cw, 0, depth, s0, s1);
+    if (parts.some((p) => p[0] === 's')) { f('cadre', a0, a1, 0.1, 0.16, y + h + 0.01, y + h + 0.05); f('cadre', a0, a1, 0.1, 0.15, y, y + 0.012); }   // rail et guide des volets
+    for (const [k, p0, p1, n, gc] of parts) {
+      if (k === 's') { const d = n || 0; f('shutter', p0 + d, p1 + d, 0.105, 0.135, y + 0.015, y + h + 0.01); f('cadre', p0 + d, p0 + d + 0.035, 0.1, 0.14, y + 0.015, y + h + 0.01); f('cadre', p1 + d - 0.035, p1 + d, 0.1, 0.14, y + 0.015, y + h + 0.01); continue; }
+      f('glassDark', p0 + 0.05, p1 - 0.05, -0.01, 0.03, y + 0.05, y + h);
+      f('cadre', p0, p1, 0, 0.06, y + h, y + h + 0.05); f('cadre', p0, p1, 0, 0.06, y, y + 0.05);                              // dormant
+      f('cadre', p0, p0 + 0.05, 0, 0.06, y + 0.05, y + h); f('cadre', p1 - 0.05, p1, 0, 0.06, y + 0.05, y + h);
+      for (let i = 1; i < n; i++) { const a = p0 + ((p1 - p0) * i) / n; f('cadre', a - 0.035, a + 0.035, 0, 0.065, y + 0.05, y + h); }   // montants des vantaux
+      f('cadre', p0 + 0.05, p1 - 0.05, 0.03, 0.06, y + 0.05, y + 0.13);                                                     // traverse basse des vantaux
+      if (gc) { const p = P[face](p0 + 0.06, 0.2), q = P[face](p1 - 0.06, 0.2); railing(b, M, p[0], p[1], q[0], q[1], y, 1.0, 'cadre'); }
+    }
+    if (front) { const p = P[face](a0, depth - 0.06), q = P[face](a1, depth - 0.06); railing(b, M, p[0], p[1], q[0], q[1], y, 1.02, 'cadre'); }   // balcon
   };
-  unit('E', 0.5, 8.6, 0.02, { rail: true, depth: 0.9 }); if (has('villa')) unit('E', 0.5, 8.6, FH + 0.02, { rail: true, depth: 0.9 });
-  if (has('duplex')) for (const a of [13.75, 19.75]) { unit('E', a, a + 5.4, 0.02); unit('E', a, a + 5.4, FH + 0.02, { rail: true }); }
-  unit('E', 25.95, 31.5, 0.02); unit('E', 25.95, 31.5, FH + 0.02, { rail: true });
-  if (has('villa')) unit('W', 0.6, 8.7, FH + 0.02, { depth: 0.35 });
-  unit('W', 9.7, 15.6, FH + 0.02, { depth: 0.35 }); unit('W', 16.3, 22.6, FH + 0.02, { depth: 0.35 }); unit('W', 23.3, 31.6, FH + 0.02, { depth: 0.35 });
-  unit('N', 2.2, 15.4, 0.02, { depth: 0.35, shut: 0.4 }); if (has('villa')) unit('N', 2.2, 15.4, FH + 0.02, { depth: 0.35, rail: true, shut: 0.4 });
-  unit('S', 2.0, 15.6, 0.02, { depth: 0.35, shut: 0.4 }); unit('S', 2.6, 15.0, FH + 0.02, { depth: 0.35, rail: true, shut: 0.4 });
+  // Est (élévation Est, logement par logement) : cadre sur deux niveaux, bandeau sombre entre les niveaux ; balcons du logement 01 et de la villa
+  const east = (a0, a1, rdj, eta, o = {}) => {
+    bay('E', 0, a0, a1, rdj, { h: 2.4, depth: o.depth || 0.35, front: o.front }); fbox('E', 'cadre', a0, a1, 0, 0.04, 2.57, FH - 0.12);
+    if (eta) bay('E', FH, a0, a1, eta, { depth: o.depth || 0.35, front: o.front });
+  };
+  const NE = (gc) => [['w', 1.64, 5.43, 3, gc], ['s', 5.43, 6.87], ['w', 6.87, 8.38, 2, gc]];
+  east(1.52, 8.5, NE(false), has('villa') && NE(false), { depth: 0.9, front: true });
+  if (has('duplex')) {
+    east(14.4, 18.6, [['w', 14.5, 18.5, 3]], [['w', 14.5, 15.8, 2, true], ['s', 15.8, 17.2], ['w', 17.2, 18.5, 2, true]]);
+    east(20.35, 24.6, [['w', 20.45, 24.27, 3]], [['w', 20.45, 21.77, 2, true], ['s', 21.77, 23.18], ['w', 23.18, 24.5, 2, true]]);
+  }
+  east(26.3, 30.45, [['w', 26.4, 30.35, 2]], [['w', 26.4, 27.38, 1, true], ['s', 27.38, 28.43, -0.5], ['w', 28.43, 30.35, 2, true]]);
+  // Ouest (étage, jardins) : ME01b, volet, ME02b · ME02b, volet, ME03 · ME03, volet, ME02b · ME02b, volet, ME01b
+  if (has('villa')) bay('W', FH, 1.48, 8.31, [['w', 1.48, 5.62, 3], ['s', 5.62, 6.95], ['w', 6.95, 8.31, 2]]);
+  bay('W', FH, 10.62, 15.77, [['w', 10.62, 11.96, 2], ['s', 11.96, 13.36], ['w', 13.36, 15.77, 2]]);
+  bay('W', FH, 17.19, 22.24, [['w', 17.19, 19.64, 2], ['s', 19.64, 20.92, -0.85], ['w', 20.92, 22.24, 2]]);   // un volet à demi tiré
+  bay('W', FH, 24.46, 31.38, [['w', 24.46, 25.94, 2], ['s', 25.94, 27.3], ['w', 27.3, 31.38, 3]]);
+  // Nord : quatre portes-fenêtres par niveau dans un cadre unique sur deux niveaux, volets garés entre elles ; balconnets à l'étage
+  const NB = (gc) => [['w', 3.11, 4.3, 2, gc], ['s', 4.3, 5.72], ['w', 5.72, 6.89, 2, gc], ['s', 6.89, 8.29], ['w', 8.29, 9.44, 2, gc], ['s', 9.44, 10.78], ['s', 10.78, 12.11], ['w', 12.11, 13.27, 2, gc]];
+  bay('N', 0, 3.0, 13.32, NB(false), { h: 2.4, top: !has('villa'), yt: has('villa') ? FH : 2.45 });
+  if (has('villa')) bay('N', FH, 3.0, 13.32, NB(true), { bot: false });
+  // Sud : rez-de-jardin (logement 04) et étage (logement 05), deux cadres
+  bay('S', 0, 2.06, 14.98, [['w', 2.18, 3.39, 2], ['s', 3.39, 4.79], ['w', 4.79, 5.98, 2], ['s', 5.98, 7.32], ['w', 7.32, 8.53, 2], ['s', 8.53, 9.91], ['w', 9.91, 13.68, 3], ['s', 13.68, 14.98]], { h: 2.4 });
+  bay('S', FH, 2.06, 12.15, [['w', 2.1, 3.34, 2, true], ['s', 3.34, 4.6], ['w', 4.6, 5.83, 2, true], ['s', 5.83, 7.12], ['s', 7.12, 8.41], ['w', 8.41, 9.62, 2, true], ['s', 9.62, 10.92, 0.75], ['w', 10.92, 12.1, 2, true]]);
+  // soubassement taloché plus sombre au pied des façades Nord et Sud, hors cadres (1 cm en saillie)
+  for (const [x0, x1] of [[0, 2.88], [13.44, W]]) box('socle', x0, -0.12, -0.01, x1, 0.22, 0.02);         // dos noyé dans le mur : aucune face dans le plan
+  for (const [x0, x1] of [[0, 1.94], [15.1, W]]) box('socle', x0, -0.12, L - 0.02, x1, 0.22, L + 0.01);     // de celles des terrasses
 
 
-  // ── Tour de circulation commune : pierre de taille, fente vitrée ; toit-terrasse inaccessible gravillonné (295,1) derrière l'acrotère (296,3) ──
-  // Le plan de masse la montre de x = 15 à 18,94 : sa partie engagée dans l'immeuble émerge de la toiture (à partir de x = 16, là où
-  // le pan passe sous la terrasse ; la toiture n'est pas évidée au-delà).
-  box('ashlar', W, COUR, 9.62, W + 1.55, 6.5, 13.3); box('ashlar', 16.0, EAVE - 0.2, 9.62, W, 6.5, 13.1);
-  for (const [x0, z0, x1, z1] of [[16.0, 9.62, W + 1.55, 9.82], [16.0, 13.1, W + 1.55, 13.3], [16.0, 9.82, 16.2, 13.1], [W + 1.35, 9.82, W + 1.55, 13.1]]) box('ashlar', x0, 6.5, z0, x1, 6.7, z1);
-  box('cadre', 15.97, 6.7, 9.59, W + 1.58, 6.74, 13.33);                                                   // couvertine aluminium de l'acrotère
-  box('gravel', 16.2, 6.5, 9.82, W + 1.35, 6.52, 13.1);                                                    // gravier ton sable
-  box('glassDark', W + 1.55, -1.2, 10.85, W + 1.58, EAVE - 0.3, 12.05); for (const z of [10.85, 12.05]) box('cadre', W + 1.55, -1.2, z - 0.03, W + 1.6, EAVE - 0.3, z + 0.03);
-  for (const y of [-1.2, 1.05, FH + 0.1, EAVE - 0.3]) box('cadre', W + 1.55, y - 0.03, 10.85, W + 1.6, y + 0.03, 12.05);
+  // ── Tour de circulation commune : pierre de taille, fente vitrée ; toit-terrasse inaccessible gravillonné derrière l'acrotère (296,3) ──
+  // Le plan de masse la montre de x = 15 à 18,94 : la toiture est évidée à son droit (pan Est), la tour en émerge.
+  box('ashlar', W, COUR, 9.62, W + 1.55, 6.5, 13.3); box('ashlar', 15.0, EAVE + 0.13, 9.62, W, 6.5, 13.3);      // au-dessus des emprises des logements
+  for (const [x0, z0, x1, z1] of [[15.0, 9.62, W + 1.55, 9.82], [15.0, 13.1, W + 1.55, 13.3], [15.0, 9.82, 15.2, 13.1], [W + 1.35, 9.82, W + 1.55, 13.1]]) box('ashlar', x0, 6.5, z0, x1, 6.7, z1);
+  box('cadre', 14.97, 6.7, 9.59, W + 1.58, 6.74, 13.33);                                                   // couvertine aluminium de l'acrotère
+  box('gravel', 15.2, 6.5, 9.82, W + 1.35, 6.52, 13.1);                                                    // gravier ton sable
+  // fente vitrée de l'escalier (élévation Est : 1,08 m de large, z 11,74 à 12,82), traverses au droit des paliers
+  box('glassDark', W + 1.55, -1.2, 11.74, W + 1.58, 5.0, 12.82); for (const z of [11.74, 12.82]) box('cadre', W + 1.55, -1.2, z - 0.03, W + 1.6, 5.0, z + 0.03);
+  for (const y of [-1.2, 1.0, 2.25, 2.8, 5.0]) box('cadre', W + 1.55, y - 0.03, 11.74, W + 1.6, y + 0.03, 12.82);
   // hall d'entrée au pied de la tour, au bout de l'accès piéton : façade vitrée à l'Est, auvent métallique éclairé par-dessous
   box('ashlar', W, COUR, 7.65, W + 1.55, -0.3, 7.95); box('ashlar', W, -0.62, 7.95, W + 1.55, -0.3, 9.62);
   box('glassDark', W + 1.48, COUR + 0.02, 7.95, W + 1.51, -0.62, 9.62);
@@ -205,58 +252,131 @@ export function buildSite(b, M, { o, skip }) {
   box('cadre', W + 1.55, -0.6, 7.75, W + 2.45, -0.5, 9.75); box('led', W + 1.62, -0.604, 8.0, W + 2.38, -0.6, 9.5);
   box('cadre', W + 1.55, COUR, 8.0, W + 2.3, COUR + 0.015, 9.5);                                            // tapis-brosse encastré
 
-  // ── Toiture : quatre pentes à 30 %, tuiles romanes ton panaché vieilli, débord formant chéneau, six fenêtres de toit 100 × 140 ──
+  // ── Toiture : quatre pentes, tuiles romanes ton panaché vieilli, débord en béton formant chéneau, six fenêtres de toit 100 × 140 ──
+  // Égout 295,30 (dessus du chéneau, y 5,70) et faîtage 298,40 (dessus des tuiles faîtières, y 8,80) : plan de masse ; débord de 0,55 m
+  // relevé sur les élévations. Tenir ces deux cotes avec ce débord donne 32 % de pente (30 % annoncés, avec un égout à 295,50).
   b.on('ext:top');
-  hip(b, mat('roofTile'), -0.7, -0.7, W + 0.7, L + 0.7, EAVE + 0.02, RISE); box('cadre', -0.7, EAVE - 0.1, -0.7, W + 0.7, EAVE + 0.02, L + 0.7);
-  box('stucco', -0.45, EAVE - 0.28, -0.45, W + 0.45, EAVE - 0.1, L + 0.45);
-  for (const z of [10.47, 15.47, 20.4]) for (const s of [-1, 1]) {                                          // de part et d'autre du faîtage (plan de masse)
-    const x = W / 2 + s * 2.12, y = EAVE + 0.02 + (W / 2 + 0.7 - 2.12) * 0.3;
-    b.geo(M.cadre, new THREE.BoxGeometry(1.46, 0.08, 1.06), x, y + 0.03, z, 0, 0, s * -0.2915); b.geo(M.glassDark, new THREE.BoxGeometry(1.34, 0.03, 0.94), x, y + 0.075, z, 0, 0, s * -0.2915);
+  { const rm = panMat(M.roof), TS = M.roof.userData.wuv || 4, OV = 0.55, x0 = -OV, x1 = W + OV, z0 = -OV, z1 = L + OV, hw = (x1 - x0) / 2, xm = (x0 + x1) / 2;
+    const yb = EAVE + 0.03, yr = yb + RISE, K = RISE / hw, sec = Math.hypot(1, K);
+    /* Un pan : polygone en plan ; d = distance horizontale à l'égout. Coordonnées de texture propres à chaque pan : u suit la ligne de plus
+       grande pente (les canaux des tuiles, comme sur les longs pans projetés selon x), v l'égout — les croupes ont ainsi leurs files dans le bon sens. */
+    const pan = (poly, d, u) => {
+      const sh = new THREE.ShapeGeometry(new THREE.Shape(poly.map(([x, z]) => new THREE.Vector2(x, z)))), p = sh.attributes.position, I = sh.index.array, pos = [], uv = [];
+      for (let t = 0; t < I.length; t += 3) {
+        let tri = [I[t], I[t + 1], I[t + 2]].map((i) => [p.getX(i), p.getY(i)]);
+        if ((tri[1][0] - tri[0][0]) * (tri[2][1] - tri[0][1]) - (tri[1][1] - tri[0][1]) * (tri[2][0] - tri[0][0]) > 0) tri = [tri[0], tri[2], tri[1]];   // face vers le ciel
+        for (const [x, z] of tri) { const dd = d(x, z); pos.push(x, yb + dd * K, z); uv.push((dd * sec) / TS, u(x, z) / TS); }
+      }
+      const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3)); g.setAttribute('uv', new THREE.Float32BufferAttribute(uv, 2)); g.computeVertexNormals();
+      b.add(rm, g);
+    };
+    const TX = 15.0, TZ0 = 9.62, TZ1 = 13.3;                                                                    // trémie de la tour dans le pan Est
+    pan([[x0, z0], [xm, z0 + hw], [xm, z1 - hw], [x0, z1]], (x) => x - x0, (x, z) => z);
+    pan([[x1, z0], [x1, TZ0], [TX, TZ0], [TX, TZ1], [x1, TZ1], [x1, z1], [xm, z1 - hw], [xm, z0 + hw]], (x) => x1 - x, (x, z) => -z);
+    pan([[x0, z0], [x1, z0], [xm, z0 + hw]], (x, z) => z - z0, (x) => -x);
+    pan([[x0, z1], [xm, z1 - hw], [x1, z1]], (x, z) => z1 - z, (x) => x);
+    /* Tuiles faîtières sur le faîtage et les arêtiers : demi-cylindre un peu plus qu'à moitié (les bords couvrent les pans). */
+    const cap = (a, c, r) => {
+      const A = new THREE.Vector3(...a), D = new THREE.Vector3(...c).sub(A), len = D.length(); D.normalize();
+      const n = new THREE.Vector3(0, 1, 0).addScaledVector(D, -D.y).normalize(), s = new THREE.Vector3().crossVectors(D, n), pos = [], uv = [], N = 8;
+      const at = (k, t) => { const th = -0.25 + ((Math.PI + 0.5) * k) / N; return [A.clone().addScaledVector(D, t * len).addScaledVector(s, r * Math.cos(th)).addScaledVector(n, r * Math.sin(th) - 0.02), [(t * len) / TS, (th * r) / TS]]; };
+      for (let k = 0; k < N; k++) for (const [kk, t] of [[k, 0], [k + 1, 1], [k + 1, 0], [k, 0], [k, 1], [k + 1, 1]]) { const [q, w] = at(kk, t); pos.push(q.x, q.y, q.z); uv.push(...w); }
+      const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3)); g.setAttribute('uv', new THREE.Float32BufferAttribute(uv, 2)); g.computeVertexNormals();
+      let up = 0; const nn = g.attributes.normal; for (let i = 0; i < nn.count; i++) up += nn.getY(i);
+      if (up < 0) { const q = g.attributes.position.array; for (let i = 0; i < q.length; i += 9) for (let j = 0; j < 3; j++) { const t = q[i + 3 + j]; q[i + 3 + j] = q[i + 6 + j]; q[i + 6 + j] = t; } g.computeVertexNormals(); }
+      b.add(rm, g);
+    };
+    const R1 = [xm, yr, z0 + hw], R2 = [xm, yr, z1 - hw];
+    cap(R1, R2, 0.14); for (const [p, q] of [[[x0, yb, z0], R1], [[x1, yb, z0], R1], [[x1, yb, z1], R2], [[x0, yb, z1], R2]]) cap(p, q, 0.12);
+    // débord en béton formant chéneau : bandeau enduit de 30 cm (sous-face comprise) et rebord qui masque le bas des tuiles
+    const yc = EAVE - 0.3;
+    box('stucco', x0, yc, z0, x1, EAVE, 0); box('stucco', x0, yc, L, x1, EAVE, z1); box('stucco', x0, yc, 0, 0, EAVE, L); box('stucco', W, yc, 0, x1, EAVE, TZ0); box('stucco', W, yc, TZ1, x1, EAVE, L);
+    for (const [a0, c0, a1, c1] of [[x0, z0, x1, z0 + 0.08], [x0, z1 - 0.08, x1, z1], [x0, z0 + 0.08, x0 + 0.08, z1 - 0.08], [x1 - 0.08, z0 + 0.08, x1, TZ0], [x1 - 0.08, TZ1, x1, z1 - 0.08]]) box('stucco', a0, EAVE, c0, a1, EAVE + 0.07, c1);
+    // fenêtres de toit (plan de masse : de part et d'autre du faîtage, au droit des circulations et des duplex)
+    const ang = Math.atan(K);
+    for (const z of [10.47, 15.47, 20.4]) for (const s of [-1, 1]) {
+      const x = xm + s * 2.12, y = yb + (hw - 2.12) * K;
+      b.geo(M.cadre, new THREE.BoxGeometry(1.46, 0.08, 1.06), x, y + 0.03, z, 0, 0, s * -ang); b.geo(M.glassDark, new THREE.BoxGeometry(1.34, 0.03, 0.94), x, y + 0.075, z, 0, 0, s * -ang);
+      b.geo(M.cadre, new THREE.BoxGeometry(0.06, 0.05, 0.98), x - s * 0.56 * Math.cos(ang), y + 0.085 + 0.56 * Math.sin(ang), z, 0, 0, s * -ang);   // barre de manœuvre en tête
+    }
   }
-  const gy = EAVE + 0.0, gx0 = -0.76, gx1 = W + 0.76, gz0 = -0.76, gz1 = L + 0.76;                  // chéneau : bord arrondi du débord en béton
-  b.rod(M.cadre, [gx0, gy, gz0], [gx0, gy, gz1], 0.05, 8); b.rod(M.cadre, [gx1, gy, gz0], [gx1, gy, gz1], 0.05, 8); b.rod(M.cadre, [gx0, gy, gz0], [gx1, gy, gz0], 0.05, 8); b.rod(M.cadre, [gx0, gy, gz1], [gx1, gy, gz1], 0.05, 8);
-  for (const z of [12, 21]) { box('stucco', W / 2 - 0.35, EAVE + RISE - 0.5, z - 0.3, W / 2 + 0.35, EAVE + RISE + 0.85, z + 0.3); box('cadre', W / 2 - 0.42, EAVE + RISE + 0.85, z - 0.37, W / 2 + 0.42, EAVE + RISE + 0.93, z + 0.37); }   // souches sur le faîtage
   b.on('ctx');
-  // descentes d'eau pluviale (aluminium RAL 7039) : aux angles et entre les logements de la façade Est
-  for (const [x, z, y0] of [[0.18, -0.04, -0.05], [W - 0.18, -0.04, -0.05], [0.18, L + 0.04, -0.05], [W - 0.18, L + 0.04, -0.05], [W + 0.04, 19.45, -0.3], [W + 0.04, 25.55, -0.3]])
-    b.rod(M.cadre, [x, EAVE - 0.1, z], [x, y0, z], 0.04, 8);
-  // unités extérieures de pompe à chaleur à l'extrémité Ouest des façades Sud et Nord, sur plots, derrière une haie basse
-  for (const x of [3.2, 4.4]) { box('white', x - 0.45, 0.05, L + 0.35, x + 0.45, 0.72, L + 0.7); box('cadre', x - 0.3, 0.12, L + 0.701, x + 0.3, 0.62, L + 0.704); box('concrete', x - 0.5, -0.1, L + 0.3, x + 0.5, 0.05, L + 0.75); }
-  box('white', 0.9, 0.05, -0.7, 1.8, 0.72, -0.35); box('cadre', 1.05, 0.12, -0.704, 1.65, 0.62, -0.701); box('concrete', 0.85, -0.1, -0.75, 1.85, 0.05, -0.3);
-
-  // ── Jardins hauts à l'Ouest (logements 05 à 08), au niveau de l'étage : quatre jardins séparés par des haies (9,37 · 16,27 · 23,27 · 29,4) ──
-  S('earth', [[-14.5, 0.2], [-0.2, 0.2], [-0.2, zS(-0.2)], [-14.5, zS(-14.5)]], FH - 0.32, 6.0);
-  const garden = (z0, z1, seed, deco) => {
-    const gw = xW(z1) + 0.4;                                                                                  // le jardin s'élargit avec la limite Ouest
-    box('socle', gw - 0.4, FH - 0.32, z0, 0, FH - 0.1, z1); box('grass', gw, FH - 0.1, z0, -3.2, FH - 0.02, z1); box('terrace', -3.2, FH - 0.1, z0, 0, FH - 0.015, z1);
-    box('cadre', -3.206, FH - 0.08, z0, -3.2, FH - 0.004, z1);                                              // bordure acier entre pelouse et terrasse
-    V.hedge(b, M, gw - 0.35, z0, gw + 0.3, z1, { h: 1.7, y: FH - 0.05 }); V.hedge(b, M, gw, z1 - 0.3, -3.4, z1 + 0.3, { h: 1.3, y: FH - 0.05 });
-    if (deco === 'table') { b.push(-1.7, FH - 0.015, (z0 + z1) / 2, 90 * Math.PI / 180); F.outdoorTable(b, M, { w: 1.8, n: 3 }); b.pop(); }
-    if (deco === 'sofa') { b.push(-1.5, FH - 0.015, (z0 + z1) / 2, Math.PI / 2); F.outdoorSofa(b, M, { w: 2.1 }); b.pop(); b.push(-6.3, FH - 0.02, z0 + 2.2, -Math.PI / 2); F.lounger(b, M, {}); b.pop(); b.push(-5.2, FH - 0.02, z0 + 1.2, 0); F.parasol(b, M, { r: 1.4 }); b.pop(); }
-    V.lavender(b, M, -3.5, z0 + 0.8, -3.5, z1 - 0.8, { y: FH - 0.05, seed });
+  // descentes d'eau pluviale (aluminium RAL 7039) : boîte à eau sous le chéneau, col de cygne, colliers, dauphin en fonte au pied
+  const ep = (face, a, y0) => {
+    const p = (d, y) => { const q = P[face](a, d); return [q[0], y, q[1]]; }, yc = EAVE - 0.3;
+    b.rod(M.cadre, p(0.42, yc + 0.02), p(0.42, yc - 0.18), 0.045, 8); b.rod(M.cadre, p(0.42, yc - 0.18), p(0.07, yc - 0.45), 0.04, 8);
+    b.rod(M.cadre, p(0.07, yc - 0.45), p(0.07, y0 + 0.9), 0.04, 8); b.rod(M.black, p(0.07, y0 + 0.95), p(0.07, y0), 0.048, 8);
+    for (let y = y0 + 1.6; y < yc - 0.6; y += 1.6) { const q = P[face](a, 0.07); b.box(M.cadre, q[0] - 0.05, y, q[1] - 0.05, q[0] + 0.05, y + 0.03, q[1] + 0.05); }
   };
-  if (has('villa')) garden(-0.4, 9.37, 3, 'table');
-  garden(9.2, 16.27, 4, 'sofa'); if (!has('villa')) V.hedge(b, M, xW(9.2) + 0.4, 9.25, -3.4, 9.75, { h: 1.3, y: FH - 0.05 });   // haie du n°7 le long du grillage du n°8
-  garden(16.27, 23.27, 5, 'table'); garden(23.27, 29.4, 6, 'sofa');                     // façade Ouest : 9,0 · 6,9 · 7,0
-  for (const z of [9.9, 23.8]) { box('white', -0.7, FH, z - 0.45, -0.35, FH + 0.67, z + 0.45); box('cadre', -0.704, FH + 0.07, z - 0.3, -0.701, FH + 0.57, z + 0.3); }   // unités extérieures de PAC (façade Ouest)
-  // oliviers et amandiers « à planter » le long de la limite Ouest (plan de masse)
-  for (const [x, z, k, h, r, sd] of [[-5.4, 4.0, ALMOND, 4.2, 1.7, 41], [-7.1, 6.6, 'olive', 4.4, 1.8, 42], [-9.2, 10.6, 'olive', 4.6, 1.9, 43], [-9.7, 13.6, ALMOND, 4.4, 1.8, 44],
-    [-10.1, 17.6, 'olive', 4.8, 1.9, 45], [-10.8, 24.4, 'olive', 4.6, 1.9, 46], [-11.2, 28.2, ALMOND, 4.2, 1.7, 47]]) {
+  ep('N', 1.0, -0.03); ep('N', W - 0.18, -0.03); ep('S', 0.25, -0.1); ep('S', W - 0.18, -0.1);
+  if (has('villa')) ep('W', 8.53, FH - 0.03); ep('W', 22.95, FH - 0.03); ep('E', 19.45, -0.3); ep('E', 25.55, -0.3);
+  // unités extérieures de pompe à chaleur : deux par mur de jardin à l'Ouest (sur consoles), une au pied des façades Sud et Nord, robinets de puisage
+  const pac = (face, a, y, w = 0.46, dd = 0.32) => {
+    fbox(face, 'white', a - w / 2, a + w / 2, 0.04, 0.04 + dd, y, y + 0.68); fbox(face, 'cadre', a - w / 2 + 0.05, a + w / 2 - 0.05, 0.04 + dd, 0.044 + dd, y + 0.08, y + 0.6);
+    for (const s of [-1, 1]) fbox(face, 'cadre', a + s * (w / 2 - 0.06) - 0.02, a + s * (w / 2 - 0.06) + 0.02, 0, 0.04 + dd + 0.04, y - 0.05, y);
+  };
+  if (has('villa')) pac('W', 9.07, FH + 0.2); pac('W', 9.75, FH + 0.2); pac('W', 23.35, FH + 0.2); pac('W', 23.93, FH + 0.2);
+  pac('S', 1.33, 0.05, 0.86); box('concrete', 0.85, -0.1, L + 0.04, 1.81, 0.05, L + 0.5);
+  pac('N', 1.35, 0.05, 0.9); box('concrete', 0.85, -0.1, -0.5, 1.85, 0.05, -0.04);
+  for (const z of [8.75, 10.2, 24.3]) if (z > 9.37 || has('villa')) { b.box(M.steel, -0.05, FH + 0.45, z - 0.025, 0, FH + 0.5, z + 0.025); b.rod(M.steel, [-0.03, FH + 0.475, z], [-0.1, FH + 0.43, z], 0.012, 6); }
+  // appliques murales (lumière vers le bas) près des portes-fenêtres des jardins et des terrasses
+  const appl = (face, a, y) => { fbox(face, 'cadre', a - 0.06, a + 0.06, 0, 0.1, y, y + 0.22); fbox(face, 'led', a - 0.045, a + 0.045, 0.01, 0.09, y - 0.003, y); };
+  for (const z of [16.55, 23.7]) appl('W', z, FH + 2.05); appl('N', 2.55, 2.05); appl('S', 1.65, 2.05); appl('S', 15.45, 2.05);
+
+  // ── Jardins hauts à l'Ouest (logements 05 à 08), au niveau de l'étage (plan de masse) ──
+  // Limite des jardins n° 7, 6 et 5 : muret de soutènement (< 2 m) surmonté d'une grille, en biais (axe Lz), un portillon de jardinier
+  // par jardin ; séparations par clôture doublée d'une haie vive (9,2 · 16,27 · 23,27) ; le n° 5 s'arrête à 31,3 sur un muret à grille.
+  // Au-delà, un talus planté descend vers le soutènement existant (environ 1 m) de la limite de propriété (xP).
+  const gx = (z) => Lz(z) + 0.15;                                                                          // nu intérieur du muret
+  S('earth', [[-14.5, 0.2], [-0.2, 0.2], [-0.2, 31.3], [gx(31.3), 31.3], [gx(9.2), 9.2], [xW(9.2) - 0.3, 9.2], [xW(8.75) - 0.3, 8.75], [-13.0, 7.1], [-14.5, 7.1]], FH - 0.32, 6.0);
+  const garden = (z0, z1, wx, tz0, tz1, seed, deco) => {
+    S('socle', [[wx(z0), z0], [0, z0], [0, z1], [wx(z1), z1]], FH - 0.1, 0.22);
+    S('mulch', [[wx(z0), z0], [wx(z0) + 0.9, z0], [wx(z1) + 0.9, z1], [wx(z1), z1]], FH - 0.035, 0.06);   // massif paillé le long du muret
+    S('grass', [[wx(z0) + 0.9, z0], [-4.1, z0], [-4.1, z1], [wx(z1) + 0.9, z1]], FH - 0.02, 0.07);
+    box('grass', -4.1, FH - 0.09, z0, -0.3, FH - 0.02, tz0); box('grass', -4.1, FH - 0.09, tz1, -0.3, FH - 0.02, z1);
+    box('terrace', -3.7, FH - 0.1, tz0, -0.3, FH - 0.015, tz1); box('gravel', -4.1, FH - 0.08, tz0, -3.7, FH - 0.03, tz1);   // terrasse, bande de graviers côté pelouse
+    box('gravel', -0.3, FH - 0.08, z0, 0, FH - 0.03, z1);                                                       // gravier au pied de la façade (rejaillissement)
+    for (const x of [-4.106, -3.7]) box('cadre', x, FH - 0.08, tz0, x + 0.006, FH - 0.004, tz1);              // bordures acier
+    if (deco === 'table') { b.push(-1.9, FH - 0.015, (tz0 + tz1) / 2, 90 * Math.PI / 180); F.outdoorTable(b, M, { w: 1.8, n: 3 }); b.pop(); }
+    if (deco === 'sofa') { b.push(-1.5, FH - 0.015, (tz0 + tz1) / 2, Math.PI / 2); F.outdoorSofa(b, M, { w: 2.1 }); b.pop(); b.push(-6.3, FH - 0.02, z0 + 2.2, -Math.PI / 2); F.lounger(b, M, {}); b.pop(); b.push(-5.2, FH - 0.02, z0 + 1.2, 0); F.parasol(b, M, { r: 1.4 }); b.pop(); }
+    V.lavender(b, M, wx(z0 + 0.7) + 0.45, z0 + 0.7, wx(z0 + 3.4) + 0.45, z0 + 3.4, { y: FH - 0.035, seed });
+    shrub(wx(z1 - 1.2) + 0.45, z1 - 1.2, { kind: 'rosemary', r: 0.45, h: 0.8, y: FH - 0.035, seed: seed + 20 });
+  };
+  if (has('villa')) {                                                                                       // jardin n° 8 (détaillé avec l'appartement-villa)
+    garden(0.35, 9.2, xW, 1.13, 8.53, 3, 'table'); V.hedge(b, M, xW(9.0) + 0.45, 8.85, -0.9, 9.15, { h: 1.5, y: FH - 0.05 });
+    wallPath(b, MX.drystone, [[xW(0.2) - 0.15, 0.2], [xW(9.2) - 0.15, 9.2]], 0.3, 1.2, FH + 0.15); railing(b, M, xW(0.6) - 0.15, 0.6, xW(9.0) - 0.15, 9.0, FH + 0.15, 0.9, 'cadre');
+  }
+  garden(9.2, 16.27, gx, 10.42, 15.97, 4, 'sofa'); garden(16.27, 23.27, gx, 16.99, 22.44, 5, 'table'); garden(23.27, 31.3, gx, 24.26, 31.0, 6, 'sofa');
+  V.hedge(b, M, gx(9.6) + 0.3, 9.4, -0.9, 9.75, { h: 1.3, y: FH - 0.05 });                                  // haie du n° 7 le long du grillage du n° 8
+  for (const z of [16.27, 23.27]) { V.hedge(b, M, gx(z) + 0.3, z - 0.3, -0.9, z + 0.3, { h: 1.5, y: FH - 0.05 }); fence(b, M, [[gx(z) + 0.05, z], [-0.95, z]], () => FH - 0.03, 1.5); }
+  // muret de soutènement en biais surmonté d'une grille, retour sur le muret du n° 8, portillons de jardinier ; muret Sud du n° 5
+  const yTal = (x, z) => 1.3 + 0.3 * Math.min(1, Math.max(0, (Lz(z) - 0.15 - x) / Math.max(0.1, Lz(z) - 0.15 - xP(z))));
+  wallPath(b, MX.drystone, [[xW(9.2) - 0.15, 9.2], [Lz(9.2), 9.2], [Lz(31.6), 31.6]], 0.3, 1.2, FH + 0.15);
+  box('travertine', Lz(9.2) - 0.03, FH + 0.15, 9.03, Lz(9.2) + 0.18, FH + 0.19, 9.37);
+  wallPath(b, MX.travertine, [[Lz(9.2), 9.2], [Lz(31.6), 31.6]], 0.36, FH + 0.15, FH + 0.19);              // couvertine
+  for (const [za, zb] of [[9.3, 9.75], [10.65, 16.6], [17.55, 23.6], [24.55, 31.45]]) railing(b, M, Lz(za), za, Lz(zb), zb, FH + 0.19, 0.9, 'cadre');
+  for (const z of [9.75, 16.6, 23.6]) { const x = Lz(z + 0.45); b.box(M.cadre, x - 0.04, FH + 0.19, z + 0.06, x + 0.04, FH + 1.12, z + 0.84); b.box(M.black, x + 0.04, FH + 0.95, z + 0.7, x + 0.07, FH + 1.05, z + 0.78); }   // portillons
+  box('drystone', Lz(31.45), 0.4, 31.3, 0, FH + 0.2, 31.6); railing(b, M, Lz(31.45) + 0.2, 31.45, -0.2, 31.45, FH + 0.2, 0.9, 'cadre');
+  // talus planté entre le muret et la limite de propriété, puis talus du Sud-Ouest qui descend vers le jardin n° 4
+  S('grass', [[-13.0, 7.1], [xW(8.75) - 0.3, 8.75], [xW(9.2) - 0.3, 9.2], [Lz(9.2) - 0.15, 9.2], [Lz(31.6) - 0.15, 31.6], [xP(31.6), 31.6]], yTal, 0.8);
+  const ySW = (x) => 0.45 + (-0.4 - x) * 0.055;
+  S('grass', [[xP(31.6), 31.6], [-0.4, 31.6], [-0.4, zS(-0.4) - 0.05], [xP(43.8), zS(xP(43.8)) - 0.05]], (x) => ySW(x), 1.6);
+  wallPath(b, MX.drystone, [[xW(8.9) - 0.4, 8.9], [-13.0, 7.1], [xP(43.8) - 0.2, 43.8]], 0.4, 1.2, 2.65);   // soutènement existant conservé (limite)
+  for (const [x, z, k, sd] of [[-12.3, 12.6, 'rosemary', 81], [-12.9, 19.4, 'pittosporum', 82], [-13.4, 26.8, 'rosemary', 83], [-6.0, 33.6, 'rosemary', 12], [-10.5, 34.6, 'pittosporum', 13], [-2.6, 32.9, 'rosemary', 11]])
+    shrub(x, z, { kind: k, r: k === 'rosemary' ? 0.55 : 0.75, h: k === 'rosemary' ? 0.7 : 1.3, y: z > 31.6 ? ySW(x) - 0.02 : yTal(x, z) - 0.02, seed: sd });
+  V.lavender(b, M, -1.2, 32.4, -5.2, 32.4, { y: ySW(-3.2) - 0.02, seed: 15 });
+  // oliviers et amandiers « à planter » le long de la limite Ouest, chêne existant conservé (plan de masse)
+  for (const [x, z, k, h, r, sd] of [[-5.4, 4.0, ALMOND, 4.2, 1.7, 41], [-7.1, 6.6, 'olive', 4.4, 1.8, 42], [-9.2, 10.5, 'olive', 4.6, 1.9, 43], [-9.8, 14.1, ALMOND, 4.4, 1.8, 44],
+    [-9.6, 18.2, 'olive', 4.8, 1.9, 45], [-10.1, 20.7, 'oak', 6.5, 2.5, 48], [-10.5, 25.3, 'olive', 4.6, 1.9, 46], [-11.4, 29.4, ALMOND, 4.2, 1.7, 47]]) {
     if (z < 9.37 && !has('villa')) continue;                                                             // jardin n°8 : détaillé avec l'appartement-villa
     V.tree(b, M, x, z, { kind: k, h, r, seed: sd, y: FH - 0.05 });
   }
-  // talus paysagés au Sud-Ouest, derrière le muret de soutènement (< 2 m) surmonté d'une grille qui ferme le jardin n°5
-  S('grass', [[xW(29.4), 29.75], [-0.05, 29.75], [-0.05, zS(-0.05) - 0.05], [-14.45, zS(-14.45) - 0.05], [-14.45, 29.75]], FH - 0.24, 0.1);
-  box('drystone', xW(29.4), 0.9, 29.4, -0.1, FH + 0.2, 29.75); railing(b, M, xW(29.4) + 0.2, 29.57, -0.2, 29.57, FH + 0.2, 0.9, 'cadre');
-  for (const [x, z, sd] of [[-3.0, 31.5, 11], [-6.5, 33.0, 12], [-9.5, 31.2, 13], [-12.0, 34.5, 14]]) shrub(x, z, { kind: 'rosemary', r: 0.6, h: 0.7, y: FH - 0.26, seed: sd });
-  V.lavender(b, M, -1.0, 30.6, -8.0, 30.6, { y: FH - 0.26, seed: 15 });
   // angle Nord-Ouest : prolongement du jardin n°1 (y = 0), puis talus paysagé qui remonte vers la parcelle voisine
   S('grass', [[-6, -5.6], [0, -5.6], [0, 0.1], [-6, 0.1]], -0.02, 3.3); S('grass', [[-14.5, -5.6], [-6, -5.6], [-6, 0.1], [-14.5, 0.1]], (x) => -0.02 + (-6 - x) * 0.3, 3.3);
   if (has('villa')) { box('drystone', -8.5, -0.3, 0.0, -0.03, FH + 0.4, 0.35); railing(b, M, -8.45, 0.175, -0.05, 0.175, FH + 0.4, 1.05, 'cadre'); }   // muret Nord du jardin n°8 (dessiné avec le logement quand il est détaillé)
   box('drystone', -14.45, -0.3, 0.0, -8.5, FH + 0.1, 0.35);
-  wallPath(b, MX.drystone, [[xW(-5.9) - 1.3, -5.9], [xW(30) - 1.3, 30], [-14.2, zS(-14.2) - 0.3]], 0.4, 1.4, FH + 0.15);   // muret de soutènement existant (env. 1 m) en limite Ouest
   V.tree(b, M, -9.5, -3.4, { kind: 'pine', h: 9, r: 3.3, seed: 21, y: 1.0 }); V.tree(b, M, -2.2, -4.3, { kind: 'oak', h: 6, r: 2.4, seed: 22, y: -0.04 });
-  box('stone', -0.4, -0.2, L, 0, FH + 0.3, zS(0));                                // soutènements en pierre sèche
+  box('stone', -0.4, -0.2, 31.6, 0, 0.6, zS(0));                                  // soutènement en pierre sèche au pied du talus, contre le jardin n° 4
 
   // ── Jardin du logement 01 au Nord, mur de pierre sèche conservé en limite ──
   box('socle', 0, -0.3, -5.35, W + 0.02, -0.08, 0); box('grass', 0, -0.08, -5.35, W, -0.02, -1.6); box('terrace', 0, -0.08, -1.6, W, -0.015, 0);
@@ -279,20 +399,13 @@ export function buildSite(b, M, { o, skip }) {
   S('grass', [[0, L + 3.2], [22.2, L + 3.2], [22.2, zS(22.2) - 0.05], [0, zS(0) - 0.05]], -0.02, 0.05);
   box('terrace', 0, -0.1, L, 22.2, -0.015, L + 3.2);
   b.push(11.0, -0.015, L + 1.8, 0); F.outdoorTable(b, M, { w: 2.0, n: 3 }); b.pop();
-  V.hedge(b, M, 0.6, L + 0.85, 8.0, L + 1.2, { h: 0.7, y: -0.02 });                                        // haie basse devant les unités de PAC
+  V.hedge(b, M, 0.45, L + 0.75, 2.3, L + 1.1, { h: 0.8, y: -0.02 });                                       // haie basse devant l'unité de PAC
   // terrasse de la piscine en travertin (288,30) au-dessus des locaux, autour du bassin
   for (const [x0, z0, x1, z1] of [[18.94, 10.65, 31.1, 12.95], [18.94, 12.95, 22.55, 13.15], [22.55, 12.95, 26.34, 25.6], [32.34, 10.4, 33.3, 25.6], [26.34, 25.25, 32.34, 25.6], [32.2, 10.65, 32.34, 12.95]])
     box('travertine', x0, TERR - 0.04, z0, x1, TERR, z1);
   box('earth', 18.94, COUR - 0.1, 13.3, 33.3, TERR - 0.04, 25.6); box('drystone', 32.2, -4.1, 10.4, 33.3, TERR - 0.04, 13.3);
-  // bassin enterré de 6 × 12,3 m, margelles en travertin
-  const PX0 = 26.34, PX1 = 32.34, PZ0 = 12.95, PZ1 = 25.25;
-  box('wallTile', PX0 + 0.3, TERR - 0.07, PZ0 + 0.3, PX1 - 0.3, TERR - 0.045, PZ1 - 0.3); box('water', PX0 + 0.3, TERR - 0.075, PZ0 + 0.3, PX1 - 0.3, TERR - 0.012, PZ1 - 0.3);
-  for (const [x0, z0, x1, z1] of [[PX0, PZ0, PX1, PZ0 + 0.3], [PX0, PZ1 - 0.3, PX1, PZ1], [PX0, PZ0 + 0.3, PX0 + 0.3, PZ1 - 0.3], [PX1 - 0.3, PZ0 + 0.3, PX1, PZ1 - 0.3]])
-    box('travertine', x0, TERR - 0.04, z0, x1, TERR + 0.035, z1);                                          // margelle de 30 cm, 3,5 cm au-dessus du dallage
-  for (let i = 0; i < 5; i++) { b.push(24.6, TERR, 14.6 + i * 2.15, Math.PI / 2); F.lounger(b, M, {}); b.pop(); if (i % 2 === 0) { b.push(23.35, TERR, 15.65 + i * 2.15, 0); F.parasol(b, M, { r: 1.5, h: 2.4 }); b.pop(); } }
-  for (const z of [23.75, 24.25]) b.tube(M.steel, [[PX0 + 0.1, TERR, z], [PX0 + 0.15, TERR + 0.58, z], [PX0 + 0.45, TERR + 0.74, z], [PX0 + 0.75, TERR + 0.55, z], [PX0 + 0.82, TERR, z], [PX0 + 0.84, TERR - 0.4, z]], 0.021, 8);   // échelle inox
-  { const x = 23.2, z = 13.7; b.rod(M.steel, [x, TERR + 0.007, z], [x, TERR + 2.25, z], 0.04, 10); b.rod(M.steel, [x, TERR + 2.2, z], [x + 0.3, TERR + 2.25, z], 0.02, 8); b.cyl(M.steel, x + 0.32, TERR + 2.17, z, 0.09, 0.03, 14, 0.06);   // douche de plage
-    b.rod(M.steel, [x, TERR + 1.2, z], [x + 0.15, TERR + 1.2, z], 0.012, 6); box('cadre', x - 0.3, TERR + 0.001, z - 0.3, x + 0.3, TERR + 0.006, z + 0.3); }
+  // bassin enterré de 6 × 12,3 m, margelles en travertin, plage immergée, échelle, transats et douche (pool.js)
+  buildPool(b, M, { PX0: 26.34, PX1: 32.34, PZ0: 12.95, PZ1: 25.25, y: TERR });
   // jardinière béton surélevée en rive de la terrasse, au-dessus des locaux : retour le long du local déchets
   for (const [x0, z0, x1, z1] of [[19.3, 9.95, 31.1, 10.65], [31.1, 9.95, 32.2, 12.95]]) {
     box('concrete', x0, TERR - 0.04, z0, x1, TERR + 0.5, z1); box('mulch', x0 + 0.1, TERR + 0.5, z0 + 0.1, x1 - 0.1, TERR + 0.52, z1 - 0.1);
@@ -318,8 +431,8 @@ export function buildSite(b, M, { o, skip }) {
     b.push(31.4, TERR - 0.03, 32.3, -0.35); b.box(M.teak, -0.9, 0.42, -0.22, 0.9, 0.46, 0.22); for (const sx of [-0.75, 0.75]) b.box(M.cadre, sx - 0.03, 0, -0.2, sx + 0.03, 0.42, 0.2); b.pop(); }
   // clôture existante doublée d'une haie vive, en limite Sud (oblique)
   { const x0 = -12, x1 = 39.2, a = Math.atan2(-(zS(x1) - zS(x0)), x1 - x0), len = Math.hypot(x1 - x0, zS(x1) - zS(x0));
-    for (let u = 0; u < len - 0.1; u += 2.2) { const x = x0 + (u / len) * (x1 - x0), yy = x < 0 ? FH - 0.27 : x < 22.55 ? -0.06 : TERR - 0.06; b.push(x, yy, zS(x) - 0.45, a); V.hedge(b, M, 0, -0.32, Math.min(2.3, len - u), 0.32, { h: 1.8 }); b.pop(); }
-    fence(b, M, [[x0, zS(x0) + 0.05], [0, zS(0) + 0.05]], () => FH - 0.26, 1.5); fence(b, M, [[0, zS(0) + 0.05], [22.5, zS(22.5) + 0.05]], () => -0.04, 1.5); fence(b, M, [[22.9, zS(22.9) + 0.05], [x1, zS(x1) + 0.05]], () => TERR - 0.05, 1.5); }
+    for (let u = 0; u < len - 0.1; u += 2.2) { const x = x0 + (u / len) * (x1 - x0), yy = x < 0 ? ySW(x) - 0.05 : x < 22.55 ? -0.06 : TERR - 0.06; b.push(x, yy, zS(x) - 0.45, a); V.hedge(b, M, 0, -0.32, Math.min(2.3, len - u), 0.32, { h: 1.8 }); b.pop(); }
+    fence(b, M, [[x0, zS(x0) + 0.05], [0, zS(0) + 0.05]], (x) => ySW(x) - 0.04, 1.5); fence(b, M, [[0, zS(0) + 0.05], [22.5, zS(22.5) + 0.05]], () => -0.04, 1.5); fence(b, M, [[22.9, zS(22.9) + 0.05], [x1, zS(x1) + 0.05]], () => TERR - 0.05, 1.5); }
   for (const [x, z, k, h, r] of [[4.0, 40.2, 'pine', 11, 3.7], [11.0, 39.4, 'pine', 10.5, 3.6], [25.5, 37.0, 'oak', 7, 2.8]]) V.tree(b, M, x, z, { kind: k, h, r, seed: Math.round(x * 3), y: x < 22.55 ? -0.04 : TERR - 0.05 });
 
   // ── Cour d'accès (286,30) : stationnement de 4 places dont 1 PMR, voie interne, pergola, muret de 1,6 m, massif conservé ──
@@ -428,10 +541,10 @@ export function buildSite(b, M, { o, skip }) {
   house(b, M, 55, yAv(2) + 0.14, 2, 13, 9, 0.12, 5.6); house(b, M, 57, yAv(30) + 0.1, 30, 11, 10, -0.1, 3.2, 'massing'); house(b, M, 55, yAv(-24) + 0.14, -24, 12, 9, 0.2, 5.6, 'massing');
   house(b, M, 9, -0.7, 58, 14, 9, 0.08, 5.6); box('wallTile', 20.5, -0.75, 53.5, 26.5, -0.7, 57.5); box('water', 20.8, -0.8, 53.8, 26.2, -0.68, 57.2);
   house(b, M, 6, 0.2, -24, 12, 9, -0.06, 5.6, 'massing'); house(b, M, -30, 2.6, 6, 10, 13, 0.1, 5.6); house(b, M, -34, 2.6, 34, 10, 12, -0.05, 3.2, 'massing');
-  box('earth', -70, -6.3, -60, -14.5, 2.55, 80);
+  S('earth', [[-70, -60], [-14.5, -60], [-14.5, 7.1], [-13.0, 7.1], [xP(80), 80], [-70, 80]], 2.55, 8.85);   // parcelle voisine, plus haute, derrière le soutènement existant
   S('earth', [[-14.5, zS(-14.5)], [30, zS(30)], [30, 80], [-14.5, 80]], -0.7, 5.6);                           // parcelles au Sud
   S('earth', [[30, zS(30)], [LIM_E, zS(LIM_E)], [LIM_E, 80], [30, 80]], (x) => -0.7 - (x - 30) * 0.1, 5.6);
-  for (const [x, z, k, h, y] of [[-17, -13, 'pine', 11, 2.55], [-19, 17, 'pine', 10, 2.55], [-16, 27, 'oak', 8, 2.55], [-19, 38, 'pine', 12, 2.55], [-24, 22, 'cypress', 9, 2.55], [-12, 48, 'pine', 10, -0.7],
+  for (const [x, z, k, h, y] of [[-17, -13, 'pine', 11, 2.55], [-19, 17, 'pine', 10, 2.55], [-19.5, 27, 'oak', 8, 2.55], [-22, 38, 'pine', 12, 2.55], [-24, 22, 'cypress', 9, 2.55], [-12, 48, 'pine', 10, -0.7],
     [4, -11, 'pine', 12, 0.1], [14, -13, 'oak', 8, 0.1], [24, -12, 'pine', 10, -1.6], [-6, -14, 'cypress', 9, 0.1], [30, -16, 'olive', 5, -1.6],
     [5, 47, 'pine', 11, -0.7], [16, 47, 'oak', 7, -0.7], [30, 46, 'pine', 10, -0.7], [-4, 50, 'cypress', 9, -0.7],
     [50, -8, 'pine', 10, yAv(-8) + 0.14], [50, 14, 'olive', 5, yAv(14) + 0.14], [51, 22, 'cypress', 9, yAv(22) + 0.14], [50, 40, 'pine', 11, yAv(40) + 0.14], [64, 12, 'pine', 12, yAv(12) + 0.14], [66, 44, 'oak', 8, yAv(44) + 0.14], [62, -14, 'cypress', 10, yAv(-14) + 0.14]]) {

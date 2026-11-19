@@ -38,25 +38,56 @@ const T = {
   lift: { fr: 'Ascenseur', en: 'Lift' },
   tourPlay: { fr: 'Visite guidée', en: 'Guided tour' }, tourStop: { fr: 'Arrêter la visite', en: 'Stop the tour' },
   outside: { fr: 'Extérieur', en: 'Outside' },
+  lost: { fr: 'La carte graphique a interrompu l\'affichage. Reprise de la visite…', en: 'The graphics card interrupted the display. Resuming the tour…' },
+  lostReload: { fr: 'La carte graphique n\'a pas pu reprendre l\'affichage.', en: 'The graphics card could not resume the display.' },
+  reload: { fr: 'Recharger la visite', en: 'Reload the tour' },
   nogl: { fr: 'La visite 3D a besoin de WebGL, que ce navigateur ne propose pas.', en: 'The 3D tour needs WebGL, which this browser does not provide.' },
 };
 const tr = (k) => T[k][lang()];
 
-/* ── Qualité selon l'appareil ───────────────────────────────────────────── */
+/* ── Qualité selon l'appareil ─────────────────────────────────────────────
+   Choisie une fois, au chargement, pour ce qui ne peut plus changer ensuite sans recompiler ni réallouer : taille de la carte
+   d'ombres, nombre de lumières d'appoint, passes de post-traitement, taille des textures. Le reste (résolution, occlusion
+   pendant le mouvement) s'adapte en continu à la machine (voir « Résolution dynamique »).
+   ?q=low|mid|std|high|test impose un niveau ; ?gpu=<nom de carte> simule une carte pour éprouver la détection. */
 const touch = matchMedia('(pointer: coarse)').matches;
 const small = Math.min(screen.width, screen.height) < 820;
-const qName = params.get('q') || (touch && small ? 'low' : touch ? 'mid' : 'high');
 const QUALITIES = {
   low: { shadow: 2048, aniso: 4, ao: false, bloom: false, lights: 4, dpr: 1.5, trees: 22, forest: 380, tex: 1024 },
   mid: { shadow: 2048, aniso: 8, ao: false, bloom: true, lights: 6, dpr: 2, trees: 34, forest: 700, tex: 1024 },
+  // ordinateurs modestes (puce graphique intégrée, peu de cœurs ou de mémoire) : mêmes passes que « high » (l'image arrêtée garde
+  // son occlusion et son halo), mais ombres, textures et lumières d'appoint à la mesure d'une mémoire partagée
+  std: { shadow: 2048, aniso: 8, ao: true, bloom: true, lights: 6, dpr: 1.5, trees: 34, forest: 900, tex: 1024 },
   high: { shadow: 4096, aniso: 16, ao: true, bloom: true, lights: 8, dpr: 2, trees: 46, forest: 1300, tex: 2048 },
   test: { shadow: 2048, aniso: 4, ao: true, bloom: true, lights: 8, dpr: 1, trees: 40, forest: 1100, tex: 1024 },
+  soft: { shadow: 2048, aniso: 1, ao: false, bloom: false, lights: 4, dpr: 1, trees: 22, forest: 380, tex: 1024 },     // rendu logiciel, sans carte graphique
 };
-const QUALITY = QUALITIES[qName] || QUALITIES.high;
+let qName = 'high', QUALITY = QUALITIES.high, GPU = { name: '', kind: 'unknown' };
+/* Nature de la carte graphique d'après le nom que donne le pilote : logiciel, intégrée (mémoire partagée), dédiée, inconnue. */
+function gpuKind(name) {
+  const n = name.toLowerCase();
+  if (/swiftshader|llvmpipe|softpipe|lavapipe|software|basic render|microsoft basic|mesa offscreen/.test(n)) return 'soft';
+  if (/nvidia|geforce|quadro|rtx|gtx|radeon (rx|pro|r9|hd [5-8]\d{3})|\brx \d{3,4}|firepro|arc\(tm\) a\d|apple m\d/.test(n)) return 'dgpu';     // puces Apple : intégrées mais assez puissantes
+  if (/intel|uhd|iris|hd graphics|radeon\(tm\)[^,]*graphics|radeon graphics|radeon \d{3}m|vega \d|mali|adreno|powervr|videocore|tegra/.test(n)) return 'igpu';
+  return 'unknown';
+}
+function pickQuality(gl) {
+  try { const d = gl.getExtension('WEBGL_debug_renderer_info'); GPU.name = params.get('gpu') || (d ? gl.getParameter(d.UNMASKED_RENDERER_WEBGL) : gl.getParameter(gl.RENDERER)) || ''; } catch (e) { GPU.name = params.get('gpu') || ''; }
+  GPU.kind = gpuKind(GPU.name);
+  const forced = params.get('q');
+  if (forced && QUALITIES[forced]) return forced;
+  if (GPU.kind === 'soft') return 'soft';
+  if (touch) return small ? 'low' : 'mid';
+  const cores = navigator.hardwareConcurrency || 8, mem = navigator.deviceMemory || 8;
+  if (cores <= 2 || mem <= 2) return 'mid';
+  if (GPU.kind === 'dgpu') return 'high';
+  if (GPU.kind === 'igpu' || cores <= 4 || mem <= 4) return 'std';
+  return 'high';                                             // carte inconnue (nom masqué) : la résolution dynamique protège la fluidité
+}
 
 const root = $('#v3d');
 const canvas = $('#v3d-canvas');
-const ui = { lots: $('#v3d-lots'), spots: $('#v3d-spots'), loader: $('#v3d-loader'), loaderText: $('#v3d-loader-text'), labels: $('#v3d-labels'), hud: $('#v3d-hud'), hint: $('#v3d-hint'), map: $('#v3d-map'), fade: $('#v3d-fade') };
+const ui = { bar: $('#v3d-loader-bar'), lots: $('#v3d-lots'), spots: $('#v3d-spots'), loader: $('#v3d-loader'), loaderText: $('#v3d-loader-text'), labels: $('#v3d-labels'), hud: $('#v3d-hud'), hint: $('#v3d-hint'), map: $('#v3d-map'), fade: $('#v3d-fade') };
 
 /* Priorité entre surfaces confondues. Quand deux faces de matériaux différents tombent dans le même plan (un mur de pierre et le
    talus qu'il retient, une couvertine et le mur, une plinthe et la cloison, un joint creux et l'enduit…), la carte graphique
@@ -198,6 +229,10 @@ function aoPatchMaterials(M) {
     m.onBeforeCompile = patchAO;
   }
 }
+/* Précalculs découpés en tranches : au-delà de 40 ms de calcul d'affilée, on rend la main au navigateur (la barre de chargement
+   avance, l'onglet reste réactif). Sur une machine rapide, presque aucune pause : le chargement n'est pas allongé. */
+let sliceAt = 0;
+const slice = async (force) => { const t = performance.now(); if (force || t - sliceAt > 40) { await new Promise((r) => setTimeout(r, 0)); sliceAt = performance.now(); } };
 /* Flou par boîtes (trois passes ≈ gaussienne), séparable, sur un canal W×H. */
 function boxBlur(a, W, H, r, passes = 3) {
   const t = new Float32Array(a.length);
@@ -210,23 +245,25 @@ function boxBlur(a, W, H, r, passes = 3) {
 /* Lumière précalculée, sur une grille de 20 cm par niveau : le jour qui entre par les baies et la lueur des lampes se diffusent de
    proche en proche dans les pièces (les murs l'arrêtent, les portes la laissent passer, elle s'éteint avec la distance), puis la
    grille est agrandie à la taille de la carte d'ombres. Troisième canal : les murs à peine floutés, qui révèlent les angles rentrants. */
-function bakeLight(lvs, ext, sz, W, HT, px, Graw, lights, r) {
+async function bakeLight(lvs, ext, sz, W, HT, px, Graw, lights, r) {
   const data = new Uint8Array(W * HT * 4), cell = 0.2, outdoor = /jardin|balcon|terrasse/;
   const Gs = boxBlur(Float32Array.from(Graw), W, HT, r(0.12));
   // valeur de ce flou à 5 cm d'un mur droit : au-delà, on est dans un angle
   const n1 = 400, line = new Float32Array(n1); for (let i = 0; i < n1 / 2; i++) line[i] = 1; boxBlur(line, n1, 1, r(0.12));
   const cf = line[n1 / 2 + Math.round(0.05 / px)];
   let row0 = 0;
-  lvs.forEach((lv, li) => {
+  await slice();
+  for (const [li, lv] of lvs.entries()) {
     const e = ext[li], H = sz.H[li], gw = Math.ceil(W * px / cell), gh = Math.ceil(H * px / cell), N = gw * gh;
     const wall = new Uint8Array(N), inside = new Uint8Array(N);
     for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) if (Graw[(row0 + y) * W + x] > 0.5) wall[Math.min(gh - 1, Math.floor(y * px / cell)) * gw + Math.min(gw - 1, Math.floor(x * px / cell))] = 1;
     for (const room of lv.rooms) if (!outdoor.test(room.id)) for (const q of room.rs) {
       for (let j = Math.max(0, Math.floor((q[1] - e[1]) / cell)); j < Math.min(gh, Math.ceil((q[3] - e[1]) / cell)); j++) for (let i = Math.max(0, Math.floor((q[0] - e[0]) / cell)); i < Math.min(gw, Math.ceil((q[2] - e[0]) / cell)); i++) inside[j * gw + i] = 1;
     }
-    const diffuse = (src, decay, iters) => {
+    const diffuse = async (src, decay, iters) => {
       let L = Float32Array.from(src), T = new Float32Array(N);
       for (let k = 0; k < iters; k++) {
+        if (!(k & 31)) await slice();
         for (let j = 0; j < gh; j++) for (let i = 0; i < gw; i++) {
           const c = j * gw + i; if (wall[c]) { T[c] = src[c]; continue; }
           const m = (L[c - 1 >= j * gw ? c - 1 : c] + L[i + 1 < gw ? c + 1 : c] + L[j > 0 ? c - gw : c] + L[j + 1 < gh ? c + gw : c]) * 0.25;
@@ -244,7 +281,7 @@ function bakeLight(lvs, ext, sz, W, HT, px, Graw, lights, r) {
       else if (!l.day) splat(sl, l.pos.x, l.pos.z, 0.3, Math.min(1, l.power / 0.9));
     }
     // portée : environ 2,4 m pour le jour (d = 1 / (1 + 1 / (4 λ²)), λ en cellules), 1,2 m pour les lampes
-    const D = diffuse(sd, 0.99827, 700), Lm = diffuse(sl, 0.9931, 260);
+    const D = await diffuse(sd, 0.99827, 700), Lm = await diffuse(sl, 0.9931, 260);
     // agrandissement bilinéaire de la grille vers la carte
     const at = (A, fx, fy) => { const x0 = Math.max(0, Math.min(gw - 1, Math.floor(fx))), y0 = Math.max(0, Math.min(gh - 1, Math.floor(fy))), x1 = Math.min(gw - 1, x0 + 1), y1 = Math.min(gh - 1, y0 + 1), tx = Math.min(1, Math.max(0, fx - x0)), ty = Math.min(1, Math.max(0, fy - y0)); return (A[y0 * gw + x0] * (1 - tx) + A[y0 * gw + x1] * tx) * (1 - ty) + (A[y1 * gw + x0] * (1 - tx) + A[y1 * gw + x1] * tx) * ty; };
     const In = Float32Array.from(inside);
@@ -256,12 +293,13 @@ function bakeLight(lvs, ext, sz, W, HT, px, Graw, lights, r) {
       data[o + 2] = 255 * Math.min(1, Gs[(row0 + y) * W + x]); data[o + 3] = 255;
     }
     row0 += H;
-  });
+    await slice();
+  }
   const tex = new THREE.DataTexture(data, W, HT, THREE.RGBAFormat); tex.magFilter = tex.minFilter = THREE.LinearFilter; tex.generateMipmaps = false; tex.needsUpdate = true;
   return { tex, cf };
 }
 /* Rend la carte d'ombres de contact d'un logement (tous ses niveaux dans un atlas). Renvoie { tex, t0, t1, a, lv, split }. */
-function bakeContact(renderer, scene, group, apt, M, maxTex, lights = []) {
+async function bakeContact(renderer, scene, group, apt, M, maxTex, lights = []) {
   const lvs = apt.levels.slice(0, 2), pad = 0.6;
   const ext = lvs.map((lv) => { const b = lv.bounds; return [b[0] - pad, b[1] - pad, b[2] + pad, b[3] + pad]; });
   let px = 0.025; const fit = () => ({ W: Math.max(...ext.map((e) => Math.ceil((e[2] - e[0]) / px))), H: ext.map((e) => Math.ceil((e[3] - e[1]) / px)) });
@@ -288,7 +326,8 @@ function bakeContact(renderer, scene, group, apt, M, maxTex, lights = []) {
   const R = new Float32Array(W * HT), G = new Float32Array(W * HT);
   const out = { t0: new THREE.Vector4(), t1: new THREE.Vector4(), a: new THREE.Vector4(1, 0, 1, 0), lv: new THREE.Vector4(lvs[0].y, lvs[0].h, (lvs[1] || lvs[0]).y, (lvs[1] || lvs[0]).h), split: lvs[1] ? lvs[1].y - 0.12 : 1e9 };
   let row0 = 0;
-  lvs.forEach((lv, li) => {
+  for (const [li, lv] of lvs.entries()) {
+    if (li) await slice(true);                              // un niveau par tâche (premier envoi de toute la géométrie, lecture bloquante)
     const e = ext[li], H = sz.H[li], w = W * px, hgt = H * px;
     const rt = new THREE.WebGLRenderTarget(W, H, { depthBuffer: true });
     const cam = new THREE.OrthographicCamera(-w / 2, w / 2, hgt / 2, -hgt / 2, 0.0, 1.0 - 0.025);
@@ -302,25 +341,26 @@ function bakeContact(renderer, scene, group, apt, M, maxTex, lights = []) {
     if (li) out.a.z = H / HT, out.a.w = row0 / HT; else out.a.x = H / HT, out.a.y = 0;
     if (!lvs[1]) out.t1.copy(out.t0);
     row0 += H;
-  });
+  }
   // deux échelles : un contact serré (4 cm) et un voile large (meubles 22 cm, murs 30 cm)
   const r = (m) => Math.max(1, Math.round(m / px / 2.2));
   const C = new Float32Array(W * HT); for (let i = 0; i < C.length; i++) C[i] = Math.max(R[i], G[i]);
-  const lightTex = bakeLight(lvs, ext, sz, W, HT, px, G, lights, r);
-  boxBlur(C, W, HT, r(0.05)); boxBlur(R, W, HT, r(0.24)); boxBlur(G, W, HT, r(0.32));
-  const data = new Uint8Array(W * HT * 4);
-  for (let i = 0; i < W * HT; i++) { data[i * 4] = Math.min(255, R[i] * 255 * 1.15); data[i * 4 + 1] = Math.min(255, G[i] * 255); data[i * 4 + 2] = Math.min(255, C[i] * 255); data[i * 4 + 3] = 255; }
-  const tex = new THREE.DataTexture(data, W, HT, THREE.RGBAFormat); tex.magFilter = tex.minFilter = THREE.LinearFilter; tex.generateMipmaps = false; tex.needsUpdate = true;
+  // la scène retrouve son état avant les calculs (pendant les pauses, rien d'autre ne doit la voir modifiée)
   for (const [o, k, v] of saved) o[k] = v; for (const o of hidden) o.visible = true;
   scene.fog = fog; scene.background = bg; renderer.shadowMap.needsUpdate = sh; renderer.setRenderTarget(prevRT); renderer.setClearColor(cc, ca);
   ovObj.dispose(); ovWall.dispose();
+  const lightTex = await bakeLight(lvs, ext, sz, W, HT, px, G, lights, r);
+  boxBlur(C, W, HT, r(0.05)); await slice(); boxBlur(R, W, HT, r(0.24)); await slice(); boxBlur(G, W, HT, r(0.32)); await slice();
+  const data = new Uint8Array(W * HT * 4);
+  for (let i = 0; i < W * HT; i++) { data[i * 4] = Math.min(255, R[i] * 255 * 1.15); data[i * 4 + 1] = Math.min(255, G[i] * 255); data[i * 4 + 2] = Math.min(255, C[i] * 255); data[i * 4 + 3] = 255; }
+  const tex = new THREE.DataTexture(data, W, HT, THREE.RGBAFormat); tex.magFilter = tex.minFilter = THREE.LinearFilter; tex.generateMipmaps = false; tex.needsUpdate = true;
   out.tex = tex; renderer.initTexture(tex); out.tex2 = lightTex.tex; out.cf = lightTex.cf; renderer.initTexture(lightTex.tex);
   return out;
 }
 
 /* Pièces photographiées pour les reflets : séjour, cuisine, salles de bains d'abord. */
 const ZONE_RANK = (id) => (/^sejour|^salon/.test(id) ? 6 : /^cuisine/.test(id) ? 5 : /^sdb1|^sdbs/.test(id) ? 4 : /^sdb|^sde/.test(id) ? 3 : /^suite|^ch1/.test(id) ? 1 : /^ch\d/.test(id) ? 0.5 : 0);
-function captureZones(app, apt, size, nz) {
+async function captureZones(app, apt, size, nz) {
   const { renderer, scene } = app, list = [];
   apt.levels.forEach((lv, li) => lv.rooms.forEach((r) => { if (r.cam && ZONE_RANK(r.id) > 0) list.push({ r, lv, li, k: ZONE_RANK(r.id) }); }));
   list.sort((a, b) => b.k - a.k); const zones = list.slice(0, nz);
@@ -343,7 +383,8 @@ function captureZones(app, apt, size, nz) {
   renderer.setRenderTarget(atlas); renderer.setClearColor(0x000000, 1); renderer.clear(); renderer.setRenderTarget(prevRT);
   ZU.uZClamp.value = 24;
   const out = { atlas, n: zones.length, nc, cw, ch, mip: Math.log2(size), b: [], y: [], c: [] };
-  zones.forEach((z, i) => {
+  for (const [i, z] of zones.entries()) {
+    await slice(true);                                      // une prise = six rendus et un filtrage : la main revient au navigateur entre deux
     const b = box(z.r), p = new THREE.Vector3(z.r.at[0], z.lv.y + 1.45, z.r.at[1]);
     // lampes d'appoint réglées comme si l'on se tenait au centre de la pièce
     app.mode = 'walk'; app.walk.level = z.li; app.camera.position.copy(p); app.lightAt.set(1e9, 0, 0); for (let k = 0; k < 4; k++) app.updateLights(10);
@@ -353,7 +394,7 @@ function captureZones(app, apt, size, nz) {
     renderer.autoClear = false; renderer.setRenderTarget(atlas); renderer.render(bs, bc); renderer.autoClear = ac; renderer.setRenderTarget(prevRT);
     pm.dispose();
     out.b.push(new THREE.Vector4(b[0], b[1], b[2], b[3])); out.y.push(new THREE.Vector4(z.lv.y, z.lv.y + z.lv.h, 0, 0)); out.c.push(new THREE.Vector4(p.x, p.y, p.z, 0));
-  });
+  }
   ZU.uZClamp.value = 6e4;
   app.mode = mode; app.walk.level = wl; app.lightAt.set(1e9, 0, 0); renderer.setClearColor(ccol, calpha); for (const [o, v] of vis) o.visible = v;
   cube.dispose(); blit.geometry.dispose(); blit.material.dispose();
@@ -363,7 +404,9 @@ function captureZones(app, apt, size, nz) {
 class App {
   constructor() {
     this.renderer = new THREE.WebGLRenderer({ canvas, antialias: true, powerPreference: 'high-performance' });
-    this.renderer.setPixelRatio(Math.min(devicePixelRatio || 1, QUALITY.dpr));
+    qName = pickQuality(this.renderer.getContext()); QUALITY = QUALITIES[qName]; this.qName = qName; this.gpu = GPU;
+    this.dprBase = Math.min(devicePixelRatio || 1, QUALITY.dpr);
+    this.renderer.setPixelRatio(this.dprBase);
     this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
     this.renderer.outputColorSpace = THREE.SRGBColorSpace;
     this.renderer.shadowMap.enabled = true; this.renderer.shadowMap.type = THREE.PCFSoftShadowMap; this.renderer.shadowMap.autoUpdate = false;
@@ -387,8 +430,11 @@ class App {
     this.hl = new THREE.Group(); this.hl.visible = false; this.hlRoom = null;
     const hm = new THREE.MeshBasicMaterial({ color: 0xb86248, transparent: true, opacity: 0.3, depthTest: false, toneMapped: false });
     for (let i = 0; i < 3; i++) { const m = new THREE.Mesh(new THREE.PlaneGeometry(1, 1), hm); m.rotation.x = -Math.PI / 2; m.renderOrder = 15; this.hl.add(m); }
-    this.setupComposer(); this.bind();
+    this.setupComposer(); this.initDyn(); this.bind();
     new ResizeObserver(() => this.resize()).observe(root); this.resize();
+    // scène sortie de l'écran (page défilée vers le bas) : plus aucun rendu tant qu'elle n'est pas revenue
+    this.onScreen = true;
+    if (window.IntersectionObserver) new IntersectionObserver((es) => { const v = es[es.length - 1].isIntersecting; if (v && !this.onScreen) this.dirty = true; this.onScreen = v; }).observe(root);
   }
 
   setupComposer() {
@@ -435,11 +481,95 @@ class App {
   updateAO(dt) {
     if (!this.ao) return false;
     const goal = this.mode === 'site' ? 0 : 0.8;
-    if (Math.abs(goal - this.aoK) < 0.004) return false;
-    this.aoK += (goal - this.aoK) * (1 - Math.exp(-dt * (goal > this.aoK ? 2.6 : 3.2)));
-    if (Math.abs(goal - this.aoK) < 0.004) this.aoK = goal;
-    this.ao.blendIntensity = this.aoK; this.ao.enabled = this.aoK > 0.004;
-    return true;
+    let busy = false;
+    if (Math.abs(goal - this.aoK) >= 0.004) {
+      this.aoK += (goal - this.aoK) * (1 - Math.exp(-dt * (goal > this.aoK ? 2.6 : 3.2)));
+      if (Math.abs(goal - this.aoK) < 0.004) this.aoK = goal;
+      busy = true;
+    }
+    // palier de mouvement sans occlusion d'écran (machine lente) : la carte d'ombres de contact reprend le plein effet qu'elle a
+    // sans elle (comme en qualité téléphone), les angles et le pied des meubles ne s'éclaircissent pas pendant le déplacement
+    const k = this.aoDrop ? 0 : this.aoK;
+    this.ao.blendIntensity = k; this.ao.enabled = k > 0.004;
+    AOU.uAoK.value = 0.8 + 0.7 * (this.aoK - k) / 0.8;
+    return busy;
+  }
+
+  /* ── Résolution dynamique ──────────────────────────────────────────────────
+     L'œil juge la fluidité sur le mouvement et la qualité sur l'image arrêtée. Pendant un déplacement, si les images dépassent
+     la cible (36 ms, soit moins de 28 images par seconde), la résolution baisse par paliers, et sur une machine lente l'occlusion
+     d'écran s'efface ; elle remonte dès que c'est fluide. Trois dixièmes de seconde après l'arrêt de la vue, une image pleine qualité
+     est rendue (pleine résolution, occlusion, halo). Seuls des réglages qui ne créent aucun programme de rendu sont employés :
+     taille de l'image et activation d'une passe compilée au préchauffage. ?palier=N impose un palier, ?dyn=0 désactive. */
+  initDyn() {
+    const S = this.ao ? [[1, 1], [0.85, 1], [0.85, 0], [0.72, 0], [0.6, 0], [0.5, 0]] : [[1, 1], [0.85, 1], [0.72, 1], [0.6, 1], [0.5, 1]];
+    const steps = S.filter(([s], i) => !i || this.dprBase * s >= 0.5 - 1e-6);
+    const forced = params.get('palier'), auto = params.get('dyn') !== '0' && forced === null;
+    this.dyn = { steps, auto, step: forced !== null ? clamp(Math.round(+forced) || 0, 0, steps.length - 1) : 0, floor: steps.length - 1, mode: 'still', run: 0, lastMove: 0, last: 0, prev: false, samples: [], n: 0, hold: 40, upAt: -1e9, check: 0, scale: 1 };
+    this.aoDrop = false;
+  }
+  /* Taille de l'image : le canevas et les cibles du post-traitement sont redimensionnés, puis réalloués aussitôt (et non à la
+     première passe qui s'en sert), pour que rien ne manque ni ne se crée au milieu d'une image. */
+  setScale(s) { this.dyn.scale = s; this.applyPR(this.dprBase * s); }
+  applyPR(pr) {
+    if (Math.abs(pr - this.renderer.getPixelRatio()) < 1e-4) return;
+    this.renderer.setPixelRatio(pr);
+    if (this.composer) {
+      this.composer.setPixelRatio(pr);
+      const rts = [this.composer.renderTarget1, this.composer.renderTarget2];
+      for (const p of this.composer.passes) for (const v of Object.values(p)) { if (v && v.isWebGLRenderTarget) rts.push(v); else if (Array.isArray(v)) for (const t of v) if (t && t.isWebGLRenderTarget) rts.push(t); }
+      for (const t of rts) this.renderer.initRenderTarget(t);
+    }
+    this.dirty = true;
+  }
+  /* Avant le rendu : en mouvement ou à l'arrêt ? Le mouvement, c'est la caméra qui bouge, une transition, la voiture qui arrive,
+     l'heure qu'on fait glisser ; une lampe d'appoint qui s'allume lentement, vue immobile, garde l'image pleine qualité. */
+  dynBefore(now, moving) {
+    const d = this.dyn;
+    if (moving) { d.run++; d.lastMove = now; } else d.run = 0;
+    let mode = d.mode;
+    if (moving && d.run >= 2) mode = 'move';                              // un seul pas isolé (survol, clic) reste en pleine qualité
+    else if (!moving && mode === 'move' && now - d.lastMove > 300) mode = 'still';
+    if (mode !== d.mode) { d.mode = mode; d.prev = false; d.samples.length = 0; d.n = 0; this.dirty = true; }
+    const [s, ao] = mode === 'move' ? d.steps[d.step] : [1, 1];
+    if (this.aoDrop !== !ao) { this.aoDrop = !ao; this.dirty = true; }
+    if (s !== d.scale) { this.setScale(s); d.prev = false; }
+  }
+  /* Après le rendu : intervalle entre deux images consécutives du mouvement, et décision de palier. */
+  dynAfter(now, rendered) {
+    const d = this.dyn;
+    if (!rendered || d.mode !== 'move') { d.prev = false; return; }
+    const dt = now - d.last; d.last = now;
+    if (!d.prev) { d.prev = true; return; }
+    if (!d.auto) return;
+    d.samples.push(dt); if (d.samples.length > 16) d.samples.shift(); d.n++;
+    const med = (k) => { const a = d.samples.slice(-k).sort((x, y) => x - y); return a[Math.floor(a.length / 2)]; };
+    const go = (step) => {
+      if (step > d.step && now - d.upAt < 3000) d.hold = Math.min(d.hold * 2, 640);     // remonté puis redescendu aussitôt : on attend plus longtemps avant de remonter
+      if (step < d.step) d.upAt = now;
+      d.step = step; d.samples.length = 0; d.n = 0; d.prev = false;
+    };
+    // palier qui n'a rien fait gagner (la machine bute sur le processeur, pas sur la carte graphique) : on y renonce
+    if (d.check && d.n >= 4) { const m = med(4), was = d.check; d.check = 0; if (m > 36 && m > was * 0.9) { d.floor = Math.max(0, d.step - 1); go(d.floor); return; } }
+    if (d.step < d.floor && ((d.n >= 3 && med(3) > 72) || (d.n >= 6 && med(6) > 36))) {
+      const m = med(Math.min(d.n, 6)); go(Math.min(d.floor, d.step + (m > 90 ? 2 : 1))); d.check = m; return;
+    }
+    if (d.step > 0 && d.n >= d.hold && med(d.samples.length) < 21) go(d.step - 1);
+  }
+  /* Palier de départ, d'après le temps d'une image pleine qualité mesuré à la fin du chargement : la première promenade
+     n'a pas à le chercher. Le coût suit à peu près le nombre de pixels ; sans occlusion d'écran, environ deux tiers. */
+  dynProbe() {
+    const d = this.dyn; if (!d.auto) return;
+    if (GPU.kind === 'soft') { d.step = d.floor; return; }        // rendu logiciel : le palier le plus léger d'emblée, sans payer la mesure
+    // mesurée en demi-résolution (un quart des pixels) pour ne pas allonger le chargement d'une machine lente ; ×3 pour la pleine
+    this.applyPR(this.dprBase * 0.5);
+    const gl = this.renderer.getContext(), px = new Uint8Array(4), t = performance.now();
+    if (this.composer) this.composer.render(); else this.renderer.render(this.scene, this.camera);
+    gl.readPixels(0, 0, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, px);
+    const ms = (performance.now() - t) * 3; d.probe = Math.round(ms);
+    this.applyPR(this.dprBase * d.scale);
+    let i = 0; while (i < d.steps.length - 1 && ms * d.steps[i][0] ** 2 * (d.steps[i][1] || !this.ao ? 1 : 0.65) > 30) i++;
+    d.step = i;
   }
 
   resize() {
@@ -482,23 +612,23 @@ class App {
 
   async load(apt, opts = {}) {
     this.stopTour(); this.fly = null; this.ready = false;
-    ui.loader.hidden = false; ui.loaderText.textContent = tr(this.M ? 'loadGeo' : 'loadTex');
+    ui.loader.hidden = false; ui.loaderText.textContent = tr(this.M ? 'loadGeo' : 'loadTex'); this.progress(0.03);
     await new Promise((r) => requestAnimationFrame(() => setTimeout(r, 30)));
     if (!this.M) {
-      this.M = makeMaterials(QUALITY);
+      performance.mark('v3d:mat0'); this.M = makeMaterials(QUALITY); performance.mark('v3d:mat1');
       depthPriority(this.M); aoPatchMaterials(this.M);
       // miroirs et métaux reflètent un intérieur neutre plutôt que le ciel
       const room = this.env.pmrem.fromScene(new RoomEnvironment(), 0.03).texture;
       this.roomMats = ['mirror', 'steel', 'brass', 'floor', 'tile', 'wallTile', 'marble', 'marbleDark', 'marbleGrey', 'ceramic', 'tubIn', 'glassSmoke', 'screen', 'lacquer', 'greyLacquer', 'anthracite', 'black', 'potDark', 'crystal', 'oak', 'oakV', 'walnut', 'door', 'frame', 'skirt', 'cognac'];
       for (const k of this.roomMats) { const m = this.M[k]; m.envMap = room; m.userData.zone = true; m.userData.envK = k === 'mirror' ? 1.5 : k === 'floor' ? 0.75 : k === 'steel' || k === 'brass' ? 1 : (m.envMapIntensity || 1) * 0.6; m.envMapIntensity = m.userData.envK; }
-      ui.loaderText.textContent = tr('loadGeo'); await new Promise((r) => setTimeout(r, 30));
+      ui.loaderText.textContent = tr('loadGeo'); this.progress(0.3); await new Promise((r) => setTimeout(r, 30));
     }
     const prev = this.apt && this.built.get(this.apt.id);
-    const cur = this.build(apt);
+    const cur = this.build(apt); performance.mark('v3d:build'); this.progress(0.5); await slice(true);
     if (prev) this.scene.remove(prev.group);
     this.scene.add(cur.group); cur.group.add(this.camera, this.reticle, this.hl);
     // ombres de contact : calculées une fois par logement, au premier chargement
-    if (!cur.ao) { cur.group.updateMatrixWorld(true); cur.ao = bakeContact(this.renderer, this.scene, cur.group, apt, this.M, QUALITY.tex, cur.lights); }
+    if (!cur.ao) { cur.group.updateMatrixWorld(true); cur.ao = await bakeContact(this.renderer, this.scene, cur.group, apt, this.M, QUALITY.tex, cur.lights); performance.mark('v3d:bake'); }
     AOU.uAoMap.value = cur.ao.tex; AOU.uAoT0.value.copy(cur.ao.t0); AOU.uAoT1.value.copy(cur.ao.t1); AOU.uAoA.value.copy(cur.ao.a); AOU.uAoLv.value.copy(cur.ao.lv); AOU.uAoSplit.value = cur.ao.split; AOU.uAoMap2.value = cur.ao.tex2; AOU.uAoCf.value = cur.ao.cf;
     AOU.uAoK.value = QUALITY.ao ? 0.8 : 1.5;              // avec l'occlusion d'écran (qualités hautes), la carte ne fait plus que le voile large
     this.apt = apt; this.cur = cur; this.viewLevel = 0; this.mode = 'orbit'; this.lastRoom = null; this.hourBack = undefined;
@@ -507,28 +637,32 @@ class App {
     for (const p of this.pool) p.removeFromParent();
     this.pool = Array.from({ length: QUALITY.lights }, () => { const p = new THREE.PointLight(0xffffff, 0, 9, 1.6); p.userData = { src: null, goal: 0, next: null }; cur.group.add(p); return p; });
     this.lightAt.set(1e9, 0, 0);
-    ui.loaderText.textContent = tr('loadEnv'); await new Promise((r) => setTimeout(r, 30));
+    ui.loaderText.textContent = tr('loadEnv'); this.progress(0.62); await new Promise((r) => setTimeout(r, 30));
     cur.group.updateMatrixWorld(true);
     const lv = apt.levels[0], bb = lv.bounds;
     const c = cur.group.localToWorld(new THREE.Vector3((bb[0] + bb[2]) / 2, 1.5, (bb[1] + bb[3]) / 2));
     this.env.setSite(apt, this.M, c, Math.hypot(bb[2] - bb[0], bb[3] - bb[1]) / 2 + 3);
     this.setHour(Number(params.get('h')) || apt.hour || 11, true);      // l'heure où le soleil entre dans le séjour
-    this.fillUI();
-    ui.loaderText.textContent = tr('loadEnv'); await new Promise((r) => setTimeout(r, 30));
+    this.fillUI(); performance.mark('v3d:env');
+    ui.loaderText.textContent = tr('loadEnv'); this.progress(0.7); await new Promise((r) => setTimeout(r, 30));
     if (!cur.zones) {                                         // reflets des pièces : photographiées de jour, une fois par logement
       const h0 = this.hour, dark = this.night > 0.3;
       this.applyView(false);
+      // les prises de vue compileraient d'un bloc, au premier rendu, tous les programmes de la scène : on les compile d'abord en
+      // parallèle (hors du fil principal quand le navigateur le permet)
+      if (this.renderer.compileAsync) try { await this.renderer.compileAsync(this.scene, this.camera); } catch (e) { /* compilées au rendu */ }
       if (dark) { this.setHour(12, true); this.env.updateEnvMap(this.env.envK); }
-      cur.zones = captureZones(this, apt, 128, qName === 'low' ? 4 : 6);      // hors téléphones, les chambres principales ont aussi leur prise (atlas 1152 × 1024)
+      cur.zones = await captureZones(this, apt, 128, qName === 'low' || qName === 'soft' ? 4 : 6);      // hors téléphones, les chambres principales ont aussi leur prise (atlas 1152 × 1024)
       if (dark) { this.setHour(h0, true); this.env.updateEnvMap(this.env.envK); }
     }
-    this.useZones(cur.zones);
-    this.warmUp();
+    performance.mark('v3d:zones'); this.useZones(cur.zones); this.progress(0.85);
+    await this.warmUp(); performance.mark('v3d:warm');
     const room = opts.room && this.findRoom(opts.room);
     if (opts.mode === 'walk' || room) { const r = room || this.findRoom(apt.start.room); this.enterWalk(r.room, r.level, true); }
     else if (opts.mode === 'plan') this.setMode('plan', true);
     else if (opts.mode === 'site') { this.setMode('orbit', true); this.setMode('site', true); }
     else this.setMode('orbit', true);
+    this.dynProbe(); this.progress(1);
     this.ready = true; ui.loader.hidden = true; root.classList.add('is-ready'); this.dirty = true; setTimeout(() => root.classList.add('is-seen'), 1200);
     window.__v3dReady = true;
   }
@@ -536,7 +670,7 @@ class App {
   /* Préchauffage : tout ce que le visiteur verra plus tard est préparé ici, pendant le chargement. Sans lui, la première
      entrée dans une pièce compilait une quinzaine de programmes de rendu et envoyait des centaines de géométries et de
      textures à la carte graphique en une seule image : l'écran se figeait plus d'une seconde. */
-  warmUp() {
+  async warmUp() {
     const c = this.cur, layers = Object.values(c.layers), was = layers.map((g) => g.visible), cw = c.catcher.visible, pw = c.pucks.visible;
     for (const g of layers) g.visible = true; c.catcher.visible = true; c.pucks.visible = true;
     for (const m of Object.values(this.M)) for (const k of ['map', 'bumpMap', 'roughnessMap', 'normalMap', 'alphaMap', 'emissiveMap', 'aoMap']) if (m && m[k] && m[k].isTexture) this.renderer.initTexture(m[k]);
@@ -545,13 +679,26 @@ class App {
     const culled = []; this.scene.traverse((o) => { if (o.isMesh && o.frustumCulled) { culled.push(o); o.frustumCulled = false; } });
     // le soleil reste allumé jour et nuit (la lune prend son relais) : le nombre de lumières ne change pas, seuls la promenade
     // et le mode maquette (ciel et paysage masqués, passes différentes) demandent chacun leurs programmes
+    // compilation parallèle quand le navigateur la permet (les programmes se compilent hors du fil principal, la page ne se fige pas) ;
+    // les rendus de préchauffage se font sur une vignette : programmes, textures et géométries sont prêts de la même façon, sans
+    // payer deux images pleine taille (plusieurs secondes sur une machine lente)
+    const pr = this.renderer.getPixelRatio(); this.applyPR(Math.min(pr, 96 / Math.max(96, root.clientWidth)));
     try {
-      for (const studio of [false, true]) { this.env.setStudio(studio, !!this.composer); this.renderer.compile(this.scene, this.camera); if (this.composer) this.composer.render(); else this.renderer.render(this.scene, this.camera); }
+      for (const studio of [false, true]) {
+        this.env.setStudio(studio, !!this.composer);
+        if (this.renderer.compileAsync) await this.renderer.compileAsync(this.scene, this.camera); else this.renderer.compile(this.scene, this.camera);
+        this.progress(studio ? 0.97 : 0.92);
+        if (this.composer) this.composer.render(); else this.renderer.render(this.scene, this.camera);
+        await slice(true);
+      }
     } catch (e) { console.warn('préchauffage', e); }
+    this.applyPR(pr);
     for (const o of culled) o.frustumCulled = true;
     layers.forEach((g, i) => { g.visible = was[i]; }); c.catcher.visible = cw; c.pucks.visible = pw;
     this.renderer.shadowMap.needsUpdate = true; this.dirty = true;
   }
+
+  progress(f) { if (ui.bar) ui.bar.style.transform = `scaleX(${f.toFixed(3)})`; }
 
   useZones(z) {
     ZU.uZAtlas.value = z.atlas.texture; ZU.uZn.value = z.n; ZU.uZg.value.set(z.nc, Math.ceil(z.n / z.nc), 1 / z.cw, 1 / z.ch); ZU.uZmip.value = z.mip;
@@ -572,6 +719,7 @@ class App {
     this.cur.catcher.visible = cut; this.cur.pucks.visible = !cut; this.env.setStudio(cut, !!this.composer);
     if (this.hl) this.hl.visible = false;
     this.cutView = cut; this.renderer.shadowMap.needsUpdate = true; this.lightAt.set(1e9, 0, 0); this.dirty = true;
+    this.dyn.floor = this.dyn.steps.length - 1;                // autre vue, autre charge : la résolution dynamique peut de nouveau tout essayer
   }
 
   orbitPose(plan) {
@@ -706,7 +854,7 @@ class App {
 
   /* ── Lumière ─────────────────────────────────────────────────────────────── */
   setHour(h, force) {
-    this.hour = h;
+    this.hour = h; if (!force) this.hourMovedAt = performance.now();      // l'heure qui glisse (curseur, boutons) compte comme un mouvement
     this.night = this.env.setHour(h);
     const n = this.night, M = this.M;
     M.lampShade.emissiveIntensity = n * 1.25; M.led.emissiveIntensity = 1.0 + n * 0.8;      // rubans LED et lustres allumés même de jour, comme sur les images
@@ -1113,7 +1261,18 @@ class App {
     ui.map.addEventListener('click', (e) => { if (!this.mapT) return; const r = ui.map.getBoundingClientRect(), k = ui.map.width / r.width, x = ((e.clientX - r.left) * k - this.mapT.ox) / this.mapT.s, z = ((e.clientY - r.top) * k - this.mapT.oy) / this.mapT.s; this.stopTour(); this.walkTo(x, z); });
     document.addEventListener('59c:langchange', () => { if (!this.apt) return; this.fillUI(); if (this.mode === 'walk') this.updateHud(); this.dirty = true; $$('.v3d-swatch').forEach((b) => { const f = FLOOR_FINISHES.find((x) => x.id === b.dataset.floor); b.title = f[lang()]; b.setAttribute('aria-label', f[lang()]); if (b.classList.contains('is-on')) $('#v3d-floor-out').textContent = f[lang()]; }); });
     document.addEventListener('visibilitychange', () => { this.clock.getDelta(); if (!document.hidden) this.dirty = true; });
+    /* Perte du contexte graphique (pilote réinitialisé, mémoire de la carte saturée, mise en veille) : sans preventDefault le
+       navigateur ne le rend jamais et l'écran reste noir. On suspend le rendu, on prévient, on reprend quand il revient ; s'il ne
+       revient pas, ou s'il se perd à nouveau, un bouton recharge la visite au même endroit, un niveau de qualité plus bas. */
+    canvas.addEventListener('webglcontextlost', (e) => {
+      e.preventDefault(); this.lost = (this.lost || 0) + 1; this.lostN = (this.lostN || 0) + 1;
+      ui.loader.hidden = false; ui.loaderText.textContent = tr('lost');
+      clearTimeout(this.lostT); this.lostT = setTimeout(() => this.offerReload(), this.lostN > 1 ? 0 : 5000);
+    });
     canvas.addEventListener('webglcontextrestored', () => setTimeout(() => {
+      clearTimeout(this.lostT); this.lost = 0;
+      if (this.lostN > 1) return this.offerReload();
+      if (this.ready) ui.loader.hidden = true;
       if (!this.M) return;
       const room = this.env.pmrem.fromScene(new RoomEnvironment(), 0.03).texture;
       for (const k of this.roomMats) this.M[k].envMap = room;
@@ -1121,6 +1280,21 @@ class App {
       this.env.envRT = null; this.env.envDirty = true; this.env.flushEnv();
       this.renderer.shadowMap.needsUpdate = true; this.resize(); this.dirty = true;
     }, 60));
+  }
+  /* Recharge la page au même endroit (logement, vue, pièce), un cran de qualité plus bas. */
+  offerReload() {
+    ui.loader.hidden = false; ui.loaderText.textContent = tr('lostReload');
+    if (ui.loader.querySelector('.v3d-reload')) return;
+    const b = document.createElement('button'); b.type = 'button'; b.className = 'btn btn-primary v3d-reload'; b.textContent = tr('reload');
+    b.addEventListener('click', () => {
+      const u = new URLSearchParams(location.search), down = { high: 'std', test: 'std', std: 'mid', mid: 'low', low: 'low', soft: 'soft' };
+      u.set('q', down[qName] || 'low');
+      if (this.apt) u.set('bien', this.apt.bien || this.apt.id);
+      u.delete('mode'); u.delete('piece');
+      if (this.mode === 'walk' && this.lastRoom) { u.set('mode', 'visite'); u.set('piece', this.lastRoom.id); } else if (this.mode === 'site') u.set('mode', 'residence'); else if (this.mode === 'plan') u.set('mode', 'plan');
+      location.search = u.toString();
+    });
+    ui.loader.appendChild(b);
   }
   animHour(to) { const from = this.hour, t0 = performance.now(); const step = () => { const k = Math.min(1, (performance.now() - t0) / 1400); this.setHour(from + (to - from) * ease(k)); if (k < 1) requestAnimationFrame(step); }; step(); }
 
@@ -1136,17 +1310,20 @@ class App {
   frame() {
     requestAnimationFrame(() => this.frame());
     const raw = this.clock.getDelta(), dt = Math.min(0.1, raw), slow = Math.min(0.2, raw), now = performance.now();
-    if (!this.ready || document.hidden) return;
+    if (!this.ready || document.hidden || this.lost) { this.dyn.prev = false; return; }
     this.tick(dt); this.updateLights(dt);
     if (this.env.flushEnv(now)) this.dirty = true;
-    const cam = this.camera;
-    if (!this.camP.equals(cam.position) || !this.camQ.equals(cam.quaternion) || this.camF !== cam.fov) { this.camP.copy(cam.position); this.camQ.copy(cam.quaternion); this.camF = cam.fov; this.movedAt = now; }
-    if (this.mode === 'site' && this.cur.arrival && this.cur.arrival.update(dt)) this.dirty = true;
+    const cam = this.camera; let moving = !!this.fly || now - (this.hourMovedAt || -1e9) < 120;
+    if (!this.camP.equals(cam.position) || !this.camQ.equals(cam.quaternion) || this.camF !== cam.fov) { this.camP.copy(cam.position); this.camQ.copy(cam.quaternion); this.camF = cam.fov; this.movedAt = now; moving = true; }
+    if (this.mode === 'site' && this.cur.arrival && this.cur.arrival.update(dt)) { this.dirty = true; moving = true; }
+    if (!this.onScreen) { this.dyn.prev = false; return; }    // la visite continue (visite guidée, voiture), mais rien n'est dessiné hors de la vue
+    this.dynBefore(now, moving);
     const refine = this.updateAO(slow);
     this.updateSpots();                                        // repères : suivis à chaque image, même sans nouveau rendu (leur hystérésis est temporelle)
-    if (!this.dirty && !refine) return; this.dirty = false;
+    if (!this.dirty && !refine) { this.dynAfter(now, false); return; } this.dirty = false;
     this.updateLabels(); this.updateLots();
     if (this.composer) this.composer.render(); else this.renderer.render(this.scene, this.camera);
+    this.dynAfter(now, true);
   }
 }
 
