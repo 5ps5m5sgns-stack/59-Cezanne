@@ -350,7 +350,7 @@ export class Environment {
       return by.filter((l) => l.length).map((l) => mk(l, geo));
     };
     const cut = Math.round(N * 0.35);
-    const fl = [...sectors(items.slice(0, cut), 2, 8), ...sectors(items.slice(cut), 1, 4)]; this.near.add(...fl);
+    const fl = [...sectors(items.slice(0, cut), 2, 4), ...sectors(items.slice(cut), 1, 2)]; this.near.add(...fl);
     const pines = items.filter((t) => t.pine);
     const trunks = new THREE.InstancedMesh(new THREE.CylinderGeometry(0.1, 0.16, 1, 5, 1, true), new THREE.MeshStandardMaterial({ color: 0x5b4a3a, roughness: 1 }), pines.length);
     pines.forEach((t, i) => { pos.set(t.x, gy + t.s * 0.85, t.z); sc.set(t.s * 0.5, t.s * 1.7, t.s * 0.5); trunks.setMatrixAt(i, m4.compose(pos, q.identity(), sc)); });

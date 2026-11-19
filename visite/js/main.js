@@ -109,10 +109,6 @@ function depthPriority(M) {
   }
 }
 
-/* Abords vus des baies (calque ctx, tout le site) : leurs plus gros maillages sont aussi découpés en tuiles de 24 m, que la promenade
-   dessine à la place du maillage entier ; depuis une pièce, celles qui sont hors du champ de vue ne coûtent plus rien. */
-const CTX_TILES = { size: 24, min: 8000 };
-
 /* ── Ombres de contact précalculées ──────────────────────────────────────────
    Sans occlusion ambiante à l'écran (téléphones), les meubles semblaient flotter et les angles étaient plats. Au chargement, chaque
    niveau est rendu une fois vu de dessus (caméra orthographique coupée à 1 m du sol) : ce qui couvre le sol y est noté, meubles d'un
@@ -598,7 +594,6 @@ class App {
   async buildNow(apt) {
     const group = new THREE.Group(); group.name = apt.id;      // l'orientation réelle est donnée au paysage et au soleil (env.js)
     const b = new Batch(), lv0 = apt.levels[0];
-    b.tiles.ctx = CTX_TILES;
     lv0.items = lv0.items.concat((apt.garden || []).map(([t, x, z, r, o]) => [t, x, z, r, { ...o, layer: 'ext', y0: -0.015 }]));
     for (const [i, lv] of apt.levels.entries()) { buildLevel(b, this.M, lv, i); await slice(true); }
     if (apt.stair) buildStair(b, this.M, apt.stair, lv0);
@@ -628,7 +623,7 @@ class App {
     await new Promise((r) => requestAnimationFrame(() => setTimeout(r, 30)));
     // textures dessinées par tranches, la page reste vivante ; un second chargement lancé entre-temps (autre logement choisi)
     // attend la même fabrication au lieu d'en commencer une autre
-    if (!this.M && !this.matP) { performance.mark('v3d:mat0'); let n = 0; this.matP = makeMaterialsAsync(QUALITY, () => { this.progress(0.03 + 0.27 * Math.min(1, ++n / 40)); return slice(); }); }
+    if (!this.M && !this.matP) { performance.mark('v3d:mat0'); let n = 0; this.matP = makeMaterialsAsync(QUALITY, () => { this.progress(0.03 + 0.27 * Math.min(1, ++n / 130)); return slice(); }); }
     const fresh = !this.M && await this.matP;
     if (fresh && !this.M) {
       this.M = fresh; performance.mark('v3d:mat1');
@@ -689,7 +684,6 @@ class App {
   async warmUp() {
     const c = this.cur, layers = Object.values(c.layers), was = layers.map((g) => g.visible), cw = c.catcher.visible, pw = c.pucks.visible;
     for (const g of layers) g.visible = true; c.catcher.visible = true; c.pucks.visible = true;
-    const tiles = []; for (const g of layers) for (const o of g.children) if (o.userData.tile || o.userData.tiled) { tiles.push([o, o.visible]); o.visible = true; }      // tuiles et maillage entier : tous deux préparés
     // envoi des textures une à une (le dessin des canvas peut n'être achevé qu'à cet envoi) : la main revient au navigateur entre deux
     const texs = new Set(); for (const m of Object.values(this.M)) for (const k of ['map', 'bumpMap', 'roughnessMap', 'normalMap', 'alphaMap', 'emissiveMap', 'aoMap']) if (m && m[k] && m[k].isTexture) texs.add(m[k]);
     for (const t of texs) { this.renderer.initTexture(t); await slice(); }
@@ -713,7 +707,7 @@ class App {
     } catch (e) { console.warn('préchauffage', e); }
     this.applyPR(pr);
     for (const o of culled) o.frustumCulled = true;
-    layers.forEach((g, i) => { g.visible = was[i]; }); c.catcher.visible = cw; c.pucks.visible = pw; for (const [o, v] of tiles) o.visible = v;
+    layers.forEach((g, i) => { g.visible = was[i]; }); c.catcher.visible = cw; c.pucks.visible = pw;
     this.renderer.shadowMap.needsUpdate = true; this.dirty = true;
   }
 
@@ -748,9 +742,6 @@ class App {
       else if (m && m[2] === ':cap') vis = false;
       g.visible = vis;
     }
-    // abords : en promenade, par tuiles (seules celles du champ de vue sont dessinées) ; ailleurs, d'un seul tenant
-    const walk = this.mode === 'walk';
-    if (this.cur.layers.ctx) for (const o of this.cur.layers.ctx.children) { if (o.userData.tile) o.visible = walk; else if (o.userData.tiled) o.visible = !walk; }
     this.cur.catcher.visible = cut; this.cur.pucks.visible = !cut; this.env.setStudio(cut, !!this.composer);
     if (this.hl) this.hl.visible = false;
     this.cutView = cut; this.renderer.shadowMap.needsUpdate = true; this.lightAt.set(1e9, 0, 0); this.dirty = true;

@@ -14,8 +14,9 @@ function canvas(size, draw, alpha = false) {
   draw(c.getContext('2d', { alpha }), size);
   return c;
 }
+let LAST = null;                                                     // dernier canvas devenu texture (voir makeMaterialsAsync)
 function tex(c, { srgb = true, aniso = 8 } = {}) {
-  const t = new THREE.CanvasTexture(c);
+  const t = new THREE.CanvasTexture(c); LAST = c;
   t.wrapS = t.wrapT = THREE.RepeatWrapping;
   if (srgb) t.colorSpace = THREE.SRGBColorSpace;
   t.anisotropy = aniso;
@@ -182,7 +183,7 @@ function* parquetGen(base, S, { plank = 0.18, tile = 6.48, vary = 0.1, seed = 11
     gc.fillStyle = rgb(30, 15, 6, 0.55); gc.fillRect(0, y0 + ph - jw, S, jw);
     gc.fillStyle = rgb(255, 232, 196, 0.16); gc.fillRect(0, y0, S, Math.max(1, u));
     if (full) { gb.fillStyle = grey(96); gb.fillRect(0, y0 + ph - jw * 2.2, S, jw * 1.2); gb.fillStyle = grey(22); gb.fillRect(0, y0 + ph - jw, S, jw); gq.fillStyle = grey(210); gq.fillRect(0, (y0 + ph - jw) * q, S * q, Math.max(1, jw * q)); }
-    if (r % 6 === 5) yield;                                         // la plus longue texture : découpée par paquets de rangs
+    if (r % 3 === 2) { flush(C); yield; }                          // la plus longue texture : découpée par paquets de rangs
   }
   lay(gc, S, noiseCanvas(512, 6, 6, 4, 71, 1.6), 0.22);                 // marbrures douces, légères différences de teinte sur plusieurs mètres
   speckle(gc, S, R, S * 3, 0.03, 1.5 * u);
@@ -440,8 +441,9 @@ function cells(S, n, seed) {
 }
 
 /* Trames de tissu en niveaux de gris clairs : servent à la fois de carte de couleur (multipliée par la teinte) et de relief. */
-function weave(seed, kind) {
-  return canvas(512, (g, S) => {
+function* weaveGen(seed, kind) {
+  const S = 512, cv = canvas(S, () => { }), g = cv.getContext('2d');
+  {
     const R = rng(seed);
     g.fillStyle = '#e4e4e4'; g.fillRect(0, 0, S, S);
     if (kind === 'linen') {                                           // toile : fils de chaîne et de trame qui passent dessus-dessous, nœuds et irrégularités
@@ -457,6 +459,7 @@ function weave(seed, kind) {
         const x = R() * S, y = R() * S, r = 2.4 + R() * 3.6, a = R() * 6.28, b = a + 2.4 + R() * 2.6;
         g.strokeStyle = grey(90, 0.35); g.lineWidth = 1.6 + R() * 1.2; g.beginPath(); g.arc(x + 0.8, y + 1, r, a, b); g.stroke();
         g.strokeStyle = grey(R() < 0.5 ? 196 + R() * 40 : 255, 0.62); g.lineWidth = 1 + R() * 1.2; g.beginPath(); g.arc(x, y, r, a, b); g.stroke();
+        if (i % 2000 === 1999) { flush(cv); yield; }               // onze mille boucles : dessinées par paquets
       }
     } else if (kind === 'velvet') {                                   // velours : poil couché, reflets doux
       clouds(g, S, R, 26, 0.16, 120);
@@ -471,7 +474,8 @@ function weave(seed, kind) {
       for (let i = 0; i < 4500; i++) { g.strokeStyle = grey(R() < 0.5 ? 90 : 255, 0.16 + R() * 0.12); g.lineWidth = 0.8; const x = R() * S, y = R() * S, a = (R() - 0.5) * 1.2; g.beginPath(); g.moveTo(x, y); g.lineTo(x + Math.cos(a) * 8, y + Math.sin(a) * 8 + 2); g.stroke(); }
     }
     speckle(g, S, R, 7000, 0.05, 1.6);
-  });
+  }
+  return cv;
 }
 
 /* Pied-de-poule (plaid du canapé), avec une trame de laine. */
@@ -505,8 +509,16 @@ function brushed(seed, lo, hi, S = 512) {
 
 /* Végétal en aplat : gazon (touffes de brins, plages sèches, trèfles) et masses de feuillage (feuilles superposées, creux d'ombre).
    Les traits d'une même teinte sont regroupés en un seul tracé : des dizaines de milliers de brins pour quelques dizaines d'appels. */
-function foliage(base, seed, { blades = false, S = 1024, soft = false, gain = 1 } = {}) {
-  return canvas(S, (g) => {
+/* Fait dessiner tout de suite ce qui est en attente dans un canvas (le navigateur diffère le tracé jusqu'au premier usage de
+   l'image) : sa copie dans un canvas d'un pixel, relu, l'y oblige. Le coût tombe ainsi dans la tranche qui l'a causé, au lieu de
+   s'accumuler sur la première lecture (plus de dix secondes d'un bloc pour le gazon sur une machine lente). Le canvas lui-même
+   n'est jamais relu : le navigateur garde son mode de dessin, l'image est la même. */
+let FL = null;
+function flush(c) { if (!FL) { FL = document.createElement('canvas'); FL.width = FL.height = 1; FL = FL.getContext('2d', { willReadFrequently: true }); } FL.drawImage(c, 0, 0, 1, 1); FL.getImageData(0, 0, 1, 1); }
+
+function* foliageGen(base, seed, { blades = false, S = 1024, soft = false, gain = 1 } = {}) {
+  const cv = canvas(S, () => { }), g = cv.getContext('2d');
+  {
     const R = rng(seed), u = S / 1024, NB = 7;
     g.fillStyle = rgb(...shade(base, blades ? 0.62 : 0.85)); g.fillRect(0, 0, S, S);
     clouds(g, S, R, blades ? 24 : 22, blades ? 0.09 : 0.1, S * 0.2);
@@ -526,10 +538,11 @@ function foliage(base, seed, { blades = false, S = 1024, soft = false, gain = 1 
           P.moveTo(x + Math.cos(a) * l, y + Math.sin(a) * l); P.ellipse(x, y, l, l * 0.42, a, 0, 7); P.closePath();
         }
       }
-      bins.forEach((P, bi) => {
+      for (const [bi, P] of bins.entries()) {
         const t = bi / (NB - 1), dry = blades && bi === NB - 1, c = dry ? [150, 150, 72] : shade(base, k * (0.82 + t * 0.36));
         if (blades) { g.strokeStyle = rgb(c[0] + t * 14, c[1] + (1 - t) * 8, c[2], 0.85); g.lineWidth = 1.2 * u; g.stroke(P); } else { g.fillStyle = rgb(c[0] + t * 18, c[1] + t * 10, c[2], 0.88); g.fill(P); }
-      });
+        flush(cv); yield;                                            // un tracé de milliers de brins ou de feuilles : coûteux à dessiner, un par tranche
+      }
       if (blades && k0 === 0.85) clouds(g, S, R, 10, 0.1, S * 0.12);
     }
     if (blades) for (let i = 0; i < 260 * u * u; i++) {               // trèfles et pâquerettes
@@ -538,7 +551,8 @@ function foliage(base, seed, { blades = false, S = 1024, soft = false, gain = 1 
       else { g.fillStyle = rgb(244, 240, 226, 0.7); g.beginPath(); g.arc(x, y, 1.3 * u, 0, 7); g.fill(); }
     }
     lay(g, S, noiseCanvas(512, blades ? 4 : 6, blades ? 4 : 6, 4, seed + 3, 1.6), 0.22);
-  });
+  }
+  return cv;
 }
 
 /* Touffe de feuilles sur fond transparent : plaquée sur de petites cartes pour donner un vrai feuillage aux arbres et aux plantes.
@@ -863,7 +877,7 @@ function* materialSteps(quality) {
   yield;
 
   // ── Tissus et cuirs : une trame partagée (couleur × teinte, et relief)
-  const W = {}; for (const [k, s] of [['linen', 61], ['boucle', 62], ['velvet', 63], ['leather', 64], ['rug', 65]]) { const c = weave(s, k); W[k] = [T(c), L(c)]; yield; }
+  const W = {}; for (const [k, s] of [['linen', 61], ['boucle', 62], ['velvet', 63], ['leather', 64], ['rug', 65]]) { const c = yield* weaveGen(s, k); W[k] = [T(c), L(c)]; yield; }
   const fab = (color, kind, rough, o = {}) => (o.sheen ? phys : std)({ color, map: W[kind][0], bumpMap: W[kind][1], bumpScale: o.bump || 1.4, roughness: rough, ...(o.sheen ? { sheen: o.sheen, sheenRoughness: 0.55, sheenColor: new THREE.Color(color).lerp(new THREE.Color(0xffffff), 0.5) } : {}), userData: { wuv: o.wuv || 0.5 } });
   M.linen = fab(0xefe9dd, 'linen', 0.96);                             // lin écru
   M.greige = fab(0xb7ab9c, 'velvet', 0.9, { sheen: 0.5 });            // velours taupe (chaises du duplex)
@@ -907,10 +921,10 @@ function* materialSteps(quality) {
   M.glow.userData = { cast: false, receive: false, order: 3 };
 
   // ── Extérieur
-  const grC = foliage([104, 140, 62], 51, { blades: true });
+  const grC = yield* foliageGen([104, 140, 62], 51, { blades: true });
   yield;
   M.grass = macro(std({ map: T(grC), roughness: 1, userData: { wuv: 2.2, cast: false } }), grC, 0.55, 0.083);      // pelouse : plages plus vertes ou plus sèches sur plusieurs mètres
-  M.hedge = std({ map: T(foliage([62, 98, 50], 52, { gain: 0.8 })), roughness: 1, userData: { wuv: 1.3 } });
+  M.hedge = std({ map: T(yield* foliageGen([62, 98, 50], 52, { gain: 0.8 })), roughness: 1, userData: { wuv: 1.3 } });
   yield;
   const CS = FS > 1024 ? 512 : 256;
   const card = (c, o) => { const t = T(c); coverageMips(t, c, 0.42); return std({ map: t, alphaTest: 0.42, alphaToCoverage: true, side: THREE.DoubleSide, roughness: 0.95, ...o }); };      // bords de feuilles lissés par l'anticrénelage
@@ -920,7 +934,7 @@ function* materialSteps(quality) {
   yield;
   M.leafBroad = card(leafCard([78, 122, 62], 55, { n: 30, len: 0.26, wid: 0.12, S: CS }));     // plantes d'intérieur, lauriers
   yield;
-  M.leafCypress = std({ map: T(foliage([46, 78, 48], 56, { S: 512, gain: 1.2 })), roughness: 1, userData: { wuv: 1.1 } });
+  M.leafCypress = std({ map: T(yield* foliageGen([46, 78, 48], 56, { S: 512, gain: 1.2 })), roughness: 1, userData: { wuv: 1.1 } });
   yield;
   M.lavender = std({ color: 0x8a7bc0, roughness: 1 });
   M.oleander = std({ color: 0xe07a94, roughness: 1 });
@@ -929,7 +943,7 @@ function* materialSteps(quality) {
   if (bkP && bkR) { const pk = L(bkR); M.bark = std({ map: T(bkP), color: 0xc8bcae, bumpMap: pk, roughnessMap: pk, bumpScale: 3, roughness: 1, userData: { wuv: 0.9, wuvSwap: true } }); }
   else { const [bkC, bkB] = barkSet(59); M.bark = std({ map: T(bkC), bumpMap: L(bkB), bumpScale: 2, color: 0xf0e4d8, roughness: 1, userData: { wuv: 0.6 } }); }
   yield;
-  const eaC = foliage([120, 128, 84], 57, { S: 512, soft: true, gain: 1.18 });
+  const eaC = yield* foliageGen([120, 128, 84], 57, { S: 512, soft: true, gain: 1.18 });
   yield;
   M.earth = macro(std({ map: T(eaC), roughness: 1, userData: { wuv: 6, cast: false } }), eaC, 0.45, 0.09);
   M.water = poolWater(quality, M);                                    // eau des bassins : cuve vue par réfraction, reflets, caustiques (pool.js)
@@ -961,10 +975,13 @@ function* materialSteps(quality) {
   return M;
 }
 export function makeMaterials(quality) { return drain(materialSteps(quality)); }
-/* Même fabrication, découpée : `pause()` est attendue entre deux textures (elle ne rend la main que si la tranche a assez duré). */
+/* Même fabrication, découpée : `pause()` est attendue entre deux textures (elle ne rend la main que si la tranche a assez duré).
+   Le navigateur peut dessiner les canvas en différé, ailleurs que dans la page ; sans précaution, toute l'attente retombait d'un
+   bloc sur la première lecture d'une image. On achève donc chaque tranche en faisant terminer le dessin de la dernière texture
+   (et, dans l'ordre, de tout ce qui la précède). */
 export async function makeMaterialsAsync(quality, pause) {
   const it = materialSteps(quality);
-  for (;;) { const r = it.next(); if (r.done) return r.value; await pause(); }
+  for (;;) { const r = it.next(); if (r.done) return r.value; if (LAST) flush(LAST); await pause(); }
 }
 
 /* Finitions de sol proposées dans la visite. */

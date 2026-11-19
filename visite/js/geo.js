@@ -103,42 +103,9 @@ function splitY(g, y, solid) {
   return [mk(lo), mk(hi), mk(cap)];
 }
 
-/* Tuiles d'un grand maillage étalé sur tout le site (abords vus des baies) : les triangles sont regroupés par cases de `size` mètres
-   (les cases trop maigres rejoignent leur voisine la plus proche), chaque case devenant une plage contiguë du maillage.
-   Renvoie les plages [{ start, count }] en triangles, ou null s'il n'y a qu'une case. La géométrie est réordonnée sur place. */
-function sortTiles(geo, size) {
-  const P = geo.attributes.position.array, N = geo.attributes.normal.array, U = geo.attributes.uv.array, n = P.length / 9;
-  const cell = new Int32Array(n), keys = new Map();
-  for (let t = 0; t < n; t++) {
-    const o = t * 9, cx = Math.floor((P[o] + P[o + 3] + P[o + 6]) / 3 / size), cz = Math.floor((P[o + 2] + P[o + 5] + P[o + 8]) / 3 / size), k = cx * 4096 + cz;
-    let c = keys.get(k); if (!c) keys.set(k, (c = { k, x: cx, z: cz, n: 0 })); c.n++; cell[t] = k;
-  }
-  if (keys.size < 2) return null;
-  const all = [...keys.values()], big = all.filter((c) => c.n >= Math.max(300, n * 0.04));
-  if (big.length < 2) return null;
-  const to = new Map(); for (const c of all) to.set(c.k, c.n >= Math.max(300, n * 0.04) ? c : big.reduce((a, b) => ((b.x - c.x) ** 2 + (b.z - c.z) ** 2 < (a.x - c.x) ** 2 + (a.z - c.z) ** 2 ? b : a)));
-  big.sort((a, b) => a.x - b.x || a.z - b.z); big.forEach((c, i) => { c.i = i; c.m = 0; });
-  for (let t = 0; t < n; t++) to.get(cell[t]).m++;
-  const at = new Int32Array(big.length); let acc = 0; const ranges = big.map((c, i) => { at[i] = acc; const r = { start: acc, count: c.m }; acc += c.m; return r; });
-  const P2 = new Float32Array(P.length), N2 = new Float32Array(N.length), U2 = new Float32Array(U.length);
-  for (let t = 0; t < n; t++) { const d = at[to.get(cell[t]).i]++; P2.set(P.subarray(t * 9, t * 9 + 9), d * 9); N2.set(N.subarray(t * 9, t * 9 + 9), d * 9); U2.set(U.subarray(t * 6, t * 6 + 6), d * 6); }
-  P.set(P2); N.set(N2); U.set(U2);
-  return ranges;
-}
-/* Sphère englobante d'une plage de triangles (indices start·3 à (start + count)·3). */
-function rangeSphere(geo, start, count) {
-  const P = geo.attributes.position, I = geo.index, box = new THREE.Box3(), v = new THREE.Vector3();
-  const vi = (k) => (I ? I.getX(k) : k);
-  for (let k = start * 3; k < (start + count) * 3; k++) box.expandByPoint(v.fromBufferAttribute(P, vi(k)));
-  const sp = new THREE.Sphere(); box.getCenter(sp.center); let r2 = 0;
-  for (let k = start * 3; k < (start + count) * 3; k++) r2 = Math.max(r2, sp.center.distanceToSquared(v.fromBufferAttribute(P, vi(k))));
-  sp.radius = Math.sqrt(r2); return sp;
-}
-
 export class Batch {
   /* cuts : calque → cote de coupe. Tout ce qui est ajouté à ce calque est partagé à cette cote : le dessous y reste, le dessus va dans « calque:top ». */
-  constructor() { this.items = new Map(); this.layer = 'L0'; this.frame = new THREE.Matrix4(); this.stack = []; this.lights = []; this.cuts = {}; this.tiles = {}; }
-  /* tiles : calque → { size, min } ; ses maillages d'au moins `min` triangles reçoivent en plus des tuiles (voir build). */
+  constructor() { this.items = new Map(); this.layer = 'L0'; this.frame = new THREE.Matrix4(); this.stack = []; this.lights = []; this.cuts = {}; }
 
   /* Point lumineux (lampe, suspension, ruban LED) : mémorisé en coordonnées de l'appartement, allumé le soir. */
   light(x, y, z, power = 1, kind = 'lamp') {
@@ -270,32 +237,15 @@ export class Batch {
       it.geos.length = 0;
       const ud = it.mat.userData || {};
       if (ud.wuv) worldUV(geo, ud.wuv, ud.wuvSwap);
-      const tl = this.tiles[it.layer], ranges = tl && !it.mat.transparent && geo.attributes.position.count >= tl.min * 3 ? sortTiles(geo, tl.size) : null;   // un vitrage garde son ordre
       geo = weld(geo);
       geo.computeBoundingSphere(); geo.computeBoundingBox();
-      const mk = (gg) => {
-        const mesh = new THREE.Mesh(gg, it.mat);
-        mesh.castShadow = ud.cast !== false;
-        mesh.receiveShadow = ud.receive !== false;
-        if (ud.order) mesh.renderOrder = ud.order;
-        return mesh;
-      };
+      const mesh = new THREE.Mesh(geo, it.mat);
+      mesh.castShadow = ud.cast !== false;
+      mesh.receiveShadow = ud.receive !== false;
+      if (ud.order) mesh.renderOrder = ud.order;
       let g = layers[it.layer];
       if (!g) { g = layers[it.layer] = new THREE.Group(); g.name = it.layer; parent.add(g); }
-      const mesh = mk(geo); g.add(mesh);
-      /* Tuiles : mêmes tampons de sommets et d'indices (rien de plus à envoyer à la carte graphique), une plage et une sphère
-         englobante chacune. La promenade dessine les tuiles (celles qui sont hors du champ sont écartées), les vues d'ensemble
-         le maillage entier (un seul appel de dessin) ; main.js bascule de l'un à l'autre. */
-      if (ranges) {
-        mesh.userData.tiled = true;
-        for (const r of ranges) {
-          const tg = new THREE.BufferGeometry();
-          for (const k of ['position', 'normal', 'uv']) tg.setAttribute(k, geo.attributes[k]);
-          if (geo.index) tg.setIndex(geo.index);
-          tg.setDrawRange(r.start * 3, r.count * 3); tg.boundingSphere = rangeSphere(geo, r.start, r.count);
-          const tm = mk(tg); tm.userData.tile = true; tm.visible = false; g.add(tm);
-        }
-      }
+      g.add(mesh);
     }
     this.items.clear();
     return layers;
