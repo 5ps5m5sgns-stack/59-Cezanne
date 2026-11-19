@@ -2,7 +2,7 @@
    Repère du monde : +x = Est, +z = Sud, y = altitude. */
 import * as THREE from 'three';
 import { ShaderPass } from 'three/addons/postprocessing/ShaderPass.js';
-import { Batch, rng } from 'v3d/geo';
+import { Batch, rng, weld } from 'v3d/geo';
 import { V } from 'v3d/furniture';
 
 const LAT = 43.53 * Math.PI / 180;           // Aix-en-Provence
@@ -331,17 +331,26 @@ export class Environment {
     items.sort((p, q) => p.d - q.d);
     const m4 = new THREE.Matrix4(), q = new THREE.Quaternion(), col = new THREE.Color(), up = new THREE.Vector3(0, 1, 0), pos = new THREE.Vector3(), sc = new THREE.Vector3();
     const leaf = new THREE.MeshStandardMaterial({ roughness: 1, map: M.hedge.map, emissive: 0x22341a });      // un peu d'émission : le dessous des houppiers reçoit la lumière du sol, il ne tombe pas au noir
-    const mk = (list, detail) => {
-      const mesh = new THREE.InstancedMesh(lumpyBlob(detail), leaf, list.length);
+    const mk = (list, geo) => {
+      const mesh = new THREE.InstancedMesh(geo, leaf, list.length);
       list.forEach((t, i) => {
         q.setFromAxisAngle(up, t.rot); pos.set(t.x, gy + t.s * (t.pine ? 1.75 : 0.8), t.z); sc.set(t.s * (t.pine ? 1.4 : 1) * t.f, t.s * (t.pine ? 0.42 : 0.95), t.s * (t.pine ? 1.4 : 1) / t.f);      // pins parasols : ombrelle plate, haut fût
         mesh.setMatrixAt(i, m4.compose(pos, q, sc)); mesh.setColorAt(i, col.setHex(t.c).multiplyScalar(t.k));
       });
-      mesh.instanceMatrix.needsUpdate = true; mesh.instanceColor.needsUpdate = true; mesh.castShadow = false; mesh.receiveShadow = false; mesh.frustumCulled = false;
+      mesh.instanceMatrix.needsUpdate = true; mesh.instanceColor.needsUpdate = true; mesh.castShadow = false; mesh.receiveShadow = false;
+      mesh.computeBoundingSphere();
       return mesh;
     };
+    // les houppiers sont rangés par secteurs autour du logement, chacun avec sa sphère englobante : ceux qui sont derrière la caméra
+    // ne sont plus envoyés à la carte graphique (d'un seul tenant, l'anneau entier était dessiné quelle que soit la direction du regard).
+    // Une géométrie par niveau de détail, partagée par ses secteurs, sommets mis en commun (même forme, trois à cinq fois moins de sommets)
+    const sectors = (list, detail, ns) => {
+      const geo = weld(lumpyBlob(detail)), by = Array.from({ length: ns }, () => []);
+      for (const t of list) by[Math.min(ns - 1, Math.floor((Math.atan2(t.z - center.z, t.x - center.x) / 6.2832 + 0.5) * ns))].push(t);
+      return by.filter((l) => l.length).map((l) => mk(l, geo));
+    };
     const cut = Math.round(N * 0.35);
-    const fl = [mk(items.slice(0, cut), 2), mk(items.slice(cut), 1)]; this.near.add(...fl);
+    const fl = [...sectors(items.slice(0, cut), 2, 8), ...sectors(items.slice(cut), 1, 4)]; this.near.add(...fl);
     const pines = items.filter((t) => t.pine);
     const trunks = new THREE.InstancedMesh(new THREE.CylinderGeometry(0.1, 0.16, 1, 5, 1, true), new THREE.MeshStandardMaterial({ color: 0x5b4a3a, roughness: 1 }), pines.length);
     pines.forEach((t, i) => { pos.set(t.x, gy + t.s * 0.85, t.z); sc.set(t.s * 0.5, t.s * 1.7, t.s * 0.5); trunks.setMatrixAt(i, m4.compose(pos, q.identity(), sc)); });
@@ -394,7 +403,7 @@ export class Environment {
     this.hemi.intensity = lerp(0.14, 0.45, day) * lerp(1, 0.9, golden);
     // brouillard : celui de l'horizon, plus dense quand le soleil est bas
     this.fog.color.copy(hor).multiplyScalar(gain);
-    this.fog.density = lerp(0.0011, 0.0015, golden);
+    this.fogDensity = lerp(0.0011, 0.0015, golden); this.fog.density = this.studio ? 0 : this.fogDensity;
     // relief : éclairé par le soleil selon son orientation (la Sainte-Victoire, vue de l'Ouest, est à contre-jour le matin et rose l'après-midi)
     for (const m of this.ridges) {
       const n = m.userData.n, lit = THREE.MathUtils.clamp(dLand.x * n.x + dLand.z * n.z, 0, 1) * smooth(-2, 10, deg), u = m.material.uniforms;
@@ -419,7 +428,9 @@ export class Environment {
   setStudio(on, composer) {
     const was = this.studio; this.studio = on; this.studioComposer = composer;
     this.sky.visible = !on; this.land.visible = !on; this.near.visible = !on;
-    this.scene.fog = on ? null : this.fog;
+    // brouillard gardé, de densité nulle (mélange exactement nul, image inchangée) : le retirer donnait à chaque matériau un second
+    // programme, sans brouillard, à compiler et à garder pour la seule maquette
+    this.fog.density = on ? 0 : this.fogDensity ?? this.fog.density;
     if (this.post.grade) this.post.grade.enabled = !on;       // la maquette garde son rendu de graphiste : ni vignettage ni étalonnage
     if (!on) { this.scene.background = null; if (was) this.setHour(this.hour); return; }
     this.studioLook();

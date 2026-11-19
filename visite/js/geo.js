@@ -31,6 +31,43 @@ function worldUV(geo, scale, swap) {
   uv.needsUpdate = true;
 }
 
+/* Réindexation après fusion : les primitives arrivent dé-indexées (trois sommets par triangle, pour pouvoir les couper et les
+   fusionner librement) ; ici, les sommets strictement identiques (position, normale et coordonnées de texture au bit près) sont
+   mis en commun. Mêmes triangles, dans le même ordre, mêmes valeurs : l'image ne change pas, mais la carte graphique transforme
+   deux à trois fois moins de sommets et la mémoire des géométries diminue d'autant. Table de hachage ouverte sur les bits des
+   huit flottants : quelques dizaines de millisecondes pour un logement entier, là où une clé texte par sommet en coûterait des centaines. */
+export function weld(geo) {
+  const P = geo.attributes.position.array, N = geo.attributes.normal.array, U = geo.attributes.uv.array, n = P.length / 3;
+  if (n < 6 || !(P instanceof Float32Array && N instanceof Float32Array && U instanceof Float32Array)) return geo;
+  const pb = new Uint32Array(P.buffer, P.byteOffset, n * 3), nb = new Uint32Array(N.buffer, N.byteOffset, n * 3), ub = new Uint32Array(U.buffer, U.byteOffset, n * 2);
+  let cap = 1024; while (cap < n * 2) cap *= 2;
+  const mask = cap - 1, table = new Int32Array(cap).fill(-1), first = new Uint32Array(n), index = new Uint32Array(n);
+  let m = 0;
+  for (let i = 0; i < n; i++) {
+    const a = i * 3, c = i * 2;
+    let h = 0x811c9dc5;
+    h = Math.imul(h ^ pb[a], 0x01000193); h = Math.imul(h ^ pb[a + 1], 0x01000193); h = Math.imul(h ^ pb[a + 2], 0x01000193);
+    h = Math.imul(h ^ nb[a], 0x01000193); h = Math.imul(h ^ nb[a + 1], 0x01000193); h = Math.imul(h ^ nb[a + 2], 0x01000193);
+    h = Math.imul(h ^ ub[c], 0x01000193); h = Math.imul(h ^ ub[c + 1], 0x01000193);
+    h ^= h >>> 15; h = Math.imul(h, 0x2c1b3c6d); h ^= h >>> 12;
+    let s = h & mask, j;
+    for (;;) {
+      j = table[s];
+      if (j < 0) { table[s] = m; first[m] = i; index[i] = m++; break; }
+      const f = first[j], fa = f * 3, fc = f * 2;
+      if (pb[fa] === pb[a] && pb[fa + 1] === pb[a + 1] && pb[fa + 2] === pb[a + 2] && nb[fa] === nb[a] && nb[fa + 1] === nb[a + 1] && nb[fa + 2] === nb[a + 2] && ub[fc] === ub[c] && ub[fc + 1] === ub[c + 1]) { index[i] = j; break; }
+      s = (s + 1) & mask;
+    }
+  }
+  if (m > n * 0.9) return geo;                                    // presque rien à mettre en commun : on garde la forme simple
+  const p2 = new Float32Array(m * 3), n2 = new Float32Array(m * 3), u2 = new Float32Array(m * 2);
+  for (let k = 0; k < m; k++) { const f = first[k]; p2.set(P.subarray(f * 3, f * 3 + 3), k * 3); n2.set(N.subarray(f * 3, f * 3 + 3), k * 3); u2.set(U.subarray(f * 2, f * 2 + 2), k * 2); }
+  const g = new THREE.BufferGeometry();
+  g.setAttribute('position', new THREE.BufferAttribute(p2, 3)); g.setAttribute('normal', new THREE.BufferAttribute(n2, 3)); g.setAttribute('uv', new THREE.BufferAttribute(u2, 2));
+  g.setIndex(new THREE.BufferAttribute(m > 65535 ? index : Uint16Array.from(index), 1));
+  return g;
+}
+
 /* Coupe horizontale d'une géométrie à la cote y : renvoie [dessous, dessus, face de coupe]. Les triangles traversés sont recoupés ;
    un solide convexe (boîte, cylindre, coussin…) reçoit une face de coupe pleine, comme une maquette sciée net. */
 function splitY(g, y, solid) {
@@ -66,9 +103,42 @@ function splitY(g, y, solid) {
   return [mk(lo), mk(hi), mk(cap)];
 }
 
+/* Tuiles d'un grand maillage étalé sur tout le site (abords vus des baies) : les triangles sont regroupés par cases de `size` mètres
+   (les cases trop maigres rejoignent leur voisine la plus proche), chaque case devenant une plage contiguë du maillage.
+   Renvoie les plages [{ start, count }] en triangles, ou null s'il n'y a qu'une case. La géométrie est réordonnée sur place. */
+function sortTiles(geo, size) {
+  const P = geo.attributes.position.array, N = geo.attributes.normal.array, U = geo.attributes.uv.array, n = P.length / 9;
+  const cell = new Int32Array(n), keys = new Map();
+  for (let t = 0; t < n; t++) {
+    const o = t * 9, cx = Math.floor((P[o] + P[o + 3] + P[o + 6]) / 3 / size), cz = Math.floor((P[o + 2] + P[o + 5] + P[o + 8]) / 3 / size), k = cx * 4096 + cz;
+    let c = keys.get(k); if (!c) keys.set(k, (c = { k, x: cx, z: cz, n: 0 })); c.n++; cell[t] = k;
+  }
+  if (keys.size < 2) return null;
+  const all = [...keys.values()], big = all.filter((c) => c.n >= Math.max(300, n * 0.04));
+  if (big.length < 2) return null;
+  const to = new Map(); for (const c of all) to.set(c.k, c.n >= Math.max(300, n * 0.04) ? c : big.reduce((a, b) => ((b.x - c.x) ** 2 + (b.z - c.z) ** 2 < (a.x - c.x) ** 2 + (a.z - c.z) ** 2 ? b : a)));
+  big.sort((a, b) => a.x - b.x || a.z - b.z); big.forEach((c, i) => { c.i = i; c.m = 0; });
+  for (let t = 0; t < n; t++) to.get(cell[t]).m++;
+  const at = new Int32Array(big.length); let acc = 0; const ranges = big.map((c, i) => { at[i] = acc; const r = { start: acc, count: c.m }; acc += c.m; return r; });
+  const P2 = new Float32Array(P.length), N2 = new Float32Array(N.length), U2 = new Float32Array(U.length);
+  for (let t = 0; t < n; t++) { const d = at[to.get(cell[t]).i]++; P2.set(P.subarray(t * 9, t * 9 + 9), d * 9); N2.set(N.subarray(t * 9, t * 9 + 9), d * 9); U2.set(U.subarray(t * 6, t * 6 + 6), d * 6); }
+  P.set(P2); N.set(N2); U.set(U2);
+  return ranges;
+}
+/* Sphère englobante d'une plage de triangles (indices start·3 à (start + count)·3). */
+function rangeSphere(geo, start, count) {
+  const P = geo.attributes.position, I = geo.index, box = new THREE.Box3(), v = new THREE.Vector3();
+  const vi = (k) => (I ? I.getX(k) : k);
+  for (let k = start * 3; k < (start + count) * 3; k++) box.expandByPoint(v.fromBufferAttribute(P, vi(k)));
+  const sp = new THREE.Sphere(); box.getCenter(sp.center); let r2 = 0;
+  for (let k = start * 3; k < (start + count) * 3; k++) r2 = Math.max(r2, sp.center.distanceToSquared(v.fromBufferAttribute(P, vi(k))));
+  sp.radius = Math.sqrt(r2); return sp;
+}
+
 export class Batch {
   /* cuts : calque → cote de coupe. Tout ce qui est ajouté à ce calque est partagé à cette cote : le dessous y reste, le dessus va dans « calque:top ». */
-  constructor() { this.items = new Map(); this.layer = 'L0'; this.frame = new THREE.Matrix4(); this.stack = []; this.lights = []; this.cuts = {}; }
+  constructor() { this.items = new Map(); this.layer = 'L0'; this.frame = new THREE.Matrix4(); this.stack = []; this.lights = []; this.cuts = {}; this.tiles = {}; }
+  /* tiles : calque → { size, min } ; ses maillages d'au moins `min` triangles reçoivent en plus des tuiles (voir build). */
 
   /* Point lumineux (lampe, suspension, ruban LED) : mémorisé en coordonnées de l'appartement, allumé le soir. */
   light(x, y, z, power = 1, kind = 'lamp') {
@@ -196,18 +266,36 @@ export class Batch {
   build(parent) {
     const layers = {};
     for (const it of this.items.values()) {
-      const geo = mergeGeometries(it.geos, false);
+      let geo = mergeGeometries(it.geos, false);
       it.geos.length = 0;
       const ud = it.mat.userData || {};
       if (ud.wuv) worldUV(geo, ud.wuv, ud.wuvSwap);
+      const tl = this.tiles[it.layer], ranges = tl && !it.mat.transparent && geo.attributes.position.count >= tl.min * 3 ? sortTiles(geo, tl.size) : null;   // un vitrage garde son ordre
+      geo = weld(geo);
       geo.computeBoundingSphere(); geo.computeBoundingBox();
-      const mesh = new THREE.Mesh(geo, it.mat);
-      mesh.castShadow = ud.cast !== false;
-      mesh.receiveShadow = ud.receive !== false;
-      if (ud.order) mesh.renderOrder = ud.order;
+      const mk = (gg) => {
+        const mesh = new THREE.Mesh(gg, it.mat);
+        mesh.castShadow = ud.cast !== false;
+        mesh.receiveShadow = ud.receive !== false;
+        if (ud.order) mesh.renderOrder = ud.order;
+        return mesh;
+      };
       let g = layers[it.layer];
       if (!g) { g = layers[it.layer] = new THREE.Group(); g.name = it.layer; parent.add(g); }
-      g.add(mesh);
+      const mesh = mk(geo); g.add(mesh);
+      /* Tuiles : mêmes tampons de sommets et d'indices (rien de plus à envoyer à la carte graphique), une plage et une sphère
+         englobante chacune. La promenade dessine les tuiles (celles qui sont hors du champ sont écartées), les vues d'ensemble
+         le maillage entier (un seul appel de dessin) ; main.js bascule de l'un à l'autre. */
+      if (ranges) {
+        mesh.userData.tiled = true;
+        for (const r of ranges) {
+          const tg = new THREE.BufferGeometry();
+          for (const k of ['position', 'normal', 'uv']) tg.setAttribute(k, geo.attributes[k]);
+          if (geo.index) tg.setIndex(geo.index);
+          tg.setDrawRange(r.start * 3, r.count * 3); tg.boundingSphere = rangeSphere(geo, r.start, r.count);
+          const tm = mk(tg); tm.userData.tile = true; tm.visible = false; g.add(tm);
+        }
+      }
     }
     this.items.clear();
     return layers;
