@@ -10,7 +10,7 @@ import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js'
 import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 import { Batch } from 'v3d/geo';
-import { makeMaterials, FLOOR_FINISHES, setFloorFinish } from 'v3d/materials';
+import { makeMaterialsAsync, FLOOR_FINISHES, setFloorFinish } from 'v3d/materials';
 import { buildLevel, buildStair, buildLift, buildNav } from 'v3d/build';
 import { APARTMENTS } from 'v3d/plans';
 import { SITE, makeArrival } from 'v3d/site';
@@ -583,15 +583,22 @@ class App {
   walkFov() { return clamp(THREE.MathUtils.radToDeg(2 * Math.atan(Math.tan(rad(100) / 2) / this.camera.aspect)), 55, 82); }
 
   /* ── Construction d'un logement (une seule fois, puis mis en cache) ──────── */
+  /* Construction découpée en quelques tâches (niveaux, abords, fusion) : la page ne se fige pas d'un bloc ; un second appel pendant
+     la construction attend la même. */
   build(apt) {
     if (this.built.has(apt.id)) return this.built.get(apt.id);
+    this.building = this.building || new Map();
+    if (!this.building.has(apt.id)) this.building.set(apt.id, this.buildNow(apt));
+    return this.building.get(apt.id);
+  }
+  async buildNow(apt) {
     const group = new THREE.Group(); group.name = apt.id;      // l'orientation réelle est donnée au paysage et au soleil (env.js)
     const b = new Batch(), lv0 = apt.levels[0];
     lv0.items = lv0.items.concat((apt.garden || []).map(([t, x, z, r, o]) => [t, x, z, r, { ...o, layer: 'ext', y0: -0.015 }]));
-    apt.levels.forEach((lv, i) => buildLevel(b, this.M, lv, i));
+    for (const [i, lv] of apt.levels.entries()) { buildLevel(b, this.M, lv, i); await slice(true); }
     if (apt.stair) buildStair(b, this.M, apt.stair, lv0);
     if (apt.lift) buildLift(b, this.M, apt.lift, apt.levels);
-    apt.exterior(b, this.M, lv0, apt.levels[1]);
+    apt.exterior(b, this.M, lv0, apt.levels[1]); await slice(true);
     const layers = b.build(group);
     // arrivée animée à la résidence (voiture, portail, porte du garage) : rangée avec le décor du site, visible avec lui
     const arrival = apt.site && layers.ctx ? makeArrival(this.M, apt.site.o) : null; if (arrival) layers.ctx.add(arrival.group);
@@ -614,8 +621,12 @@ class App {
     this.stopTour(); this.fly = null; this.ready = false;
     ui.loader.hidden = false; ui.loaderText.textContent = tr(this.M ? 'loadGeo' : 'loadTex'); this.progress(0.03);
     await new Promise((r) => requestAnimationFrame(() => setTimeout(r, 30)));
-    if (!this.M) {
-      performance.mark('v3d:mat0'); this.M = makeMaterials(QUALITY); performance.mark('v3d:mat1');
+    // textures dessinées par tranches, la page reste vivante ; un second chargement lancé entre-temps (autre logement choisi)
+    // attend la même fabrication au lieu d'en commencer une autre
+    if (!this.M && !this.matP) { performance.mark('v3d:mat0'); let n = 0; this.matP = makeMaterialsAsync(QUALITY, () => { this.progress(0.03 + 0.27 * Math.min(1, ++n / 130)); return slice(); }); }
+    const fresh = !this.M && await this.matP;
+    if (fresh && !this.M) {
+      this.M = fresh; performance.mark('v3d:mat1');
       depthPriority(this.M); aoPatchMaterials(this.M);
       // miroirs et métaux reflètent un intérieur neutre plutôt que le ciel
       const room = this.env.pmrem.fromScene(new RoomEnvironment(), 0.03).texture;
@@ -624,7 +635,7 @@ class App {
       ui.loaderText.textContent = tr('loadGeo'); this.progress(0.3); await new Promise((r) => setTimeout(r, 30));
     }
     const prev = this.apt && this.built.get(this.apt.id);
-    const cur = this.build(apt); performance.mark('v3d:build'); this.progress(0.5); await slice(true);
+    const cur = await this.build(apt); performance.mark('v3d:build'); this.progress(0.5); await slice(true);
     if (prev) this.scene.remove(prev.group);
     this.scene.add(cur.group); cur.group.add(this.camera, this.reticle, this.hl);
     // ombres de contact : calculées une fois par logement, au premier chargement
@@ -650,7 +661,7 @@ class App {
       this.applyView(false);
       // les prises de vue compileraient d'un bloc, au premier rendu, tous les programmes de la scène : on les compile d'abord en
       // parallèle (hors du fil principal quand le navigateur le permet)
-      if (this.renderer.compileAsync) try { await this.renderer.compileAsync(this.scene, this.camera); } catch (e) { /* compilées au rendu */ }
+      try { await this.compileScene(); } catch (e) { /* compilées au rendu */ }
       if (dark) { this.setHour(12, true); this.env.updateEnvMap(this.env.envK); }
       cur.zones = await captureZones(this, apt, 128, qName === 'low' || qName === 'soft' ? 4 : 6);      // hors téléphones, les chambres principales ont aussi leur prise (atlas 1152 × 1024)
       if (dark) { this.setHour(h0, true); this.env.updateEnvMap(this.env.envK); }
@@ -673,7 +684,9 @@ class App {
   async warmUp() {
     const c = this.cur, layers = Object.values(c.layers), was = layers.map((g) => g.visible), cw = c.catcher.visible, pw = c.pucks.visible;
     for (const g of layers) g.visible = true; c.catcher.visible = true; c.pucks.visible = true;
-    for (const m of Object.values(this.M)) for (const k of ['map', 'bumpMap', 'roughnessMap', 'normalMap', 'alphaMap', 'emissiveMap', 'aoMap']) if (m && m[k] && m[k].isTexture) this.renderer.initTexture(m[k]);
+    // envoi des textures une à une (le dessin des canvas peut n'être achevé qu'à cet envoi) : la main revient au navigateur entre deux
+    const texs = new Set(); for (const m of Object.values(this.M)) for (const k of ['map', 'bumpMap', 'roughnessMap', 'normalMap', 'alphaMap', 'emissiveMap', 'aoMap']) if (m && m[k] && m[k].isTexture) texs.add(m[k]);
+    for (const t of texs) { this.renderer.initTexture(t); await slice(); }
     // un objet hors du champ de la caméra n'est envoyé à la carte graphique qu'à sa première apparition : on désactive l'élimination
     // hors champ le temps de ce rendu, pour que tout soit prêt avant la première promenade
     const culled = []; this.scene.traverse((o) => { if (o.isMesh && o.frustumCulled) { culled.push(o); o.frustumCulled = false; } });
@@ -686,7 +699,7 @@ class App {
     try {
       for (const studio of [false, true]) {
         this.env.setStudio(studio, !!this.composer);
-        if (this.renderer.compileAsync) await this.renderer.compileAsync(this.scene, this.camera); else this.renderer.compile(this.scene, this.camera);
+        await this.compileScene();
         this.progress(studio ? 0.97 : 0.92);
         if (this.composer) this.composer.render(); else this.renderer.render(this.scene, this.camera);
         await slice(true);
@@ -696,6 +709,19 @@ class App {
     for (const o of culled) o.frustumCulled = true;
     layers.forEach((g, i) => { g.visible = was[i]; }); c.catcher.visible = cw; c.pucks.visible = pw;
     this.renderer.shadowMap.needsUpdate = true; this.dirty = true;
+  }
+
+  /* Compilation des programmes de rendu de toute la scène, objet par objet, la main rendue au navigateur entre deux tranches : sans
+     compilation parallèle (rendu logiciel, certains pilotes), compiler d'un bloc figeait la page plus de vingt secondes.
+     Avec la chaîne de post-traitement, la scène est toujours dessinée dans ses tampons (lumière linéaire, courbe de tons appliquée
+     à la fin) : c'est cette variante qu'il faut compiler. Compilée pour l'écran, elle ne servait jamais et doublait les programmes. */
+  async compileScene() {
+    const r = this.renderer, rt = this.composer ? this.composer.renderTarget1 : null, prev = r.getRenderTarget(), objs = [];
+    this.scene.traverse((o) => { if (o.isMesh || o.isPoints || o.isLine || o.isSprite) objs.push(o); });
+    for (const o of objs) { r.setRenderTarget(rt); try { r.compile(o, this.camera, this.scene); } finally { r.setRenderTarget(prev); } await slice(); }
+    // compilation parallèle (cartes graphiques qui la proposent) : on attend que tout soit prêt ; rien n'est recompilé ici
+    r.setRenderTarget(rt); let done; try { done = r.compileAsync(this.scene, this.camera); } finally { r.setRenderTarget(prev); }
+    await done;
   }
 
   progress(f) { if (ui.bar) ui.bar.style.transform = `scaleX(${f.toFixed(3)})`; }

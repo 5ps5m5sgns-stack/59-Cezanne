@@ -14,8 +14,9 @@ function canvas(size, draw, alpha = false) {
   draw(c.getContext('2d', { alpha }), size);
   return c;
 }
+let LAST = null;                                                     // dernier canvas devenu texture (voir makeMaterialsAsync)
 function tex(c, { srgb = true, aniso = 8 } = {}) {
-  const t = new THREE.CanvasTexture(c);
+  const t = new THREE.CanvasTexture(c); LAST = c;
   t.wrapS = t.wrapT = THREE.RepeatWrapping;
   if (srgb) t.colorSpace = THREE.SRGBColorSpace;
   t.anisotropy = aniso;
@@ -144,7 +145,7 @@ function knot(g, kx, ky, kr, u) {
 /* Parquet : lames de 18 cm posées à joints décalés, sur un carreau de 6,48 m (36 rangs) pour que le motif ne se répète pas à l'échelle d'une pièce.
    Toute la disposition (longueurs, fil, nœuds) vient d'une seule graine : les finitions ne diffèrent que par la teinte et gardent les mêmes joints.
    Renvoie la couleur et, si full, la carte relief + rugosité (rouge, vert). */
-function parquetSet(base, S, { plank = 0.18, tile = 6.48, vary = 0.1, seed = 11, full = true } = {}) {
+function* parquetGen(base, S, { plank = 0.18, tile = 6.48, vary = 0.1, seed = 11, full = true } = {}) {
   const pm = S / tile, u = pm / 316, rows = Math.round(tile / plank), ph = S / rows, jw = Math.max(1.3, 1.25 * u), q = 0.25;
   const C = canvas(S, () => { }), gc = C.getContext('2d');
   const B = full && canvas(S, (g) => { g.fillStyle = '#8a8a8a'; g.fillRect(0, 0, S, S); }), gb = full && B.getContext('2d');
@@ -182,6 +183,7 @@ function parquetSet(base, S, { plank = 0.18, tile = 6.48, vary = 0.1, seed = 11,
     gc.fillStyle = rgb(30, 15, 6, 0.55); gc.fillRect(0, y0 + ph - jw, S, jw);
     gc.fillStyle = rgb(255, 232, 196, 0.16); gc.fillRect(0, y0, S, Math.max(1, u));
     if (full) { gb.fillStyle = grey(96); gb.fillRect(0, y0 + ph - jw * 2.2, S, jw * 1.2); gb.fillStyle = grey(22); gb.fillRect(0, y0 + ph - jw, S, jw); gq.fillStyle = grey(210); gq.fillRect(0, (y0 + ph - jw) * q, S * q, Math.max(1, jw * q)); }
+    if (r % 3 === 2) { flush(C); yield; }                          // la plus longue texture : découpée par paquets de rangs
   }
   lay(gc, S, noiseCanvas(512, 6, 6, 4, 71, 1.6), 0.22);                 // marbrures douces, légères différences de teinte sur plusieurs mètres
   speckle(gc, S, R, S * 3, 0.03, 1.5 * u);
@@ -189,6 +191,10 @@ function parquetSet(base, S, { plank = 0.18, tile = 6.48, vary = 0.1, seed = 11,
   lay(gq, S >> 2, noiseCanvas(256, 4, 4, 4, 72, 1.6), 0.3);           // zones d'usure : le vernis se ternit par plages
   return { map: C, pk: pack(B, Q) };
 }
+
+/* Version d'un seul tenant (finitions de sol dessinées à la demande, pendant la visite). */
+const drain = (it) => { for (;;) { const r = it.next(); if (r.done) return r.value; } };
+const parquetSet = (...a) => drain(parquetGen(...a));
 
 /* Bois de mobilier : fil continu, sans joints, tuilable. Renvoie [couleur, relief + rugosité]. */
 function woodSet(base, seed, dark = 0.1, S = 1024) {
@@ -435,8 +441,9 @@ function cells(S, n, seed) {
 }
 
 /* Trames de tissu en niveaux de gris clairs : servent à la fois de carte de couleur (multipliée par la teinte) et de relief. */
-function weave(seed, kind) {
-  return canvas(512, (g, S) => {
+function* weaveGen(seed, kind) {
+  const S = 512, cv = canvas(S, () => { }), g = cv.getContext('2d');
+  {
     const R = rng(seed);
     g.fillStyle = '#e4e4e4'; g.fillRect(0, 0, S, S);
     if (kind === 'linen') {                                           // toile : fils de chaîne et de trame qui passent dessus-dessous, nœuds et irrégularités
@@ -452,6 +459,7 @@ function weave(seed, kind) {
         const x = R() * S, y = R() * S, r = 2.4 + R() * 3.6, a = R() * 6.28, b = a + 2.4 + R() * 2.6;
         g.strokeStyle = grey(90, 0.35); g.lineWidth = 1.6 + R() * 1.2; g.beginPath(); g.arc(x + 0.8, y + 1, r, a, b); g.stroke();
         g.strokeStyle = grey(R() < 0.5 ? 196 + R() * 40 : 255, 0.62); g.lineWidth = 1 + R() * 1.2; g.beginPath(); g.arc(x, y, r, a, b); g.stroke();
+        if (i % 2000 === 1999) { flush(cv); yield; }               // onze mille boucles : dessinées par paquets
       }
     } else if (kind === 'velvet') {                                   // velours : poil couché, reflets doux
       clouds(g, S, R, 26, 0.16, 120);
@@ -466,7 +474,8 @@ function weave(seed, kind) {
       for (let i = 0; i < 4500; i++) { g.strokeStyle = grey(R() < 0.5 ? 90 : 255, 0.16 + R() * 0.12); g.lineWidth = 0.8; const x = R() * S, y = R() * S, a = (R() - 0.5) * 1.2; g.beginPath(); g.moveTo(x, y); g.lineTo(x + Math.cos(a) * 8, y + Math.sin(a) * 8 + 2); g.stroke(); }
     }
     speckle(g, S, R, 7000, 0.05, 1.6);
-  });
+  }
+  return cv;
 }
 
 /* Pied-de-poule (plaid du canapé), avec une trame de laine. */
@@ -500,8 +509,16 @@ function brushed(seed, lo, hi, S = 512) {
 
 /* Végétal en aplat : gazon (touffes de brins, plages sèches, trèfles) et masses de feuillage (feuilles superposées, creux d'ombre).
    Les traits d'une même teinte sont regroupés en un seul tracé : des dizaines de milliers de brins pour quelques dizaines d'appels. */
-function foliage(base, seed, { blades = false, S = 1024, soft = false, gain = 1 } = {}) {
-  return canvas(S, (g) => {
+/* Fait dessiner tout de suite ce qui est en attente dans un canvas (le navigateur diffère le tracé jusqu'au premier usage de
+   l'image) : sa copie dans un canvas d'un pixel, relu, l'y oblige. Le coût tombe ainsi dans la tranche qui l'a causé, au lieu de
+   s'accumuler sur la première lecture (plus de dix secondes d'un bloc pour le gazon sur une machine lente). Le canvas lui-même
+   n'est jamais relu : le navigateur garde son mode de dessin, l'image est la même. */
+let FL = null;
+function flush(c) { if (!FL) { FL = document.createElement('canvas'); FL.width = FL.height = 1; FL = FL.getContext('2d', { willReadFrequently: true }); } FL.drawImage(c, 0, 0, 1, 1); FL.getImageData(0, 0, 1, 1); }
+
+function* foliageGen(base, seed, { blades = false, S = 1024, soft = false, gain = 1 } = {}) {
+  const cv = canvas(S, () => { }), g = cv.getContext('2d');
+  {
     const R = rng(seed), u = S / 1024, NB = 7;
     g.fillStyle = rgb(...shade(base, blades ? 0.62 : 0.85)); g.fillRect(0, 0, S, S);
     clouds(g, S, R, blades ? 24 : 22, blades ? 0.09 : 0.1, S * 0.2);
@@ -521,10 +538,11 @@ function foliage(base, seed, { blades = false, S = 1024, soft = false, gain = 1 
           P.moveTo(x + Math.cos(a) * l, y + Math.sin(a) * l); P.ellipse(x, y, l, l * 0.42, a, 0, 7); P.closePath();
         }
       }
-      bins.forEach((P, bi) => {
+      for (const [bi, P] of bins.entries()) {
         const t = bi / (NB - 1), dry = blades && bi === NB - 1, c = dry ? [150, 150, 72] : shade(base, k * (0.82 + t * 0.36));
         if (blades) { g.strokeStyle = rgb(c[0] + t * 14, c[1] + (1 - t) * 8, c[2], 0.85); g.lineWidth = 1.2 * u; g.stroke(P); } else { g.fillStyle = rgb(c[0] + t * 18, c[1] + t * 10, c[2], 0.88); g.fill(P); }
-      });
+        flush(cv); yield;                                            // un tracé de milliers de brins ou de feuilles : coûteux à dessiner, un par tranche
+      }
       if (blades && k0 === 0.85) clouds(g, S, R, 10, 0.1, S * 0.12);
     }
     if (blades) for (let i = 0; i < 260 * u * u; i++) {               // trèfles et pâquerettes
@@ -533,7 +551,8 @@ function foliage(base, seed, { blades = false, S = 1024, soft = false, gain = 1 
       else { g.fillStyle = rgb(244, 240, 226, 0.7); g.beginPath(); g.arc(x, y, 1.3 * u, 0, 7); g.fill(); }
     }
     lay(g, S, noiseCanvas(512, blades ? 4 : 6, blades ? 4 : 6, 4, seed + 3, 1.6), 0.22);
-  });
+  }
+  return cv;
 }
 
 /* Touffe de feuilles sur fond transparent : plaquée sur de petites cartes pour donner un vrai feuillage aux arbres et aux plantes.
@@ -741,14 +760,18 @@ const rank = (m, r) => Object.assign(m, { polygonOffset: true, polygonOffsetFact
 function std(o) { const u = o.userData; delete o.userData; const m = new THREE.MeshStandardMaterial(o); if (u) m.userData = u; return m; }
 function phys(o) { const u = o.userData; delete o.userData; const m = new THREE.MeshPhysicalMaterial(o); if (u) m.userData = u; return m; }
 
-export function makeMaterials(quality) {
+/* Fabrication de tous les matériaux, une texture à la fois : chaque « yield » marque un point où l'on peut rendre la main au
+   navigateur. Dessinées d'un bloc, les textures figeaient la page plusieurs secondes sur un ordinateur modeste (barre de
+   chargement arrêtée, onglet « ne répond pas ») ; découpées, le résultat est le même, pixel pour pixel : mêmes tracés, même ordre. */
+function* materialSteps(quality) {
   const A = quality.aniso, FS = quality.tex || 1024, GS = 1024;
   const T = (c, o) => tex(c, { aniso: A, ...o }), L = (c) => tex(c, { aniso: A, srgb: false });
   const M = {};
 
   // ── Sols : quatre finitions pour les pièces de vie (la carte de couleur des finitions non choisies n'est dessinée qu'à la demande)
   const TILE = 6.48;                                                  // un carreau de parquet = 36 rangs de lames de 18 cm
-  const oak = parquetSet([166, 106, 60], FS), oakPk = L(oak.pk);       // relief et rugosité partagés par les trois chênes : mêmes joints
+  const oak = yield* parquetGen([166, 106, 60], FS), oakPk = L(oak.pk);       // relief et rugosité partagés par les trois chênes : mêmes joints
+  yield;
   const woodFloor = (map, r) => ({ map: T(map), bumpMap: oakPk, roughnessMap: oakPk, roughness: r, bumpScale: 0.6 });
     const floorDefs = {
     floorOak: () => woodFloor(oak.map, 1),
@@ -760,44 +783,55 @@ export function makeMaterials(quality) {
   M.floorDef = (id) => M.floorCache[id] || (M.floorCache[id] = floorDefs[id]());
   M.floor = std({ ...M.floorDef('floorOak'), metalness: 0, envMapIntensity: 1.15, userData: { wuv: TILE, cast: false } });   // matériau courant des pièces de vie
   const tileSet = slabSet([214, 208, 198], 15, 2, { ny: 4, veins: 0.6, cloud: 0.04, joint: 2.5, jointCol: [172, 166, 158], shift: 0.5, rs: 0.3, pit: 0.1 }), tilePk = L(tileSet.pk);
+  yield;
   M.tile = std({ map: T(tileSet.map), bumpMap: tilePk, roughnessMap: tilePk, roughness: 1, bumpScale: 0.5, userData: { wuv: 2.4, cast: false } });   // grès 60 × 120
   // dallage des terrasses : pierre claire en dalles de 60 × 60 (photographie de travertin découpée dalle par dalle si elle est là)
   const terr = IMG.travertin ? travertineSet(16, { nx: 4, ny: 4, shift: 0, joint: 4, warm: 1.08 }) : slabSet([224, 208, 178], 16, 4, { veins: 0.8, joint: 4, rs: 0.8, pit: 0.9, bump: 1.4 }), terrPk = L(terr.pk);
+  yield;
   M.terrace = std({ map: T(terr.map), bumpMap: terrPk, roughnessMap: terrPk, roughness: 1, bumpScale: 0.8, userData: { wuv: 2.4 } });
   const hexs = hexTiles([230, 209, 188], 41), hexPk = L(hexs.pk);
+  yield;
   M.hexPaving = std({ map: T(hexs.map), bumpMap: hexPk, roughnessMap: hexPk, roughness: 1, bumpScale: 0.8, userData: { wuv: 1.2 } });
   const [coC, coB] = grainSet([143, 138, 132], 28, GS >> 1, { tone: 0.05, grain: 0.05, rel: 18, cx: 4, fine: 160 });
+  yield;
   M.concrete = std({ map: T(coC), bumpMap: L(coB), bumpScale: 1, roughness: 0.9, userData: { wuv: 2 } });
   M.socle = std({ color: 0xd8d0c2, roughness: 0.9 });
   M.wallCut = std({ color: 0xdcd6cb, roughness: 1 });               // tranche des murs coupés
 
   // ── Murs et plafonds : plâtre peint, grain à peine visible, micro-relief que la lumière rasante révèle
   const [plC, plB] = grainSet([252, 250, 245], 21, GS, { tone: 0.014, grain: 0.012, rel: 7, cx: 3, fine: 120 }), plBump = L(plB);
+  yield;
   M.plaster = std({ map: T(plC), bumpMap: plBump, bumpScale: 0.5, roughness: 0.94, userData: { wuv: 3 } });
   M.ceiling = std({ color: 0xfefdfb, bumpMap: plBump, bumpScale: 0.4, roughness: 0.97, userData: { wuv: 3, cast: true } });
   M.skirt = std({ color: 0xf6f4ef, roughness: 0.4 });                // plinthes et chambranles laqués satinés
   const [stC, stB] = grainSet([226, 210, 182], 22, GS >> 1, { tone: 0.02, grain: 0.06, rel: 22, cx: 6, fine: 220 });
+  yield;
   M.stucco = std({ map: T(stC), bumpMap: L(stB), bumpScale: 1.1, roughness: 0.95, userData: { wuv: 2.5 } });      // enduit de façade taloché
   M.stuccoDark = std({ color: 0xb9a584, roughness: 0.95 });
   M.massing = std({ color: 0xe2d8c6, roughness: 0.95 });            // volumes de contexte, traités en maquette claire
   const wt = slabSet([234, 228, 216], 23, 2, { ny: 1, veins: 0.7, cloud: 0.03, joint: 2, jointCol: [200, 194, 184], rs: 0.28, pit: 0 }), wtPk = L(wt.pk);
+  yield;
   M.wallTile = std({ map: T(wt.map), bumpMap: wtPk, roughnessMap: wtPk, roughness: 1, bumpScale: 0.4, userData: { wuv: 2.4 } });
   // pierre sèche calcaire (murs et murets) : photographie retouchée si elle est là, sinon le dessin procédural ; « drystone » est le même matériau
   const dsP = photo('pierre-seche'), dsR = photo('pierre-seche-r');
   if (dsP && dsR) { const pk = L(dsR); M.stone = std({ map: T(dsP), bumpMap: pk, roughnessMap: pk, bumpScale: 3, roughness: 1, userData: { wuv: 2.6 } }); macro(M.stone, dsP, 0.14); }
   else { const [dsC, dsB] = dryStoneSet(24); M.stone = std({ map: T(dsC), bumpMap: L(dsB), bumpScale: 3.5, roughness: 0.95, userData: { wuv: 2.2 } }); }
+  yield;
   Object.defineProperty(M, 'drystone', { value: M.stone, enumerable: false });   // non énumérable : main.js et les bancs voient un seul matériau, sous son nom d'origine
   // tuiles romanes ton panaché vieilli (toit de l'immeuble et des maisons voisines) ; « roofTile » est le même matériau
   const rfP = photo('tuiles'), rfR = photo('tuiles-r');
   if (rfP && rfR) { const pk = L(rfR); M.roof = std({ map: T(rfP), bumpMap: pk, roughnessMap: pk, bumpScale: 2.5, roughness: 1, userData: { wuv: 4 } }); }
   else { const [rfC, rfB] = roofSet(25, GS); M.roof = std({ map: T(rfC), bumpMap: L(rfB), bumpScale: 2, roughness: 0.82, userData: { wuv: 1.6 } }); }
+  yield;
   Object.defineProperty(M, 'roofTile', { value: M.roof, enumerable: false });
   const ash = slabSet([226, 212, 186], 26, 2, { ny: 3, veins: 0.5, joint: 2, jointCol: [186, 172, 148], shift: 0.5, rs: 0.8, pit: 0.8 }), ashPk = L(ash.pk);
+  yield;
   M.ashlar = std({ map: T(ash.map), bumpMap: ashPk, roughnessMap: ashPk, roughness: 1, bumpScale: 0.9, userData: { wuv: 2.0 } });   // pierre de taille de la tour (70 × 100)
   M.cadre = std({ color: 0x6a665f, roughness: 0.6, metalness: 0.3 });   // cadres, garde-corps et menuiseries RAL 7039
   M.shutter = std({ map: T(canvas(128, (g, S) => { g.fillStyle = '#8f877b'; g.fillRect(0, 0, S, S); for (let x = 0; x < S; x += 8) { g.fillStyle = 'rgba(40,34,28,0.42)'; g.fillRect(x, 0, 2, S); g.fillStyle = 'rgba(255,255,255,0.1)'; g.fillRect(x + 2, 0, 1, S); } })), roughness: 0.8, userData: { wuv: 0.6 } });   // volets coulissants à lames verticales, taupe
   M.glassDark = std({ color: 0x1b2126, roughness: 0.08, metalness: 0.75, envMapIntensity: 1.6 });   // vitrages des autres logements
   const [pvC, pvB] = grainSet([196, 190, 180], 27, GS >> 1, { tone: 0.03, grain: 0.07, rel: 20, cx: 6, fine: 180 });
+  yield;
   M.paving = std({ map: T(pvC), bumpMap: L(pvB), bumpScale: 1, roughness: 0.95, userData: { wuv: 3, cast: false } });   // enrobé clair, trottoirs
   M.garage = std({ map: T(canvas(128, (g, S) => { g.fillStyle = '#6d6a66'; g.fillRect(0, 0, S, S); for (let y = 0; y < S; y += 16) { g.fillStyle = 'rgba(0,0,0,0.35)'; g.fillRect(0, y, S, 2); g.fillStyle = 'rgba(255,255,255,0.1)'; g.fillRect(0, y + 2, S, 1); } })), roughness: 0.6, metalness: 0.3, userData: { wuv: 1 } });
   M.carGrey = std({ color: 0x8d9296, roughness: 0.3, metalness: 0.7 }); M.carDark = std({ color: 0x1c1e22, roughness: 0.25, metalness: 0.7 });
@@ -805,6 +839,7 @@ export function makeMaterials(quality) {
   // ── Menuiseries et métaux
   M.frame = std({ color: 0x2c2d30, roughness: 0.55, metalness: 0.4 });   // aluminium anthracite
   const brs = L(brushed(81, 0.22, 0.6)), brb = L(brushed(82, 0.3, 0.46));
+  yield;
   M.steel = std({ color: 0xb9b6b0, bumpMap: brs, roughnessMap: brs, bumpScale: 0.12, roughness: 1, metalness: 0.9, userData: { wuv: 0.5, wuvSwap: true } });   // inox brossé : stries dans le sens vertical
   M.brass = std({ color: 0xd2ab66, bumpMap: brb, roughnessMap: brb, bumpScale: 0.2, roughness: 0.85, metalness: 1, userData: { wuv: 0.35 } });      // laiton brossé (lustres, piètements)
   M.black = std({ color: 0x1b1a1a, roughness: 0.48, metalness: 0.35 });
@@ -815,7 +850,12 @@ export function makeMaterials(quality) {
   M.glassSmoke = phys({ color: 0x1a1b1e, roughness: 0.06, metalness: 0.2, envMapIntensity: 1.3, userData: { cast: true } });   // plateau en verre fumé
   M.crystal = phys({ color: 0xffffff, roughness: 0.3, specularIntensity: 0.4, transparent: true, opacity: 0.22, envMapIntensity: 1.6, depthWrite: false, userData: { cast: false, receive: false, order: 6 } });
   M.mirror = std({ color: 0xf4f6f6, roughness: 0.05, metalness: 1 });
-  const [okC, okP] = veneerSet([206, 164, 114], 32), [wnC, wnP] = veneerSet([100, 68, 46], 33, { ray: 0.3, dark: 1.3 }), [slC, slP] = woodSet([150, 108, 70], 31, 0.18, 512);
+  const [okC, okP] = veneerSet([206, 164, 114], 32);
+  yield;
+  const [wnC, wnP] = veneerSet([100, 68, 46], 33, { ray: 0.3, dark: 1.3 });
+  yield;
+  const [slC, slP] = woodSet([150, 108, 70], 31, 0.18, 512);
+  yield;
   const okPk = L(okP), wnPk = L(wnP);
   M.door = std({ map: T(okC), bumpMap: okPk, roughnessMap: okPk, bumpScale: 0.5, roughness: 0.95, userData: { wuv: 1.3, wuvSwap: true } });   // portes plaquées chêne
   M.slat = std({ map: T(slC), bumpMap: L(slP), bumpScale: 0.6, roughness: 0.7, userData: { wuv: 1.2, wuvSwap: true } });
@@ -830,11 +870,14 @@ export function makeMaterials(quality) {
   M.greyLacquer = std({ color: 0x8b8b88, roughness: 0.5 });           // meubles du mur TV
   M.navy = std({ color: 0x38465a, roughness: 0.5 });
   M.marble = std({ map: T(marble([242, 239, 234], [[122, 118, 116], [176, 142, 96], [150, 146, 142]], 34)), roughness: 0.16, envMapIntensity: 1.2, userData: { wuv: 1.9 } });
+  yield;
   M.marbleDark = std({ map: T(marble([30, 29, 31], [[210, 200, 186], [150, 130, 100], [120, 116, 112]], 35, { sharp: 1.2, cloud: 0.4, off: [211, 97], swap: true, vk: 0.28 })), roughness: 0.3, userData: { wuv: 1.6 } });
+  yield;
   M.marbleGrey = std({ map: T(marble([186, 184, 182], [[242, 240, 236], [110, 108, 108], [150, 146, 140]], 36, { cloud: 0.12, off: [333, 401] })), roughness: 0.2, envMapIntensity: 1.2, userData: { wuv: 1.7 } });
+  yield;
 
   // ── Tissus et cuirs : une trame partagée (couleur × teinte, et relief)
-  const W = {}; for (const [k, s] of [['linen', 61], ['boucle', 62], ['velvet', 63], ['leather', 64], ['rug', 65]]) { const c = weave(s, k); W[k] = [T(c), L(c)]; }
+  const W = {}; for (const [k, s] of [['linen', 61], ['boucle', 62], ['velvet', 63], ['leather', 64], ['rug', 65]]) { const c = yield* weaveGen(s, k); W[k] = [T(c), L(c)]; yield; }
   const fab = (color, kind, rough, o = {}) => (o.sheen ? phys : std)({ color, map: W[kind][0], bumpMap: W[kind][1], bumpScale: o.bump || 1.4, roughness: rough, ...(o.sheen ? { sheen: o.sheen, sheenRoughness: 0.55, sheenColor: new THREE.Color(color).lerp(new THREE.Color(0xffffff), 0.5) } : {}), userData: { wuv: o.wuv || 0.5 } });
   M.linen = fab(0xefe9dd, 'linen', 0.96);                             // lin écru
   M.greige = fab(0xb7ab9c, 'velvet', 0.9, { sheen: 0.5 });            // velours taupe (chaises du duplex)
@@ -859,6 +902,7 @@ export function makeMaterials(quality) {
   M.art2 = std({ map: T(painting(42, 'forms')), roughness: 0.85 });
   M.art3 = std({ map: T(painting(43, 'stone')), roughness: 0.6 });
   M.art4 = std({ map: T(painting(44, 'land')), roughness: 0.85 });
+  yield;
   M.paper = std({ map: T(magazine(45)), roughness: 0.4 });
   M.pot = std({ color: 0xe4d9c6, roughness: 0.8 });                   // céramique sable
   M.potDark = std({ color: 0x232325, roughness: 0.35 });
@@ -877,43 +921,67 @@ export function makeMaterials(quality) {
   M.glow.userData = { cast: false, receive: false, order: 3 };
 
   // ── Extérieur
-  const grC = foliage([104, 140, 62], 51, { blades: true });
+  const grC = yield* foliageGen([104, 140, 62], 51, { blades: true });
+  yield;
   M.grass = macro(std({ map: T(grC), roughness: 1, userData: { wuv: 2.2, cast: false } }), grC, 0.55, 0.083);      // pelouse : plages plus vertes ou plus sèches sur plusieurs mètres
-  M.hedge = std({ map: T(foliage([62, 98, 50], 52, { gain: 0.8 })), roughness: 1, userData: { wuv: 1.3 } });
+  M.hedge = std({ map: T(yield* foliageGen([62, 98, 50], 52, { gain: 0.8 })), roughness: 1, userData: { wuv: 1.3 } });
+  yield;
   const CS = FS > 1024 ? 512 : 256;
   const card = (c, o) => { const t = T(c); coverageMips(t, c, 0.42); return std({ map: t, alphaTest: 0.42, alphaToCoverage: true, side: THREE.DoubleSide, roughness: 0.95, ...o }); };      // bords de feuilles lissés par l'anticrénelage
   M.leafOlive = card(leafCard([112, 138, 90], 53, { n: 70, len: 0.2, wid: 0.045, silver: 0.25, S: CS }));
+  yield;
   M.leafPine = card(leafCard([70, 110, 62], 54, { n: 40, len: 0.34, needles: true, S: CS }));
+  yield;
   M.leafBroad = card(leafCard([78, 122, 62], 55, { n: 30, len: 0.26, wid: 0.12, S: CS }));     // plantes d'intérieur, lauriers
-  M.leafCypress = std({ map: T(foliage([46, 78, 48], 56, { S: 512, gain: 1.2 })), roughness: 1, userData: { wuv: 1.1 } });
+  yield;
+  M.leafCypress = std({ map: T(yield* foliageGen([46, 78, 48], 56, { S: 512, gain: 1.2 })), roughness: 1, userData: { wuv: 1.1 } });
+  yield;
   M.lavender = std({ color: 0x8a7bc0, roughness: 1 });
   M.oleander = std({ color: 0xe07a94, roughness: 1 });
   M.pampas = std({ color: 0xe6d6b8, roughness: 1 });
   const bkP = photo('ecorce'), bkR = photo('ecorce-r');
   if (bkP && bkR) { const pk = L(bkR); M.bark = std({ map: T(bkP), color: 0xc8bcae, bumpMap: pk, roughnessMap: pk, bumpScale: 3, roughness: 1, userData: { wuv: 0.9, wuvSwap: true } }); }
   else { const [bkC, bkB] = barkSet(59); M.bark = std({ map: T(bkC), bumpMap: L(bkB), bumpScale: 2, color: 0xf0e4d8, roughness: 1, userData: { wuv: 0.6 } }); }
-  const eaC = foliage([120, 128, 84], 57, { S: 512, soft: true, gain: 1.18 });
+  yield;
+  const eaC = yield* foliageGen([120, 128, 84], 57, { S: 512, soft: true, gain: 1.18 });
+  yield;
   M.earth = macro(std({ map: T(eaC), roughness: 1, userData: { wuv: 6, cast: false } }), eaC, 0.45, 0.09);
   M.water = poolWater(quality, M);                                    // eau des bassins : cuve vue par réfraction, reflets, caustiques (pool.js)
+  yield;
   const [rdC, rdB] = grainSet([119, 115, 110], 29, GS >> 1, { tone: 0.05, grain: 0.1, rel: 30, cx: 4, fine: 200 });
+  yield;
   M.road = std({ map: T(rdC), bumpMap: L(rdB), bumpScale: 1.2, roughness: 0.95, userData: { wuv: 3, cast: false } });
   // matières des abords d'après le plan de masse (les rangs de profondeur sont posés ici : main.js ne connaît pas ces noms)
   const tv = travertineSet(17), tvPk = L(tv.pk);
+  yield;
   M.travertine = rank(std({ map: T(tv.map), bumpMap: tvPk, roughnessMap: tvPk, roughness: 1, bumpScale: 0.8, userData: { wuv: 2.4 } }), 1);   // margelles et plage de la piscine
   const gvP = photo('gravillons'), gvR = photo('gravillons-r'), [gvC, gvB] = gvP && gvR ? [gvP, gvR] : gravelSet(18);
   const gvPk = L(gvB);
   M.gravel = rank(macro(std({ map: T(gvC), bumpMap: gvPk, roughnessMap: gvPk, roughness: 1, bumpScale: 2, userData: { wuv: 1.1, cast: false } }), gvC, 0.3), 1);
+  yield;
   const asP = photo('enrobe'), asR = photo('enrobe-r');
   if (asP && asR) { const pk = L(asR); M.asphaltLight = std({ map: T(asP), bumpMap: pk, roughnessMap: pk, roughness: 1, bumpScale: 1.2, userData: { wuv: 3, cast: false } }); macro(M.asphaltLight, asP, 0.3); }
   else { const [aC, aB] = grainSet([170, 164, 152], 19, GS >> 1, { tone: 0.05, grain: 0.1, rel: 30, cx: 4, fine: 200 }); M.asphaltLight = std({ map: T(aC), bumpMap: L(aB), bumpScale: 1.2, roughness: 0.92, userData: { wuv: 3, cast: false } }); }
   rank(M.asphaltLight, 1);
+  yield;
   M.rendering = rank(std({ map: M.stucco.map, bumpMap: M.stucco.bumpMap, bumpScale: 1.3, color: 0xe9dcc6, roughness: 0.96, userData: { wuv: 2.5 } }), 0);   // enduit ton pierre des murs d'entrée (grain du taloché de façade, teinte plus chaude)
   const [mlC, mlB] = mulchSet(20);
+  yield;
   M.mulch = rank(std({ map: T(mlC), bumpMap: L(mlB), bumpScale: 2.5, roughness: 1, userData: { wuv: 1.2, cast: false } }), 1.5);
   M.leafAlmond = card(leafCard([118, 150, 72], 60, { n: 64, len: 0.24, wid: 0.04, S: CS }));       // amandier : feuilles étroites vert clair
+  yield;
   Object.defineProperty(M, 'floraLod', { value: quality.ao || quality.bloom ? 1 : 0.7 });      // nombre de cartes de feuillage (téléphones : moins), lu par le catalogue des végétaux
   noiseCache.clear(); devCache.clear(); RANDOM.S = 0; RANDOM.c = null; MF = null;       // les bruits de travail ne servent plus : on libère la mémoire
   return M;
+}
+export function makeMaterials(quality) { return drain(materialSteps(quality)); }
+/* Même fabrication, découpée : `pause()` est attendue entre deux textures (elle ne rend la main que si la tranche a assez duré).
+   Le navigateur peut dessiner les canvas en différé, ailleurs que dans la page ; sans précaution, toute l'attente retombait d'un
+   bloc sur la première lecture d'une image. On achève donc chaque tranche en faisant terminer le dessin de la dernière texture
+   (et, dans l'ordre, de tout ce qui la précède). */
+export async function makeMaterialsAsync(quality, pause) {
+  const it = materialSteps(quality);
+  for (;;) { const r = it.next(); if (r.done) return r.value; if (LAST) flush(LAST); await pause(); }
 }
 
 /* Finitions de sol proposées dans la visite. */
