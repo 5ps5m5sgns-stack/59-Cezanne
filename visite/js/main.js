@@ -63,6 +63,7 @@ const QUALITIES = {
   soft: { shadow: 2048, aniso: 1, ao: false, bloom: false, lights: 4, dpr: 1, trees: 22, forest: 380, tex: 1024 },     // rendu logiciel, sans carte graphique
 };
 let qName = 'high', QUALITY = QUALITIES.high, GPU = { name: '', kind: 'unknown' };
+const PIXEL_BUDGET = { high: 8.4e6, test: 4e6, std: 3.3e6, mid: 3.3e6 };       // pixels dessinés au plus ; absent = pas de plafond (téléphones, rendu logiciel)
 /* Nature de la carte graphique d'après le nom que donne le pilote : logiciel, intégrée (mémoire partagée), dédiée, inconnue. */
 function gpuKind(name) {
   const n = name.toLowerCase();
@@ -403,9 +404,14 @@ async function captureZones(app, apt, size, nz) {
 
 class App {
   constructor() {
-    this.renderer = new THREE.WebGLRenderer({ canvas, antialias: true, powerPreference: 'high-performance' });
-    qName = pickQuality(this.renderer.getContext()); QUALITY = QUALITIES[qName]; this.qName = qName; this.gpu = GPU;
-    this.dprBase = Math.min(devicePixelRatio || 1, QUALITY.dpr);
+    // La qualité se lit sur un contexte jetable : l'anticrénelage du canevas se fixe à la création du vrai. Avec la chaîne de
+    // post-traitement, la scène est dessinée dans ses propres tampons et le canevas ne reçoit qu'un rectangle plein : son
+    // anticrénelage (4 échantillons par pixel, en pleine résolution) ne servirait à rien et coûterait jusqu'à 150 Mo.
+    { let pg = null; try { pg = document.createElement('canvas').getContext('webgl2') || document.createElement('canvas').getContext('webgl'); } catch (e) { pg = null; }
+      qName = pickQuality(pg); const lc = pg && pg.getExtension && pg.getExtension('WEBGL_lose_context'); if (lc) lc.loseContext(); }
+    QUALITY = QUALITIES[qName]; this.qName = qName; this.gpu = GPU;
+    this.renderer = new THREE.WebGLRenderer({ canvas, antialias: !(QUALITY.ao || QUALITY.bloom), powerPreference: 'high-performance' });
+    this.dprBase = this.capDpr(Math.max(2, root.clientWidth), Math.max(2, root.clientHeight));
     this.renderer.setPixelRatio(this.dprBase);
     this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
     this.renderer.outputColorSpace = THREE.SRGBColorSpace;
@@ -437,16 +443,39 @@ class App {
     if (window.IntersectionObserver) new IntersectionObserver((es) => { const v = es[es.length - 1].isIntersecting; if (v && !this.onScreen) this.dirty = true; this.onScreen = v; }).observe(root);
   }
 
+  /* Budget de pixels : sur un écran à forte densité, la mémoire des tampons croît comme le carré du rapport de pixels (une image
+     de 1920 × 1080 à 2 pixels par point pèse près d'un gigaoctet avec l'occlusion et le halo). On plafonne donc le nombre total de
+     pixels dessinés selon le niveau de qualité ; un écran ordinaire (1 pixel par point) n'est jamais touché. */
+  capDpr(w, h) {
+    const px = PIXEL_BUDGET[this.qName]; let d = Math.min(devicePixelRatio || 1, QUALITY.dpr);
+    if (px) d = Math.min(d, Math.max(1, Math.sqrt(px / (w * h))));
+    return d;
+  }
+  /* Échantillons de l'anticrénelage matériel du tampon principal, selon le nombre de pixels : 4 jusqu'à 1,6 million de pixels,
+     2 jusqu'à 3,5, aucun au-delà (à cette densité, les marches d'escalier ne se voient plus). Seul ce tampon reçoit la scène :
+     le second (celui des passes suivantes) n'a besoin ni d'échantillons ni de profondeur. */
+  samplesFor(px) { return qName === 'high' ? (px <= 4.5e6 ? 4 : 2) : px <= 1.6e6 ? 4 : px <= 3.5e6 ? 2 : 0; }
+  syncSamples() {
+    const c = this.composer; if (!c) return;
+    const px = root.clientWidth * root.clientHeight * this.dprBase * this.dprBase, s = this.samplesFor(px);
+    if (c.renderTarget2.samples !== s) { c.renderTarget2.samples = s; c.renderTarget2.dispose(); this.renderer.initRenderTarget(c.renderTarget2); }
+  }
   setupComposer() {
     if (!QUALITY.ao && !QUALITY.bloom) { this.composer = null; return; }
     const rt = new THREE.WebGLRenderTarget(4, 4, { type: THREE.HalfFloatType, samples: 4 });
     this.composer = new EffectComposer(this.renderer, rt);
+    // la scène est toujours dessinée dans renderTarget2 (voir frame) : le premier tampon ne porte que des rectangles pleins
+    this.composer.renderTarget1.samples = 0; this.composer.renderTarget1.depthBuffer = false;
+    this.syncSamples();
     this.composer.addPass(new RenderPass(this.scene, this.camera));
     if (QUALITY.ao) {
       this.ao = new GTAOPass(this.scene, this.camera, 4, 4);
       this.ao.updateGtaoMaterial({ radius: 0.55, distanceExponent: 1.4, thickness: 1.2, scale: 1.5, samples: 12 });
       this.ao.updatePdMaterial({ lumaPhi: 10, depthPhi: 2, normalPhi: 3, radius: 5, rings: 2, samples: 12 });
       this.ao.blendIntensity = 0.85;
+      // machines modestes : l'occlusion d'écran se calcule à demi-résolution (le quart des pixels, y compris sa passe de profondeur et de
+      // normales), puis se mélange à l'image en pleine résolution ; c'est un effet de grande échelle, le contact fin est dans la carte précalculée
+      if (qName === 'std') { const set = this.ao.setSize.bind(this.ao); this.ao.setSize = (w, h) => set(Math.max(2, w >> 1), Math.max(2, h >> 1)); }
       // la passe de profondeur ignore la transparence : cartes de feuillage, vitres et voilages y seraient des plans pleins (carrés sombres dans le ciel, voile sur le paysage vu à travers les baies) ; le paysage lointain y serait assombri en silhouette. On les écarte
       const ro = this.ao.renderOverride.bind(this.ao);
       this.ao.renderOverride = (...args) => {
@@ -471,8 +500,9 @@ class App {
     // premier rendu avec toutes les passes actives : leurs programmes sont compilés tout de suite, pas au moment où l'une d'elles s'allume (AO en entrant dans une pièce, lueur la nuit)
     const render = this.composer.render.bind(this.composer); let warm = false;
     this.composer.render = (dt) => {
-      if (!warm) { warm = true; const st = this.composer.passes.map((p) => p.enabled); this.composer.passes.forEach((p) => { p.enabled = true; }); render(dt); this.composer.passes.forEach((p, i) => { p.enabled = st[i]; }); }
-      render(dt);
+      const c = this.composer, fix = () => { if (c.readBuffer !== c.renderTarget2) c.swapBuffers(); };      // la scène est toujours dessinée dans renderTarget2, le seul à porter l'anticrénelage
+      if (!warm) { warm = true; const st = c.passes.map((p) => p.enabled); c.passes.forEach((p) => { p.enabled = true; }); fix(); render(dt); c.passes.forEach((p, i) => { p.enabled = st[i]; }); }
+      fix(); render(dt);
     };
   }
 
@@ -574,8 +604,10 @@ class App {
 
   resize() {
     const w = Math.max(2, root.clientWidth), h = Math.max(2, root.clientHeight);
+    const nb = this.capDpr(w, h);
+    if (Math.abs(nb - this.dprBase) > 1e-3) { this.dprBase = nb; if (this.dyn) this.renderer.setPixelRatio(nb * this.dyn.scale); }
     this.renderer.setSize(w, h, false);
-    if (this.composer) { this.composer.setPixelRatio(this.renderer.getPixelRatio()); this.composer.setSize(w, h); }
+    if (this.composer) { this.composer.setPixelRatio(this.renderer.getPixelRatio()); this.composer.setSize(w, h); this.syncSamples(); }
     this.camera.aspect = w / h; if (this.mode === 'walk' && !this.fly) this.camera.fov = this.walkFov(); this.camera.updateProjectionMatrix(); this.dirty = true;
   }
 
@@ -618,7 +650,7 @@ class App {
   }
 
   async load(apt, opts = {}) {
-    this.stopTour(); this.fly = null; this.ready = false;
+    this.uncull(); this.stopTour(); this.fly = null; this.ready = false;
     ui.loader.hidden = false; ui.loaderText.textContent = tr(this.M ? 'loadGeo' : 'loadTex'); this.progress(0.03);
     await new Promise((r) => requestAnimationFrame(() => setTimeout(r, 30)));
     // textures dessinées par tranches, la page reste vivante ; un second chargement lancé entre-temps (autre logement choisi)
@@ -653,6 +685,10 @@ class App {
     const lv = apt.levels[0], bb = lv.bounds;
     const c = cur.group.localToWorld(new THREE.Vector3((bb[0] + bb[2]) / 2, 1.5, (bb[1] + bb[3]) / 2));
     this.env.setSite(apt, this.M, c, Math.hypot(bb[2] - bb[0], bb[3] - bb[1]) / 2 + 3);
+    // Ordre de dessin : l'intérieur d'abord, l'extérieur (abords, plantations, paysage) ensuite, le ciel en dernier. Les cartes graphiques
+    // écartent alors, avant même de les ombrer, les pixels d'extérieur cachés derrière les murs : feuillages et haies, très
+    // coûteux par pixel, ne sont plus ombrés que là où une baie les montre.
+    for (const g of [this.env.land, this.env.near, cur.layers.ctx, cur.layers.ext, cur.layers['ext:top']]) if (g) g.traverse((o) => { if (o.isMesh && o.renderOrder < 1) o.renderOrder = 1; });
     this.setHour(Number(params.get('h')) || apt.hour || 11, true);      // l'heure où le soleil entre dans le séjour
     this.fillUI(); performance.mark('v3d:env');
     ui.loaderText.textContent = tr('loadEnv'); this.progress(0.7); await new Promise((r) => setTimeout(r, 30));
@@ -682,6 +718,7 @@ class App {
      entrée dans une pièce compilait une quinzaine de programmes de rendu et envoyait des centaines de géométries et de
      textures à la carte graphique en une seule image : l'écran se figeait plus d'une seconde. */
   async warmUp() {
+    this.uncull();
     const c = this.cur, layers = Object.values(c.layers), was = layers.map((g) => g.visible), cw = c.catcher.visible, pw = c.pucks.visible;
     for (const g of layers) g.visible = true; c.catcher.visible = true; c.pucks.visible = true;
     // envoi des textures une à une (le dessin des canvas peut n'être achevé qu'à cet envoi) : la main revient au navigateur entre deux
@@ -734,8 +771,96 @@ class App {
   findRoom(id) { for (let i = 0; i < this.apt.levels.length; i++) { const room = this.apt.levels[i].rooms.find((r) => r.id === id); if (room) return { room, level: i }; } return null; }
   roomAt(level, x, z) { return this.apt.levels[level].rooms.find((r) => r.rs.some((q) => x >= q[0] && x <= q[2] && z >= q[1] && z <= q[3])); }
 
+  /* ── Extérieur invisible : on ne le dessine pas ──────────────────────────────────────────────────────────────────────
+     Depuis l'intérieur, le ciel, le paysage, les abords et les plantations ne se voient que par les baies et les fenêtres. Tant
+     qu'aucune ouverture de façade n'est dans le champ de la caméra (regard vers un mur, un couloir, une salle de bains), tout cela
+     est masqué : c'est près de la moitié du coût d'une image depuis un séjour. Rien n'est créé ni compilé : seule la visibilité
+     change, et l'image est strictement la même, puisque ces objets seraient cachés derrière les murs. Les ouvertures, élargies
+     de 30 cm, sont relevées une fois par logement. ?cull=0 désactive. */
+  portals() {
+    const cur = this.cur; if (cur.portals) return cur.portals;
+    cur.group.updateMatrixWorld(true); const P = [], pad = 0.5, apt = this.apt;
+    // murs qui arrêtent le regard (les parapets et cloisons basses ne comptent pas), avec leurs ouvertures
+    const walls = apt.levels.map((lv) => lv.walls.filter((w) => (w.h ?? lv.h) >= 1.9).map((w) => ({ k: w.k, c: w.c, a0: w.a0, a1: w.a1, gaps: (w.ops || []).map((o) => [o.a0 - 0.02, o.a1 + 0.02]) })));
+    apt.levels.forEach((lv, li) => lv.walls.forEach((w) => {
+      if (!w.ext) return; const t = (w.t || 0.3) / 2, zs = w.ext < 0 ? -1 : 1;      // ext : côté extérieur du mur (±1 sur son axe normal)
+      for (const o of w.ops || []) {
+        const y0 = lv.y + (o.sill ?? 0) - 0.1, y1 = lv.y + (o.head ?? lv.h) + 0.1;
+        const lo = w.k === 'h' ? new THREE.Vector3(o.a0 - pad, y0, w.c - t - pad) : new THREE.Vector3(w.c - t - pad, y0, o.a0 - pad);
+        const hi = w.k === 'h' ? new THREE.Vector3(o.a1 + pad, y1, w.c + t + pad) : new THREE.Vector3(w.c + t + pad, y1, o.a1 + pad);
+        P.push({ li, k: w.k, c: w.c, zs, t, a0: o.a0 - 0.25, a1: o.a1 + 0.25, box: new THREE.Box3(lo, hi).applyMatrix4(cur.group.matrixWorld) });
+      }
+    }));
+    // trémies par où l'on voit un autre niveau : l'escalier et la gaine de l'ascenseur
+    const voids = [];
+    if (apt.stair && apt.stair.steps) { let x0 = 1e9, z0 = 1e9, x1 = -1e9, z1 = -1e9; for (const st of apt.stair.steps) for (const [x, z] of st) { x0 = Math.min(x0, x); z0 = Math.min(z0, z); x1 = Math.max(x1, x); z1 = Math.max(z1, z); } voids.push([x0 - 1, z0 - 1, x1 + 1, z1 + 1]); }
+    if (apt.lift) voids.push([apt.lift.x0 - 0.6, apt.lift.y0 - 0.6, apt.lift.x1 + 0.6, apt.lift.y1 + 0.6]);
+    const yTop = Math.max(...apt.levels.map((lv) => lv.y + lv.h)) + 0.3, yBot = Math.min(...apt.levels.map((lv) => lv.y)) - 0.3;
+    const vbox = voids.map((v) => new THREE.Box3(new THREE.Vector3(v[0], yBot, v[1]), new THREE.Vector3(v[2], yTop, v[3])).applyMatrix4(cur.group.matrixWorld));
+    return (cur.portals = { P, walls, voids, vbox });
+  }
+  /* Que voit-on d'ici ? Renvoie { out, other } : l'extérieur d'une part, les niveaux autres que celui de la caméra d'autre part.
+     L'extérieur est visible si une ouverture de façade est dans le champ de la caméra ET joignable en ligne droite, sur le plan,
+     sans traverser un mur (les portes et passages sont comptés ouverts, par prudence). Un autre niveau n'est visible que par une
+     trémie (escalier, gaine d'ascenseur) dans le champ et joignable de même ; une baie d'un autre niveau, que par une trémie.
+     Les cibles balaient les ouvertures tous les 6 cm, élargies de 25 cm : un coin de baie entrevu par une porte étroite compte. */
+  view() {
+    const all = { out: true, other: true }, w = this.walk;
+    if (this.mode !== 'walk' || params.get('cull') === '0' || this.renderer.shadowMap.needsUpdate || w.climbing || w.riding || this.fly) return all;
+    const r = this.lastRoom; if (!r) return all;
+    const cam = this.camera; cam.updateMatrixWorld();
+    this._fr = this._fr || new THREE.Frustum(); this._m = this._m || new THREE.Matrix4(); this._mi = this._mi || new THREE.Matrix4();
+    // champ élargi d'un dixième : une ouverture qui n'effleure que le bord de l'image compte, rien n'apparaît ni ne disparaît à l'arête
+    this._pm = (this._pm || new THREE.Matrix4()).copy(cam.projectionMatrix); this._pm.elements[0] *= 0.9; this._pm.elements[5] *= 0.9;
+    this._fr.setFromProjectionMatrix(this._m.multiplyMatrices(this._pm, this._mi.copy(cam.matrixWorld).invert()));
+    const { P, walls, voids, vbox } = this.portals(), px = cam.position.x, pz = cam.position.z, lv = w.level ?? 0;
+    const blocked = (W, qx, qz) => {
+      for (const wl of W) {
+        const h = wl.k === 'h', d0 = (h ? pz : px) - wl.c, d1 = (h ? qz : qx) - wl.c; if (d0 * d1 >= 0) continue;
+        const u = d0 / (d0 - d1), x = h ? px + (qx - px) * u : pz + (qz - pz) * u;      // abscisse du croisement le long du mur
+        if (x < wl.a0 || x > wl.a1) continue; let gap = false; for (const g of wl.gaps) if (x >= g[0] && x <= g[1]) { gap = true; break; }
+        if (!gap) return true;
+      }
+      return false;
+    };
+    const throughVoid = (qx, qz) => { for (const v of voids) for (let i = 0; i <= 12; i++) { const x = px + (qx - px) * i / 12, z = pz + (qz - pz) * i / 12; if (x >= v[0] && x <= v[2] && z >= v[1] && z <= v[3]) return true; } return false; };
+    // autres niveaux : une trémie dans le champ, dont un point (coins, centre, bords) est joignable
+    let other = false;
+    for (let i = 0; i < voids.length && !other; i++) {
+      if (!this._fr.intersectsBox(vbox[i])) continue; const v = voids[i];
+      if (px >= v[0] && px <= v[2] && pz >= v[1] && pz <= v[3]) { other = true; break; }                  // la caméra est dans la trémie
+      for (let a = 0; a <= 4 && !other; a++) for (let b = 0; b <= 4; b++) if (!blocked(walls[lv], v[0] + (v[2] - v[0]) * a / 4, v[1] + (v[3] - v[1]) * b / 4)) { other = true; break; }
+    }
+    if (/jardin|balcon|terrasse/.test(r.id)) return all;                  // dehors, on voit la façade entière, tous niveaux
+    let out = false;
+    for (const q of P) {
+      if (!this._fr.intersectsBox(q.box)) continue;
+      const n = Math.max(1, Math.ceil((q.a1 - q.a0) / 0.06)), off = q.c - q.zs * (q.t + 0.05);
+      for (let i = 0; i <= n && !out; i++) {
+        const a = q.a0 + (q.a1 - q.a0) * i / n, qx = q.k === 'h' ? a : off, qz = q.k === 'h' ? off : a;
+        if (q.li === lv ? !blocked(walls[lv], qx, qz) : throughVoid(qx, qz)) out = true;
+      }
+      if (out) break;
+    }
+    return { out, other };
+  }
+  hiddenSet(v) {
+    const L = this.cur.layers, lv = this.walk.level ?? 0, set = [];
+    if (!v.out) set.push(this.env.sky, this.env.land, this.env.near, L.ctx, L.ext, L['ext:top']);
+    if (!v.other) for (const [name, g] of Object.entries(L)) { const m = /^L(\d)(:top)?$/.exec(name); if (m && +m[1] !== lv) set.push(g); }
+    return set.filter(Boolean);
+  }
+  cullOutdoor() {
+    const v = this.view(), st = this.cullStats || (this.cullStats = { frames: 0, out: 0, other: 0 });
+    if (this.mode === 'walk') { st.frames++; if (!v.out) st.out++; if (!v.other) st.other++; }
+    this.uncull(); if (v.out && v.other) return;
+    this.culled = this.hiddenSet(v).map((o) => [o, o.visible]); for (const [o] of this.culled) o.visible = false;
+  }
+  uncull() { if (!this.culled) return; for (const [o, vis] of this.culled) o.visible = vis; this.culled = null; }
+
   /* ── Calques visibles : en maquette et en plan, on coupe le niveau regardé et on masque ce qui est au-dessus ── */
   applyView(cut) {
+    this.uncull();
     for (const [name, g] of Object.entries(this.cur.layers)) {
       const m = /^L(\d)(:top|:cap)?$/.exec(name); let vis = true;
       if (cut) { if (m) { const i = +m[1]; vis = m[2] === ':cap' ? i === this.viewLevel : i < this.viewLevel || (i === this.viewLevel && !m[2]); } else if (name === 'ext:top' || name === 'ctx') vis = false; }
@@ -1347,7 +1472,7 @@ class App {
     const refine = this.updateAO(slow);
     this.updateSpots();                                        // repères : suivis à chaque image, même sans nouveau rendu (leur hystérésis est temporelle)
     if (!this.dirty && !refine) { this.dynAfter(now, false); return; } this.dirty = false;
-    this.updateLabels(); this.updateLots();
+    this.updateLabels(); this.updateLots(); this.cullOutdoor();
     if (this.composer) this.composer.render(); else this.renderer.render(this.scene, this.camera);
     this.dynAfter(now, true);
   }
