@@ -57,7 +57,7 @@ const QUALITIES = {
   mid: { shadow: 2048, aniso: 8, ao: false, bloom: true, lights: 6, dpr: 2, trees: 34, forest: 700, tex: 1024 },
   // ordinateurs modestes (puce graphique intégrée, peu de cœurs ou de mémoire) : mêmes passes que « high » (l'image arrêtée garde
   // son occlusion et son halo), mais ombres, textures et lumières d'appoint à la mesure d'une mémoire partagée
-  std: { shadow: 2048, aniso: 8, ao: true, bloom: true, lights: 6, dpr: 1.5, trees: 34, forest: 900, tex: 1024 },
+  std: { shadow: 2048, aniso: 4, ao: true, bloom: true, lights: 6, dpr: 1.5, trees: 34, forest: 900, tex: 1024 },
   high: { shadow: 4096, aniso: 16, ao: true, bloom: true, lights: 8, dpr: 2, trees: 46, forest: 1300, tex: 2048 },
   test: { shadow: 2048, aniso: 4, ao: true, bloom: true, lights: 8, dpr: 1, trees: 40, forest: 1100, tex: 1024 },
   soft: { shadow: 2048, aniso: 1, ao: false, bloom: false, lights: 4, dpr: 1, trees: 22, forest: 380, tex: 1024 },     // rendu logiciel, sans carte graphique
@@ -1475,6 +1475,19 @@ class App {
     this.updateLabels(); this.updateLots(); this.cullOutdoor();
     if (this.composer) this.composer.render(); else this.renderer.render(this.scene, this.camera);
     this.dynAfter(now, true);
+    if (params.get('perf') === '1') this.perfTick(now);
+  }
+  /* ?perf=1 : petit relevé en bas à gauche (niveau de qualité, carte graphique, pixels, cadence, éléments masqués), pour diagnostiquer une machine */
+  perfTick(now) {
+    const P = this._perf || (this._perf = { t: 0, ds: [], el: null, shown: 0 });
+    if (P.t && now - P.t < 400) { P.ds.push(now - P.t); if (P.ds.length > 30) P.ds.shift(); } P.t = now;
+    if (now - P.shown < 500) return; P.shown = now;
+    if (!P.el) { P.el = document.createElement('pre'); P.el.style.cssText = 'position:absolute;left:8px;bottom:8px;z-index:30;margin:0;padding:6px 8px;font:11px/1.35 ui-monospace,monospace;color:#fff;background:rgba(0,0,0,.6);border-radius:6px;pointer-events:none;white-space:pre'; root.appendChild(P.el); }
+    const d = P.ds.slice().sort((x, y) => x - y), med = d.length ? d[d.length >> 1] : 0, c = this.canvas || canvas, st = this.cullStats || { frames: 0, out: 0, other: 0 }, r = this.renderer.info;
+    P.el.textContent = `niveau ${this.qName}  ·  ${GPU.kind}  ·  ${String(GPU.name).slice(0, 48)}\n` +
+      `image ${c.width}×${c.height} (×${this.renderer.getPixelRatio().toFixed(2)})  ·  paliers ${this.dyn ? this.dyn.step : '-'}/${this.dyn ? this.dyn.steps.length - 1 : '-'}\n` +
+      `cadence ${med ? Math.round(1000 / med) + ' i/s (' + Math.round(med) + ' ms)' : 'à l\'arrêt'}  ·  ${r.memory.textures} textures, ${r.memory.geometries} géométries, ${r.programs ? r.programs.length : 0} programmes\n` +
+      `extérieur masqué ${st.frames ? Math.round(100 * st.out / st.frames) : 0} %` + (this.apt && this.apt.levels.length > 1 ? `  ·  autre niveau masqué ${st.frames ? Math.round(100 * st.other / st.frames) : 0} %` : '');
   }
 }
 
