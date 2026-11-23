@@ -489,9 +489,9 @@ export function buildSite(b, M, { o, skip }) {
   { // numéro « 59 » en chiffres découpés sur le pilier entre portail et portillon, côté rue ; boîtes aux lettres et visiophone sur le pilier du portillon
     const SEG = { 5: 'afgcd', 9: 'abcdfg' }, x = GATE_X + 0.25, w = 0.12, h = 0.22, e = 0.02, seg = (z0, y0, k) => {
       const r = { a: [0, h - e, w, h], b: [w - e, h / 2, w, h], c: [w - e, 0, w, h / 2], d: [0, 0, w, e], f: [0, h / 2, e, h], g: [0, h / 2 - e / 2, w, h / 2 + e / 2] }[k];
-      box('cadre', x, y0 + r[1], z0 + r[0], x + 0.01, y0 + r[3], z0 + r[2]);
+      box('cadre', x, y0 + r[1], z0 + w - r[2], x + 0.01, y0 + r[3], z0 + w - r[0]);   // vu depuis la rue, +z est à gauche : chiffres retournés pour se lire à l'endroit
     };
-    for (const [i, dgt] of ['5', '9'].entries()) for (const k of SEG[dgt]) seg(7.52 + i * 0.16, -1.75, k);
+    for (const [i, dgt] of ['5', '9'].entries()) for (const k of SEG[dgt]) seg(7.52 + (1 - i) * 0.16, -1.75, k);
     for (let i = 0; i < 4; i++) for (let j = 0; j < 2; j++) { const z = 9.48 + i * 0.11, y = -2.6 + j * 0.3; box('cadre', x, y, z, x + 0.02, y + 0.27, z + 0.1); box('black', x + 0.02, y + 0.2, z + 0.012, x + 0.025, y + 0.212, z + 0.088); }
     box('cadre', x, -1.95, 9.55, x + 0.025, -1.65, 9.68); box('screen', x + 0.025, -1.84, 9.57, x + 0.03, -1.74, 9.66);
   }
