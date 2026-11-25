@@ -1,8 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
   <url>
     <loc>https://59-cezanne.com/</loc>
-    <lastmod>2026-11-17</lastmod>
+    <lastmod>2026-11-25</lastmod>
+    <image:image><image:loc>https://59-cezanne.com/Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_EXT_Panorama_St-Victoire.webp</image:loc></image:image>
+    <image:image><image:loc>https://59-cezanne.com/Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_JARDIN_LOGEMENT-04_Panorama_St-Victoire.webp</image:loc></image:image>
+    <image:image><image:loc>https://59-cezanne.com/Photo%2059%20C%C3%A9zanne/3D%20interieur/DUPLEX_SEJOUR.webp</image:loc></image:image>
+    <image:image><image:loc>https://59-cezanne.com/Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_PISCINE_NUIT_Panorama_St-Victoire%202.webp</image:loc></image:image>
   </url>
   <url>
     <loc>https://59-cezanne.com/contact</loc>
@@ -10,7 +14,11 @@
   </url>
   <url>
     <loc>https://59-cezanne.com/en</loc>
-    <lastmod>2026-11-17</lastmod>
+    <lastmod>2026-11-25</lastmod>
+    <image:image><image:loc>https://59-cezanne.com/Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_EXT_Panorama_St-Victoire.webp</image:loc></image:image>
+    <image:image><image:loc>https://59-cezanne.com/Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_JARDIN_LOGEMENT-04_Panorama_St-Victoire.webp</image:loc></image:image>
+    <image:image><image:loc>https://59-cezanne.com/Photo%2059%20C%C3%A9zanne/3D%20interieur/DUPLEX_SEJOUR.webp</image:loc></image:image>
+    <image:image><image:loc>https://59-cezanne.com/Photo%2059%20C%C3%A9zanne/3D%20Exterieur/PV_PISCINE_NUIT_Panorama_St-Victoire%202.webp</image:loc></image:image>
   </url>
   <url>
     <loc>https://59-cezanne.com/en/contact</loc>
@@ -19,22 +27,39 @@
   <url>
     <loc>https://59-cezanne.com/en/localisation</loc>
     <lastmod>2026-11-17</lastmod>
+    <image:image><image:loc>https://59-cezanne.com/carte/carte-localisation.webp</image:loc></image:image>
+    <image:image><image:loc>https://59-cezanne.com/Photo%2059%20C%C3%A9zanne/3D%20Groove%20Architecture/Edited/insertion-nord.webp</image:loc></image:image>
   </url>
   <url>
     <loc>https://59-cezanne.com/en/logements</loc>
-    <lastmod>2026-11-17</lastmod>
+    <lastmod>2026-11-25</lastmod>
+    <image:image><image:loc>https://59-cezanne.com/Photo%2059%20C%C3%A9zanne/3D%20interieur/CHAMBRE_VUE_SAINTE-VICTOIRE.webp</image:loc></image:image>
+    <image:image><image:loc>https://59-cezanne.com/Photo%2059%20C%C3%A9zanne/3D%20Exterieur/JARDIN_LOT_8.webp</image:loc></image:image>
+    <image:image><image:loc>https://59-cezanne.com/Photo%2059%20C%C3%A9zanne/3D%20interieur/DUPLEX_SEJOUR.webp</image:loc></image:image>
+    <image:image><image:loc>https://59-cezanne.com/Photo%2059%20C%C3%A9zanne/3D%20Groove%20Architecture/Edited/PISCINE-enhanced.webp</image:loc></image:image>
+    <image:image><image:loc>https://59-cezanne.com/chantier/octobre-2026.webp</image:loc></image:image>
+    <image:image><image:loc>https://59-cezanne.com/chantier/juillet-2026.webp</image:loc></image:image>
   </url>
   <url>
     <loc>https://59-cezanne.com/localisation</loc>
     <lastmod>2026-11-17</lastmod>
+    <image:image><image:loc>https://59-cezanne.com/carte/carte-localisation.webp</image:loc></image:image>
+    <image:image><image:loc>https://59-cezanne.com/Photo%2059%20C%C3%A9zanne/3D%20Groove%20Architecture/Edited/insertion-nord.webp</image:loc></image:image>
   </url>
   <url>
     <loc>https://59-cezanne.com/visite-3d</loc>
-    <lastmod>2026-11-20</lastmod>
+    <lastmod>2026-11-25</lastmod>
+    <image:image><image:loc>https://59-cezanne.com/visite/img/maquette-appartement-villa-138m2.webp</image:loc></image:image>
   </url>
   <url>
     <loc>https://59-cezanne.com/logements</loc>
-    <lastmod>2026-11-17</lastmod>
+    <lastmod>2026-11-25</lastmod>
+    <image:image><image:loc>https://59-cezanne.com/Photo%2059%20C%C3%A9zanne/3D%20interieur/CHAMBRE_VUE_SAINTE-VICTOIRE.webp</image:loc></image:image>
+    <image:image><image:loc>https://59-cezanne.com/Photo%2059%20C%C3%A9zanne/3D%20Exterieur/JARDIN_LOT_8.webp</image:loc></image:image>
+    <image:image><image:loc>https://59-cezanne.com/Photo%2059%20C%C3%A9zanne/3D%20interieur/DUPLEX_SEJOUR.webp</image:loc></image:image>
+    <image:image><image:loc>https://59-cezanne.com/Photo%2059%20C%C3%A9zanne/3D%20Groove%20Architecture/Edited/PISCINE-enhanced.webp</image:loc></image:image>
+    <image:image><image:loc>https://59-cezanne.com/chantier/octobre-2026.webp</image:loc></image:image>
+    <image:image><image:loc>https://59-cezanne.com/chantier/juillet-2026.webp</image:loc></image:image>
   </url>
   <url>
     <loc>https://59-cezanne.com/blog</loc>
