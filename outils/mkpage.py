@@ -39,7 +39,7 @@ ICON={
 }
 def seg(mode,fr,en): return '<button type="button" class="v3d-seg" data-mode="%s" aria-pressed="false">%s%s</button>'%(mode,ICON[mode],t(fr,en))
 TITLE='Visite 3D des appartements neufs à Aix | 59 Cézanne'
-DESC="Visitez en 3D la résidence 59 Cézanne à Aix-en-Provence et ses deux derniers logements : l'appartement-villa de 138 m² et le duplex de 206 m²."
+DESC="Visite virtuelle en 3D de la résidence 59 Cézanne à Aix-en-Provence et de ses deux derniers logements neufs : appartement-villa de 138 m², duplex de 206 m²."
 import datetime
 TODAY=datetime.date.today().isoformat()
 html=f'''<!DOCTYPE html>
